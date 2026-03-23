@@ -1,1 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daedalus — Safety & Operations System for Professional Outdoor Leaders</title>
+<meta name="description" content="The safety and legal documentation platform for mountain guides, kayak instructors, and outdoor leaders. Protect yourself, your clients, and your organization — across Europe.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #060f1a;
+    --navy: #0d1e30;
+    --steel: #1e3a52;
+    --brand: #2c5f8a;
+    --ice: #dceaf6;
+    --mist: #8fafc8;
+    --gold: #c4a35a;
+    --white: #ffffff;
+    --line: rgba(44,95,138,0.2);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--ink); color: var(--ice); font-family: 'Crimson Pro', Georgia, serif; font-size: 18px; line-height: 1.7; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 1000; }
+  .lang-toggle { position: fixed; top: 24px; right: 24px; z-index: 999; display: flex; background: rgba(13,30,48,0.9); border: 1px solid var(--line); border-radius: 30px; padding: 4px; backdrop-filter: blur(12px); }
+  .lang-btn { padding: 6px 16px; border-radius: 24px; border: none; background: none; color: var(--mist); font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.1em; cursor: pointer; transition: all 0.2s; }
+  .lang-btn.active { background: var(--brand); color: var(--white); }
+  .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 80px 24px; position: relative; overflow: hidden; }
+  .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(44,95,138,0.18) 0%, transparent 70%), radial-gradient(ellipse at 50% 100%, rgba(196,163,90,0.07) 0%, transparent 60%); }
+  .hero-img { position: absolute; inset: 0; background: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1600&q=80') center/cover; opacity: 0.13; }
+  .hero-ring { position: absolute; border-radius: 50%; border: 1px solid rgba(44,95,138,0.07); pointer-events: none; }
+  .hero-content { position: relative; z-index: 2; max-width: 820px; }
+  .logo-mark { width: 88px; height: 88px; margin: 0 auto 36px; animation: breathe 6s ease-in-out infinite; filter: drop-shadow(0 0 20px rgba(44,95,138,0.5)) drop-shadow(0 0 40px rgba(196,163,90,0.15)); }
+  @keyframes breathe { 0%, 100% { filter: drop-shadow(0 0 15px rgba(44,95,138,0.4)); } 50% { filter: drop-shadow(0 0 35px rgba(44,95,138,0.75)) drop-shadow(0 0 70px rgba(196,163,90,0.28)); } }
+  .badge { display: inline-block; padding: 6px 20px; border: 1px solid rgba(196,163,90,0.3); border-radius: 30px; font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.25em; color: var(--gold); margin-bottom: 24px; background: rgba(196,163,90,0.05); }
+  .hero-title { font-family: 'Cinzel', serif; font-size: clamp(56px, 11vw, 104px); font-weight: 900; letter-spacing: -0.02em; color: var(--white); line-height: 1; margin-bottom: 16px; }
+  .hero-sub { font-family: 'Crimson Pro', serif; font-size: clamp(17px, 3vw, 23px); font-weight: 300; font-style: italic; color: var(--gold); letter-spacing: 0.05em; margin-bottom: 28px; }
+  .hero-desc { font-size: clamp(15px, 2vw, 18px); color: var(--mist); max-width: 580px; margin: 0 auto 48px; line-height: 1.8; }
+  .store-badges { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+  .store-badge { display: inline-flex; align-items: center; gap: 12px; padding: 14px 28px; border-radius: 12px; text-decoration: none; transition: all 0.2s; border: 1px solid; }
+  .store-badge-apple { background: var(--white); color: var(--ink); border-color: var(--white); }
+  .store-badge-apple:hover { background: var(--ice); transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.3); }
+  .store-badge-google { background: transparent; color: var(--white); border-color: rgba(255,255,255,0.25); }
+  .store-badge-google:hover { border-color: var(--brand); transform: translateY(-3px); }
+  .store-badge-icon { font-size: 28px; line-height: 1; }
+  .store-badge-text { text-align: left; }
+  .store-badge-small { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.15em; opacity: 0.7; display: block; margin-bottom: 2px; }
+  .store-badge-big { font-family: 'Cinzel', serif; font-size: 15px; font-weight: 600; letter-spacing: 0.05em; display: block; }
+  .store-note { font-size: 13px; color: var(--mist); font-style: italic; }
+  .scroll-hint { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0.35; animation: float 3s ease-in-out infinite; }
+  @keyframes float { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
+  .scroll-line { width: 1px; height: 44px; background: linear-gradient(to bottom, transparent, var(--brand)); }
+  .section-divider { height: 1px; background: linear-gradient(90deg, transparent, var(--brand), rgba(196,163,90,0.4), var(--brand), transparent); }
+  section { padding: 100px 24px; max-width: 1100px; margin: 0 auto; }
+  .section-label { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase; margin-bottom: 16px; display: block; }
+  .section-title { font-family: 'Cinzel', serif; font-size: clamp(28px, 5vw, 48px); font-weight: 600; color: var(--white); line-height: 1.2; margin-bottom: 20px; }
+  .section-body { font-size: 17px; color: var(--mist); max-width: 560px; line-height: 1.8; }
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2px; margin-top: 64px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .feature-card { padding: 40px; background: var(--navy); transition: background 0.3s; }
+  .feature-card:hover { background: var(--steel); }
+  .feature-icon { width: 48px; height: 48px; background: rgba(44,95,138,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; font-size: 22px; }
+  .feature-title { font-family: 'Cinzel', serif; font-size: 15px; font-weight: 600; color: var(--white); margin-bottom: 12px; }
+  .feature-desc { font-size: 15px; color: var(--mist); line-height: 1.7; }
+  .who-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-top: 48px; }
+  .who-card { padding: 28px; background: rgba(13,30,48,0.6); border: 1px solid var(--line); border-radius: 8px; text-align: center; transition: border-color 0.3s, transform 0.3s; }
+  .who-card:hover { border-color: var(--brand); transform: translateY(-4px); }
+  .who-icon { font-size: 28px; margin-bottom: 12px; }
+  .who-title { font-family: 'Cinzel', serif; font-size: 12px; color: var(--ice); letter-spacing: 0.08em; }
+  .pricing-section { background: linear-gradient(180deg, transparent, rgba(13,30,48,0.8), transparent); padding: 100px 24px; }
+  .pricing-inner { max-width: 900px; margin: 0 auto; text-align: center; }
+  .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-top: 48px; }
+  .price-card { padding: 48px 36px; background: var(--navy); border: 1px solid var(--line); border-radius: 8px; text-align: left; position: relative; transition: transform 0.3s, border-color 0.3s; }
+  .price-card:hover { transform: translateY(-6px); border-color: var(--brand); }
+  .price-card.featured { border-color: var(--gold); background: linear-gradient(135deg, var(--navy), rgba(44,95,138,0.15)); }
+  .price-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--gold); color: var(--ink); font-family: 'Cinzel', serif; font-size: 10px; font-weight: 600; letter-spacing: 0.15em; padding: 4px 20px; border-radius: 20px; }
+  .price-plan { font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 0.2em; color: var(--mist); margin-bottom: 16px; }
+  .price-amount { font-family: 'Cinzel', serif; font-size: 52px; font-weight: 900; color: var(--white); line-height: 1; margin-bottom: 4px; }
+  .price-period { font-size: 14px; color: var(--mist); margin-bottom: 32px; }
+  .price-features { list-style: none; margin-bottom: 36px; }
+  .price-features li { display: flex; align-items: flex-start; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 15px; color: var(--ice); }
+  .price-features li::before { content: '✦'; color: var(--gold); font-size: 10px; margin-top: 5px; flex-shrink: 0; }
+  .btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 16px 36px; background: var(--white); color: var(--ink); font-family: 'Cinzel', serif; font-size: 13px; font-weight: 600; letter-spacing: 0.12em; text-decoration: none; border-radius: 4px; transition: all 0.2s; border: none; cursor: pointer; width: 100%; }
+  .btn-primary:hover { background: var(--ice); transform: translateY(-2px); }
+  .btn-secondary { display: inline-flex; align-items: center; justify-content: center; padding: 16px 36px; background: transparent; color: var(--ice); font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 0.12em; text-decoration: none; border-radius: 4px; border: 1px solid rgba(220,234,246,0.2); transition: all 0.2s; cursor: pointer; width: 100%; }
+  .btn-secondary:hover { border-color: var(--brand); color: var(--white); }
+  .price-trial { font-size: 13px; color: var(--mist); text-align: center; margin-top: 12px; font-style: italic; }
+  .bottom-cta { padding: 100px 24px; text-align: center; }
+  .bottom-cta-inner { max-width: 640px; margin: 0 auto; }
+  footer { padding: 60px 24px 40px; border-top: 1px solid var(--line); text-align: center; }
+  .footer-logo { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 900; color: var(--white); letter-spacing: 0.15em; margin-bottom: 8px; }
+  .footer-sub { font-size: 13px; color: var(--mist); font-style: italic; margin-bottom: 32px; }
+  .footer-links { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px; }
+  .footer-links a { color: var(--mist); text-decoration: none; font-size: 13px; font-family: 'Cinzel', serif; letter-spacing: 0.08em; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--ice); }
+  .footer-copy { font-size: 12px; color: rgba(143,175,200,0.4); letter-spacing: 0.05em; }
+  .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+  [data-lang="no"] { display: none; }
+  .watermark { position: fixed; bottom: 8px; right: 12px; font-size: 7px; color: rgba(255,255,255,0.04); letter-spacing: 0.2em; pointer-events: none; z-index: 999; }
+  @media (max-width: 640px) { .store-badges { flex-direction: column; align-items: center; } .store-badge { width: 240px; justify-content: center; } .pricing-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
 
+<div class="watermark">HØISETH</div>
+
+<div class="lang-toggle">
+  <button class="lang-btn active" onclick="setLang('en')">EN</button>
+  <button class="lang-btn" onclick="setLang('no')">NO</button>
+</div>
+
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-img"></div>
+  <div class="hero-ring" style="width:600px;height:600px;top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+  <div class="hero-ring" style="width:950px;height:950px;top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+
+  <div class="hero-content">
+    <svg class="logo-mark" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="200" cy="200" r="175" stroke="#2C5F8A" stroke-width="1" fill="none" stroke-dasharray="4 8" opacity="0.4"/>
+      <path d="M 155 200 C 140 175 110 160 75 155 C 50 165 75 175 78 198 C 55 200 28 220 82 222 C 62 228 68 278 115 256 C 125 240 145 208 155 200 Z" fill="#2C5F8A" opacity="0.75"/>
+      <path d="M 245 200 C 260 175 290 160 325 155 C 350 165 325 175 322 198 C 345 200 372 220 318 222 C 338 228 332 278 285 256 C 275 240 255 208 245 200 Z" fill="#2C5F8A" opacity="0.75"/>
+      <path d="M 128 200 C 145 168 175 152 200 152 C 225 152 255 168 272 200 C 255 232 225 248 200 248 C 175 248 145 232 128 200 Z" fill="#0D2035" stroke="#2C5F8A" stroke-width="2.5"/>
+      <circle cx="200" cy="200" r="34" fill="#1A3A5C"/>
+      <path d="M 200 178 L 203 193 L 200 196 L 197 193 Z" fill="#C4A35A"/>
+      <path d="M 200 222 L 203 207 L 200 204 L 197 207 Z" fill="#5E7A96"/>
+      <path d="M 222 200 L 207 203 L 204 200 L 207 197 Z" fill="#5E7A96"/>
+      <path d="M 178 200 L 193 203 L 196 200 L 193 197 Z" fill="#5E7A96"/>
+      <circle cx="200" cy="200" r="7" fill="#C4A35A"/>
+      <circle cx="200" cy="200" r="3.5" fill="#E8C870"/>
+    </svg>
+
+    <span class="badge" data-lang="en">SAFETY & OPERATIONS — iOS &amp; ANDROID</span>
+    <span class="badge" data-lang="no" style="display:none">SIKKERHET & OPERASJONER — iOS &amp; ANDROID</span>
+
+    <h1 class="hero-title">Daedalus</h1>
+
+    <p class="hero-sub" data-lang="en">Safety & Operations System for Professional Outdoor Leaders</p>
+    <p class="hero-sub" data-lang="no" style="display:none">Sikkerhet og operasjonssystem for profesjonelle ledere i naturen</p>
+
+    <p class="hero-desc" data-lang="en">Every guide's last line of defence. Daedalus is the legal and operational documentation platform built for professionals who take people into the field. Safety checks, incident logging, SOS alerts and automatic reports — designed to protect you before something goes wrong.</p>
+    <p class="hero-desc" data-lang="no" style="display:none">Guidens siste forsvarslinje. Daedalus er den juridiske og operative dokumentasjonsplattformen for profesjonelle som tar folk ut i naturen. Sikkerhetssjekk, hendelseslogg, SOS-varsler og automatiske rapporter — bygget for å beskytte deg før noe går galt.</p>
+
+    <div class="store-badges">
+      <a href="#" class="store-badge store-badge-apple">
+        <div class="store-badge-icon">🍎</div>
+        <div class="store-badge-text">
+          <span class="store-badge-small" data-lang="en">DOWNLOAD ON THE</span>
+          <span class="store-badge-small" data-lang="no" style="display:none">LAST NED PÅ</span>
+          <span class="store-badge-big">App Store</span>
+        </div>
+      </a>
+      <a href="#" class="store-badge store-badge-google">
+        <div class="store-badge-icon">▶</div>
+        <div class="store-badge-text">
+          <span class="store-badge-small" data-lang="en">GET IT ON</span>
+          <span class="store-badge-small" data-lang="no" style="display:none">TILGJENGELIG PÅ</span>
+          <span class="store-badge-big">Google Play</span>
+        </div>
+      </a>
+    </div>
+
+    <p class="store-note" data-lang="en">30-day free trial · No credit card required</p>
+    <p class="store-note" data-lang="no" style="display:none">30 dagers gratis prøveperiode · Ingen kredittkort påkrevd</p>
+  </div>
+
+  <div class="scroll-hint"><div class="scroll-line"></div></div>
+</div>
+
+<div class="section-divider"></div>
+
+<section id="features">
+  <div class="fade-in">
+    <span class="section-label" data-lang="en">HOW DAEDALUS PROTECTS YOU</span>
+    <span class="section-label" data-lang="no" style="display:none">SLIK BESKYTTER DAEDALUS DEG</span>
+    <h2 class="section-title" data-lang="en">Document every decision.<br>Before something goes wrong.</h2>
+    <h2 class="section-title" data-lang="no" style="display:none">Dokumenter hver avgjørelse.<br>Før noe går galt.</h2>
+    <p class="section-body" data-lang="en">Daedalus is not a trip journal. It's a legal and operational shield — built for professionals who carry responsibility for other people's lives in the field.</p>
+    <p class="section-body" data-lang="no" style="display:none">Daedalus er ikke en turbok. Det er et juridisk og operativt skjold — bygget for profesjonelle som bærer ansvar for andres liv i felt.</p>
+  </div>
+  <div class="features-grid fade-in">
+    <div class="feature-card"><div class="feature-icon">🛡</div><div class="feature-title" data-lang="en">Mandatory pre-trip safety check</div><div class="feature-title" data-lang="no" style="display:none">Obligatorisk sikkerhetssjekk</div><p class="feature-desc" data-lang="en">A timestamped, signed safety check is required before any trip activates. Weather, avalanche forecast, equipment and emergency contacts — verified and logged. Auto-integrated with YR and Varsom.</p><p class="feature-desc" data-lang="no" style="display:none">En tidsstemplet og bekreftet sikkerhetssjekk kreves før turen aktiveres. Vær, skredvarsel, utstyr og nødkontakter — verifisert og lagret. Automatisk integrasjon med YR og Varsom.</p></div>
+    <div class="feature-card"><div class="feature-icon">📡</div><div class="feature-title" data-lang="en">Structured incident logging</div><div class="feature-title" data-lang="no" style="display:none">Strukturert hendelseslogg</div><p class="feature-desc" data-lang="en">Log near-misses, injuries, route changes and equipment failures in real time — with GPS, timestamp, severity and actions taken. Immutable records ready for insurance and investigation.</p><p class="feature-desc" data-lang="no" style="display:none">Logg nær-ulykker, skader og utstyrssvikt i sanntid — med GPS, tidsstempel, alvorlighetsgrad og tiltak. Uforanderlige poster klare for forsikring og granskning.</p></div>
+    <div class="feature-card"><div class="feature-icon">🗺</div><div class="feature-title" data-lang="en">Hazard mapping & route planning</div><div class="feature-title" data-lang="no" style="display:none">Faremarkering og ruteplanlegging</div><p class="feature-desc" data-lang="en">Draw planned routes, mark hazard zones, emergency exits and meeting points. Share live hazard maps with your organization — proof that risk was assessed before departure.</p><p class="feature-desc" data-lang="no" style="display:none">Tegn planlagte ruter, merk fareområder og nødutganger. Del live farekart med organisasjonen — dokumentasjon på at risiko ble vurdert.</p></div>
+    <div class="feature-card"><div class="feature-icon">📄</div><div class="feature-title" data-lang="en">Legal-grade PDF reports</div><div class="feature-title" data-lang="no" style="display:none">Juridisk PDF-rapport</div><p class="feature-desc" data-lang="en">A complete, signed trip report is generated automatically on every trip closure. Includes safety check, participant list, incident log, map and guide certifications. Built for insurance, courts and certification bodies.</p><p class="feature-desc" data-lang="no" style="display:none">En komplett, signert turrapport genereres automatisk ved avslutning. Inkluderer sikkerhetssjekk, deltakerliste, hendelseslogg, kart og sertifiseringer. Bygget for forsikring og sertifiseringsorganer.</p></div>
+    <div class="feature-card"><div class="feature-icon">🚨</div><div class="feature-title" data-lang="en">SOS emergency button</div><div class="feature-title" data-lang="no" style="display:none">SOS nødknapp</div><p class="feature-desc" data-lang="en">One confirmed press sends GPS position, trip ID and guide details to all emergency contacts via SMS — and logs the event automatically as a critical incident with full timestamp.</p><p class="feature-desc" data-lang="no" style="display:none">Ett bekreftet trykk sender GPS-posisjon, tur-ID og guideinformasjon til alle nødkontakter via SMS — og logger hendelsen automatisk som kritisk.</p></div>
+    <div class="feature-card"><div class="feature-icon">🏢</div><div class="feature-title" data-lang="en">Organization safety oversight</div><div class="feature-title" data-lang="no" style="display:none">Organisasjonens sikkerhetsoversikt</div><p class="feature-desc" data-lang="en">Coordinators see all active trips, safety check statuses and shared hazard maps in real time. Full audit trail for every guide and operation — always ready for inspection.</p><p class="feature-desc" data-lang="no" style="display:none">Koordinatorer ser alle aktive turer, sikkerhetssjekk-statuser og delte farekart i sanntid. Full revisjonslogg for alle guider og operasjoner — alltid klar for inspeksjon.</p></div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<section>
+  <div class="fade-in" style="text-align:center">
+    <span class="section-label" data-lang="en">BUILT FOR</span>
+    <span class="section-label" data-lang="no" style="display:none">BYGGET FOR</span>
+    <h2 class="section-title" data-lang="en">Professionals who carry responsibility.</h2>
+    <h2 class="section-title" data-lang="no" style="display:none">Profesjonelle som bærer ansvar.</h2>
+  </div>
+  <div class="who-grid fade-in">
+    <div class="who-card"><div class="who-icon">⛰</div><div class="who-title" data-lang="en">Mountain Guides</div><div class="who-title" data-lang="no" style="display:none">Fjellguider</div></div>
+    <div class="who-card"><div class="who-icon">🚣</div><div class="who-title" data-lang="en">Kayak Guides</div><div class="who-title" data-lang="no" style="display:none">Kajakkinstruktører</div></div>
+    <div class="who-card"><div class="who-icon">🧗</div><div class="who-title" data-lang="en">Climbing Instructors</div><div class="who-title" data-lang="no" style="display:none">Klatreinstruktører</div></div>
+    <div class="who-card"><div class="who-icon">🎿</div><div class="who-title" data-lang="en">Ski Guides</div><div class="who-title" data-lang="no" style="display:none">Skiguider</div></div>
+    <div class="who-card"><div class="who-icon">🏕</div><div class="who-title" data-lang="en">Outdoor Educators</div><div class="who-title" data-lang="no" style="display:none">Friluftslivslærere</div></div>
+    <div class="who-card"><div class="who-icon">🔴</div><div class="who-title" data-lang="en">Rescue Teams</div><div class="who-title" data-lang="no" style="display:none">Redningsgrupper</div></div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<div class="pricing-section">
+  <div class="pricing-inner">
+    <div class="fade-in">
+      <span class="section-label" data-lang="en">SIMPLE PRICING</span>
+      <span class="section-label" data-lang="no" style="display:none">ENKEL PRISING</span>
+      <h2 class="section-title" data-lang="en">Your protection starts free.</h2>
+      <h2 class="section-title" data-lang="no" style="display:none">Din beskyttelse starter gratis.</h2>
+      <p class="section-body" style="margin:0 auto" data-lang="en">30-day free trial on all plans. No credit card required.</p>
+      <p class="section-body" style="margin:0 auto" data-lang="no" style="display:none">30 dagers gratis prøveperiode. Ingen kredittkort påkrevd.</p>
+    </div>
+    <div class="pricing-grid fade-in">
+      <div class="price-card">
+        <div class="price-plan">SOLO GUIDE</div>
+        <div class="price-amount">€9</div>
+        <div class="price-period" data-lang="en">per month</div>
+        <div class="price-period" data-lang="no" style="display:none">per måned</div>
+        <ul class="price-features">
+          <li data-lang="en">Mandatory pre-trip safety checks</li><li data-lang="no" style="display:none">Obligatorisk sikkerhetssjekk før tur</li>
+          <li data-lang="en">Legal-grade PDF reports</li><li data-lang="no" style="display:none">Juridisk PDF-rapport</li>
+          <li data-lang="en">Real-time incident logging with GPS</li><li data-lang="no" style="display:none">Hendelseslogg i sanntid med GPS</li>
+          <li data-lang="en">Hazard maps + weather integration</li><li data-lang="no" style="display:none">Farekart + værintegrasjon</li>
+          <li data-lang="en">SOS emergency SMS button</li><li data-lang="no" style="display:none">SOS nød-SMS knapp</li>
+        </ul>
+        <a href="#" class="btn-secondary" data-lang="en">Download free</a>
+        <a href="#" class="btn-secondary" style="display:none" data-lang="no">Last ned gratis</a>
+        <p class="price-trial" data-lang="en">30 days free, then €9/month</p>
+        <p class="price-trial" data-lang="no" style="display:none">30 dager gratis, deretter €9/mnd</p>
+      </div>
+      <div class="price-card featured">
+        <div class="price-badge" data-lang="en">MOST POPULAR</div>
+        <div class="price-badge" data-lang="no" style="display:none">MEST POPULÆR</div>
+        <div class="price-plan">ORGANIZATION</div>
+        <div class="price-amount">€49</div>
+        <div class="price-period" data-lang="en">per month</div>
+        <div class="price-period" data-lang="no" style="display:none">per måned</div>
+        <ul class="price-features">
+          <li data-lang="en">Everything in Solo Guide</li><li data-lang="no" style="display:none">Alt i Solo Guide</li>
+          <li data-lang="en">Up to 10 guides</li><li data-lang="no" style="display:none">Opptil 10 guider</li>
+          <li data-lang="en">Organization-wide hazard maps</li><li data-lang="no" style="display:none">Farekart for hele organisasjonen</li>
+          <li data-lang="en">Real-time safety oversight dashboard</li><li data-lang="no" style="display:none">Sanntids sikkerhetsoversikt</li>
+          <li data-lang="en">Full audit trail for all operations</li><li data-lang="no" style="display:none">Full revisjonslogg for alle operasjoner</li>
+        </ul>
+        <a href="#" class="btn-primary" data-lang="en">Download free</a>
+        <a href="#" class="btn-primary" style="display:none" data-lang="no">Last ned gratis</a>
+        <p class="price-trial" data-lang="en">30 days free, then €49/month</p>
+        <p class="price-trial" data-lang="no" style="display:none">30 dager gratis, deretter €49/mnd</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<div class="bottom-cta">
+  <div class="bottom-cta-inner fade-in">
+    <span class="section-label" data-lang="en">YOUR LAST LINE OF DEFENCE</span>
+    <span class="section-label" data-lang="no" style="display:none">DIN SISTE FORSVARSLINJE</span>
+    <h2 class="section-title" data-lang="en">Be protected before you need it.</h2>
+    <h2 class="section-title" data-lang="no" style="display:none">Vær beskyttet før du trenger det.</h2>
+    <p class="section-body" style="margin:0 auto 48px;text-align:center" data-lang="en">Download Daedalus and run your first fully documented, legally protected trip in minutes.</p>
+    <p class="section-body" style="margin:0 auto 48px;text-align:center" data-lang="no" style="display:none">Last ned Daedalus og kjør din første fullt dokumenterte, juridisk beskyttede tur på minutter.</p>
+    <div class="store-badges">
+      <a href="#" class="store-badge store-badge-apple">
+        <div class="store-badge-icon">🍎</div>
+        <div class="store-badge-text">
+          <span class="store-badge-small" data-lang="en">DOWNLOAD ON THE</span>
+          <span class="store-badge-small" data-lang="no" style="display:none">LAST NED PÅ</span>
+          <span class="store-badge-big">App Store</span>
+        </div>
+      </a>
+      <a href="#" class="store-badge store-badge-google">
+        <div class="store-badge-icon">▶</div>
+        <div class="store-badge-text">
+          <span class="store-badge-small" data-lang="en">GET IT ON</span>
+          <span class="store-badge-small" data-lang="no" style="display:none">TILGJENGELIG PÅ</span>
+          <span class="store-badge-big">Google Play</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">DAEDALUS</div>
+  <p class="footer-sub" data-lang="en">Safety & Operations System for Professional Outdoor Leaders</p>
+  <p class="footer-sub" data-lang="no" style="display:none">Sikkerhet og operasjonssystem for profesjonelle ledere i naturen</p>
+  <div class="footer-links">
+    <a href="#features" data-lang="en">Features</a>
+    <a href="#features" data-lang="no" style="display:none">Funksjoner</a>
+    <a href="mailto:hello@daedalus-app.no">hello@daedalus-app.no</a>
+    <a href="#" data-lang="en">Privacy Policy</a>
+    <a href="#" data-lang="no" style="display:none">Personvern</a>
+  </div>
+  <p class="footer-copy">© 2026 Daedalus. Europe. GDPR compliant.</p>
+</footer>
+
+<script>
+  function setLang(lang) {
+    document.querySelectorAll('[data-lang]').forEach(el => {
+      const tag = el.tagName;
+      const isInline = ['A','BUTTON'].includes(tag);
+      el.style.display = el.dataset.lang === lang ? (isInline ? 'inline-flex' : 'block') : 'none';
+    });
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.textContent.toLowerCase() === lang);
+    });
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
