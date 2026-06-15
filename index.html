@@ -49,6 +49,9 @@ button{font-family:inherit}
 .pre-eye .dr.au{stroke:#7fc0f5}
 .pre-core{fill:var(--gold2);opacity:0;transform-origin:center;filter:drop-shadow(0 0 14px rgba(201,162,75,.9))}
 .pre-word{position:absolute;left:50%;top:calc(50% + 86px);transform:translateX(-50%);font-size:11px;font-weight:600;letter-spacing:.55em;text-indent:.55em;color:var(--muted);opacity:0}
+.pre-logo{width:min(172px,42vw);border-radius:30px;opacity:0;transform:scale(.8);box-shadow:0 24px 64px rgba(2,7,16,.55),0 0 0 1px rgba(127,192,245,.18)}
+body.booting .pre-logo{animation:logoIn 1.15s var(--ease) forwards}
+@keyframes logoIn{0%{opacity:0;transform:scale(.8)}55%{opacity:1;transform:scale(1.05)}100%{opacity:1;transform:scale(1)}}
 body.booting .pre .dr{animation:drawIn 1.05s var(--ease2) forwards}
 body.booting .pre .dr.d2{animation-delay:.12s}
 body.booting .pre .dr.d3{animation-delay:.24s}
@@ -159,8 +162,8 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
 .hero-visual{position:relative;min-height:620px;z-index:2}
 .hero-art{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
 .hero-glow{position:absolute;width:560px;height:560px;border-radius:50%;background:radial-gradient(circle,rgba(74,159,224,.20),rgba(74,159,224,.05) 45%,transparent 70%)}
-.hero-emblem{width:clamp(300px,26vw,440px);opacity:.09;animation:emblem 9s ease-in-out infinite}
-@keyframes emblem{0%,100%{opacity:.07;transform:scale(1)}50%{opacity:.12;transform:scale(1.035)}}
+.hero-emblem{width:clamp(300px,26vw,440px);opacity:.16;border-radius:36px;animation:emblem 9s ease-in-out infinite}
+@keyframes emblem{0%,100%{opacity:.14;transform:scale(1)}50%{opacity:.2;transform:scale(1.035)}}
 .phone-scene{position:relative;z-index:1;display:flex;justify-content:center;perspective:1600px}
 .tilt{will-change:transform;transform-style:preserve-3d}
 .phone-float{animation:float 7.5s ease-in-out infinite;will-change:transform}
@@ -484,13 +487,7 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
 
 <!-- preloader -->
 <div class="pre" id="pre" aria-hidden="true">
-  <svg class="pre-eye" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path class="dr" pathLength="1" d="M18 78 C 42 38, 78 22, 100 22 C 122 22, 158 38, 182 78"/>
-    <path class="dr d2" pathLength="1" d="M30 84 C 50 52, 80 38, 100 38 C 120 38, 150 52, 170 84"/>
-    <path class="dr d3 au" pathLength="1" d="M44 90 C 60 66, 84 54, 100 54 C 116 54, 140 66, 156 90"/>
-    <path class="dr d4 au" pathLength="1" d="M62 96 C 73 80, 88 70, 100 70 C 112 70, 127 80, 138 96"/>
-    <circle class="pre-core" cx="100" cy="88" r="7"/>
-  </svg>
+  <img class="pre-logo" src="icon.png" alt="Daedalus" decoding="async" onerror="this.style.display='none'">
   <span class="pre-word">DAEDALUS</span>
 </div>
 
@@ -515,7 +512,7 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
     <a class="brand" href="#top" aria-label="Daedalus — til toppen">
       <img class="brand-mark" src="icon.png" alt="" width="34" height="34" decoding="async" onerror="this.style.display='none'">
       <span class="brand-stack">
-        <span class="brand-eyebrow">H&Oslash;ISETH</span>
+        <span class="brand-eyebrow">H&Oslash;I Z</span>
         <span class="brand-name">DAEDALUS</span>
       </span>
     </a>
@@ -948,7 +945,7 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
 <div class="auth-ov" id="authOv" role="dialog" aria-modal="true" aria-label="Daedalus konto">
   <div class="auth-card">
     <button class="auth-x" id="authClose" type="button" aria-label="Lukk">&times;</button>
-    <p class="auth-eyebrow">H&Oslash;ISETH &middot; DAEDALUS</p>
+    <p class="auth-eyebrow">H&Oslash;I Z &middot; DAEDALUS</p>
 
     <div class="auth-panel on" data-panel="login">
       <h2 class="auth-h" data-a="login.h">Logg inn</h2>
@@ -1003,7 +1000,7 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
       <div class="foot-brand-row">
         <img src="icon.png" alt="" width="32" height="32" decoding="async" onerror="this.style.display='none'">
         <span class="brand-stack">
-          <span class="brand-eyebrow">H&Oslash;ISETH</span>
+          <span class="brand-eyebrow">H&Oslash;I Z</span>
           <span class="brand-name">DAEDALUS</span>
         </span>
       </div>
