@@ -2224,6 +2224,11 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
         var avL=R.ava||2, avT=String(R.avaText||'Moderat').toLowerCase();
         hs.innerHTML='<b>'+R.kpis.trips+' aktive turer</b> nå. '+R.kpis.guides+' guider på vakt og alle sporingsenheter rapporterer normalt. Skredvarsel for regionen: <b>faregrad '+avL+' — '+avT+'</b>.';
       }
+      var chip=$('#opChip'), chipTx=$('#opChipTx');
+      if(chip){
+        if(R.sos&&R.sos.length){ var sx=R.sos[0], stTr=R.tripById[sx.trip_id]||{}; chip.classList.remove('st-ok'); chip.classList.add('st-sos'); if(chipTx) chipTx.textContent='SOS aktiv — '+(stTr.name||'felt'); }
+        else { chip.classList.remove('st-sos'); chip.classList.add('st-ok'); if(chipTx) chipTx.textContent='Normal drift'; }
+      }
     }catch(e){}
   }
 
