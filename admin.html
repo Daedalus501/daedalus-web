@@ -800,7 +800,7 @@ body.lock{overflow:hidden}
   <section class="hero">
     <div class="hero-l rv" style="--d:.08s">
       <div class="kicker">Operativ kommando · Tromsø / Tamokdalen</div>
-      <h1><span id="greet">God dag</span>, Mikael —<br>fjellet er under <em>oppsyn</em>.</h1>
+      <h1><span id="greet">God dag</span>, <span id="heroName">Mikael</span> —<br>fjellet er under <em>oppsyn</em>.</h1>
       <p class="hero-sub"><b>7 aktive turer</b> i Tamokdalen og Lyngen. 9 guider på vakt og alle sporingsenheter
         rapporterer normalt. Skredvarsel for regionen: <b>faregrad 2 — moderat</b>, våt løssnø i soleksponerte heng.</p>
       <div class="hero-cta">
@@ -2199,6 +2199,32 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
         banner.classList.add('gone'); banner.setAttribute('aria-hidden','true');
       }
     }
+
+    // ----- header/hero binding (innlogget org) -----
+    try{
+      var ORG=R.orgName||'';
+      if(ORG){
+        var on=$('.org-name'); if(on) on.textContent=ORG;
+        var crd=$('footer .crd'); if(crd) crd.textContent=ORG;
+        if(document.title.indexOf('—')>-1) document.title=document.title.replace(/—[^—]*$/, '— '+ORG);
+      }
+      var osub=$('.org-sub'); if(osub) osub.style.display='none';
+      var nm=(me&&(me.name||me.email))||'';
+      if(nm){
+        var mb=$('.me-tx b'); if(mb) mb.textContent=nm;
+        var mav=$('.me-av'); if(mav&&mav.firstChild&&mav.firstChild.nodeType===3) mav.firstChild.nodeValue=initials(me.name||me.email);
+        var meBtn=$('.me'); if(meBtn) meBtn.setAttribute('aria-label','Profil — '+nm);
+      }
+      var rl=String((me&&me.role)||'').toLowerCase().indexOf('admin')>-1?'Administrator':((me&&me.role)||'');
+      var ms=$('.me-tx span'); if(ms&&rl) ms.textContent=rl;
+      var fn=(((me&&me.name)||'').trim().split(/\s+/)[0])||'';
+      var hn=$('#heroName'); if(hn&&fn) hn.textContent=fn;
+      var hs=$('.hero-sub');
+      if(hs){
+        var avL=R.ava||2, avT=String(R.avaText||'Moderat').toLowerCase();
+        hs.innerHTML='<b>'+R.kpis.trips+' aktive turer</b> nå. '+R.kpis.guides+' guider på vakt og alle sporingsenheter rapporterer normalt. Skredvarsel for regionen: <b>faregrad '+avL+' — '+avT+'</b>.';
+      }
+    }catch(e){}
   }
 
   // ---------- realtime (kritisk: live SOS) ----------
