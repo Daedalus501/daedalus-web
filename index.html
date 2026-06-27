@@ -1993,7 +1993,7 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
       if(r.error) return setMsg(r.error.message,"err");
       setMsg(t("msg.confirm"),"ok");
       if(STRIPE_PAYMENT_LINK){
-        avar _u=r.data&&r.data.user; if(_u&&_u.identities&&_u.identities.length===0){ setMsg((lang()==="en")?"This email already has an account. Log in to subscribe.":"E-posten har allerede en konto. Logg inn for å abonnere.","err"); return; } var uid=(_u&&_u.id)||"";
+        var _u=r.data&&r.data.user; if(_u&&_u.identities&&_u.identities.length===0){ setMsg((lang()==="en")?"This email already has an account. Log in to subscribe.":"E-posten har allerede en konto. Logg inn for å abonnere.","err"); return; } var uid=(_u&&_u.id)||"";
         var pay=document.createElement("a");
         pay.className="auth-submit"; pay.target="_blank"; pay.rel="noopener";
         pay.style.cssText="display:block;margin-top:12px;text-align:center;text-decoration:none";
