@@ -2137,7 +2137,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     window.__REAL = {
       chartG:chartG, chartT:chartT, safety:safety, guides:guides, feed:feed, pool:[],
       kpis:{ trips:activeTrips.length, guests:guestsField, guides:guidesOnDuty, guidesTotal:guidesTotal, reports:reportsToday },
-      sos:sos, mapMarkers:mapMarkers, orgName:'', tripById:tripById, reports:_reports
+      sos:sos, mapMarkers:mapMarkers, orgName:'', tripById:tripById, reports:_reports, guidesRaw:guideRows.map(function(u){ return {id:u.id, name:u.name||u.email}; })
     };
 
     var pAva = fetchAva().then(function(a){ window.__REAL.ava=a.lvl; window.__REAL.avaText=a.txt; });
@@ -2191,6 +2191,42 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       '<p class="k" style="margin-top:24px">Generert '+new Date().toLocaleString('nb-NO')+' · Daedalus · Guide &amp; Safety</p>'+
       '<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print()},350)}<\/scr'+'ipt></body></html>';
     w.document.write(h); w.document.close();
+  }
+  function openNewTrip(R, me){
+    if(document.getElementById('ntOv')) return;
+    var TYPES=[['summit','Topptur'],['ski_touring','Skitur'],['glacier','Brevandring'],['climbing','Klatring'],['kayak','Kajakk'],['sea_kayaking','Havkajakk'],['river_guide','Elveguiding'],['dog_sledding','Hundekjøring'],['snowmobile_safari','Snøscooter'],['northern_lights_bus','Nordlysbuss'],['teambuilding','Teambuilding'],['course','Kurs'],['rescue_operation','Redningsoppdrag'],['other','Annet']];
+    var DIFFS=[['easy','Lett'],['moderate','Moderat'],['challenging','Krevende'],['extreme','Ekstrem']];
+    var opt=function(arr,sel){ return arr.map(function(p){ return '<option value="'+p[0]+'"'+(p[0]===sel?' selected':'')+'>'+p[1]+'</option>'; }).join(''); };
+    var gopt=(R.guidesRaw||[]).map(function(g){ return '<option value="'+g.id+'"'+((me&&g.id===me.id)?' selected':'')+'>'+_escR(g.name)+'</option>'; }).join('');
+    var ov=document.createElement('div'); ov.id='ntOv';
+    ov.innerHTML='<style>#ntOv{position:fixed;inset:0;z-index:99998;display:flex;align-items:center;justify-content:center;background:rgba(8,14,26,.86);backdrop-filter:blur(8px);font-family:Inter,system-ui,sans-serif}#ntC{width:min(94vw,440px);max-height:92vh;overflow:auto;background:#16273f;border:1px solid #284063;border-radius:16px;padding:22px}#ntC h3{margin:0 0 4px;color:#eaf2fb;font-size:17px}#ntC p.s{margin:0 0 14px;color:#8aa0bd;font-size:12.5px}#ntC label{display:block;color:#8aa0bd;font-size:11.5px;margin:10px 0 4px}#ntC input,#ntC select,#ntC textarea{width:100%;box-sizing:border-box;padding:9px 11px;border-radius:9px;border:1px solid #284063;background:#0e1a2c;color:#eaf2fb;font-size:13.5px;font-family:inherit}#ntC .row{display:flex;gap:10px}#ntC .row>div{flex:1}#ntC .btns{display:flex;gap:10px;margin-top:16px}#ntC button{flex:1;padding:11px;border:none;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer}#ntSave{background:linear-gradient(135deg,#4a9fe0,#3b82c4);color:#fff}#ntSave:disabled{opacity:.6}#ntCancel{background:#22364f;color:#cfe2f5}#ntErr{color:#e8857c;font-size:12px;margin-top:10px;min-height:14px}</style>'+
+      '<form id="ntC"><h3>Ny tur</h3><p class="s">Oppretter en tur i '+_escR(R.orgName||'organisasjonen din')+'. Lagres som utkast.</p>'+
+      '<label>Turnavn *</label><input id="ntName" required maxlength="120" autocomplete="off">'+
+      '<label>Startsted *</label><input id="ntLoc" required maxlength="120" autocomplete="off">'+
+      '<div class="row"><div><label>Dato *</label><input id="ntDate" type="date" required></div><div><label>Returtid *</label><input id="ntRet" type="time" required></div></div>'+
+      '<div class="row"><div><label>Aktivitet</label><select id="ntType">'+opt(TYPES,'summit')+'</select></div><div><label>Vanskelighet</label><select id="ntDiff">'+opt(DIFFS,'moderate')+'</select></div></div>'+
+      '<label>Guide</label><select id="ntGuide">'+(gopt||'<option value="">(ingen registrert)</option>')+'</select>'+
+      '<label>Notater</label><textarea id="ntNotes" rows="2" maxlength="500"></textarea>'+
+      '<div id="ntErr"></div>'+
+      '<div class="btns"><button type="button" id="ntCancel">Avbryt</button><button type="submit" id="ntSave">Opprett tur</button></div></form>';
+    document.body.appendChild(ov);
+    var close=function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); };
+    ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
+    document.getElementById('ntCancel').addEventListener('click',close);
+    document.getElementById('ntC').addEventListener('submit',function(e){
+      e.preventDefault();
+      var gv=function(id){ var el=document.getElementById(id); return el?String(el.value):''; };
+      var name=gv('ntName').trim(), loc=gv('ntLoc').trim(), date=gv('ntDate'), ret=gv('ntRet'); var err=document.getElementById('ntErr');
+      if(!name||!loc||!date||!ret){ err.textContent='Fyll ut turnavn, startsted, dato og returtid.'; return; }
+      var guideId=gv('ntGuide'), guideName=''; (R.guidesRaw||[]).forEach(function(g){ if(g.id===guideId) guideName=g.name; });
+      var save=document.getElementById('ntSave'); save.disabled=true; save.textContent='Lagrer…';
+      var payload={ trip_id:'WEB-'+Date.now().toString(36).toUpperCase(), name:name, date:date, start_location:loc, return_time:ret, activity_type:gv('ntType'), difficulty:gv('ntDiff'), status:'draft', guide_id:guideId||(me&&me.id)||null, guide_name:guideName||(me&&(me.name||me.email))||'', organization_id:(me&&me.organization_id)||null, organization_name:R.orgName||'', notes:gv('ntNotes').trim()||null };
+      sb.from('trips').insert(payload).then(function(res){
+        if(res&&res.error){ err.textContent='Kunne ikke lagre: '+res.error.message; save.disabled=false; save.textContent='Opprett tur'; return; }
+        close(); try{ toast('Tur opprettet','«'+name+'» er lagret som utkast.'); }catch(e){}
+        setTimeout(function(){ location.href='/admin'; }, 800);
+      }, function(){ err.textContent='Nettverksfeil — prøv igjen.'; save.disabled=false; save.textContent='Opprett tur'; });
+    });
   }
 
   // ---------- statisk DOM ----------
@@ -2277,6 +2313,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       var repList=$('.rep-col .replist');
       if(repList && !reps.length){ repList.innerHTML='<div style="padding:16px;color:var(--muted2);font-size:12.5px">Ingen fullførte turrapporter ennå.</div>'; }
       $$('.hero-cta .btn').forEach(function(btn){ if(/Dagsrapport/i.test(btn.textContent)){ btn.removeAttribute('data-toast'); btn.onclick=function(){ printDayReport(R); }; } });
+      $$('.hero-cta .btn, .qa .btn, button').forEach(function(btn){ if(/^\s*Ny tur\s*$/i.test(btn.textContent)){ btn.removeAttribute('data-toast'); btn.onclick=function(ev){ if(ev){ev.preventDefault();ev.stopPropagation();} openNewTrip(R, me); }; } });
       $$('footer .lnk').forEach(function(a){ if(/Personvern/i.test(a.textContent)){ a.removeAttribute('data-toast'); a.setAttribute('href','/privacy'); a.setAttribute('target','_blank'); } });
       var meBtn2=$('.me'); if(meBtn2 && !meBtn2.__wired){ meBtn2.__wired=1; meBtn2.style.cursor='pointer'; meBtn2.title='Klikk for å logge ut'; meBtn2.addEventListener('click', function(){ if(window.confirm('Logg ut av Daedalus?')){ try{ sb.auth.signOut().then(function(){ location.href='/admin'; }); }catch(e){ location.href='/admin'; } } }); }
     }catch(e){}
