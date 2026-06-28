@@ -2316,6 +2316,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       $$('.hero-cta .btn, .qa .btn, button').forEach(function(btn){ if(/^\s*Ny tur\s*$/i.test(btn.textContent)){ btn.removeAttribute('data-toast'); btn.onclick=function(ev){ if(ev){ev.preventDefault();ev.stopPropagation();} openNewTrip(R, me); }; } });
       $$('footer .lnk').forEach(function(a){ if(/Personvern/i.test(a.textContent)){ a.removeAttribute('data-toast'); a.setAttribute('href','/privacy'); a.setAttribute('target','_blank'); } });
       var meBtn2=$('.me'); if(meBtn2 && !meBtn2.__wired){ meBtn2.__wired=1; meBtn2.style.cursor='pointer'; meBtn2.title='Klikk for å logge ut'; meBtn2.addEventListener('click', function(){ if(window.confirm('Logg ut av Daedalus?')){ try{ sb.auth.signOut().then(function(){ location.href='/admin'; }); }catch(e){ location.href='/admin'; } } }); }
+      if(R.sos&&R.sos.length&&R.sos[0]&&R.sos[0].id){ var _sosBtn=$('#sosAck'); if(_sosBtn&&!_sosBtn.__ackw){ _sosBtn.__ackw=1; var _eid=R.sos[0].id; _sosBtn.addEventListener('click',function(){ try{ sb.from('events').update({acknowledged_at:new Date().toISOString(),acknowledged_by:(me&&me.id)||null}).eq('id',_eid).then(function(res){ if(!(res&&res.error)){ try{ toast('Alarm kvittert','Lagret i hendelsesloggen.'); }catch(e){} } }); }catch(e){} }); } }
     }catch(e){}
   }
 
