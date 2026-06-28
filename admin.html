@@ -1762,7 +1762,8 @@ function scrollToSel(sel){
   var el=$(sel);
   if(el)el.scrollIntoView({behavior:reduced?'auto':'smooth',block:'start'});
 }
-var ACTIONS=[
+window.openGuide=openGuide;
+var ACTIONS=window.ACTIONS=[
   {l:'Gå til driftsbilde',h:'Naviger',i:'i-activity',f:function(){scrollToSel('.kpis')}},
   {l:'Åpne operativt kart',h:'Naviger',i:'i-pin',f:function(){scrollToSel('#mapCard')}},
   {l:'Skredvarsel og vær',h:'Naviger',i:'i-snow',f:function(){scrollToSel('#mapCard')}},
@@ -2317,6 +2318,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       $$('footer .lnk').forEach(function(a){ if(/Personvern/i.test(a.textContent)){ a.removeAttribute('data-toast'); a.setAttribute('href','/privacy'); a.setAttribute('target','_blank'); } });
       var meBtn2=$('.me'); if(meBtn2 && !meBtn2.__wired){ meBtn2.__wired=1; meBtn2.style.cursor='pointer'; meBtn2.title='Klikk for å logge ut'; meBtn2.addEventListener('click', function(){ if(window.confirm('Logg ut av Daedalus?')){ try{ sb.auth.signOut().then(function(){ location.href='/admin'; }); }catch(e){ location.href='/admin'; } } }); }
       if(R.sos&&R.sos.length&&R.sos[0]&&R.sos[0].id){ var _sosBtn=$('#sosAck'); if(_sosBtn&&!_sosBtn.__ackw){ _sosBtn.__ackw=1; var _eid=R.sos[0].id; _sosBtn.addEventListener('click',function(){ try{ sb.from('events').update({acknowledged_at:new Date().toISOString(),acknowledged_by:(me&&me.id)||null}).eq('id',_eid).then(function(res){ if(!(res&&res.error)){ try{ toast('Alarm kvittert','Lagret i hendelsesloggen.'); }catch(e){} } }); }catch(e){} }); } }
+      if(window.ACTIONS && window.ACTIONS.length){ var _A=window.ACTIONS; _A.forEach(function(a){ if(a.l==='Ny tur'){ a.f=function(){ openNewTrip(R,me); }; } else if(/Generer dagsrapport/i.test(a.l)){ a.f=function(){ printDayReport(R); }; } else if(/Kvitter SOS/i.test(a.l)){ a.f=(R.sos&&R.sos.length)? function(){ var b=$('#sosAck'); if(b) b.click(); } : function(){ try{ toast('Ingen aktive alarmer','Ingen SOS å kvittere nå.'); }catch(e){} }; } }); var _ng=_A.filter(function(a){ return a.h!=='Guider'; }); (R.guides||[]).forEach(function(g,i){ _ng.push({l:'Guideprofil — '+(g.name||'Guide'), h:'Guider', i:'i-users', f:(function(idx){ return function(){ if(window.openGuide) window.openGuide(idx); }; })(i)}); }); _A.length=0; Array.prototype.push.apply(_A,_ng); }
     }catch(e){}
   }
 
