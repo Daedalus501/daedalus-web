@@ -842,7 +842,6 @@ body.lock{overflow:hidden}
       </div>
       <div class="sos-eta"><b class="num" id="sosEta">9</b><span>min ETA</span></div>
       <div class="sos-act">
-        <button class="btn btn-ghost btn-mag rip-host" type="button" data-toast="Ringer vaktleder|Samtale til vakttelefon 776 00 911 startes (demo).">Ring vaktleder</button>
         <button class="btn btn-red btn-mag rip-host" id="sosAck" type="button"><svg class="ic ic-s"><use href="#i-check"/></svg>Kvitter alarm</button>
       </div>
     </div>
@@ -1110,6 +1109,7 @@ body.lock{overflow:hidden}
     <a class="lnk" data-toast="Beredskapsplan|Åpner gjeldende beredskapsplan, revisjon 2026-B (demo).">Beredskapsplan</a>
     <a class="lnk" data-toast="Personvern|Behandlingsprotokoll og databehandleravtaler (demo).">Personvern</a>
     <span class="crd num">Fjellguide AS · 69.6489° N, 18.9551° Ø</span>
+    <span style="flex-basis:100%;font-size:11px;color:var(--muted2);line-height:1.5;margin-top:8px;border-top:1px solid var(--line,rgba(255,255,255,.08));padding-top:8px">Daedalus er et hjelpemiddel for dokumentasjon og oversikt — ikke en erstatning for guidens vurdering, opplæring eller sertifisering. Varsler samt vær- og skreddata kan være forsinket eller unøyaktig og må verifiseres uavhengig. Guiden og selskapet har til enhver tid det fulle ansvaret for alle sikkerhetsbeslutninger. <a class="lnk" href="/terms" target="_blank">Fullstendige vilkår</a>.</span>
   </footer>
 </main>
 
@@ -1772,7 +1772,6 @@ var ACTIONS=window.ACTIONS=[
     if(!sosAcked){ scrollToSel('.hero'); setTimeout(ackSOS,420) }
     else toast('Ingen aktive alarmer','Siste SOS er allerede kvittert og logget.');
   }},
-  {l:'Ring vaktleder',h:'Beredskap',i:'i-phone',f:function(){toast('Ringer vaktleder','Samtale til vakttelefon 776 00 911 startes (demo).')}},
   {l:'Ny tur',h:'Handling',i:'i-plus',f:function(){toast('Ny tur','Veiviser for turoppsett åpnes (demo).')}},
   {l:'Generer dagsrapport',h:'Handling',i:'i-file',f:function(){toast('Dagsrapport','PDF genereres og sendes til styret (demo).')}},
   {l:'Guideprofil — Ingrid Solheim',h:'Guider',i:'i-users',f:function(){openGuide(0)}},
@@ -2174,6 +2173,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       (t.report_summary?('<h2>Sammendrag</h2><p>'+_escR(t.report_summary)+'</p>'):'')+
       '<h2>Hendelser ('+(evs?evs.length:0)+')</h2>'+(rows?('<table><tr><th>Tid</th><th>Type</th><th>Alvor</th><th>Beskrivelse</th><th>Tiltak</th></tr>'+rows+'</table>'):'<p class="k">Ingen hendelser registrert.</p>')+
       '<p class="k" style="margin-top:26px">Generert '+new Date().toLocaleString('nb-NO')+' · Daedalus · Guide &amp; Safety</p>'+
+      '<p style="font-size:10px;color:#7a8699;border-top:1px solid #e3e7ee;padding-top:8px;margin-top:6px;line-height:1.45">Ansvarsfraskrivelse: Daedalus er et hjelpemiddel for dokumentasjon, ikke en erstatning for profesjonell vurdering, opplæring eller sertifisering. Vær- og skreddata kan være forsinket eller unøyaktig og må verifiseres uavhengig. Guiden og selskapet har det fulle ansvaret for sikkerhetsbeslutninger. Vilkår: daedalus-app.no/terms</p>'+
       '<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print()},350)}<\/scr'+'ipt></body></html>';
     w.document.write(h); w.document.close();
   }
@@ -2190,6 +2190,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       '<h2>Guider</h2><ul>'+(gl||'<li class="k">Ingen registrert</li>')+'</ul>'+
       '<h2>Siste hendelser</h2><ul>'+(fl||'<li class="k">Ingen</li>')+'</ul>'+
       '<p class="k" style="margin-top:24px">Generert '+new Date().toLocaleString('nb-NO')+' · Daedalus · Guide &amp; Safety</p>'+
+      '<p style="font-size:10px;color:#7a8699;border-top:1px solid #e3e7ee;padding-top:8px;margin-top:6px;line-height:1.45">Ansvarsfraskrivelse: Daedalus er et hjelpemiddel for dokumentasjon, ikke en erstatning for profesjonell vurdering, opplæring eller sertifisering. Vær- og skreddata kan være forsinket eller unøyaktig og må verifiseres uavhengig. Guiden og selskapet har det fulle ansvaret for sikkerhetsbeslutninger. Vilkår: daedalus-app.no/terms</p>'+
       '<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print()},350)}<\/scr'+'ipt></body></html>';
     w.document.write(h); w.document.close();
   }
@@ -2318,6 +2319,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       $$('footer .lnk').forEach(function(a){ if(/Personvern/i.test(a.textContent)){ a.removeAttribute('data-toast'); a.setAttribute('href','/privacy'); a.setAttribute('target','_blank'); } });
       var meBtn2=$('.me'); if(meBtn2 && !meBtn2.__wired){ meBtn2.__wired=1; meBtn2.style.cursor='pointer'; meBtn2.title='Klikk for å logge ut'; meBtn2.addEventListener('click', function(){ if(window.confirm('Logg ut av Daedalus?')){ try{ sb.auth.signOut().then(function(){ location.href='/admin'; }); }catch(e){ location.href='/admin'; } } }); }
       if(R.sos&&R.sos.length&&R.sos[0]&&R.sos[0].id){ var _sosBtn=$('#sosAck'); if(_sosBtn&&!_sosBtn.__ackw){ _sosBtn.__ackw=1; var _eid=R.sos[0].id; _sosBtn.addEventListener('click',function(){ try{ sb.from('events').update({acknowledged_at:new Date().toISOString(),acknowledged_by:(me&&me.id)||null}).eq('id',_eid).then(function(res){ if(!(res&&res.error)){ try{ toast('Alarm kvittert','Lagret i hendelsesloggen.'); }catch(e){} } }); }catch(e){} }); } }
+      if(R.sos && R.sos.length){ var _se=R.sos[0]; var _st=(R.tripById&&R.tripById[_se.trip_id])||{}; var _l1b=$('.sos .sos-tx .l1 b'); if(_l1b){ _l1b.textContent=(_se.description||'SOS-alarm utløst')+(_st.name?(' — '+_st.name):''); } var _l2=$('.sos .sos-tx .l2'); if(_l2){ var _tt=_se.created_at?new Date(_se.created_at).toLocaleTimeString('nb-NO',{hour:'2-digit',minute:'2-digit'}):'—'; var _pos=(_st.gps_lat!=null&&_st.gps_lng!=null)?(Number(_st.gps_lat).toFixed(4)+'° N, '+Number(_st.gps_lng).toFixed(4)+'° Ø'):'ukjent'; _l2.innerHTML='Utløst kl. <b class="num">'+_tt+'</b>'+(_st.guide_name?(' · Guide: <b>'+_escR(_st.guide_name)+'</b>'):'')+' · Posisjon: <b class="num">'+_escR(_pos)+'</b>'; } var _eta=$('.sos .sos-eta'); if(_eta){ _eta.style.display='none'; } }
       if(window.ACTIONS && window.ACTIONS.length){ var _A=window.ACTIONS; _A.forEach(function(a){ if(a.l==='Ny tur'){ a.f=function(){ openNewTrip(R,me); }; } else if(/Generer dagsrapport/i.test(a.l)){ a.f=function(){ printDayReport(R); }; } else if(/Kvitter SOS/i.test(a.l)){ a.f=(R.sos&&R.sos.length)? function(){ var b=$('#sosAck'); if(b) b.click(); } : function(){ try{ toast('Ingen aktive alarmer','Ingen SOS å kvittere nå.'); }catch(e){} }; } }); var _ng=_A.filter(function(a){ return a.h!=='Guider'; }); (R.guides||[]).forEach(function(g,i){ _ng.push({l:'Guideprofil — '+(g.name||'Guide'), h:'Guider', i:'i-users', f:(function(idx){ return function(){ if(window.openGuide) window.openGuide(idx); }; })(i)}); }); _A.length=0; Array.prototype.push.apply(_A,_ng); }
     }catch(e){}
   }
