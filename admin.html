@@ -2176,6 +2176,22 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       '<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print()},350)}<\/scr'+'ipt></body></html>';
     w.document.write(h); w.document.close();
   }
+  function printDayReport(R){
+    var w=window.open('','_blank'); if(!w){ try{ toast('Kunne ikke åpne rapport','Tillat pop-up-vinduer for å skrive ut.'); }catch(e){} return; }
+    var k=R.kpis||{};
+    var gl=(R.guides||[]).map(function(g){ return '<li>'+_escR(g.name)+' — '+_escR((g.st&&g.st[1])||'')+'</li>'; }).join('');
+    var fl=(R.feed||[]).slice(0,10).map(function(f){ return '<li>'+_escR(String(f[2]).replace(/<[^>]+>/g,''))+'</li>'; }).join('');
+    var h='<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Dagsrapport — '+_escR(R.orgName||'Daedalus')+'</title><style>body{font-family:Inter,Arial,sans-serif;color:#0e1a2c;max-width:760px;margin:24px auto;padding:0 16px}h1{font-size:20px;margin:0 0 4px}h2{font-size:14px;margin:20px 0 6px}.k{color:#5a6b82;font-size:12px}ul{margin:6px 0;padding-left:18px;font-size:12.5px}.grid{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;margin-top:8px}.grid div{border:1px solid #d4dae3;border-radius:8px;padding:8px 12px}</style></head><body>'+
+      '<h1>Dagsrapport — '+_escR(R.orgName||'Daedalus')+'</h1>'+
+      '<p class="k">'+new Date().toLocaleDateString('nb-NO',{weekday:'long',year:'numeric',month:'long',day:'numeric'})+'</p>'+
+      '<div class="grid"><div><b>'+(k.trips||0)+'</b> aktive turer</div><div><b>'+(k.guests||0)+'</b> gjester i felt</div><div><b>'+(k.guides||0)+'/'+(k.guidesTotal||0)+'</b> guider på vakt</div><div><b>'+(k.reports||0)+'</b> hendelser i dag</div></div>'+
+      '<h2>Skredvarsel</h2><p class="k">Faregrad '+(R.ava||2)+' — '+_escR(R.avaText||'Moderat')+' (Varsom, region 3010)</p>'+
+      '<h2>Guider</h2><ul>'+(gl||'<li class="k">Ingen registrert</li>')+'</ul>'+
+      '<h2>Siste hendelser</h2><ul>'+(fl||'<li class="k">Ingen</li>')+'</ul>'+
+      '<p class="k" style="margin-top:24px">Generert '+new Date().toLocaleString('nb-NO')+' · Daedalus · Guide &amp; Safety</p>'+
+      '<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print()},350)}<\/scr'+'ipt></body></html>';
+    w.document.write(h); w.document.close();
+  }
 
   // ---------- statisk DOM ----------
   function updateStatic(R, me){
@@ -2260,6 +2276,9 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       });
       var repList=$('.rep-col .replist');
       if(repList && !reps.length){ repList.innerHTML='<div style="padding:16px;color:var(--muted2);font-size:12.5px">Ingen fullførte turrapporter ennå.</div>'; }
+      $$('.hero-cta .btn').forEach(function(btn){ if(/Dagsrapport/i.test(btn.textContent)){ btn.removeAttribute('data-toast'); btn.onclick=function(){ printDayReport(R); }; } });
+      $$('footer .lnk').forEach(function(a){ if(/Personvern/i.test(a.textContent)){ a.removeAttribute('data-toast'); a.setAttribute('href','/privacy'); a.setAttribute('target','_blank'); } });
+      var meBtn2=$('.me'); if(meBtn2 && !meBtn2.__wired){ meBtn2.__wired=1; meBtn2.style.cursor='pointer'; meBtn2.title='Klikk for å logge ut'; meBtn2.addEventListener('click', function(){ if(window.confirm('Logg ut av Daedalus?')){ try{ sb.auth.signOut().then(function(){ location.href='/admin'; }); }catch(e){ location.href='/admin'; } } }); }
     }catch(e){}
   }
 
