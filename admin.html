@@ -2132,10 +2132,12 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     var mapMarkers=[];
     activeTrips.forEach(function(t){ var c=parseGps(t.gps_coordinates)||((t.gps_lat!=null&&t.gps_lng!=null)?[parseFloat(t.gps_lat),parseFloat(t.gps_lng)]:null); if(c) mapMarkers.push({lat:c[0],lng:c[1],cls:'trip',ic:'i-mtn',label:(t.name||'Tur')+' · '+tripParticipants(t)+' gj.'}); });
     sos.forEach(function(e){ var tr=tripById[e.trip_id]; var c=llArr(tr); if(c) mapMarkers.push({lat:c[0],lng:c[1],sos:true,label:'SOS · '+(tr.name||'')}); });
+    var _done=tripRows.filter(function(t){ return t.status==='completed' || (t.report_summary&&String(t.report_summary).trim()); }).sort(function(a,b){ return Date.parse(b.date||b.created_at||0)-Date.parse(a.date||a.created_at||0); }).slice(0,8);
+    var _reports=_done.map(function(t){ return { trip:t, events:eventRows.filter(function(e){ return e.trip_id===t.id; }) }; });
     window.__REAL = {
       chartG:chartG, chartT:chartT, safety:safety, guides:guides, feed:feed, pool:[],
       kpis:{ trips:activeTrips.length, guests:guestsField, guides:guidesOnDuty, guidesTotal:guidesTotal, reports:reportsToday },
-      sos:sos, mapMarkers:mapMarkers, orgName:'', tripById:tripById
+      sos:sos, mapMarkers:mapMarkers, orgName:'', tripById:tripById, reports:_reports
     };
 
     var pAva = fetchAva().then(function(a){ window.__REAL.ava=a.lvl; window.__REAL.avaText=a.txt; });
@@ -2157,6 +2159,22 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       var TXT={1:'Liten',2:'Moderat',3:'Betydelig',4:'Stor',5:'Meget stor'};
       return {lvl:lvl, txt:TXT[lvl]};
     });
+  }
+
+  // ---------- rapport-utskrift (ekte, print-til-PDF) ----------
+  function _escR(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function printTripReport(t, evs){
+    var w=window.open('','_blank'); if(!w){ try{ toast('Kunne ikke åpne rapport','Tillat pop-up-vinduer for å skrive ut.'); }catch(e){} return; }
+    var rows=(evs||[]).map(function(e){ return '<tr><td>'+new Date(e.created_at).toLocaleString('nb-NO')+'</td><td>'+_escR(e.type)+'</td><td>'+_escR(e.severity)+'</td><td>'+_escR(e.description)+'</td><td>'+_escR(e.action_taken)+'</td></tr>'; }).join('');
+    var h='<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Turrapport — '+_escR(t.name)+'</title><style>body{font-family:Inter,Arial,sans-serif;color:#0e1a2c;max-width:760px;margin:24px auto;padding:0 16px}h1{font-size:20px;margin:0 0 4px}h2{font-size:14px;margin:22px 0 6px}.k{color:#5a6b82;font-size:12px}table{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:6px}td,th{border:1px solid #d4dae3;padding:6px;text-align:left;vertical-align:top}th{background:#f4f6fa}</style></head><body>'+
+      '<h1>Turrapport — '+_escR(t.name)+'</h1>'+
+      '<p class="k">'+_escR(t.guide_name||'')+(t.organization_name?(' · '+_escR(t.organization_name)):'')+' · '+_escR(t.date||'')+' · status: '+_escR(t.status||'')+'</p>'+
+      '<h2>Detaljer</h2><p class="k">Sted: '+_escR(t.start_location||'—')+'<br>Aktivitet: '+_escR(t.activity_type||'—')+' · Vanskelighet: '+_escR(t.difficulty||'—')+'<br>Skredfaregrad: '+_escR(t.avalanche_level||'—')+'<br>Sikkerhetssjekk: vær '+(t.weather_verified?'✓':'—')+' · utstyr '+(t.equipment_checked?'✓':'—')+' · nødkontakt '+(t.emergency_contact_notified?'✓':'—')+'</p>'+
+      (t.report_summary?('<h2>Sammendrag</h2><p>'+_escR(t.report_summary)+'</p>'):'')+
+      '<h2>Hendelser ('+(evs?evs.length:0)+')</h2>'+(rows?('<table><tr><th>Tid</th><th>Type</th><th>Alvor</th><th>Beskrivelse</th><th>Tiltak</th></tr>'+rows+'</table>'):'<p class="k">Ingen hendelser registrert.</p>')+
+      '<p class="k" style="margin-top:26px">Generert '+new Date().toLocaleString('nb-NO')+' · Daedalus · Guide &amp; Safety</p>'+
+      '<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print()},350)}<\/scr'+'ipt></body></html>';
+    w.document.write(h); w.document.close();
   }
 
   // ---------- statisk DOM ----------
@@ -2229,6 +2247,19 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
         if(R.sos&&R.sos.length){ var sx=R.sos[0], stTr=R.tripById[sx.trip_id]||{}; chip.classList.remove('st-ok'); chip.classList.add('st-sos'); if(chipTx) chipTx.textContent='SOS aktiv — '+(stTr.name||'felt'); }
         else { chip.classList.remove('st-sos'); chip.classList.add('st-ok'); if(chipTx) chipTx.textContent='Normal drift'; }
       }
+      var reps=R.reports||[];
+      var repRows=$$('.rep-col .rep');
+      repRows.forEach(function(row,i){
+        var rr=reps[i];
+        if(!rr){ row.style.display='none'; return; }
+        row.style.display='';
+        var rb=row.querySelector('.rep-tx b'); if(rb) rb.textContent='Turrapport — '+(rr.trip.name||'(uten navn)');
+        var rsp=row.querySelector('.rep-tx span'); if(rsp) rsp.textContent=(rr.trip.guide_name||'—')+' · '+(rr.trip.date?new Date(rr.trip.date).toLocaleDateString('nb-NO'):relTime(rr.trip.created_at))+' · '+rr.events.length+' hendelser';
+        var rbd=row.querySelector('.rep-bdg'); if(rbd){ rbd.className='rep-bdg '+(rr.trip.report_summary?'sig':'ark'); rbd.textContent=rr.trip.report_summary?'Rapport':'Fullført'; }
+        var rdl=row.querySelector('.rep-dl'); if(rdl){ rdl.removeAttribute('data-toast'); rdl.onclick=function(ev){ if(ev)ev.stopPropagation(); printTripReport(rr.trip, rr.events); }; }
+      });
+      var repList=$('.rep-col .replist');
+      if(repList && !reps.length){ repList.innerHTML='<div style="padding:16px;color:var(--muted2);font-size:12.5px">Ingen fullførte turrapporter ennå.</div>'; }
     }catch(e){}
   }
 
