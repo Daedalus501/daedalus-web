@@ -60,13 +60,13 @@
     <label>Passord</label><input id="pw" type="password" autocomplete="current-password" required>
     <div class="row"><button class="btn save" type="submit" id="loginBtn">Logg inn</button></div>
     <div class="err" id="loginErr"></div>
-    <p style="margin-top:14px;font-size:11px">Prototype · skriver KUN når du trykker «Lagre til turen». Ingen deploy.</p>
+    <p style="margin-top:14px;font-size:11px">Skriver kun til turen når du trykker «Lagre + del».</p>
   </form>
 </div>
 
 <header>
   <span><b>DAEDALUS</b> <span class="sub">· Kart-planlegger (tilkoblet)</span></span>
-  <span class="badge">TEST · lagrer til ekte tur kun ved klikk</span>
+  <span class="badge">Lagrer til valgt tur ved klikk</span>
   <span class="who" id="who"></span>
 </header>
 <div class="wrap">
@@ -214,11 +214,13 @@
     var btn=this; btn.disabled=true; btn.textContent='Lagrer …';
     var st=document.getElementById('saveStatus'); st.className='status'; st.textContent='';
     var payload={ map_data: JSON.stringify({routePoints:routePoints,markers:markers}), shared_map:true };
+    var _allp=routePoints.concat(markers.map(function(m){return m.coordinate;}));
+    if((currentTrip.gps_lat==null||currentTrip.gps_lng==null)&&_allp.length){ var _la=0,_lo=0; _allp.forEach(function(p){_la+=p.latitude;_lo+=p.longitude;}); payload.gps_lat=+(_la/_allp.length).toFixed(6); payload.gps_lng=+(_lo/_allp.length).toFixed(6); }
     sb.from('trips').update(payload).eq('id',currentTrip.id).then(function(res){
       btn.disabled=false; btn.textContent='Lagre til turen + del med guide';
       if(res.error){ st.className='status err'; st.textContent='Feil: '+res.error.message+(/policy|permission|rls/i.test(res.error.message)?' — kjør RLS-migrasjonen (KART-DELING-RLS) først.':''); return; }
-      st.className='status ok'; st.textContent='✓ Lagret. Åpne turen i guidens app for å se ruta.';
-      currentTrip.map_data=payload.map_data;
+      st.className='status ok'; st.textContent='✓ Lagret + delt. Åpne turen i guidens app for å se ruta.';
+      currentTrip.map_data=payload.map_data; if(payload.gps_lat!=null){ currentTrip.gps_lat=payload.gps_lat; currentTrip.gps_lng=payload.gps_lng; }
     });
   });
 
