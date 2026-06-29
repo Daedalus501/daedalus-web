@@ -806,6 +806,7 @@ body.lock{overflow:hidden}
       <div class="hero-cta">
         <button class="btn btn-pri btn-mag rip-host" type="button" data-toast="Ny tur · Veiviser åpnes|Turoppsett med rute, guider og gjesteliste (demo)."><svg class="ic ic-s"><use href="#i-plus"/></svg>Ny tur</button>
         <button class="btn btn-gold btn-mag rip-host" type="button" data-toast="Dagsrapport genereres|PDF med drift, vær og hendelser sendes til styret (demo)."><svg class="ic ic-s"><use href="#i-file"/></svg>Dagsrapport</button>
+        <a class="btn btn-mag rip-host" href="/kart-planlegger.html" target="_blank" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px"><svg class="ic ic-s"><use href="#i-pin"/></svg>Planlegg løype</a>
         <button class="btn btn-ghost btn-mag rip-host" type="button" data-scroll="#mapCard"><svg class="ic ic-s"><use href="#i-pin"/></svg>Åpne kart</button>
       </div>
     </div>
@@ -2205,6 +2206,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       '<form id="ntC"><h3>Ny tur</h3><p class="s">Oppretter en tur i '+_escR(R.orgName||'organisasjonen din')+'. Lagres som utkast.</p>'+
       '<label>Turnavn *</label><input id="ntName" required maxlength="120" autocomplete="off">'+
       '<label>Startsted *</label><input id="ntLoc" required maxlength="120" autocomplete="off">'+
+      '<div class="row"><div><label>Startpunkt — bredde (valgfritt)</label><input id="ntLat" type="number" step="any" placeholder="f.eks. 69.65" autocomplete="off"></div><div><label>lengde</label><input id="ntLng" type="number" step="any" placeholder="18.96" autocomplete="off"></div></div>'+
       '<div class="row"><div><label>Dato *</label><input id="ntDate" type="date" required></div><div><label>Returtid *</label><input id="ntRet" type="time" required></div></div>'+
       '<div class="row"><div><label>Aktivitet</label><select id="ntType">'+opt(TYPES,'summit')+'</select></div><div><label>Vanskelighet</label><select id="ntDiff">'+opt(DIFFS,'moderate')+'</select></div></div>'+
       '<label>Guide</label><select id="ntGuide">'+(gopt||'<option value="">(ingen registrert)</option>')+'</select>'+
@@ -2222,7 +2224,8 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       if(!name||!loc||!date||!ret){ err.textContent='Fyll ut turnavn, startsted, dato og returtid.'; return; }
       var guideId=gv('ntGuide'), guideName=''; (R.guidesRaw||[]).forEach(function(g){ if(g.id===guideId) guideName=g.name; });
       var save=document.getElementById('ntSave'); save.disabled=true; save.textContent='Lagrer…';
-      var payload={ trip_id:'WEB-'+Date.now().toString(36).toUpperCase(), name:name, date:date, start_location:loc, return_time:ret, activity_type:gv('ntType'), difficulty:gv('ntDiff'), status:'draft', guide_id:guideId||(me&&me.id)||null, guide_name:guideName||(me&&(me.name||me.email))||'', organization_id:(me&&me.organization_id)||null, organization_name:R.orgName||'', notes:gv('ntNotes').trim()||null };
+      var _glat=parseFloat(gv('ntLat')), _glng=parseFloat(gv('ntLng'));
+      var payload={ trip_id:'WEB-'+Date.now().toString(36).toUpperCase(), name:name, date:date, start_location:loc, return_time:ret, activity_type:gv('ntType'), difficulty:gv('ntDiff'), status:'draft', guide_id:guideId||(me&&me.id)||null, guide_name:guideName||(me&&(me.name||me.email))||'', organization_id:(me&&me.organization_id)||null, organization_name:R.orgName||'', notes:gv('ntNotes').trim()||null, gps_lat:isNaN(_glat)?null:_glat, gps_lng:isNaN(_glng)?null:_glng };
       sb.from('trips').insert(payload).then(function(res){
         if(res&&res.error){ err.textContent='Kunne ikke lagre: '+res.error.message; save.disabled=false; save.textContent='Opprett tur'; return; }
         close(); try{ toast('Tur opprettet','«'+name+'» er lagret som utkast.'); }catch(e){}
