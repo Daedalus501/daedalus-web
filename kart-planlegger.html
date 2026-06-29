@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daedalus · Kart-planlegger (tilkoblet)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+  :root{ --bg:#0e1a2c; --panel:#16273f; --line:#284063; --ink:#eaf2fb; --muted:#8aa0bd; --blue:#4a9fe0; --gold:#c9a24b;
+         --hazard:#FF4444; --meeting:#4488FF; --emergency:#44CC66; --ok:#44CC66; --err:#e8857c; }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;background:var(--bg);color:var(--ink);height:100vh;overflow:hidden}
+  header{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--line);background:#0c1626}
+  header b{color:var(--gold);letter-spacing:.5px}
+  header .sub{color:var(--muted);font-size:13px}
+  .who{margin-left:auto;font-size:12px;color:var(--muted)}
+  .who b{color:var(--ink)}
+  .lo{margin-left:10px;font-size:12px;color:var(--blue);cursor:pointer;text-decoration:underline}
+  .badge{font-size:11px;color:#ffce8a;border:1px solid #6b5524;background:#2a2110;border-radius:999px;padding:3px 10px}
+  .wrap{display:flex;height:calc(100vh - 49px)}
+  #map{flex:1;min-width:0;background:#0c1626}
+  .side{width:380px;border-left:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;overflow:auto}
+  .blk{padding:12px;border-bottom:1px solid var(--line)}
+  .blk h3{margin:0 0 8px;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+  select,input{width:100%;box-sizing:border-box;padding:9px 11px;border-radius:9px;border:1px solid var(--line);background:#0e1a2c;color:var(--ink);font-size:13.5px}
+  .modes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+  .mb{display:flex;align-items:center;gap:8px;padding:9px 10px;border:1px solid var(--line);background:#0e1a2c;color:var(--ink);border-radius:9px;cursor:pointer;font-size:13px;font-weight:600}
+  .mb.active{border-color:var(--blue);box-shadow:0 0 0 2px rgba(74,159,224,.25) inset}
+  .dot{width:12px;height:12px;border-radius:50%;flex:none}
+  .dot.route{background:var(--blue)} .dot.hazard{background:var(--hazard)} .dot.meeting{background:var(--meeting)} .dot.emergency{background:var(--emergency)}
+  .row{display:flex;gap:8px;margin-top:8px}
+  .btn{flex:1;padding:10px;border:1px solid var(--line);background:#22364f;color:#cfe2f5;border-radius:9px;cursor:pointer;font-size:13px;font-weight:600}
+  .btn:hover{background:#2a4a6e}
+  .btn.save{background:linear-gradient(135deg,#4a9fe0,#3b82c4);color:#fff;border:none}
+  .btn.save:disabled{opacity:.5}
+  .btn.ghost{background:transparent}
+  .hint{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.5}
+  .status{font-size:12.5px;margin-top:8px;min-height:16px}
+  .status.ok{color:var(--ok)} .status.err{color:var(--err)}
+  pre{margin:0;overflow:auto;max-height:180px;background:#0c1626;border:1px solid var(--line);border-radius:9px;padding:10px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:#bfe0ff;white-space:pre}
+  .legend{position:absolute;z-index:500;left:12px;bottom:12px;background:rgba(12,22,38,.9);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:12px}
+  .legend div{display:flex;align-items:center;gap:7px;margin:3px 0}
+  .count{color:var(--gold);font-weight:700}
+  .mk-label{background:#0c1626;border:1px solid var(--line);color:#eaf2fb;border-radius:6px;padding:1px 5px;font-size:11px;font-weight:600}
+  /* login overlay */
+  #login{position:fixed;inset:0;z-index:99999;background:rgba(8,14,26,.96);display:flex;align-items:center;justify-content:center}
+  #login .card{width:min(92vw,360px);background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px}
+  #login h2{margin:0 0 4px;font-size:18px}#login p{margin:0 0 16px;color:var(--muted);font-size:13px}
+  #login label{display:block;font-size:11.5px;color:var(--muted);margin:10px 0 4px}
+  #login .err{color:var(--err);font-size:12px;margin-top:10px;min-height:14px}
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+<div id="login">
+  <form class="card" id="loginForm">
+    <h2><span style="color:var(--gold)">DAEDALUS</span> · Kart-planlegger</h2>
+    <p>Logg inn med din admin-konto (samme som kommandosenteret).</p>
+    <label>E-post</label><input id="email" type="email" autocomplete="username" required>
+    <label>Passord</label><input id="pw" type="password" autocomplete="current-password" required>
+    <div class="row"><button class="btn save" type="submit" id="loginBtn">Logg inn</button></div>
+    <div class="err" id="loginErr"></div>
+    <p style="margin-top:14px;font-size:11px">Prototype · skriver KUN når du trykker «Lagre til turen». Ingen deploy.</p>
+  </form>
+</div>
+
+<header>
+  <span><b>DAEDALUS</b> <span class="sub">· Kart-planlegger (tilkoblet)</span></span>
+  <span class="badge">TEST · lagrer til ekte tur kun ved klikk</span>
+  <span class="who" id="who"></span>
+</header>
+<div class="wrap">
+  <div style="flex:1;position:relative;min-width:0">
+    <div id="map"></div>
+    <div class="legend">
+      <div><span class="dot route"></span> Rute (<span class="count" id="cRoute">0</span>)</div>
+      <div><span class="dot hazard"></span> Fare (<span class="count" id="cHazard">0</span>)</div>
+      <div><span class="dot meeting"></span> Møtepunkt (<span class="count" id="cMeet">0</span>)</div>
+      <div><span class="dot emergency"></span> Nødutgang (<span class="count" id="cEmer">0</span>)</div>
+    </div>
+  </div>
+  <div class="side">
+    <div class="blk">
+      <h3>1 · Velg tur</h3>
+      <select id="tripSel"><option value="">Logger inn …</option></select>
+      <div class="hint" id="tripHint">Velg en tur for å laste/tegne rute. Lagring skriver til denne turens map_data.</div>
+    </div>
+    <div class="blk">
+      <h3>2 · Tegn — velg modus, klikk i kartet</h3>
+      <div class="modes">
+        <div class="mb" data-mode="route"><span class="dot route"></span> Tegn rute</div>
+        <div class="mb" data-mode="hazard"><span class="dot hazard"></span> Fare</div>
+        <div class="mb" data-mode="meeting"><span class="dot meeting"></span> Møtepunkt</div>
+        <div class="mb" data-mode="emergency"><span class="dot emergency"></span> Nødutgang</div>
+      </div>
+      <div class="row">
+        <button class="btn" id="undo">Angre punkt</button>
+        <button class="btn ghost" id="clear">Tøm</button>
+      </div>
+      <div class="hint">Rute: klikk i rekkefølge. Fare: flere. Møtepunkt/Nødutgang: ett hver. Klikk en markør for å fjerne den.</div>
+    </div>
+    <div class="blk">
+      <h3>3 · Lagre + del</h3>
+      <div class="row"><button class="btn save" id="saveBtn" disabled>Lagre til turen + del med guide</button></div>
+      <div class="status" id="saveStatus"></div>
+      <div class="hint">Skriver <code>map_data</code> + <code>shared_map=true</code> til valgt tur. Appen leser dette. Angre = «Tøm» + lagre på nytt, eller sett tom.</div>
+    </div>
+    <div class="blk" style="border-bottom:none">
+      <h3>map_data (det som skrives)</h3>
+      <pre id="json">{}</pre>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+(function(){
+  var SUPABASE_URL='https://kyqjrlpsarbdwfbyjufa.supabase.co';
+  var SUPABASE_KEY='sb_publishable_EZq43amTJsWJWS8QeqZz3Q_xs8qg-DP';
+  var sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+  var COLORS={hazard:'#FF4444',meeting:'#4488FF',emergency:'#44CC66'};
+  var LABELS={hazard:'Fare',meeting:'Møtepunkt',emergency:'Nødutgang'};
+  var routePoints=[], markers=[], mode=null, trips=[], currentTrip=null;
+
+  // ---------- kart ----------
+  var map=L.map('map',{zoomControl:true}).setView([69.30,19.55],9);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap, © CARTO',maxZoom:19,subdomains:'abcd'}).addTo(map);
+  var routeLine=L.polyline([],{color:'#4a9fe0',weight:4,opacity:.95}).addTo(map);
+  var routeDots=L.layerGroup().addTo(map), markerLayer=L.layerGroup().addTo(map);
+  function ll(p){ return [p.latitude,p.longitude]; }
+
+  function redraw(){
+    routeLine.setLatLngs(routePoints.map(ll));
+    routeDots.clearLayers();
+    routePoints.forEach(function(p){ L.circleMarker(ll(p),{radius:4,color:'#4a9fe0',fillColor:'#0e1a2c',fillOpacity:1,weight:2}).addTo(routeDots); });
+    markerLayer.clearLayers();
+    markers.forEach(function(m){
+      var cm=L.circleMarker(ll(m.coordinate),{radius:9,color:'#0c1626',weight:2,fillColor:COLORS[m.type]||'#888',fillOpacity:1}).addTo(markerLayer);
+      cm.bindTooltip(LABELS[m.type]||m.type,{direction:'top',className:'mk-label'});
+      cm.on('click',function(ev){ L.DomEvent.stop(ev); markers=markers.filter(function(x){return x.id!==m.id;}); sync(); });
+    });
+    document.getElementById('cRoute').textContent=routePoints.length;
+    document.getElementById('cHazard').textContent=markers.filter(function(m){return m.type==='hazard';}).length;
+    document.getElementById('cMeet').textContent=markers.filter(function(m){return m.type==='meeting';}).length;
+    document.getElementById('cEmer').textContent=markers.filter(function(m){return m.type==='emergency';}).length;
+  }
+  function sync(){ redraw(); document.getElementById('json').textContent=JSON.stringify({routePoints:routePoints,markers:markers},null,2); }
+
+  map.on('click',function(e){
+    if(!currentTrip){ return; }
+    var c={latitude:+e.latlng.lat.toFixed(6),longitude:+e.latlng.lng.toFixed(6)};
+    if(mode==='route'){ routePoints.push(c); }
+    else if(mode==='hazard'){ markers.push({id:'hazard-'+Date.now(),coordinate:c,type:'hazard'}); }
+    else if(mode==='meeting'){ markers=markers.filter(function(m){return m.type!=='meeting';}); markers.push({id:'meeting-'+Date.now(),coordinate:c,type:'meeting'}); setMode(null); }
+    else if(mode==='emergency'){ markers=markers.filter(function(m){return m.type!=='emergency';}); markers.push({id:'emergency-'+Date.now(),coordinate:c,type:'emergency'}); setMode(null); }
+    else { return; }
+    sync();
+  });
+
+  function setMode(m){ mode=m; document.querySelectorAll('.mb').forEach(function(b){ b.classList.toggle('active',b.getAttribute('data-mode')===m); }); document.getElementById('map').style.cursor=m?'crosshair':''; }
+  document.querySelectorAll('.mb').forEach(function(b){ b.addEventListener('click',function(){ setMode(mode===b.getAttribute('data-mode')?null:b.getAttribute('data-mode')); }); });
+  document.getElementById('undo').addEventListener('click',function(){ if(routePoints.length){ routePoints.pop(); sync(); } });
+  document.getElementById('clear').addEventListener('click',function(){ if(confirm('Tøm kartet (ikke lagret før du trykker Lagre)?')){ routePoints=[]; markers=[]; sync(); } });
+
+  // ---------- parse eksisterende map_data ----------
+  function parseMapData(raw){ try{ var d=JSON.parse(raw); if(d&&Array.isArray(d.routePoints)&&Array.isArray(d.markers)) return d; }catch(e){} return {routePoints:[],markers:[]}; }
+
+  // ---------- login ----------
+  document.getElementById('loginForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    var email=document.getElementById('email').value.trim(), pw=document.getElementById('pw').value;
+    var btn=document.getElementById('loginBtn'); btn.disabled=true; btn.textContent='Logger inn …';
+    document.getElementById('loginErr').textContent='';
+    sb.auth.signInWithPassword({email:email,password:pw}).then(function(res){
+      if(res.error){ document.getElementById('loginErr').textContent=res.error.message; btn.disabled=false; btn.textContent='Logg inn'; return; }
+      onLogin(res.data.user);
+    });
+  });
+
+  function onLogin(user){
+    document.getElementById('login').classList.add('hidden');
+    document.getElementById('who').innerHTML='<b>'+(user.email||'')+'</b> <span class="lo" id="logout">Logg ut</span>';
+    document.getElementById('logout').addEventListener('click',function(){ sb.auth.signOut().then(function(){ location.reload(); }); });
+    loadTrips();
+  }
+
+  function loadTrips(){
+    var sel=document.getElementById('tripSel'); sel.innerHTML='<option value="">Laster turer …</option>';
+    sb.from('trips').select('id,trip_id,name,date,map_data,gps_lat,gps_lng,guide_name,organization_id').order('date',{ascending:false}).then(function(res){
+      if(res.error){ sel.innerHTML='<option value="">Feil: '+res.error.message+'</option>'; return; }
+      trips=res.data||[];
+      if(!trips.length){ sel.innerHTML='<option value="">Ingen turer funnet</option>'; return; }
+      sel.innerHTML='<option value="">— velg tur —</option>'+trips.map(function(t){ return '<option value="'+t.id+'">'+esc((t.name||'Tur')+' · '+(t.date||''))+'</option>'; }).join('');
+    });
+  }
+
+  document.getElementById('tripSel').addEventListener('change',function(){
+    var id=this.value; currentTrip=trips.filter(function(t){return t.id===id;})[0]||null;
+    setMode(null);
+    if(!currentTrip){ routePoints=[]; markers=[]; sync(); document.getElementById('saveBtn').disabled=true; return; }
+    var d=parseMapData(currentTrip.map_data); routePoints=d.routePoints; markers=d.markers; sync();
+    document.getElementById('saveBtn').disabled=false;
+    document.getElementById('saveStatus').textContent='';
+    // sentrer
+    if(routePoints.length){ try{ map.fitBounds(routeLine.getBounds().pad(0.2)); }catch(e){} }
+    else if(currentTrip.gps_lat!=null&&currentTrip.gps_lng!=null){ map.setView([+currentTrip.gps_lat,+currentTrip.gps_lng],12); }
+  });
+
+  document.getElementById('saveBtn').addEventListener('click',function(){
+    if(!currentTrip) return;
+    if(!confirm('Lagre rute til «'+(currentTrip.name||'tur')+'» og dele med guiden?')) return;
+    var btn=this; btn.disabled=true; btn.textContent='Lagrer …';
+    var st=document.getElementById('saveStatus'); st.className='status'; st.textContent='';
+    var payload={ map_data: JSON.stringify({routePoints:routePoints,markers:markers}), shared_map:true };
+    sb.from('trips').update(payload).eq('id',currentTrip.id).then(function(res){
+      btn.disabled=false; btn.textContent='Lagre til turen + del med guide';
+      if(res.error){ st.className='status err'; st.textContent='Feil: '+res.error.message+(/policy|permission|rls/i.test(res.error.message)?' — kjør RLS-migrasjonen (KART-DELING-RLS) først.':''); return; }
+      st.className='status ok'; st.textContent='✓ Lagret. Åpne turen i guidens app for å se ruta.';
+      currentTrip.map_data=payload.map_data;
+    });
+  });
+
+  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  // gjenoppta økt hvis innlogget
+  sb.auth.getSession().then(function(res){ if(res.data&&res.data.session&&res.data.session.user){ onLogin(res.data.session.user); } });
+  sync();
+})();
+</script>
+</body>
+</html>
