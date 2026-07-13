@@ -439,6 +439,9 @@ a{color:var(--accent-soft)}
   border:1px solid rgba(95,185,122,.4); background:rgba(95,185,122,.08); border-radius:12px; padding:6px 10px}
 .map-live i{width:7px;height:7px;border-radius:50%;background:var(--green); animation:dotPulse 1.8s ease-in-out infinite}
 @keyframes dotPulse{0%,100%{box-shadow:0 0 0 0 rgba(95,185,122,.55); opacity:1}50%{box-shadow:0 0 0 5px rgba(95,185,122,0); opacity:.66}}
+.map-open{display:inline-flex; align-items:center; gap:6px; font:700 10px/1 var(--sans); letter-spacing:.14em; text-transform:uppercase; text-decoration:none; color:var(--accent-soft);
+  border:1px solid rgba(74,159,224,.4); background:rgba(74,159,224,.08); border-radius:12px; padding:6px 11px; cursor:pointer; transition:background .2s,border-color .2s,transform .2s}
+.map-open:hover{background:rgba(74,159,224,.16); border-color:rgba(74,159,224,.7); transform:translateY(-1px)}
 
 /* ============ AVALANCHE / WEATHER ============ */
 .ava-gauge{position:relative; display:grid; place-items:center; padding:14px 0 0}
@@ -925,7 +928,7 @@ body.lock{overflow:hidden}
   </div>
   <section class="grid">
     <article class="card map-card sp8 rv" id="mapCard" style="--d:.05s">
-      <div class="card-h"><svg class="ic"><use href="#i-pin"/></svg><h3>Operativt kart — Tromsø / Tamokdalen</h3><span class="map-live"><i></i>LIVE</span></div>
+      <div class="card-h"><svg class="ic"><use href="#i-pin"/></svg><h3>Operativt kart — Tromsø / Tamokdalen</h3><span class="map-live"><i></i>LIVE</span><a class="map-open" href="/kart-planlegger.html" target="_blank" rel="noopener">Åpne planlegger<svg class="ic ic-s"><use href="#i-pin"/></svg></a></div>
       <div class="map-legend">
         <span class="chip" style="color:var(--accent-soft)"><i></i>Turer</span>
         <span class="chip" style="color:var(--gold-soft)"><i></i>Oppmøte</span>
@@ -2323,26 +2326,4 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       var meBtn2=$('.me'); if(meBtn2 && !meBtn2.__wired){ meBtn2.__wired=1; meBtn2.style.cursor='pointer'; meBtn2.title='Klikk for å logge ut'; meBtn2.addEventListener('click', function(){ if(window.confirm('Logg ut av Daedalus?')){ try{ sb.auth.signOut().then(function(){ location.href='/admin'; }); }catch(e){ location.href='/admin'; } } }); }
       if(R.sos&&R.sos.length&&R.sos[0]&&R.sos[0].id){ var _sosBtn=$('#sosAck'); if(_sosBtn&&!_sosBtn.__ackw){ _sosBtn.__ackw=1; var _eid=R.sos[0].id; _sosBtn.addEventListener('click',function(){ try{ sb.from('events').update({acknowledged_at:new Date().toISOString(),acknowledged_by:(me&&me.id)||null}).eq('id',_eid).then(function(res){ if(!(res&&res.error)){ try{ toast('Alarm kvittert','Lagret i hendelsesloggen.'); }catch(e){} } }); }catch(e){} }); } }
       if(R.sos && R.sos.length){ var _se=R.sos[0]; var _st=(R.tripById&&R.tripById[_se.trip_id])||{}; var _l1b=$('.sos .sos-tx .l1 b'); if(_l1b){ _l1b.textContent=(_se.description||'SOS-alarm utløst')+(_st.name?(' — '+_st.name):''); } var _l2=$('.sos .sos-tx .l2'); if(_l2){ var _tt=_se.created_at?new Date(_se.created_at).toLocaleTimeString('nb-NO',{hour:'2-digit',minute:'2-digit'}):'—'; var _pos=(_st.gps_lat!=null&&_st.gps_lng!=null)?(Number(_st.gps_lat).toFixed(4)+'° N, '+Number(_st.gps_lng).toFixed(4)+'° Ø'):'ukjent'; _l2.innerHTML='Utløst kl. <b class="num">'+_tt+'</b>'+(_st.guide_name?(' · Guide: <b>'+_escR(_st.guide_name)+'</b>'):'')+' · Posisjon: <b class="num">'+_escR(_pos)+'</b>'; } var _eta=$('.sos .sos-eta'); if(_eta){ _eta.style.display='none'; } }
-      if(window.ACTIONS && window.ACTIONS.length){ var _A=window.ACTIONS; _A.forEach(function(a){ if(a.l==='Ny tur'){ a.f=function(){ openNewTrip(R,me); }; } else if(/Generer dagsrapport/i.test(a.l)){ a.f=function(){ printDayReport(R); }; } else if(/Kvitter SOS/i.test(a.l)){ a.f=(R.sos&&R.sos.length)? function(){ var b=$('#sosAck'); if(b) b.click(); } : function(){ try{ toast('Ingen aktive alarmer','Ingen SOS å kvittere nå.'); }catch(e){} }; } }); var _ng=_A.filter(function(a){ return a.h!=='Guider'; }); (R.guides||[]).forEach(function(g,i){ _ng.push({l:'Guideprofil — '+(g.name||'Guide'), h:'Guider', i:'i-users', f:(function(idx){ return function(){ if(window.openGuide) window.openGuide(idx); }; })(i)}); }); _A.length=0; Array.prototype.push.apply(_A,_ng); }
-    }catch(e){}
-  }
-
-  // ---------- realtime (kritisk: live SOS) ----------
-  function startRealtime(orgId){
-    if(!sb||!sb.channel) return;
-    try{
-      sb.channel('web-admin-'+(orgId||'x'))
-        .on('postgres_changes',{event:'INSERT',schema:'public',table:'events'},function(p){
-          var isSos=String((p.new&&p.new.type)||'').toLowerCase()==='sos';
-          if(isSos){ var banner=$('#sosBanner'); if(banner){ banner.classList.remove('gone'); banner.removeAttribute('aria-hidden'); } }
-        })
-        .subscribe();
-    }catch(e){}
-  }
-})();
-</script>
-
-</body>
-</html>
-
-
+      if(window.ACTIONS && window.ACTIONS.length){ var _A=window.ACTIONS; _A.forEach(function(a){ if(a.l==='Ny tur'){ a.f=function(){ openNewTrip(R,me); }; } else if(/Generer dagsrapport/i.test(a.l)){ a.f=function(){ printDayReport(R); }; } else if(/Kvitter SOS/i.test(a.l)){ a.f=(R.sos&&R.sos.length)? function(){ var b=$('#sosAck'); if(b) b.click(); } : function(){ try{ toast('Ingen aktive alarmer','Ingen SOS å kvittere nå.'); }catch(e){} }; } }); var _ng=_A.filter(function(a){ return a.h!=='Guider'; }); (R.guides||[]).forEach(function(g,i){ _ng.push({l:'Guideprofil — '+(g.name||'Guide'), h:'Guider', i:'i-users', f:(function(idx){ return function(){ if(window.openGuide) window.openGuide(idx); }; })(i)}); }); _A.length=0
