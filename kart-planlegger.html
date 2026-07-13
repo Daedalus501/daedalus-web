@@ -20,7 +20,7 @@
   .lo{margin-left:10px;font-size:12px;color:var(--blue);cursor:pointer;text-decoration:underline}
   .badge{font-size:11px;color:#ffce8a;border:1px solid #6b5524;background:#2a2110;border-radius:999px;padding:3px 10px}
   .wrap{display:flex;height:calc(100vh - 49px)}
-  #map{flex:1;min-width:0;background:#0c1626}
+  #map{position:absolute;inset:0;background:#0c1626}
   .side{width:380px;border-left:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;overflow:auto}
   .blk{padding:12px;border-bottom:1px solid var(--line)}
   .blk h3{margin:0 0 8px;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
@@ -130,6 +130,11 @@
   // ---------- kart ----------
   var map=L.map('map',{zoomControl:true}).setView([69.30,19.55],9);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap, © CARTO',maxZoom:19,subdomains:'abcd'}).addTo(map);
+  // sørg for at kartet får riktig størrelse selv om containeren måler 0 ved init
+  function fixMapSize(){ try{ map.invalidateSize(false); }catch(e){} }
+  setTimeout(fixMapSize,150); setTimeout(fixMapSize,600);
+  window.addEventListener('resize',fixMapSize);
+  if(window.ResizeObserver){ try{ new ResizeObserver(fixMapSize).observe(document.getElementById('map')); }catch(e){} }
   var routeLine=L.polyline([],{color:'#4a9fe0',weight:4,opacity:.95}).addTo(map);
   var routeDots=L.layerGroup().addTo(map), markerLayer=L.layerGroup().addTo(map);
   function ll(p){ return [p.latitude,p.longitude]; }
