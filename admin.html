@@ -1626,8 +1626,12 @@ function openGuide(i){
   $('#dName').textContent=g.name;
   $('#dRole').textContent=g.role;
   var stEl=$('#dStatus'); stEl.className='g-st '+g.st[0]; stEl.textContent=g.st[1];
-  $('#dCall').setAttribute('data-toast','Ringer '+g.name.split(' ')[0]+'|Starter samtale til '+g.phone+' via vaktsentralen (demo).');
-  $('#dMail').setAttribute('data-toast','Melding til '+g.name.split(' ')[0]+'|Sikker melding åpnes i sambandskanalen (demo).');
+  var _ph=(g.phone&&g.phone!=='—')?String(g.phone):'';
+  if(_ph){ $('#dCall').removeAttribute('data-toast'); $('#dCall').onclick=function(){ location.href='tel:'+_ph.replace(/\s+/g,''); }; }
+  else { $('#dCall').onclick=null; $('#dCall').setAttribute('data-toast','Ingen telefon registrert|Guiden har ikke lagt inn telefonnummer i appen.'); }
+  var _em=g.email||'';
+  if(_em){ $('#dMail').removeAttribute('data-toast'); $('#dMail').onclick=function(){ location.href='mailto:'+_em; }; }
+  else { $('#dMail').onclick=null; $('#dMail').setAttribute('data-toast','Ingen e-post registrert|Guiden mangler e-postadresse.'); }
   var ch='';
   g.certs.forEach(function(c){
     ch+='<div class="cert"><div class="l1"><b>'+c[0]+'</b><span>'+c[1]+'</span></div><div class="cert-bar '+c[3]+'"><i data-w="'+c[2]+'"></i></div></div>';
@@ -2113,7 +2117,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       if(!certs.length) certs=[['Ingen sertifiseringer registrert','—',0,'warn']];
       var roleLabel = String(u.role||'').toLowerCase().indexOf('admin')>-1? 'Administrator' : 'Guide';
       var pos = onTrip? [ (onTrip.gps_coordinates||'—'), 'På tur: '+(onTrip.name||'') ] : [ '—', 'Sist sett: '+relTime(u.last_seen_at||u.updated_at||u.created_at) ];
-      return { ini:initials(u.name||u.email), name:u.name||u.email||'—', role:roleLabel, st:st, av:PAL[idx%PAL.length], phone:u.phone||'—', certs:certs, trips:myTrips.length?myTrips:[['Ingen turer registrert','—']], pos:pos };
+      return { ini:initials(u.name||u.email), name:u.name||u.email||'—', role:roleLabel, st:st, av:PAL[idx%PAL.length], phone:u.phone||'—', email:u.email||'', certs:certs, trips:myTrips.length?myTrips:[['Ingen turer registrert','—']], pos:pos };
     });
 
     var TMAP={sos:['sos','SOS'],weather:['sys','Vær'],equipment:['warn','Utstyr'],hazard:['warn','Fare'],'near-accident':['warn','Nestenulykke'],checkpoint:['ok','Sjekkpunkt'],report:['rep','Rapport']};
@@ -2383,17 +2387,4 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     if(!sb||!sb.channel) return;
     try{
       sb.channel('web-admin-'+(orgId||'x'))
-        .on('postgres_changes',{event:'INSERT',schema:'public',table:'events'},function(p){
-          var isSos=String((p.new&&p.new.type)||'').toLowerCase()==='sos';
-          if(isSos){ var banner=$('#sosBanner'); if(banner){ banner.classList.remove('gone'); banner.removeAttribute('aria-hidden'); } }
-        })
-        .subscribe();
-    }catch(e){}
-  }
-})();
-</script>
-
-</body>
-</html>
-
-
+        .on('po
