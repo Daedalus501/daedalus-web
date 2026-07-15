@@ -129,7 +129,7 @@
 
   // ---------- kart ----------
   var map=L.map('map',{zoomControl:true}).setView([69.30,19.55],9);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap, © CARTO',maxZoom:19,subdomains:'abcd'}).addTo(map);
+  L.tileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png',{attribution: '&copy; Kartverket &middot; &copy; OpenStreetMap',maxZoom:19,subdomains:'abcd'}).addTo(map);
   // sørg for at kartet får riktig størrelse selv om containeren måler 0 ved init
   function fixMapSize(){ try{ map.invalidateSize(false); }catch(e){} }
   setTimeout(fixMapSize,150); setTimeout(fixMapSize,600);
@@ -199,7 +199,7 @@
     sb.from('trips').select('id,trip_id,name,date,map_data,gps_lat,gps_lng,guide_name,organization_id').order('date',{ascending:false}).then(function(res){
       if(res.error){ sel.innerHTML='<option value="">Feil: '+res.error.message+'</option>'; return; }
       trips=res.data||[];
-      if(!trips.length){ sel.innerHTML='<option value="">Ingen turer funnet</option>'; return; }
+      if(!trips.length){ sel.innerHTML='<option value="">Ingen turer ennå — opprett en tur i kommandosenteret («Ny tur») først</option>'; return; }
       sel.innerHTML='<option value="">— velg tur —</option>'+trips.map(function(t){ return '<option value="'+t.id+'">'+esc((t.name||'Tur')+' · '+(t.date||''))+'</option>'; }).join('');
     });
   }
