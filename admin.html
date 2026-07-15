@@ -2387,4 +2387,17 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     if(!sb||!sb.channel) return;
     try{
       sb.channel('web-admin-'+(orgId||'x'))
-        .on('po
+        .on('postgres_changes',{event:'INSERT',schema:'public',table:'events'},function(p){
+          var isSos=String((p.new&&p.new.type)||'').toLowerCase()==='sos';
+          if(isSos){ var banner=$('#sosBanner'); if(banner){ banner.classList.remove('gone'); banner.removeAttribute('aria-hidden'); } }
+        })
+        .subscribe();
+    }catch(e){}
+  }
+})();
+</script>
+
+</body>
+</html>
+
+
