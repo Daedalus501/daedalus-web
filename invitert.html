@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Bli med — Daedalus</title>
+<link rel="icon" href="/icon.png">
+<style>
+  :root{--navy:#0d1b2e;--card:#16273f;--card2:#1d3250;--line:#284063;--blue:#4a9fe0;--gold:#c9a24b;--tx:#eaf2fb;--mut:#8aa0bd;--mut2:#5c718f;--err:#e8857c;--ok:#7fd49a}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;background:linear-gradient(160deg,#0a1523 0%,#0d1b2e 45%,#122844 100%);font-family:Inter,'Segoe UI',system-ui,sans-serif;color:var(--tx);display:flex;align-items:center;justify-content:center;padding:24px}
+  .wrap{width:min(94vw,440px)}
+  .brand{text-align:center;margin-bottom:22px}
+  .brand .b1{font-size:24px;font-weight:800;color:var(--gold);letter-spacing:4px}
+  .brand .b2{font-size:11px;color:var(--blue);letter-spacing:2.5px;margin-top:2px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px}
+  h1{margin:0 0 6px;font-size:19px}
+  p.s{margin:0 0 16px;color:var(--mut);font-size:13px;line-height:1.55}
+  label{display:block;color:var(--mut);font-size:11.5px;margin:12px 0 5px}
+  input{width:100%;padding:11px 12px;border-radius:9px;border:1px solid var(--line);background:#0e1a2c;color:var(--tx);font-size:14.5px;font-family:inherit}
+  input:focus{outline:none;border-color:var(--blue)}
+  button.cta{width:100%;margin-top:18px;padding:13px;border:none;border-radius:10px;font-size:14.5px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#4a9fe0,#3b82c4);color:#fff}
+  button.cta:disabled{opacity:.6;cursor:default}
+  #err{color:var(--err);font-size:12.5px;margin-top:12px;min-height:16px;line-height:1.5}
+  .foot{text-align:center;margin-top:18px;font-size:11px;color:var(--mut2)}
+  .foot a{color:var(--mut2)}
+  .done h1{color:var(--ok)}
+  .steps{margin:14px 0 6px;padding-left:20px;font-size:14px;line-height:1.9;color:#c8d6e8}
+  .abtn{display:block;text-align:center;background:linear-gradient(135deg,#4a9fe0,#3b82c4);color:#fff;font-weight:700;font-size:14.5px;padding:13px;border-radius:10px;text-decoration:none;margin-top:16px}
+  .hint{font-size:12px;color:var(--mut2);margin-top:14px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand"><div class="b1">DAEDALUS</div><div class="b2">GUIDE SAFETY</div></div>
+
+  <div class="card" id="formCard">
+    <h1>Fullfør invitasjonen</h1>
+    <p class="s">Du er invitert som guide. Sett et passord her, last deretter ned appen og logg inn — du kobles automatisk til organisasjonen din.</p>
+    <form id="f">
+      <label>E-post (samme som invitasjonen ble sendt til)</label>
+      <input id="email" type="email" required maxlength="120" autocomplete="email" placeholder="deg@firma.no">
+      <label>Velg passord (minst 8 tegn)</label>
+      <input id="pw1" type="password" required minlength="8" maxlength="72" autocomplete="new-password">
+      <label>Gjenta passord</label>
+      <input id="pw2" type="password" required minlength="8" maxlength="72" autocomplete="new-password">
+      <div id="err"></div>
+      <button class="cta" id="go" type="submit">Opprett konto</button>
+    </form>
+    <div class="hint">Viktig: bruk nøyaktig samme e-postadresse som invitasjonen ble sendt til — ellers kobles du ikke til organisasjonen.</div>
+  </div>
+
+  <div class="card done" id="doneCard" style="display:none">
+    <h1>Kontoen er klar ✓</h1>
+    <p class="s" id="doneSub">Du er koblet til organisasjonen. Slik kommer du i gang:</p>
+    <ol class="steps">
+      <li>Last ned Daedalus fra App Store</li>
+      <li>Logg inn med e-posten og passordet du nettopp satte</li>
+    </ol>
+    <a class="abtn" href="https://apps.apple.com/no/app/id6761403819">Last ned Daedalus</a>
+  </div>
+
+  <div class="card" id="confirmCard" style="display:none">
+    <h1>Nesten ferdig</h1>
+    <p class="s">Vi har sendt deg en bekreftelses-e-post. Klikk lenken i den, last deretter ned appen og logg inn.</p>
+    <a class="abtn" href="https://apps.apple.com/no/app/id6761403819">Last ned Daedalus</a>
+  </div>
+
+  <div class="foot">Sendt av Daedalus (HØI Z) · <a href="https://daedalus-app.no">daedalus-app.no</a> · <a href="/privacy">Personvern</a></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  var SUPABASE_URL='https://kyqjrlpsarbdwfbyjufa.supabase.co';
+  var SUPABASE_KEY='sb_publishable_EZq43amTJsWJWS8QeqZz3Q_xs8qg-DP';
+  var sb=null;
+  try{ sb=window.supabase?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY):null; }catch(e){}
+
+  // prefyll e-post fra ?email=
+  try{
+    var qEmail=new URLSearchParams(location.search).get('email');
+    if(qEmail) document.getElementById('email').value=qEmail.trim().toLowerCase();
+  }catch(e){}
+
+  document.getElementById('f').addEventListener('submit',function(ev){
+    ev.preventDefault();
+    var err=document.getElementById('err'); err.textContent='';
+    var email=String(document.getElementById('email').value||'').trim().toLowerCase();
+    var p1=document.getElementById('pw1').value, p2=document.getElementById('pw2').value;
+    if(!email||email.indexOf('@')<1){ err.textContent='Oppgi en gyldig e-postadresse.'; return; }
+    if(p1.length<8){ err.textContent='Passordet må være minst 8 tegn.'; return; }
+    if(p1!==p2){ err.textContent='Passordene er ikke like.'; return; }
+    if(!sb){ err.textContent='Kunne ikke laste innloggingstjenesten — prøv å laste siden på nytt.'; return; }
+    var btn=document.getElementById('go'); btn.disabled=true; btn.textContent='Oppretter…';
+    sb.auth.signUp({ email:email, password:p1 }).then(function(res){
+      if(res.error){
+        var m=String(res.error.message||'');
+        err.textContent=/already|registered/i.test(m)
+          ? 'Denne e-posten har allerede en konto. Åpne appen og logg inn — eller bruk «Glemt passord» på daedalus-app.no.'
+          : ('Kunne ikke opprette konto: '+m);
+        btn.disabled=false; btn.textContent='Opprett konto'; return;
+      }
+      var u=res.data&&res.data.user;
+      // anti-enumerering: eksisterende e-post gir bruker uten identities
+      if(u && u.identities && u.identities.length===0){
+        err.textContent='Denne e-posten har allerede en konto. Åpne appen og logg inn — eller bruk «Glemt passord» på daedalus-app.no.';
+        btn.disabled=false; btn.textContent='Opprett konto'; return;
+      }
+      document.getElementById('formCard').style.display='none';
+      if(res.data && res.data.session){
+        document.getElementById('doneCard').style.display='';
+      } else {
+        document.getElementById('confirmCard').style.display='';
+      }
+    },function(){
+      err.textContent='Nettverksfeil — prøv igjen.';
+      btn.disabled=false; btn.textContent='Opprett konto';
+    });
+  });
+})();
+</script>
+</body>
+</html>
