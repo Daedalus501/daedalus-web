@@ -129,7 +129,8 @@
 
   // ---------- kart ----------
   var map=L.map('map',{zoomControl:true}).setView([69.30,19.55],9);
-  L.tileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png',{attribution: '&copy; Kartverket &middot; &copy; OpenStreetMap',maxZoom:19,subdomains:'abcd'}).addTo(map);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap',maxZoom:19}).addTo(map);
+  L.tileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png',{attribution:'&copy; Kartverket',maxZoom:19,maxNativeZoom:18,bounds:[[57.7,3.9],[81.5,32.5]]}).addTo(map);
   // sørg for at kartet får riktig størrelse selv om containeren måler 0 ved init
   function fixMapSize(){ try{ map.invalidateSize(false); }catch(e){} }
   setTimeout(fixMapSize,150); setTimeout(fixMapSize,600);
