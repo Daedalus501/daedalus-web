@@ -810,6 +810,7 @@ body.lock{overflow:hidden}
       <div class="hero-cta">
         <button class="btn btn-pri btn-mag rip-host" type="button" data-toast="Ny tur · Veiviser åpnes|Turoppsett med rute, guider og gjesteliste (demo)."><svg class="ic ic-s"><use href="#i-plus"/></svg>Ny tur</button>
         <button class="btn btn-gold btn-mag rip-host" type="button" data-toast="Dagsrapport genereres|PDF med drift, vær og hendelser sendes til styret (demo)."><svg class="ic ic-s"><use href="#i-file"/></svg>Dagsrapport</button>
+        <button class="btn btn-mag rip-host" type="button" id="heroBrief" data-toast="Dagens brief|Kompakt oppsummering (demo)."><svg class="ic ic-s"><use href="#i-file"/></svg>Dagens brief</button>
         <a class="btn btn-mag rip-host" href="/kart-planlegger.html" target="_blank" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px"><svg class="ic ic-s"><use href="#i-pin"/></svg>Planlegg løype</a>
         <button class="btn btn-ghost btn-mag rip-host" type="button" data-scroll="#mapCard"><svg class="ic ic-s"><use href="#i-pin"/></svg>Åpne kart</button>
       </div>
@@ -1127,6 +1128,28 @@ body.lock{overflow:hidden}
     <article class="card sp4 rv" style="--d:.15s">
       <div class="card-h"><svg class="ic"><use href="#i-users"/></svg><h3>Hundespann</h3><span class="hint" id="dogHint">—</span></div>
       <div id="dogList" style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--muted);padding:6px 18px 16px">Ingen hundespann registrert ennå.</div>
+    </article>
+    <article class="card sp4 rv" style="--d:.18s">
+      <div class="card-h"><svg class="ic" style="color:var(--amber)"><use href="#i-alert"/></svg><h3>HMS og innsikt</h3><span class="hint">internkontroll</span></div>
+      <div style="padding:6px 18px 16px;font-size:12.5px;color:var(--muted);display:flex;flex-direction:column;gap:8px">
+        <span>Avvik, revisjonslogg, etterlevelse, teamstatistikk og CSV-eksport for HMS-dokumentasjon.</span>
+        <button id="hmsBtn" type="button" style="padding:9px;border:1px solid rgba(224,164,88,.4);border-radius:9px;background:rgba(224,164,88,.08);color:#e9cf9b;font:600 12px var(--sans);cursor:pointer">Åpne HMS-senter</button>
+      </div>
+    </article>
+    <article class="card sp4 rv" style="--d:.22s">
+      <div class="card-h"><svg class="ic"><use href="#i-file"/></svg><h3>Planlegging</h3><span class="hint">kalender · brief</span></div>
+      <div style="padding:6px 18px 16px;font-size:12.5px;color:var(--muted);display:flex;flex-direction:column;gap:8px">
+        <button id="calBtn" type="button" style="padding:9px;border:1px solid rgba(74,159,224,.35);border-radius:9px;background:rgba(74,159,224,.08);color:#cfe2f5;font:600 12px var(--sans);cursor:pointer">Turkalender</button>
+        <button id="briefBtn" type="button" style="padding:9px;border:1px solid rgba(74,159,224,.35);border-radius:9px;background:rgba(74,159,224,.08);color:#cfe2f5;font:600 12px var(--sans);cursor:pointer">Dagens brief</button>
+        <button id="announceBtn" type="button" style="padding:9px;border:1px solid rgba(74,159,224,.35);border-radius:9px;background:rgba(74,159,224,.08);color:#cfe2f5;font:600 12px var(--sans);cursor:pointer">Kunngjøring til teamet</button>
+      </div>
+    </article>
+    <article class="card sp4 rv" style="--d:.26s">
+      <div class="card-h"><svg class="ic" style="color:var(--gold-soft)"><use href="#i-users"/></svg><h3>Organisasjon</h3><span class="hint" id="orgHint">—</span></div>
+      <div style="padding:6px 18px 16px;font-size:12.5px;color:var(--muted);display:flex;flex-direction:column;gap:8px">
+        <span id="orgSum">Navn, vaktleder og beredskapsplan.</span>
+        <button id="orgBtn" type="button" style="padding:9px;border:1px solid rgba(201,162,75,.4);border-radius:9px;background:rgba(201,162,75,.08);color:#e9cf9b;font:600 12px var(--sans);cursor:pointer">Innstillinger</button>
+      </div>
     </article>
   </section>
 
@@ -2200,7 +2223,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     window.__REAL.seatsUsed = guidesTotal;
 
     var pAva = fetchAva().then(function(a){ window.__REAL.ava=a.lvl; window.__REAL.avaText=a.txt; });
-    var pOrg = orgId? sb.from('organizations').select('name').eq('id',orgId).maybeSingle().then(function(o){ if(o&&o.data&&o.data.name) window.__REAL.orgName=o.data.name; }) : Promise.resolve();
+    var pOrg = orgId? sb.from('organizations').select('name,emergency_plan,duty_phone').eq('id',orgId).maybeSingle().then(function(o){ if(o&&o.data){ if(o.data.name) window.__REAL.orgName=o.data.name; window.__REAL.orgMeta={emergency_plan:o.data.emergency_plan||null,duty_phone:o.data.duty_phone||null}; } }) : Promise.resolve();
     return Promise.all([pAva.catch(function(){}),pOrg.catch(function(){})]).then(function(){
       try{ updateStatic(window.__REAL, me); }catch(e){}
       hideGate();
@@ -2232,7 +2255,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     var h='<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Turrapport — '+_escR(t.name)+'</title><style>body{font-family:Inter,Arial,sans-serif;color:#0e1a2c;max-width:760px;margin:24px auto;padding:0 16px}h1{font-size:20px;margin:0 0 4px}h2{font-size:14px;margin:22px 0 6px}.k{color:#5a6b82;font-size:12px}table{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:6px}td,th{border:1px solid #d4dae3;padding:6px;text-align:left;vertical-align:top}th{background:#f4f6fa}</style></head><body>'+
       '<h1>Turrapport — '+_escR(t.name)+'</h1>'+
       '<p class="k">'+_escR(t.guide_name||'')+(t.organization_name?(' · '+_escR(t.organization_name)):'')+' · '+_escR(t.date||'')+' · status: '+_escR(t.status||'')+'</p>'+
-      '<h2>Detaljer</h2><p class="k">Sted: '+_escR(t.start_location||'—')+(t.return_date?('<br>Returdato: '+_escR(t.return_date)):'')+'<br>Aktivitet: '+_escR(t.activity_type||'—')+' · Vanskelighet: '+_escR(t.difficulty||'—')+'<br>Skredfaregrad: '+_escR(t.avalanche_level||'—')+'<br>Sikkerhetssjekk: vær '+(t.weather_verified?'✓':'—')+' · utstyr '+(t.equipment_checked?'✓':'—')+' · nødkontakt '+(t.emergency_contact_notified?'✓':'—')+'</p>'+
+      '<h2>Detaljer</h2><p class="k">Sted: '+_escR(t.start_location||'—')+(t.return_date?('<br>Returdato: '+_escR(t.return_date)):'')+'<br>Aktivitet: '+_escR(t.activity_type||'—')+' · Vanskelighet: '+_escR(t.difficulty||'—')+'<br>Skredfaregrad: '+_escR(t.avalanche_level||'—')+'<br>Sikkerhetssjekk: vær '+(t.weather_verified?'✓':'—')+' · utstyr '+(t.equipment_checked?'✓':'—')+' · nødkontakt '+(t.emergency_contact_notified?'✓':'—')+(t.approved_at?('<br>Admin-godkjent: '+new Date(t.approved_at).toLocaleString('nb-NO')):'')+'</p>'+
       ((plist.length)?('<h2>Deltakere ('+plist.length+')</h2><table><tr><th>Navn</th><th>Telefon</th><th>Nødkontakt</th></tr>'+prows+'</table>'):'')+
       (t.report_summary?('<h2>Sammendrag</h2><p>'+_escR(t.report_summary)+'</p>'):'')+
       '<h2>Hendelser ('+(evs?evs.length:0)+')</h2>'+(rows?('<table><tr><th>Tid</th><th>Type</th><th>Alvor</th><th>Beskrivelse</th><th>Tiltak</th></tr>'+rows+'</table>'):'<p class="k">Ingen hendelser registrert.</p>')+
@@ -2388,6 +2411,232 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     $$('#arC [data-arpr]').forEach(function(b){ b.onclick=function(){ var t=(window.__TRIPS||[]).filter(function(x){return x.id===b.getAttribute('data-arpr');})[0]; if(!t) return; sb.from('events').select('*').eq('trip_id',t.id).order('created_at',{ascending:false}).then(function(er){ printTripReport(t,(er&&er.data)||[]); }); }; });
   }
 
+  function dlCsv(navn, rader){
+    try{
+      var csv=rader.map(function(r){ return r.map(function(c){ var s=String(c==null?'':c); return '"'+s.replace(/"/g,'""')+'"'; }).join(';'); }).join('\r\n');
+      var blob=new Blob(["﻿"+csv],{type:'text/csv;charset=utf-8'});
+      var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=navn; document.body.appendChild(a); a.click(); a.remove();
+      logAdmin('csv_eksport', navn, rader.length+' rader');
+    }catch(e){}
+  }
+
+  function openHms(R, me){
+    if(document.getElementById('hmOv')) return;
+    var trips=window.__TRIPS||[];
+    var tripIds=trips.map(function(t){return t.id;});
+    var tripNavn={}; trips.forEach(function(t){ tripNavn[t.id]=t.name||t.trip_id||''; });
+    var ov=document.createElement('div'); ov.id='hmOv';
+    ov.innerHTML='<style>#hmOv{position:fixed;inset:0;z-index:99998;display:flex;align-items:center;justify-content:center;background:rgba(8,14,26,.86);backdrop-filter:blur(8px);font-family:Inter,system-ui,sans-serif}#hmC{width:min(96vw,640px);max-height:92vh;overflow:auto;background:#16273f;border:1px solid #284063;border-radius:16px;padding:22px;color:#c8d6e8}#hmC h3{margin:0 0 4px;color:#eaf2fb;font-size:17px}#hmC .tabs{display:flex;gap:6px;margin:12px 0;flex-wrap:wrap}#hmC .tabs button{border:1px solid rgba(255,255,255,.14);background:none;color:#8aa0bd;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer}#hmC .tabs button.on{border-color:#4a9fe0;background:rgba(74,159,224,.12);color:#cfe2f5}#hmC table{width:100%;border-collapse:collapse;font-size:11.5px}#hmC td,#hmC th{border-bottom:1px solid rgba(255,255,255,.07);padding:6px 6px;text-align:left;vertical-align:top}#hmC th{color:#8aa0bd;font-weight:600;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase}#hmC .btns{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}#hmC .btns button{padding:9px 13px;border:none;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;background:#22364f;color:#cfe2f5}</style>'
+      +'<div id="hmC"><h3>HMS og innsikt</h3><p style="margin:0;color:#8aa0bd;font-size:12px">Avvik, revisjonslogg, etterlevelse og teamstatistikk — dokumentasjon for internkontroll.</p>'
+      +'<div class="tabs"><button data-hf="avvik" class="on">Avvik</button><button data-hf="logg">Revisjonslogg</button><button data-hf="etter">Etterlevelse</button><button data-hf="team">Team (30 d)</button></div>'
+      +'<div id="hmBody" style="font-size:12.5px">Laster …</div>'
+      +'<div class="btns"><button id="hmCsvT">Eksporter turer (CSV)</button><button id="hmCsvE">Eksporter hendelser (CSV)</button><button id="hmClose" style="margin-left:auto">Lukk</button></div></div>';
+    document.body.appendChild(ov);
+    var close=function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); };
+    ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
+    document.getElementById('hmClose').onclick=close;
+    var evAll=null;
+    function hentEv(cb){
+      if(evAll){ cb(evAll); return; }
+      if(!tripIds.length){ evAll=[]; cb(evAll); return; }
+      sb.from('events').select('trip_id,type,severity,description,action_taken,created_at').in('trip_id',tripIds).order('created_at',{ascending:false}).limit(400).then(function(r){ evAll=(r&&r.data)||[]; cb(evAll); });
+    }
+    function vis(f){
+      $$('#hmC .tabs button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-hf')===f); });
+      var el=document.getElementById('hmBody'); el.innerHTML='Laster …';
+      if(f==='avvik'){
+        hentEv(function(evs){
+          var avvik=evs.filter(function(e){ var s=String(e.severity||'').toLowerCase(); return s==='high'||s==='critical'; });
+          el.innerHTML=avvik.length? '<table><tr><th>Tid</th><th>Tur</th><th>Type/alvor</th><th>Beskrivelse</th><th>Tiltak</th></tr>'+avvik.map(function(e){ return '<tr><td class="num">'+new Date(e.created_at).toLocaleString('nb-NO')+'</td><td>'+esc(tripNavn[e.trip_id]||'—')+'</td><td style="color:#e8857c;font-weight:600">'+esc(e.type||'')+' / '+esc(e.severity||'')+'</td><td>'+esc(e.description||'')+'</td><td>'+esc(e.action_taken||'')+'</td></tr>'; }).join('')+'</table>' : '<p style="color:#5fb97a">Ingen alvorlige avvik registrert. Godt jobbet.</p>';
+        });
+      } else if(f==='logg'){
+        sb.from('admin_audit').select('action,target,details,created_at,actor_id').order('created_at',{ascending:false}).limit(60).then(function(r){
+          var rows=(r&&r.data)||[];
+          el.innerHTML=rows.length? '<table><tr><th>Tid</th><th>Handling</th><th>Mål</th><th>Detaljer</th></tr>'+rows.map(function(a){ return '<tr><td class="num">'+new Date(a.created_at).toLocaleString('nb-NO')+'</td><td><b style="color:#eaf2fb">'+esc(a.action)+'</b></td><td>'+esc(a.target||'')+'</td><td>'+esc(a.details||'')+'</td></tr>'; }).join('')+'</table>' : '<p style="color:#8aa0bd">Ingen loggførte admin-handlinger ennå.</p>';
+        });
+      } else if(f==='etter'){
+        var rows=trips.filter(function(t){ return t.status!=='draft'; });
+        var ok=function(v){ return v? '<span style="color:#5fb97a">✓</span>' : '<span style="color:#e8857c">—</span>'; };
+        el.innerHTML=rows.length? '<table><tr><th>Tur</th><th>Status</th><th>Vær</th><th>Utstyr</th><th>Nødkontakt</th><th>Godkjent</th></tr>'+rows.map(function(t){ return '<tr><td>'+esc(t.name||'')+'</td><td>'+esc(STATUS_NO[t.status]||t.status||'')+'</td><td>'+ok(t.weather_verified)+'</td><td>'+ok(t.equipment_checked)+'</td><td>'+ok(t.emergency_contact_notified)+'</td><td>'+(t.approved_at? '<span style="color:#5fb97a">✓ '+new Date(t.approved_at).toLocaleDateString('nb-NO')+'</span>':'<span style="color:#8aa0bd">—</span>')+'</td></tr>'; }).join('')+'</table>' : '<p style="color:#8aa0bd">Ingen turer utenom utkast ennå.</p>';
+      } else if(f==='team'){
+        hentEv(function(evs){
+          var cutoff=Date.now()-30*864e5;
+          var per={};
+          (R.guidesRaw||[]).forEach(function(g){ if(String(g.id).indexOf('inv-')!==0) per[g.id]={n:g.name,turer:0,gjester:0,hendelser:0}; });
+          trips.forEach(function(t){ var ts=Date.parse(t.date||t.created_at||0); if(ts>=cutoff && per[t.guide_id]){ per[t.guide_id].turer++; per[t.guide_id].gjester+=tripParticipants(t); } });
+          var tripGuide={}; trips.forEach(function(t){ tripGuide[t.id]=t.guide_id; });
+          evs.forEach(function(e){ var g=tripGuide[e.trip_id]; if(Date.parse(e.created_at)>=cutoff && per[g]) per[g].hendelser++; });
+          var arr=Object.keys(per).map(function(k){ return per[k]; }).sort(function(a,b){ return b.turer-a.turer; });
+          el.innerHTML='<table><tr><th>Guide</th><th>Turer</th><th>Gjester</th><th>Hendelser</th></tr>'+arr.map(function(g){ return '<tr><td><b style="color:#eaf2fb">'+esc(g.n)+'</b></td><td class="num">'+g.turer+'</td><td class="num">'+g.gjester+'</td><td class="num">'+g.hendelser+'</td></tr>'; }).join('')+'</table>';
+        });
+      }
+    }
+    $$('#hmC .tabs button').forEach(function(b){ b.onclick=function(){ vis(b.getAttribute('data-hf')); }; });
+    vis('avvik');
+    document.getElementById('hmCsvT').onclick=function(){
+      var rows=[['TurID','Navn','Dato','Returtid','Returdato','Guide','Status','Sted','Vær ok','Utstyr ok','Nødkontakt ok','Godkjent','Skredfaregrad']];
+      trips.forEach(function(t){ rows.push([t.trip_id,t.name,t.date,t.return_time,t.return_date,t.guide_name,t.status,t.start_location,t.weather_verified?'ja':'nei',t.equipment_checked?'ja':'nei',t.emergency_contact_notified?'ja':'nei',t.approved_at||'',t.avalanche_level||'']); });
+      dlCsv('daedalus-turer-'+new Date().toISOString().slice(0,10)+'.csv', rows);
+    };
+    document.getElementById('hmCsvE').onclick=function(){
+      hentEv(function(evs){
+        var rows=[['Tid','Tur','Type','Alvor','Beskrivelse','Tiltak']];
+        evs.forEach(function(e){ rows.push([e.created_at,tripNavn[e.trip_id]||'',e.type,e.severity,e.description,e.action_taken]); });
+        dlCsv('daedalus-hendelser-'+new Date().toISOString().slice(0,10)+'.csv', rows);
+      });
+    };
+  }
+
+  function openBrief(R, me){
+    if(document.getElementById('brOv')) return;
+    var trips=window.__TRIPS||[];
+    var iDag=new Date().toISOString().slice(0,10);
+    var dagens=trips.filter(function(t){ return t.date===iDag && t.status!=='cancelled'; });
+    var wx=$$('.wx-it').map(function(w){ var b=w.querySelector('b'),s=w.querySelector('span'); return (b?b.textContent:'')+' ('+(s?s.textContent:'')+')'; });
+    var linjer=[];
+    linjer.push('DAGENS BRIEF — '+(R.orgName||'Daedalus')+' · '+new Date().toLocaleDateString('nb-NO',{weekday:'long',day:'numeric',month:'long'}));
+    linjer.push('');
+    linjer.push('VÆR: '+(wx[0]||'—')+' · vind '+(wx[1]||'—')+' · '+(wx[2]||'—'));
+    linjer.push('SKRED: faregrad '+(R.ava||'—')+' — '+(R.avaText||'')+' (Varsom)');
+    linjer.push('');
+    linjer.push('DAGENS TURER ('+dagens.length+'):');
+    if(dagens.length){ dagens.forEach(function(t){ linjer.push('• '+(t.name||'')+' — '+(t.guide_name||'—')+' · retur '+String(t.return_time||'—').slice(0,5)+(t.return_date&&t.return_date!==t.date?(' ('+t.return_date+')'):'')+' · '+(STATUS_NO[t.status]||t.status)); }); }
+    else { linjer.push('• Ingen planlagte turer i dag'); }
+    linjer.push('');
+    var pv=(R.guides||[]).filter(function(g){ return g.st&&g.st[0]==='tur'; }).length;
+    linjer.push('TEAM: '+(R.kpis?R.kpis.guidesTotal:0)+' guider · '+pv+' på tur nå');
+    linjer.push('');
+    linjer.push('Generert av Daedalus kommandosenter '+new Date().toLocaleTimeString('nb-NO',{hour:'2-digit',minute:'2-digit'}));
+    var txt=linjer.join('\n');
+    var ov=document.createElement('div'); ov.id='brOv';
+    ov.innerHTML='<style>#brOv{position:fixed;inset:0;z-index:99998;display:flex;align-items:center;justify-content:center;background:rgba(8,14,26,.86);backdrop-filter:blur(8px);font-family:Inter,system-ui,sans-serif}#brC{width:min(94vw,480px);background:#16273f;border:1px solid #284063;border-radius:16px;padding:22px;color:#c8d6e8}#brC h3{margin:0 0 10px;color:#eaf2fb;font-size:16px}#brC textarea{width:100%;box-sizing:border-box;height:280px;padding:12px;border-radius:10px;border:1px solid #284063;background:#0e1a2c;color:#eaf2fb;font:500 12.5px ui-monospace,Consolas,monospace;resize:vertical}#brC .btns{display:flex;gap:8px;margin-top:12px}#brC .btns button{flex:1;padding:10px;border:none;border-radius:9px;font-size:12.5px;font-weight:600;cursor:pointer}</style>'
+      +'<div id="brC"><h3>Dagens brief — klar til deling</h3><textarea id="brTxt" readonly></textarea>'
+      +'<div class="btns"><button id="brCopy" style="background:linear-gradient(135deg,#4a9fe0,#3b82c4);color:#fff">Kopier til utklippstavle</button><button id="brClose" style="background:#22364f;color:#cfe2f5">Lukk</button></div></div>';
+    document.body.appendChild(ov);
+    document.getElementById('brTxt').value=txt;
+    var close=function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); };
+    ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
+    document.getElementById('brClose').onclick=close;
+    document.getElementById('brCopy').onclick=function(){
+      try{ navigator.clipboard.writeText(txt).then(function(){ document.getElementById('brCopy').textContent='Kopiert ✓'; logAdmin('brief_generert','', ''); }); }catch(e){}
+    };
+  }
+
+  function openCalendar(R, me){
+    if(document.getElementById('caOv')) return;
+    var base=new Date(); base.setDate(1);
+    var ov=document.createElement('div'); ov.id='caOv';
+    ov.innerHTML='<style>#caOv{position:fixed;inset:0;z-index:99998;display:flex;align-items:center;justify-content:center;background:rgba(8,14,26,.86);backdrop-filter:blur(8px);font-family:Inter,system-ui,sans-serif}#caC{width:min(96vw,600px);max-height:92vh;overflow:auto;background:#16273f;border:1px solid #284063;border-radius:16px;padding:22px;color:#c8d6e8}#caC h3{margin:0;color:#eaf2fb;font-size:16px}#caHead{display:flex;align-items:center;gap:10px;margin-bottom:12px}#caHead button{border:1px solid rgba(255,255,255,.14);background:none;color:#cfe2f5;border-radius:8px;padding:5px 11px;cursor:pointer;font-size:13px}#caGrid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.caD{min-height:64px;border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:5px 6px;font-size:11px;color:#8aa0bd;cursor:pointer;transition:.15s}.caD:hover{border-color:#4a9fe0;background:rgba(74,159,224,.07)}.caD.tom{opacity:.25;cursor:default}.caD b{color:#eaf2fb;font-size:11.5px}.caT{display:block;margin-top:3px;padding:2px 5px;border-radius:5px;background:rgba(74,159,224,.15);color:#cfe2f5;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.caT.done{background:rgba(95,185,122,.15)}.caT.canc{background:rgba(232,133,124,.15);text-decoration:line-through}</style>'
+      +'<div id="caC"><div id="caHead"><h3 id="caTitle">…</h3><span style="flex:1"></span><button id="caPrev">←</button><button id="caNext">→</button><button id="caClose">Lukk</button></div>'
+      +'<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px;font-size:9.5px;letter-spacing:.1em;color:#5c718f;margin-bottom:4px"><span>MAN</span><span>TIR</span><span>ONS</span><span>TOR</span><span>FRE</span><span>LØR</span><span>SØN</span></div>'
+      +'<div id="caGrid"></div>'
+      +'<p style="font-size:11px;color:#5c718f;margin:10px 0 0">Klikk en dag for å opprette tur på datoen · klikk en tur for å åpne den.</p></div>';
+    document.body.appendChild(ov);
+    var close=function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); };
+    ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
+    document.getElementById('caClose').onclick=close;
+    function render(){
+      var y=base.getFullYear(), m=base.getMonth();
+      document.getElementById('caTitle').textContent=base.toLocaleDateString('nb-NO',{month:'long',year:'numeric'});
+      var first=new Date(y,m,1); var startI=(first.getDay()+6)%7;
+      var days=new Date(y,m+1,0).getDate();
+      var byDate={};
+      (window.__TRIPS||[]).forEach(function(t){ if(t.date){ (byDate[t.date]=byDate[t.date]||[]).push(t); } });
+      var html='';
+      for(var i=0;i<startI;i++) html+='<div class="caD tom"></div>';
+      for(var d=1;d<=days;d++){
+        var ds=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+        var lst=byDate[ds]||[];
+        html+='<div class="caD" data-cad="'+ds+'"><b>'+d+'</b>'+lst.slice(0,3).map(function(t){ var cl=t.status==='completed'?' done':(t.status==='cancelled'?' canc':''); return '<span class="caT'+cl+'" data-cat="'+t.id+'">'+esc(t.name||'')+'</span>'; }).join('')+(lst.length>3?('<span style="font-size:9px">+'+(lst.length-3)+' til</span>'):'')+'</div>';
+      }
+      document.getElementById('caGrid').innerHTML=html;
+      $$('#caGrid [data-cat]').forEach(function(s){ s.onclick=function(ev){ ev.stopPropagation(); close(); openTripAdmin(R, me, s.getAttribute('data-cat')); }; });
+      $$('#caGrid [data-cad]').forEach(function(c){ c.onclick=function(){ close(); openNewTrip(R, me, c.getAttribute('data-cad')); }; });
+    }
+    document.getElementById('caPrev').onclick=function(){ base.setMonth(base.getMonth()-1); render(); };
+    document.getElementById('caNext').onclick=function(){ base.setMonth(base.getMonth()+1); render(); };
+    render();
+  }
+
+  function openAnnounce(R, me){
+    if(document.getElementById('anOv')) return;
+    var guider=(R.guidesRaw||[]).filter(function(g){ return String(g.id).indexOf('inv-')!==0 && g.id!==me.id; });
+    var ov=document.createElement('div'); ov.id='anOv';
+    ov.innerHTML='<style>#anOv{position:fixed;inset:0;z-index:99998;display:flex;align-items:center;justify-content:center;background:rgba(8,14,26,.86);backdrop-filter:blur(8px);font-family:Inter,system-ui,sans-serif}#anC{width:min(94vw,440px);background:#16273f;border:1px solid #284063;border-radius:16px;padding:22px;color:#c8d6e8}#anC h3{margin:0 0 4px;color:#eaf2fb;font-size:16px}#anC p.s{margin:0 0 10px;color:#8aa0bd;font-size:12.5px}#anC textarea{width:100%;box-sizing:border-box;height:110px;padding:11px;border-radius:10px;border:1px solid #284063;background:#0e1a2c;color:#eaf2fb;font-size:13px;font-family:inherit}#anC .btns{display:flex;gap:8px;margin-top:12px}#anC .btns button{flex:1;padding:10px;border:none;border-radius:9px;font-size:12.5px;font-weight:600;cursor:pointer}#anStat{font-size:12px;color:#8aa0bd;min-height:16px;margin-top:8px}</style>'
+      +'<div id="anC"><h3>Kunngjøring til teamet</h3><p class="s">Sendes som push til alle guider med appen aktiv ('+guider.length+' mottakere). E-post-fallback for de uten push.</p>'
+      +'<textarea id="anTxt" maxlength="480" placeholder="F.eks. Værskifte i ettermiddag — alle grupper ned før kl. 16."></textarea>'
+      +'<div id="anStat"></div>'
+      +'<div class="btns"><button id="anSend" style="background:linear-gradient(135deg,#4a9fe0,#3b82c4);color:#fff">Send kunngjøring</button><button id="anClose" style="background:#22364f;color:#cfe2f5">Lukk</button></div></div>';
+    document.body.appendChild(ov);
+    var close=function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); };
+    ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
+    document.getElementById('anClose').onclick=close;
+    document.getElementById('anSend').onclick=function(){
+      var msg=document.getElementById('anTxt').value.trim(); var st=document.getElementById('anStat');
+      if(!msg){ st.textContent='Skriv en melding først.'; return; }
+      if(!guider.length){ st.textContent='Ingen andre guider i organisasjonen ennå.'; return; }
+      var btn=document.getElementById('anSend'); btn.disabled=true; btn.textContent='Sender …';
+      sb.auth.getSession().then(function(r){
+        var tok=r&&r.data&&r.data.session&&r.data.session.access_token;
+        var ok=0, mangler=[];
+        var jobs=guider.map(function(g){
+          return fetch('https://kyqjrlpsarbdwfbyjufa.supabase.co/functions/v1/send-push',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok},body:JSON.stringify({guide_id:g.id,message:msg})})
+            .then(function(res){ return res.json().catch(function(){ return {}; }); })
+            .then(function(j){ if(j&&j.delivered){ ok++; } else { mangler.push(g); } })
+            .catch(function(){ mangler.push(g); });
+        });
+        Promise.all(jobs).then(function(){
+          logAdmin('kunngjoring', ok+' via push, '+mangler.length+' uten', msg.slice(0,120));
+          st.innerHTML='Push levert til <b style="color:#5fb97a">'+ok+'</b> av '+guider.length+'.'+(mangler.length?' <a id="anMail" style="color:#4a9fe0;cursor:pointer">Send e-post til resten →</a>':'');
+          var am=document.getElementById('anMail');
+          if(am){ am.onclick=function(){ var em=mangler.map(function(g){ return g.email; }).filter(Boolean).join(','); location.href='mailto:?bcc='+encodeURIComponent(em)+'&subject='+encodeURIComponent('Kunngjøring — '+(R.orgName||'Daedalus'))+'&body='+encodeURIComponent(msg); }; }
+          btn.disabled=false; btn.textContent='Send kunngjøring';
+        });
+      });
+    };
+  }
+
+  function openOrgSettings(R, me){
+    if(document.getElementById('osOv')) return;
+    var meta=(window.__REAL&&window.__REAL.orgMeta)||{};
+    var ov=document.createElement('div'); ov.id='osOv';
+    ov.innerHTML='<style>#osOv{position:fixed;inset:0;z-index:99998;display:flex;align-items:center;justify-content:center;background:rgba(8,14,26,.86);backdrop-filter:blur(8px);font-family:Inter,system-ui,sans-serif}#osC{width:min(94vw,460px);max-height:92vh;overflow:auto;background:#16273f;border:1px solid #284063;border-radius:16px;padding:22px;color:#c8d6e8}#osC h3{margin:0 0 4px;color:#eaf2fb;font-size:16px}#osC label{display:block;color:#8aa0bd;font-size:11.5px;margin:10px 0 4px}#osC input,#osC textarea{width:100%;box-sizing:border-box;padding:9px 11px;border-radius:9px;border:1px solid #284063;background:#0e1a2c;color:#eaf2fb;font-size:13px;font-family:inherit}#osC .btns{display:flex;gap:8px;margin-top:14px}#osC .btns button{flex:1;padding:10px;border:none;border-radius:9px;font-size:12.5px;font-weight:600;cursor:pointer}#osErr{color:#e8857c;font-size:12px;min-height:14px;margin-top:8px}</style>'
+      +'<div id="osC"><h3>Organisasjonsinnstillinger</h3>'
+      +'<label>Organisasjonsnavn</label><input id="osName" maxlength="80" value="'+esc(R.orgName||'')+'">'
+      +'<label>Vaktleder-telefon (vises i beredskapsplanen)</label><input id="osPhone" maxlength="30" value="'+esc(meta.duty_phone||'')+'">'
+      +'<label>Beredskapsplan (vises via «Beredskapsplan»-knappen)</label><textarea id="osPlan" rows="7" maxlength="4000" placeholder="1. Ved SOS: ring guide …&#10;2. Ingen kontakt: ring 112 …">'+esc(meta.emergency_plan||'')+'</textarea>'
+      +'<div id="osErr"></div>'
+      +'<div class="btns"><button id="osSave" style="background:linear-gradient(135deg,#4a9fe0,#3b82c4);color:#fff">Lagre</button><button id="osClose" style="background:#22364f;color:#cfe2f5">Lukk</button></div></div>';
+    document.body.appendChild(ov);
+    var close=function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); };
+    ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
+    document.getElementById('osClose').onclick=close;
+    document.getElementById('osSave').onclick=function(){
+      var upd={ name:document.getElementById('osName').value.trim()||R.orgName, duty_phone:document.getElementById('osPhone').value.trim()||null, emergency_plan:document.getElementById('osPlan').value.trim()||null };
+      sb.from('organizations').update(upd).eq('id',me.organization_id).then(function(r2){
+        if(r2&&r2.error){ document.getElementById('osErr').textContent='Kunne ikke lagre: '+r2.error.message; return; }
+        logAdmin('org_innstillinger', upd.name, (upd.duty_phone||'')+' / plan '+(upd.emergency_plan? upd.emergency_plan.length+' tegn':'tom'));
+        try{ toast('Innstillinger lagret',''); }catch(e){} close(); setTimeout(function(){ location.reload(); },500);
+      });
+    };
+  }
+
+  function openEmergencyPlan(R){
+    var meta=(window.__REAL&&window.__REAL.orgMeta)||{};
+    if(document.getElementById('epOv')) return;
+    var ov=document.createElement('div'); ov.id='epOv';
+    var inner=meta.emergency_plan? '<pre style="white-space:pre-wrap;font:500 13px Inter,system-ui,sans-serif;margin:0;color:#c8d6e8">'+esc(meta.emergency_plan)+'</pre>' : '<p style="color:#8aa0bd;font-size:13px">Ingen beredskapsplan lagret ennå — åpne «Organisasjon → Innstillinger» og skriv den inn.</p>';
+    ov.innerHTML='<style>#epOv{position:fixed;inset:0;z-index:99998;display:flex;align-items:center;justify-content:center;background:rgba(8,14,26,.86);backdrop-filter:blur(8px);font-family:Inter,system-ui,sans-serif}#epC{width:min(94vw,480px);max-height:88vh;overflow:auto;background:#16273f;border:1px solid #284063;border-radius:16px;padding:22px;color:#c8d6e8}#epC h3{margin:0 0 8px;color:#e8857c;font-size:16px}</style>'
+      +'<div id="epC"><h3>⚠ Beredskapsplan — '+esc(R.orgName||'')+'</h3>'
+      +'<div style="font-size:12.5px;margin-bottom:10px;color:#eaf2fb">Nødnummer: <b>112</b> (politi) · <b>113</b> (ambulanse) · <b>110</b> (brann)'+(meta.duty_phone?(' · Vaktleder: <b class="num">'+esc(meta.duty_phone)+'</b>'):'')+'</div>'
+      +inner
+      +'<button type="button" id="epClose" style="margin-top:14px;width:100%;padding:10px;border:none;border-radius:9px;background:#22364f;color:#cfe2f5;font-weight:600;cursor:pointer">Lukk</button></div>';
+    document.body.appendChild(ov);
+    var close=function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); };
+    ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
+    document.getElementById('epClose').onclick=close;
+  }
+
   function logAdmin(action, target, details){
     try{
       var m=window.__ME;
@@ -2434,7 +2683,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       +'<div class="row"><div><label>Dato</label><input id="taDate" type="date" value="'+esc(t.date||'')+'"></div><div><label>Returtid</label><input id="taRet" type="time" value="'+esc((t.return_time||'').slice(0,5))+'"></div><div><label>Returdato</label><input id="taRetD" type="date" value="'+esc(t.return_date||'')+'"></div></div>'
       +'<div class="row"><div><label>Guide</label><select id="taGuide">'+gopt+'</select></div><div><label>Status</label><select id="taStatus">'+sopt+'</select></div></div>'
       +'<label>Notater</label><textarea id="taNotes" rows="2" maxlength="500">'+esc(t.notes||'')+'</textarea>'
-      +'<h4>HMS / sikkerhetssjekk</h4><div style="font-size:12.5px;line-height:1.9">Vær verifisert: '+chk(t.weather_verified)+' · Utstyr sjekket: '+chk(t.equipment_checked)+' · Nødkontakt varslet: '+chk(t.emergency_contact_notified)+'<br>Skredfaregrad: <b style="color:#eaf2fb">'+esc(t.avalanche_level||'ikke satt')+'</b> · Delt kart: '+chk(t.shared_map)+'</div>'
+      +'<h4>HMS / sikkerhetssjekk</h4><div style="font-size:12.5px;line-height:1.9">Vær verifisert: '+chk(t.weather_verified)+' · Utstyr sjekket: '+chk(t.equipment_checked)+' · Nødkontakt varslet: '+chk(t.emergency_contact_notified)+'<br>Skredfaregrad: <b style="color:#eaf2fb">'+esc(t.avalanche_level||'ikke satt')+'</b> · Delt kart: '+chk(t.shared_map)+'<br>Admin-godkjenning: '+(t.approved_at? '<b style="color:#5fb97a">✓ godkjent '+new Date(t.approved_at).toLocaleDateString('nb-NO')+'</b>' : '<button type="button" id="taApprove" style="border:1px solid rgba(95,185,122,.45);background:rgba(95,185,122,.1);color:#5fb97a;border-radius:7px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer">Godkjenn tur</button>')+'</div>'
       +'<h4>Deltakere</h4><div id="taParts" style="min-height:20px;font-size:12.5px">Laster …</div>'
       +'<div class="row" style="margin-top:6px"><div><input id="taPN" placeholder="Navn" maxlength="80"></div><div><input id="taPP" placeholder="Telefon" maxlength="30"></div><div><input id="taPE" placeholder="Nødkontakt" maxlength="60"></div></div>'
       +'<button type="button" id="taPAdd" style="margin-top:8px;width:100%;padding:8px;border:1px solid rgba(74,159,224,.35);border-radius:8px;background:rgba(74,159,224,.08);color:#cfe2f5;font-size:12px;cursor:pointer">Legg til deltaker</button>'
@@ -2475,6 +2724,14 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       el.innerHTML=evCache.length? evCache.map(function(e){ var sev=String(e.severity||'').toLowerCase(); var col=(sev==='high'||sev==='critical')?'#e8857c':(sev==='medium'?'#c9a24b':'#8aa0bd'); return '<div class="ev-row"><span class="num">'+new Date(e.created_at).toLocaleString('nb-NO')+'</span> · <b style="color:'+col+'">'+esc(e.type||'')+' / '+esc(e.severity||'—')+'</b> · '+esc(e.description||'')+'</div>'; }).join('') : '<span style="color:#8aa0bd">Ingen hendelser.</span>';
     });
     $('#taPrint').onclick=function(){ sb.from('events').select('*').eq('trip_id',t.id).order('created_at',{ascending:false}).then(function(er){ printTripReport(t,(er&&er.data)||[]); }); };
+    var apB=$('#taApprove');
+    if(apB){ apB.onclick=function(){
+      sb.from('trips').update({approved_by:(me&&me.id)||null, approved_at:new Date().toISOString()}).eq('id',t.id).then(function(r2){
+        if(r2&&r2.error){ $('#taErr').textContent=r2.error.message; return; }
+        logAdmin('tur_godkjent', t.trip_id, t.name||'');
+        try{ toast('Tur godkjent','Stemplet i HMS-dokumentasjonen.'); }catch(e){} close(); setTimeout(function(){ location.reload(); },500);
+      });
+    }; }
     $('#taSave').onclick=function(){
       var gid=$('#taGuide').value, gnm=''; (R.guidesRaw||[]).forEach(function(g){ if(g.id===gid) gnm=g.name; });
       var upd={ name:$('#taName').value.trim(), start_location:$('#taLoc').value.trim()||null, date:$('#taDate').value||null, return_time:$('#taRet').value||null, return_date:$('#taRetD').value||null, guide_id:gid||null, guide_name:gnm||null, status:$('#taStatus').value, notes:$('#taNotes').value.trim()||null };
@@ -2673,7 +2930,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     });
   }
 
-  function openNewTrip(R, me){
+  function openNewTrip(R, me, presetDate){
     if(document.getElementById('ntOv')) return;
     var TYPES=[['summit','Topptur'],['ski_touring','Skitur'],['glacier','Brevandring'],['climbing','Klatring'],['kayak','Kajakk'],['sea_kayaking','Havkajakk'],['river_guide','Elveguiding'],['dog_sledding','Hundekjøring'],['snowmobile_safari','Snøscooter'],['northern_lights_bus','Nordlysbuss'],['teambuilding','Teambuilding'],['course','Kurs'],['rescue_operation','Redningsoppdrag'],['other','Annet']];
     var DIFFS=[['easy','Lett'],['moderate','Moderat'],['challenging','Krevende'],['extreme','Ekstrem']];
@@ -2686,7 +2943,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       '<label>Startsted *</label><input id="ntLoc" required maxlength="120" autocomplete="off">'+
       '<div class="row"><div><label>Startpunkt — bredde (valgfritt)</label><input id="ntLat" type="number" step="any" placeholder="f.eks. 69.65" autocomplete="off"></div><div><label>lengde</label><input id="ntLng" type="number" step="any" placeholder="18.96" autocomplete="off"></div></div>'+
       '<button type="button" id="ntPickMap" style="margin-top:8px;width:100%;padding:9px;border:1px solid #284063;border-radius:9px;background:#0e1a2c;color:#8fb8de;font-size:12.5px;cursor:pointer">Velg startpunkt i kart</button><div id="ntMap" style="display:none;height:220px;border-radius:10px;margin-top:8px;overflow:hidden"></div>'+
-      '<div class="row"><div><label>Dato *</label><input id="ntDate" type="date" required></div><div><label>Returtid *</label><input id="ntRet" type="time" required></div></div>'+
+      '<div class="row"><div><label>Dato *</label><input id="ntDate" type="date" required'+(presetDate?(' value="'+presetDate+'"'):'')+'></div><div><label>Returtid *</label><input id="ntRet" type="time" required></div></div>'+
       '<label>Returdato (ved overnatting — valgfritt)</label><input id="ntRetDate" type="date">'+
       '<div class="row"><div><label>Aktivitet</label><select id="ntType">'+opt(TYPES,'summit')+'</select></div><div><label>Vanskelighet</label><select id="ntDiff">'+opt(DIFFS,'moderate')+'</select></div></div>'+
       '<label>Guide</label><select id="ntGuide">'+(gopt||'<option value="">(ingen registrert)</option>')+'</select>'+
@@ -2791,6 +3048,14 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       if(!window.__wxDone){ window.__wxDone=1; fetchMetWx(R); }
       try{ startReturnTicker(R, me); }catch(e){}
       var _bell=$('#bell'); if(_bell && !_bell.__w){ _bell.__w=1; _bell.onclick=function(ev){ if(ev){ev.preventDefault();ev.stopPropagation();} toggleBellPanel(R); }; }
+      var _hb=$('#hmsBtn'); if(_hb && !_hb.__w){ _hb.__w=1; _hb.onclick=function(){ openHms(R, me); }; }
+      var _cb=$('#calBtn'); if(_cb && !_cb.__w){ _cb.__w=1; _cb.onclick=function(){ openCalendar(R, me); }; }
+      var _bb=$('#briefBtn'); if(_bb && !_bb.__w){ _bb.__w=1; _bb.onclick=function(){ openBrief(R, me); }; }
+      var _hbb=$('#heroBrief'); if(_hbb && !_hbb.__w){ _hbb.__w=1; _hbb.removeAttribute('data-toast'); _hbb.onclick=function(){ openBrief(R, me); }; }
+      var _ab2=$('#announceBtn'); if(_ab2 && !_ab2.__w){ _ab2.__w=1; _ab2.onclick=function(){ openAnnounce(R, me); }; }
+      var _ob=$('#orgBtn'); if(_ob && !_ob.__w){ _ob.__w=1; _ob.onclick=function(){ openOrgSettings(R, me); }; }
+      var _oh=$('#orgHint'); if(_oh){ var _m=(window.__REAL&&window.__REAL.orgMeta)||{}; _oh.textContent=_m.emergency_plan? 'beredskap ✓' : 'beredskap mangler'; }
+      $$('footer .lnk').forEach(function(a){ if(/Beredskapsplan/i.test(a.textContent) && !a.__w){ a.__w=1; a.removeAttribute('data-toast'); a.style.cursor='pointer'; a.onclick=function(ev){ if(ev)ev.preventDefault(); openEmergencyPlan(R); }; } });
     }catch(e){}
 
     var banner=$('#sosBanner');
