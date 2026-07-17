@@ -1111,6 +1111,10 @@ body.lock{overflow:hidden}
     <div class="rule"></div><span class="sec-sub">Maler · kjøretøy · hundespann</span>
   </div>
   <section class="grid">
+    <article class="card sp4 rv" style="--d:.02s">
+      <div class="card-h"><svg class="ic"><use href="#i-mtn"/></svg><h3>Turadministrasjon</h3><span class="hint" id="tadmHint">—</span></div>
+      <div id="tripAdmList" style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--muted);max-height:340px;overflow:auto">Ingen turer ennå.</div>
+    </article>
     <article class="card sp4 rv" style="--d:.05s">
       <div class="card-h"><svg class="ic"><use href="#i-file"/></svg><h3>Turmaler</h3><span class="hint" id="tplHint">—</span><button id="newTplBtn" type="button" style="margin-left:auto;font:600 11.5px var(--sans);color:#cfe2f5;background:rgba(74,159,224,.08);border:1px solid rgba(74,159,224,.35);border-radius:8px;padding:6px 11px;cursor:pointer;white-space:nowrap">Ny mal</button></div>
       <div id="tplList" style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--muted)">Ingen maler registrert ennå.</div>
@@ -1652,6 +1656,13 @@ function openGuide(i){
   if(window.sendGuidePush && g.id && String(g.id).indexOf('inv-')!==0){ $('#dMail').removeAttribute('data-toast'); $('#dMail').onclick=function(){ window.sendGuidePush(g); }; }
   else if(_em){ $('#dMail').removeAttribute('data-toast'); $('#dMail').onclick=function(){ location.href='mailto:'+_em; }; }
   else { $('#dMail').onclick=null; $('#dMail').setAttribute('data-toast','Ingen e-post registrert|Guiden mangler e-postadresse.'); }
+  (function(){
+    var host=$('#dCall'); var wrap=host&&host.parentNode; if(!wrap) return;
+    var ab=document.getElementById('gAdminBtn');
+    if(!ab){ ab=document.createElement('button'); ab.id='gAdminBtn'; ab.type='button'; ab.style.cssText='margin-top:8px;width:100%;padding:9px;border:1px solid rgba(201,162,75,.4);border-radius:9px;background:rgba(201,162,75,.08);color:#e9cf9b;font:600 12px Inter,system-ui,sans-serif;cursor:pointer'; wrap.parentNode.appendChild(ab); }
+    ab.textContent=(String(g.id||'').indexOf('inv-')===0)?'Administrer invitasjon':'Administrer guide';
+    ab.onclick=function(){ if(window.openGuideAdmin) window.openGuideAdmin(g); };
+  })();
   var ch='';
   g.certs.forEach(function(c){
     ch+='<div class="cert"><div class="l1"><b>'+c[0]+'</b><span>'+c[1]+'</span></div><div class="cert-bar '+c[3]+'"><i data-w="'+c[2]+'"></i></div></div>';
@@ -2130,6 +2141,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
   }
 
   function buildAndApply(me, orgId, guideRows, tripRows, eventRows, subRow){
+    window.__TRIPS=tripRows; window.__ME=me;
     var now=new Date();
     var activeTrips=tripRows.filter(function(t){return t.status==='active';});
     var activeByLeader={}; activeTrips.forEach(function(t){ if(t.guide_name) activeByLeader[t.guide_name]=t; });
@@ -2208,7 +2220,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
   function _escR(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function printTripReport(t, evs){
     var w=window.open('','_blank'); if(!w){ try{ toast('Kunne ikke åpne rapport','Tillat pop-up-vinduer for å skrive ut.'); }catch(e){} return; }
-    var rows=(evs||[]).map(function(e){ return '<tr><td>'+new Date(e.created_at).toLocaleString('nb-NO')+'</td><td>'+_escR(e.type)+'</td><td>'+_escR(e.severity)+'</td><td>'+_escR(e.description)+'</td><td>'+_escR(e.action_taken)+'</td></tr>'; }).join('');
+    var rows=(evs||[]).map(function(e){ var _sv=String(e.severity||'').toLowerCase(); var _st=(_sv==='high'||_sv==='critical')?' style="color:#b00020;font-weight:600"':''; return '<tr'+_st+'><td>'+new Date(e.created_at).toLocaleString('nb-NO')+'</td><td>'+_escR(e.type)+'</td><td>'+_escR(e.severity)+'</td><td>'+_escR(e.description)+'</td><td>'+_escR(e.action_taken)+'</td></tr>'; }).join('');
     sb.from('participants').select('name,phone,emergency_contact').eq('trip_id',t.id).then(function(pr){
     var plist=(pr&&pr.data)||[];
     var prows=plist.map(function(p){ return '<tr><td>'+_escR(p.name||'—')+'</td><td>'+_escR(p.phone||'—')+'</td><td>'+_escR(p.emergency_contact||'—')+'</td></tr>'; }).join('');
@@ -2242,6 +2254,173 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       '<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print()},350)}<\/scr'+'ipt></body></html>';
     w.document.write(h); w.document.close();
   }
+  function logAdmin(action, target, details){
+    try{
+      var m=window.__ME;
+      sb.from('admin_audit').insert({ organization_id:(m&&m.organization_id)||null, actor_id:(m&&m.id)||null, action:action, target:target||null, details:String(details||'').slice(0,500) }).then(function(){},function(){});
+    }catch(e){}
+  }
+
+  var STATUS_NO={draft:'Utkast',active:'Aktiv',completed:'Fullført',cancelled:'Avlyst'};
+  function stBadge(s){ var c={draft:'#8aa0bd',active:'#5fb97a',completed:'#4a9fe0',cancelled:'#e8857c'}[s]||'#8aa0bd'; return '<span style="font-size:10.5px;font-weight:700;letter-spacing:.06em;color:'+c+';border:1px solid '+c+'55;border-radius:6px;padding:2px 7px;white-space:nowrap">'+(STATUS_NO[s]||s||'—')+'</span>'; }
+
+  function renderTripAdmin(R, me){
+    var el=$('#tripAdmList'); if(!el) return;
+    var trips=(window.__TRIPS||[]).slice().sort(function(a,b){ return Date.parse(b.date||b.created_at||0)-Date.parse(a.date||a.created_at||0); });
+    var h=$('#tadmHint'); if(h) h.textContent=trips.length+' turer';
+    if(!trips.length){ el.innerHTML='<span style="font-size:12.5px">Ingen turer ennå — bruk «Ny tur».</span>'; return; }
+    el.innerHTML=trips.map(function(t){
+      return '<button type="button" data-tadm="'+t.id+'" style="display:flex;align-items:center;gap:9px;text-align:left;border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:8px 10px;background:none;color:var(--muted);cursor:pointer">'
+        + stBadge(t.status)
+        + '<span style="flex:1;min-width:0"><b style="color:var(--text)">'+esc(t.name||'(uten navn)')+'</b><br><span style="font-size:11.5px">'+esc(t.date||'—')+' · '+esc(t.guide_name||'—')+'</span></span>'
+        + '<span style="font-size:11px">Åpne →</span></button>';
+    }).join('');
+    $$('#tripAdmList [data-tadm]').forEach(function(b){ b.onclick=function(){ openTripAdmin(R, me, b.getAttribute('data-tadm')); }; });
+  }
+
+  function openTripAdmin(R, me, tid){
+    if(document.getElementById('taOv')) return;
+    var t=(window.__TRIPS||[]).filter(function(x){return x.id===tid;})[0]; if(!t) return;
+    var gopt=(R.guidesRaw||[]).filter(function(g){ return String(g.id).indexOf('inv-')!==0; }).map(function(g){ return '<option value="'+g.id+'"'+((t.guide_id===g.id)?' selected':'')+'>'+_escR(g.name)+'</option>'; }).join('');
+    var sopt=['draft','active','completed','cancelled'].map(function(s){ return '<option value="'+s+'"'+((t.status===s)?' selected':'')+'>'+STATUS_NO[s]+'</option>'; }).join('');
+    var chk=function(v){ return v? '<b style="color:#5fb97a">✓</b>' : '<b style="color:#e8857c">—</b>'; };
+    var ov=document.createElement('div'); ov.id='taOv';
+    ov.innerHTML='<style>#taOv{position:fixed;inset:0;z-index:99998;display:flex;align-items:center;justify-content:center;background:rgba(8,14,26,.86);backdrop-filter:blur(8px);font-family:Inter,system-ui,sans-serif}#taC{width:min(96vw,560px);max-height:92vh;overflow:auto;background:#16273f;border:1px solid #284063;border-radius:16px;padding:22px;color:#c8d6e8}#taC h3{margin:0 0 2px;color:#eaf2fb;font-size:17px}#taC h4{margin:16px 0 6px;color:#c9a24b;font-size:12px;letter-spacing:.08em;text-transform:uppercase}#taC label{display:block;color:#8aa0bd;font-size:11.5px;margin:8px 0 4px}#taC input,#taC select,#taC textarea{width:100%;box-sizing:border-box;padding:8px 10px;border-radius:8px;border:1px solid #284063;background:#0e1a2c;color:#eaf2fb;font-size:13px;font-family:inherit}#taC .row{display:flex;gap:10px}#taC .row>div{flex:1}#taC .btns{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}#taC .btns button{padding:10px 12px;border:none;border-radius:9px;font-size:12.5px;font-weight:600;cursor:pointer}#taErr{color:#e8857c;font-size:12px;min-height:14px;margin-top:8px}.pl-row{display:flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:6px 9px;font-size:12.5px;margin-bottom:6px}.ev-row{font-size:12px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.06)}</style>'
+      +'<div id="taC"><h3>'+esc(t.name||'(uten navn)')+'</h3><span class="num" style="font-size:11px;color:#8aa0bd">'+esc(t.trip_id||'')+'</span>'
+      +'<h4>Detaljer</h4>'
+      +'<label>Turnavn</label><input id="taName" maxlength="120" value="'+esc(t.name||'')+'">'
+      +'<label>Startsted</label><input id="taLoc" maxlength="120" value="'+esc(t.start_location||'')+'">'
+      +'<div class="row"><div><label>Dato</label><input id="taDate" type="date" value="'+esc(t.date||'')+'"></div><div><label>Returtid</label><input id="taRet" type="time" value="'+esc((t.return_time||'').slice(0,5))+'"></div><div><label>Returdato</label><input id="taRetD" type="date" value="'+esc(t.return_date||'')+'"></div></div>'
+      +'<div class="row"><div><label>Guide</label><select id="taGuide">'+gopt+'</select></div><div><label>Status</label><select id="taStatus">'+sopt+'</select></div></div>'
+      +'<label>Notater</label><textarea id="taNotes" rows="2" maxlength="500">'+esc(t.notes||'')+'</textarea>'
+      +'<h4>HMS / sikkerhetssjekk</h4><div style="font-size:12.5px;line-height:1.9">Vær verifisert: '+chk(t.weather_verified)+' · Utstyr sjekket: '+chk(t.equipment_checked)+' · Nødkontakt varslet: '+chk(t.emergency_contact_notified)+'<br>Skredfaregrad: <b style="color:#eaf2fb">'+esc(t.avalanche_level||'ikke satt')+'</b> · Delt kart: '+chk(t.shared_map)+'</div>'
+      +'<h4>Deltakere</h4><div id="taParts" style="min-height:20px;font-size:12.5px">Laster …</div>'
+      +'<div class="row" style="margin-top:6px"><div><input id="taPN" placeholder="Navn" maxlength="80"></div><div><input id="taPP" placeholder="Telefon" maxlength="30"></div><div><input id="taPE" placeholder="Nødkontakt" maxlength="60"></div></div>'
+      +'<button type="button" id="taPAdd" style="margin-top:8px;width:100%;padding:8px;border:1px solid rgba(74,159,224,.35);border-radius:8px;background:rgba(74,159,224,.08);color:#cfe2f5;font-size:12px;cursor:pointer">Legg til deltaker</button>'
+      +'<h4>Hendelser</h4><div id="taEvents" style="font-size:12px">Laster …</div>'
+      +'<div id="taErr"></div>'
+      +'<div class="btns">'
+      +'<button id="taSave" style="background:linear-gradient(135deg,#4a9fe0,#3b82c4);color:#fff;flex:1">Lagre endringer</button>'
+      +'<button id="taCancelTrip" style="background:rgba(232,133,124,.12);color:#e8857c;border:1px solid rgba(232,133,124,.4)">Avlys tur</button>'
+      +'<button id="taDelete" style="background:rgba(232,133,124,.12);color:#e8857c;border:1px solid rgba(232,133,124,.4)">Slett</button>'
+      +'<button id="taPrint" style="background:#22364f;color:#cfe2f5">Skriv ut rapport</button>'
+      +'<button id="taClose" style="background:#22364f;color:#cfe2f5">Lukk</button>'
+      +'</div></div>';
+    document.body.appendChild(ov);
+    var close=function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); };
+    ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
+    $('#taClose').onclick=close;
+    if(t.status==='completed'||t.status==='cancelled'){ $('#taCancelTrip').style.display='none'; }
+    if(!(t.status==='draft'||t.status==='cancelled')){ $('#taDelete').style.display='none'; }
+    var evCache=[];
+    function loadParts(){
+      sb.from('participants').select('id,name,phone,emergency_contact').eq('trip_id',t.id).then(function(pr){
+        var list=(pr&&pr.data)||[]; var el=$('#taParts');
+        el.innerHTML=list.length? list.map(function(p){ return '<div class="pl-row"><span style="flex:1"><b style="color:#eaf2fb">'+esc(p.name||'—')+'</b> · '+esc(p.phone||'—')+' · nød: '+esc(p.emergency_contact||'—')+'</span><button type="button" data-pdel="'+p.id+'" style="border:1px solid rgba(232,133,124,.4);background:none;color:#e8857c;border-radius:6px;padding:3px 7px;font-size:10.5px;cursor:pointer">Slett</button></div>'; }).join('') : '<span>Ingen deltakere registrert.</span>';
+        $$('#taParts [data-pdel]').forEach(function(b){ b.onclick=function(){ if(!window.confirm('Slette deltakeren?')) return; sb.from('participants').delete().eq('id',b.getAttribute('data-pdel')).then(function(r2){ if(r2&&r2.error){ $('#taErr').textContent=r2.error.message; } else { logAdmin('deltaker_slettet', t.trip_id, ''); loadParts(); } }); }; });
+      });
+    }
+    loadParts();
+    $('#taPAdd').onclick=function(){
+      var n=$('#taPN').value.trim(); if(!n){ $('#taErr').textContent='Deltaker trenger navn.'; return; }
+      sb.from('participants').insert({ trip_id:t.id, name:n, phone:$('#taPP').value.trim()||null, emergency_contact:$('#taPE').value.trim()||null }).then(function(r2){
+        if(r2&&r2.error){ $('#taErr').textContent=r2.error.message; return; }
+        $('#taPN').value='';$('#taPP').value='';$('#taPE').value=''; $('#taErr').textContent='';
+        logAdmin('deltaker_lagt_til', t.trip_id, n); loadParts();
+      });
+    };
+    sb.from('events').select('type,severity,description,created_at').eq('trip_id',t.id).order('created_at',{ascending:false}).limit(15).then(function(er){
+      evCache=(er&&er.data)||[]; var el=$('#taEvents');
+      el.innerHTML=evCache.length? evCache.map(function(e){ var sev=String(e.severity||'').toLowerCase(); var col=(sev==='high'||sev==='critical')?'#e8857c':(sev==='medium'?'#c9a24b':'#8aa0bd'); return '<div class="ev-row"><span class="num">'+new Date(e.created_at).toLocaleString('nb-NO')+'</span> · <b style="color:'+col+'">'+esc(e.type||'')+' / '+esc(e.severity||'—')+'</b> · '+esc(e.description||'')+'</div>'; }).join('') : '<span style="color:#8aa0bd">Ingen hendelser.</span>';
+    });
+    $('#taPrint').onclick=function(){ sb.from('events').select('*').eq('trip_id',t.id).order('created_at',{ascending:false}).then(function(er){ printTripReport(t,(er&&er.data)||[]); }); };
+    $('#taSave').onclick=function(){
+      var gid=$('#taGuide').value, gnm=''; (R.guidesRaw||[]).forEach(function(g){ if(g.id===gid) gnm=g.name; });
+      var upd={ name:$('#taName').value.trim(), start_location:$('#taLoc').value.trim()||null, date:$('#taDate').value||null, return_time:$('#taRet').value||null, return_date:$('#taRetD').value||null, guide_id:gid||null, guide_name:gnm||null, status:$('#taStatus').value, notes:$('#taNotes').value.trim()||null };
+      sb.from('trips').update(upd).eq('id',t.id).then(function(r2){
+        if(r2&&r2.error){ $('#taErr').textContent='Kunne ikke lagre: '+r2.error.message; return; }
+        logAdmin('tur_endret', t.trip_id, upd.name+' / '+upd.status);
+        try{ toast('Tur oppdatert',''); }catch(e){} close(); setTimeout(function(){ location.reload(); },500);
+      });
+    };
+    $('#taCancelTrip').onclick=function(){
+      if(!window.confirm('Avlyse turen «'+(t.name||'')+'»?')) return;
+      sb.from('trips').update({status:'cancelled'}).eq('id',t.id).then(function(r2){
+        if(r2&&r2.error){ $('#taErr').textContent=r2.error.message; return; }
+        logAdmin('tur_avlyst', t.trip_id, t.name||'');
+        try{ toast('Tur avlyst',''); }catch(e){} close(); setTimeout(function(){ location.reload(); },500);
+      });
+    };
+    $('#taDelete').onclick=function(){
+      if(!window.confirm('Slette turen permanent? (Kun utkast/avlyste bør slettes — dokumentasjon for gjennomførte turer skal beholdes.)')) return;
+      sb.from('trips').delete().eq('id',t.id).then(function(r2){
+        if(r2&&r2.error){ $('#taErr').textContent=r2.error.message; return; }
+        logAdmin('tur_slettet', t.trip_id, t.name||'');
+        try{ toast('Tur slettet',''); }catch(e){} close(); setTimeout(function(){ location.reload(); },500);
+      });
+    };
+  }
+
+  window.openGuideAdmin=function(g){
+    if(document.getElementById('gaOv')) return;
+    var me=window.__ME||{};
+    var erInvitasjon=String(g.id||'').indexOf('inv-')===0;
+    var ov=document.createElement('div'); ov.id='gaOv';
+    var inner;
+    if(erInvitasjon){
+      inner='<h3>Invitasjon</h3><p class="s">'+esc(g.email||'')+' — venter på registrering.</p>'
+        +'<div class="btns"><button id="gaResend" style="background:linear-gradient(135deg,#4a9fe0,#3b82c4);color:#fff;flex:1">Send på nytt</button>'
+        +'<button id="gaRevoke" style="background:rgba(232,133,124,.12);color:#e8857c;border:1px solid rgba(232,133,124,.4)">Trekk tilbake</button>'
+        +'<button id="gaClose" style="background:#22364f;color:#cfe2f5">Lukk</button></div><div id="gaErr"></div>';
+    } else {
+      inner='<h3>Administrer guide</h3><p class="s">'+esc(g.email||'')+'</p>'
+        +'<label>Visningsnavn</label><input id="gaName" maxlength="80" value="'+esc((g.name&&g.name.indexOf('@')<0)?g.name:'')+'">'
+        +'<label>Telefon</label><input id="gaPhone" maxlength="30" value="'+esc((g.phone&&g.phone!=='—')?g.phone:'')+'">'
+        +'<div class="btns"><button id="gaSave" style="background:linear-gradient(135deg,#4a9fe0,#3b82c4);color:#fff;flex:1">Lagre</button>'
+        +((g.id!==me.id)?'<button id="gaRemove" style="background:rgba(232,133,124,.12);color:#e8857c;border:1px solid rgba(232,133,124,.4)">Fjern fra organisasjonen</button>':'')
+        +'<button id="gaClose" style="background:#22364f;color:#cfe2f5">Lukk</button></div><div id="gaErr"></div>';
+    }
+    ov.innerHTML='<style>#gaOv{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:rgba(8,14,26,.86);backdrop-filter:blur(8px);font-family:Inter,system-ui,sans-serif}#gaC{width:min(94vw,400px);background:#16273f;border:1px solid #284063;border-radius:16px;padding:22px;color:#c8d6e8}#gaC h3{margin:0 0 4px;color:#eaf2fb;font-size:16px}#gaC p.s{margin:0 0 10px;color:#8aa0bd;font-size:12.5px}#gaC label{display:block;color:#8aa0bd;font-size:11.5px;margin:8px 0 4px}#gaC input{width:100%;box-sizing:border-box;padding:8px 10px;border-radius:8px;border:1px solid #284063;background:#0e1a2c;color:#eaf2fb;font-size:13px}#gaC .btns{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}#gaC .btns button{padding:10px 12px;border:none;border-radius:9px;font-size:12.5px;font-weight:600;cursor:pointer}#gaErr{color:#e8857c;font-size:12px;min-height:14px;margin-top:8px}</style><div id="gaC">'+inner+'</div>';
+    document.body.appendChild(ov);
+    var close=function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); };
+    ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
+    document.getElementById('gaClose').onclick=close;
+    if(erInvitasjon){
+      var invId=String(g.id).slice(4);
+      document.getElementById('gaRevoke').onclick=function(){
+        if(!window.confirm('Trekke tilbake invitasjonen til '+(g.email||'')+'?')) return;
+        sb.from('invitations').update({status:'revoked'}).eq('id',invId).then(function(r2){
+          if(r2&&r2.error){ document.getElementById('gaErr').textContent=r2.error.message; return; }
+          logAdmin('invitasjon_trukket', g.email, ''); try{ toast('Invitasjon trukket tilbake',''); }catch(e){} close(); setTimeout(function(){ location.reload(); },500);
+        });
+      };
+      document.getElementById('gaResend').onclick=function(){
+        sb.from('invitations').update({status:'revoked'}).eq('id',invId).then(function(){
+          sb.from('invitations').insert({ organization_id:me.organization_id, email:g.email, name:(g.name&&g.name.indexOf('@')<0)?g.name:null, invited_by:me.id }).then(function(r2){
+            if(r2&&r2.error){ document.getElementById('gaErr').textContent=r2.error.message; return; }
+            logAdmin('invitasjon_resendt', g.email, ''); try{ toast('Invitasjon sendt på nytt','Ny e-post er på vei.'); }catch(e){} close(); setTimeout(function(){ location.reload(); },600);
+          });
+        });
+      };
+    } else {
+      document.getElementById('gaSave').onclick=function(){
+        var upd={ name:document.getElementById('gaName').value.trim()||null, phone:document.getElementById('gaPhone').value.trim()||null };
+        sb.from('users').update(upd).eq('id',g.id).then(function(r2){
+          if(r2&&r2.error){ document.getElementById('gaErr').textContent=r2.error.message; return; }
+          logAdmin('guide_endret', g.email, (upd.name||'')+' '+(upd.phone||'')); try{ toast('Guide oppdatert',''); }catch(e){} close(); setTimeout(function(){ location.reload(); },500);
+        });
+      };
+      var rm=document.getElementById('gaRemove');
+      if(rm){ rm.onclick=function(){
+        if(!window.confirm('Fjerne '+(g.name||g.email)+' fra organisasjonen? App-tilgangen (org-comp) trekkes automatisk.')) return;
+        sb.from('users').update({organization_id:null, role:'Guide'}).eq('id',g.id).then(function(r2){
+          if(r2&&r2.error){ document.getElementById('gaErr').textContent=r2.error.message; return; }
+          logAdmin('guide_fjernet', g.email, ''); try{ toast('Guide fjernet fra organisasjonen','Tilgang trekkes automatisk.'); }catch(e){} close(); setTimeout(function(){ location.reload(); },600);
+        });
+      }; }
+    }
+  };
+
   window.sendGuidePush=function(g){
     var msg=window.prompt('Melding til '+(g.name||'guiden')+' (sendes som push til appen):');
     if(!msg||!msg.trim()) return;
@@ -2456,6 +2635,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     var su=$('#seatUpgrade'); if(su) su.style.display=(R.seats!=null && R.seatsUsed>=R.seats)? '' : 'none';
     var ib=$('#inviteGuideBtn'); if(ib && !ib.__wired){ ib.__wired=1; ib.onclick=function(){ openInvite(R, me); }; }
     try{ renderPlanning(R, me); }catch(e){}
+    try{ renderTripAdmin(R, me); }catch(e){}
 
     var banner=$('#sosBanner');
     if(banner){
