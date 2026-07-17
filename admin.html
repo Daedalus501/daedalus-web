@@ -688,6 +688,7 @@ body.lock{overflow:hidden}
 .plx{will-change:transform}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>.kpi{transition:transform .18s}.kpi:hover{transform:translateY(-2px)}#tripAdmList [data-tadm]:hover,.ar-row:hover{border-color:rgba(74,159,224,.45)!important}.rep:hover{background:rgba(74,159,224,.05)}.wx-it:hover b{color:#7fc0f5}</style>
 </head>
 <body>
 <a class="skip" href="#main">Hopp til innhold</a>
@@ -1550,7 +1551,8 @@ function addRealOverlays(){
       var sosIc=L.divIcon({className:'lf-wrap', html:'<div class="mk-sos lf"><i class="ring"></i><i class="ring"></i><i class="ring"></i><i class="core"></i><span class="lab">'+(m.label||'SOS')+'</span></div>', iconSize:[46,46], iconAnchor:[23,23]});
       var sm=L.marker([m.lat,m.lng],{icon:sosIc}).addTo(lmap); sosLeafEl=(sm.getElement&&sm.getElement())||null;
     } else {
-      L.marker([m.lat,m.lng],{icon:pinIcon(m.cls||'trip', m.ic||'i-mtn', m.label||'', (i*0.15)+'s')}).addTo(lmap);
+      var _mm=L.marker([m.lat,m.lng],{icon:pinIcon(m.cls||'trip', m.ic||'i-mtn', m.label||'', (i*0.15)+'s')}).addTo(lmap);
+      if(m.tripId){ _mm.on('click',function(){ if(window.__openTrip) window.__openTrip(m.tripId); }); }
     }
   });
   try{ if(mk.length){ lmap.fitBounds(L.latLngBounds(mk.map(function(m){return [m.lat,m.lng];})).pad(0.4)); } }catch(e){}
@@ -1716,7 +1718,9 @@ var FEED0=[
 function renderFeed(){
   if(feedRendered||!feedEl)return; feedRendered=true;
   FEED0.forEach(function(f,i){
-    feedEl.appendChild(feedItem(f[0],f[1],f[2],fmtHM(new Date(Date.now()-f[3]*60000)),i===0,i*120));
+    var _fe=feedItem(f[0],f[1],f[2],fmtHM(new Date(Date.now()-f[3]*60000)),i===0,i*120);
+    if(f[4]){ _fe.style.cursor='pointer'; _fe.title='Åpne tur'; _fe.addEventListener('click',function(){ if(window.__openTrip) window.__openTrip(f[4]); }); }
+    feedEl.appendChild(_fe);
   });
 }
 function addFeed(type,tag,html,silent){
@@ -2168,7 +2172,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       var mins=Math.max(0,Math.round((Date.now()-Date.parse(e.created_at))/60000))||0;
       var tn=(tripById[e.trip_id]&&tripById[e.trip_id].name)||'';
       var html=esc(e.description||e.type||'Hendelse')+(tn?' — <b>'+esc(tn)+'</b>':'');
-      return [m[0],m[1],html,mins];
+      return [m[0],m[1],html,mins,e.trip_id||null];
     });
     if(!feed.length) feed=[['sys','System','Ingen hendelser registrert ennå',1]];
 
@@ -2183,7 +2187,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     var reportsToday=eventRows.filter(function(e){ var d=new Date(e.created_at); return !isNaN(d)&&dstr(d)===todayStr; }).length;
 
     var mapMarkers=[];
-    activeTrips.forEach(function(t){ var c=parseGps(t.gps_coordinates)||((t.gps_lat!=null&&t.gps_lng!=null)?[parseFloat(t.gps_lat),parseFloat(t.gps_lng)]:null); if(c) mapMarkers.push({lat:c[0],lng:c[1],cls:'trip',ic:'i-mtn',label:(t.name||'Tur')+' · '+tripParticipants(t)+' gj.'}); });
+    activeTrips.forEach(function(t){ var c=parseGps(t.gps_coordinates)||((t.gps_lat!=null&&t.gps_lng!=null)?[parseFloat(t.gps_lat),parseFloat(t.gps_lng)]:null); if(c) mapMarkers.push({lat:c[0],lng:c[1],cls:'trip',ic:'i-mtn',label:(t.name||'Tur')+' · '+tripParticipants(t)+' gj.',tripId:t.id}); });
     sos.forEach(function(e){ var tr=tripById[e.trip_id]; var c=llArr(tr); if(c) mapMarkers.push({lat:c[0],lng:c[1],sos:true,label:'SOS · '+(tr.name||'')}); });
     var _done=tripRows.filter(function(t){ return t.status==='completed' || (t.report_summary&&String(t.report_summary).trim()); }).sort(function(a,b){ return Date.parse(b.date||b.created_at||0)-Date.parse(a.date||a.created_at||0); }).slice(0,8);
     var _reports=_done.map(function(t){ return { trip:t, events:eventRows.filter(function(e){ return e.trip_id===t.id; }) }; });
@@ -2254,6 +2258,53 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       '<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print()},350)}<\/scr'+'ipt></body></html>';
     w.document.write(h); w.document.close();
   }
+  function fetchMetWx(R){
+    try{
+      var c=null; (window.__TRIPS||[]).some(function(t){ if(t.gps_lat!=null&&t.gps_lng!=null){ c=[parseFloat(t.gps_lat),parseFloat(t.gps_lng)]; return true; } return false; });
+      if(!c) c=[69.65,18.96];
+      fetch('https://api.met.no/weatherapi/locationforecast/2.0/compact?lat='+c[0].toFixed(3)+'&lon='+c[1].toFixed(3))
+      .then(function(r){ return r.ok? r.json(): null; })
+      .then(function(j){
+        if(!j) return;
+        var ts=j.properties&&j.properties.timeseries&&j.properties.timeseries[0];
+        var d=ts&&ts.data&&ts.data.instant&&ts.data.instant.details;
+        if(!d) return;
+        var els=$$('.wx-it');
+        var dirs=['N','NØ','Ø','SØ','S','SV','V','NV'];
+        var dir=dirs[Math.round(((d.wind_from_direction||0)%360)/45)%8];
+        if(els[0]){ var b0=els[0].querySelector('b'); var s0=els[0].querySelector('span'); if(b0&&d.air_temperature!=null) b0.innerHTML=d.air_temperature.toFixed(1).replace('.',',')+'&thinsp;°C'; if(s0) s0.textContent='MET · live'; }
+        if(els[1]){ var b1=els[1].querySelector('b'); var s1=els[1].querySelector('span'); if(b1&&d.wind_speed!=null) b1.textContent=d.wind_speed.toFixed(0)+' m/s'; if(s1) s1.textContent='Fra '+dir; }
+      }).catch(function(){});
+    }catch(e){}
+  }
+
+  function toggleBellPanel(R){
+    var ex=document.getElementById('bellPanel');
+    if(ex){ if(ex.parentNode) ex.parentNode.removeChild(ex); return; }
+    var p=document.createElement('div'); p.id='bellPanel';
+    p.style.cssText='position:fixed;top:64px;right:18px;z-index:99997;width:min(92vw,330px);background:#16273f;border:1px solid #284063;border-radius:12px;padding:12px;box-shadow:0 18px 50px rgba(0,0,0,.5);font:500 12.5px Inter,system-ui,sans-serif;color:#c8d6e8';
+    var items=((R&&R.feed)||[]).slice(0,5).map(function(f){ return '<div style="padding:7px 4px;border-bottom:1px solid rgba(255,255,255,.06)">'+String(f[2])+'</div>'; }).join('');
+    p.innerHTML='<b style="color:#eaf2fb;font-size:13px">Siste varsler</b>'+(items||'<div style="padding:8px 4px;color:#8aa0bd">Ingen hendelser ennå.</div>');
+    document.body.appendChild(p);
+    setTimeout(function(){ document.addEventListener('click', function h(ev){ if(!p.contains(ev.target)){ if(p.parentNode) p.parentNode.removeChild(p); document.removeEventListener('click',h); } }); },60);
+  }
+
+  function openArchive(R, me){
+    if(document.getElementById('arOv')) return;
+    var done=(window.__TRIPS||[]).filter(function(t){ return t.status==='completed'||t.status==='cancelled'; }).sort(function(a,b){ return Date.parse(b.date||b.created_at||0)-Date.parse(a.date||a.created_at||0); });
+    var ov=document.createElement('div'); ov.id='arOv';
+    ov.innerHTML='<style>#arOv{position:fixed;inset:0;z-index:99998;display:flex;align-items:center;justify-content:center;background:rgba(8,14,26,.86);backdrop-filter:blur(8px);font-family:Inter,system-ui,sans-serif}#arC{width:min(96vw,540px);max-height:88vh;overflow:auto;background:#16273f;border:1px solid #284063;border-radius:16px;padding:22px;color:#c8d6e8}#arC h3{margin:0 0 10px;color:#eaf2fb;font-size:16px}.ar-row{display:flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:8px 10px;font-size:12.5px;margin-bottom:7px}.ar-row button{border:1px solid rgba(74,159,224,.35);background:rgba(74,159,224,.08);color:#cfe2f5;border-radius:7px;padding:4px 9px;font-size:11px;cursor:pointer}</style>'
+      +'<div id="arC"><h3>Rapportarkiv — fullførte og avlyste turer ('+done.length+')</h3>'
+      +(done.length? done.map(function(t){ return '<div class="ar-row">'+stBadge(t.status)+'<span style="flex:1;min-width:0"><b style="color:#eaf2fb">'+esc(t.name||'(uten navn)')+'</b><br><span style="font-size:11px">'+esc(t.date||'—')+' · '+esc(t.guide_name||'—')+'</span></span><button type="button" data-arop="'+t.id+'">Åpne</button><button type="button" data-arpr="'+t.id+'">Print</button></div>'; }).join('') : '<p style="color:#8aa0bd;font-size:12.5px">Ingen fullførte turer ennå.</p>')
+      +'<button type="button" id="arClose" style="margin-top:10px;width:100%;padding:10px;border:none;border-radius:9px;background:#22364f;color:#cfe2f5;font-weight:600;cursor:pointer">Lukk</button></div>';
+    document.body.appendChild(ov);
+    var close=function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); };
+    ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
+    document.getElementById('arClose').onclick=close;
+    $$('#arC [data-arop]').forEach(function(b){ b.onclick=function(){ close(); openTripAdmin(R, me, b.getAttribute('data-arop')); }; });
+    $$('#arC [data-arpr]').forEach(function(b){ b.onclick=function(){ var t=(window.__TRIPS||[]).filter(function(x){return x.id===b.getAttribute('data-arpr');})[0]; if(!t) return; sb.from('events').select('*').eq('trip_id',t.id).order('created_at',{ascending:false}).then(function(er){ printTripReport(t,(er&&er.data)||[]); }); }; });
+  }
+
   function logAdmin(action, target, details){
     try{
       var m=window.__ME;
@@ -2269,12 +2320,17 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     var trips=(window.__TRIPS||[]).slice().sort(function(a,b){ return Date.parse(b.date||b.created_at||0)-Date.parse(a.date||a.created_at||0); });
     var h=$('#tadmHint'); if(h) h.textContent=trips.length+' turer';
     if(!trips.length){ el.innerHTML='<span style="font-size:12.5px">Ingen turer ennå — bruk «Ny tur».</span>'; return; }
-    el.innerHTML=trips.map(function(t){
+    var F=window.__TADM_F||'alle';
+    var fdef=[['alle','Alle'],['active','Aktive'],['draft','Utkast'],['completed','Fullført'],['cancelled','Avlyst']];
+    var fbar='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px">'+fdef.map(function(f){ var on=(F===f[0]); return '<button type="button" data-tf="'+f[0]+'" style="border:1px solid '+(on?'#4a9fe0':'rgba(255,255,255,.14)')+';background:'+(on?'rgba(74,159,224,.12)':'none')+';color:'+(on?'#cfe2f5':'#8aa0bd')+';border-radius:7px;padding:3px 9px;font-size:11px;cursor:pointer">'+f[1]+'</button>'; }).join('')+'</div>';
+    var show=(F==='alle')? trips : trips.filter(function(t){ return t.status===F; });
+    el.innerHTML=fbar+(show.length? show.map(function(t){
       return '<button type="button" data-tadm="'+t.id+'" style="display:flex;align-items:center;gap:9px;text-align:left;border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:8px 10px;background:none;color:var(--muted);cursor:pointer">'
         + stBadge(t.status)
         + '<span style="flex:1;min-width:0"><b style="color:var(--text)">'+esc(t.name||'(uten navn)')+'</b><br><span style="font-size:11.5px">'+esc(t.date||'—')+' · '+esc(t.guide_name||'—')+'</span></span>'
         + '<span style="font-size:11px">Åpne →</span></button>';
-    }).join('');
+    }).join('') : '<span style="font-size:12.5px">Ingen turer i dette filteret.</span>');
+    $$('#tripAdmList [data-tf]').forEach(function(b){ b.onclick=function(){ window.__TADM_F=b.getAttribute('data-tf'); renderTripAdmin(R, me); }; });
     $$('#tripAdmList [data-tadm]').forEach(function(b){ b.onclick=function(){ openTripAdmin(R, me, b.getAttribute('data-tadm')); }; });
   }
 
@@ -2636,6 +2692,20 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     var ib=$('#inviteGuideBtn'); if(ib && !ib.__wired){ ib.__wired=1; ib.onclick=function(){ openInvite(R, me); }; }
     try{ renderPlanning(R, me); }catch(e){}
     try{ renderTripAdmin(R, me); }catch(e){}
+    try{
+      window.__Rref=R;
+      window.__openTrip=function(id){ try{ openTripAdmin(window.__Rref, window.__ME, id); }catch(e){} };
+      var _kt=['#tripAdmList','#mapCard','#glist','#feedCard'];
+      $$('.kpi').forEach(function(k,i){ if(k.__w) return; k.__w=1; k.style.cursor='pointer'; k.title='Klikk for å åpne'; k.onclick=function(){ if(i===0){ window.__TADM_F='active'; try{ renderTripAdmin(R, me); }catch(e){} } var el=document.querySelector(_kt[i]||_kt[0]); if(el){ (el.closest('article')||el).scrollIntoView({behavior:'smooth',block:'center'}); } }; });
+      $$('.card-h .hint').forEach(function(h){
+        if(h.__w) return;
+        if(/varsom\.no/i.test(h.textContent)){ h.__w=1; h.style.cursor='pointer'; h.style.textDecoration='underline'; h.onclick=function(){ window.open('https://www.varsom.no/snoskredvarsling/','_blank'); }; }
+        else if(/Arkiv/i.test(h.textContent)){ h.__w=1; h.style.cursor='pointer'; h.style.textDecoration='underline'; h.onclick=function(){ openArchive(R, me); }; }
+      });
+      $$('.wx-it').forEach(function(w){ if(w.__w) return; w.__w=1; w.style.cursor='pointer'; w.title='Åpne yr.no'; w.onclick=function(){ window.open('https://www.yr.no/nb/s%C3%B8k?q=Tamokdalen','_blank'); }; });
+      if(!window.__wxDone){ window.__wxDone=1; fetchMetWx(R); }
+      var _bell=$('#bell'); if(_bell && !_bell.__w){ _bell.__w=1; _bell.onclick=function(ev){ if(ev){ev.preventDefault();ev.stopPropagation();} toggleBellPanel(R); }; }
+    }catch(e){}
 
     var banner=$('#sosBanner');
     if(banner){
@@ -2688,6 +2758,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
         var rsp=row.querySelector('.rep-tx span'); if(rsp) rsp.textContent=(rr.trip.guide_name||'—')+' · '+(rr.trip.date?new Date(rr.trip.date).toLocaleDateString('nb-NO'):relTime(rr.trip.created_at))+' · '+rr.events.length+' hendelser';
         var rbd=row.querySelector('.rep-bdg'); if(rbd){ rbd.className='rep-bdg '+(rr.trip.report_summary?'sig':'ark'); rbd.textContent=rr.trip.report_summary?'Rapport':'Fullført'; }
         var rdl=row.querySelector('.rep-dl'); if(rdl){ rdl.removeAttribute('data-toast'); rdl.onclick=function(ev){ if(ev)ev.stopPropagation(); printTripReport(rr.trip, rr.events); }; }
+        row.style.cursor='pointer'; row.title='Åpne turpanel'; row.onclick=function(){ try{ openTripAdmin(R, me, rr.trip.id); }catch(e){} };
       });
       var repList=$('.rep-col .replist');
       if(repList && !reps.length){ repList.innerHTML='<div style="padding:16px;color:var(--muted2);font-size:12.5px">Ingen fullførte turrapporter ennå.</div>'; }
