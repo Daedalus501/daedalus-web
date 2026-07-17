@@ -2236,9 +2236,11 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
           err.textContent = (String(res.error.code)==='23505'||/duplicate/i.test(msg))? 'Denne e-posten er allerede invitert.' : ('Kunne ikke lagre: '+msg);
           btn.disabled=false; btn.textContent='Send invitasjon'; return;
         }
-        var copyTxt='Du er invitert til '+orgName+' på Daedalus. Last ned appen: https://apps.apple.com/no/app/id6761403819 og registrer deg med denne e-posten: '+email;
+        var inviteLink='https://daedalus-app.no/invitert.html?email='+encodeURIComponent(email);
+        var copyTxt='Du er invitert til '+orgName+' på Daedalus.\n1) Sett passord: '+inviteLink+'\n2) Last ned appen: https://apps.apple.com/no/app/id6761403819\n3) Logg inn i appen med '+email+' — du kobles automatisk til organisasjonen.';
         var f=document.getElementById('igC');
         f.innerHTML='<h3>Invitasjon sendt</h3><p class="s">E-post er på vei til <b style="color:#eaf2fb">'+_escR(email)+'</b>. Guiden vises som «Invitert» i lista til registreringen er fullført.</p>'+
+          '<p class="s" style="word-break:break-all">Passordlenke (kan deles direkte): <a href="'+inviteLink+'" target="_blank" rel="noopener" style="color:#4a9fe0">'+inviteLink+'</a></p>'+
           '<div class="btns"><button type="button" id="igCopy">Kopier invitasjonstekst</button><button type="button" id="igDone">Lukk</button></div>';
         var cbtn=document.getElementById('igCopy'); cbtn.style.background='#22364f'; cbtn.style.color='#cfe2f5';
         var dbtn=document.getElementById('igDone'); dbtn.style.background='linear-gradient(135deg,#4a9fe0,#3b82c4)'; dbtn.style.color='#fff';
