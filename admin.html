@@ -2209,14 +2209,14 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
   function printTripReport(t, evs){
     var w=window.open('','_blank'); if(!w){ try{ toast('Kunne ikke åpne rapport','Tillat pop-up-vinduer for å skrive ut.'); }catch(e){} return; }
     var rows=(evs||[]).map(function(e){ return '<tr><td>'+new Date(e.created_at).toLocaleString('nb-NO')+'</td><td>'+_escR(e.type)+'</td><td>'+_escR(e.severity)+'</td><td>'+_escR(e.description)+'</td><td>'+_escR(e.action_taken)+'</td></tr>'; }).join('');
-    sb.from('participants').select('name,phone,emergency_contact,pickup_point').eq('trip_id',t.id).then(function(pr){
+    sb.from('participants').select('name,phone,emergency_contact').eq('trip_id',t.id).then(function(pr){
     var plist=(pr&&pr.data)||[];
-    var prows=plist.map(function(p){ return '<tr><td>'+_escR(p.name||'—')+'</td><td>'+_escR(p.phone||'—')+'</td><td>'+_escR(p.emergency_contact||'—')+'</td><td>'+_escR(p.pickup_point||'—')+'</td></tr>'; }).join('');
+    var prows=plist.map(function(p){ return '<tr><td>'+_escR(p.name||'—')+'</td><td>'+_escR(p.phone||'—')+'</td><td>'+_escR(p.emergency_contact||'—')+'</td></tr>'; }).join('');
     var h='<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Turrapport — '+_escR(t.name)+'</title><style>body{font-family:Inter,Arial,sans-serif;color:#0e1a2c;max-width:760px;margin:24px auto;padding:0 16px}h1{font-size:20px;margin:0 0 4px}h2{font-size:14px;margin:22px 0 6px}.k{color:#5a6b82;font-size:12px}table{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:6px}td,th{border:1px solid #d4dae3;padding:6px;text-align:left;vertical-align:top}th{background:#f4f6fa}</style></head><body>'+
       '<h1>Turrapport — '+_escR(t.name)+'</h1>'+
       '<p class="k">'+_escR(t.guide_name||'')+(t.organization_name?(' · '+_escR(t.organization_name)):'')+' · '+_escR(t.date||'')+' · status: '+_escR(t.status||'')+'</p>'+
       '<h2>Detaljer</h2><p class="k">Sted: '+_escR(t.start_location||'—')+(t.return_date?('<br>Returdato: '+_escR(t.return_date)):'')+'<br>Aktivitet: '+_escR(t.activity_type||'—')+' · Vanskelighet: '+_escR(t.difficulty||'—')+'<br>Skredfaregrad: '+_escR(t.avalanche_level||'—')+'<br>Sikkerhetssjekk: vær '+(t.weather_verified?'✓':'—')+' · utstyr '+(t.equipment_checked?'✓':'—')+' · nødkontakt '+(t.emergency_contact_notified?'✓':'—')+'</p>'+
-      ((plist.length)?('<h2>Deltakere ('+plist.length+')</h2><table><tr><th>Navn</th><th>Telefon</th><th>Nødkontakt</th><th>Oppmøte</th></tr>'+prows+'</table>'):'')+
+      ((plist.length)?('<h2>Deltakere ('+plist.length+')</h2><table><tr><th>Navn</th><th>Telefon</th><th>Nødkontakt</th></tr>'+prows+'</table>'):'')+
       (t.report_summary?('<h2>Sammendrag</h2><p>'+_escR(t.report_summary)+'</p>'):'')+
       '<h2>Hendelser ('+(evs?evs.length:0)+')</h2>'+(rows?('<table><tr><th>Tid</th><th>Type</th><th>Alvor</th><th>Beskrivelse</th><th>Tiltak</th></tr>'+rows+'</table>'):'<p class="k">Ingen hendelser registrert.</p>')+
       '<p class="k" style="margin-top:26px">Generert '+new Date().toLocaleString('nb-NO')+' · Daedalus · Guide &amp; Safety</p>'+
