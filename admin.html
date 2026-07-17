@@ -267,7 +267,7 @@ a{color:var(--accent-soft)}
   animation:sosEdge 2.1s ease-in-out infinite;
   max-height:220px; transition:max-height .9s var(--ease), opacity .7s ease .15s, margin .9s var(--ease), border-width .9s}
 @keyframes sosEdge{0%,100%{box-shadow:0 16px 44px rgba(120,30,24,.3), 0 0 0 0 rgba(217,104,95,.34)}50%{box-shadow:0 16px 52px rgba(140,36,28,.42), 0 0 0 9px rgba(217,104,95,0)}}
-.sos.gone{max-height:0; opacity:0; margin:0; border-width:0; animation:none; pointer-events:none}
+.sos.gone{display:none !important; max-height:0; opacity:0; margin:0; border-width:0; animation:none; pointer-events:none}
 .sos::before{content:""; position:absolute; inset:0; pointer-events:none; opacity:.5;
   background:repeating-linear-gradient(-48deg, transparent 0 22px, rgba(217,104,95,.06) 22px 44px)}
 .sos-in{display:flex; align-items:center; gap:18px; padding:16px 20px; position:relative}
@@ -1621,7 +1621,7 @@ var drawer=$('#drawer'), backdrop=$('#backdrop'), lastFocus=null;
 function openGuide(i){
   var g=GUIDES[i]; if(!g||!drawer)return;
   lastFocus=document.activeElement;
-  var av=$('#dAv'); av.textContent=g.ini;
+  var av=$('#dAv'); if(g.avatar){ av.textContent=''; av.style.background='url('+g.avatar+') center/cover no-repeat'; } else { av.style.background=''; av.textContent=g.ini; }
   av.style.background='linear-gradient(140deg,'+g.av[0]+','+g.av[1]+')';
   $('#dName').textContent=g.name;
   $('#dRole').textContent=g.role;
@@ -2117,7 +2117,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       if(!certs.length) certs=[['Ingen sertifiseringer registrert','—',0,'warn']];
       var roleLabel = String(u.role||'').toLowerCase().indexOf('admin')>-1? 'Administrator' : 'Guide';
       var pos = onTrip? [ (onTrip.gps_coordinates||'—'), 'På tur: '+(onTrip.name||'') ] : [ '—', 'Sist sett: '+relTime(u.last_seen_at||u.updated_at||u.created_at) ];
-      return { ini:initials(u.name||u.email), name:u.name||u.email||'—', role:roleLabel, st:st, av:PAL[idx%PAL.length], phone:u.phone||'—', email:u.email||'', certs:certs, trips:myTrips.length?myTrips:[['Ingen turer registrert','—']], pos:pos };
+      return { ini:initials(u.name||u.email), name:u.name||u.email||'—', role:roleLabel, st:st, av:PAL[idx%PAL.length], phone:u.phone||'—', email:u.email||'', avatar:u.avatar_url||'', certs:certs, trips:myTrips.length?myTrips:[['Ingen turer registrert','—']], pos:pos };
     });
 
     var TMAP={sos:['sos','SOS'],weather:['sys','Vær'],equipment:['warn','Utstyr'],hazard:['warn','Fare'],'near-accident':['warn','Nestenulykke'],checkpoint:['ok','Sjekkpunkt'],report:['rep','Rapport']};
@@ -2309,13 +2309,13 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       if(!g){ row.style.display='none'; return; }
       row.style.display='';
       row.style.setProperty('--av1',g.av[0]); row.style.setProperty('--av2',g.av[1]);
-      var av=row.querySelector('.g-av'); if(av&&av.firstChild){ av.firstChild.nodeValue=g.ini; var dot=av.querySelector('.st'); if(dot)dot.className='st st-'+g.st[0]; }
+      var av=row.querySelector('.g-av'); if(av&&av.firstChild){ if(g.avatar){ av.style.background='url('+g.avatar+') center/cover no-repeat'; av.firstChild.nodeValue=''; } else { av.style.background=''; av.firstChild.nodeValue=g.ini; } var dot=av.querySelector('.st'); if(dot)dot.className='st st-'+g.st[0]; }
       var b=row.querySelector('.g-tx b'); if(b)b.textContent=g.name;
       var sub=row.querySelector('.g-tx span'); if(sub)sub.textContent=g.role;
       var stl=row.querySelector('.g-st'); if(stl){ stl.className='g-st '+g.st[0]; stl.textContent=g.st[1]; }
     });
     var gl=$('#glist'); var card=gl&&gl.closest?gl.closest('article'):null; var ch=card?card.querySelector('.hint'):null;
-    if(ch){ ch.textContent = (R.seats!=null)? (R.seatsUsed+' av '+R.seats+' seter') : (R.guides.length+' guider'); }
+    if(ch){ ch.textContent = (R.seats!=null)? (R.seatsUsed+' av '+R.seats+' seter') : (R.guides.length===1? '1 guide' : (R.guides.length+' guider')); }
     var su=$('#seatUpgrade'); if(su) su.style.display=(R.seats!=null && R.seatsUsed>=R.seats)? '' : 'none';
     var ib=$('#inviteGuideBtn'); if(ib && !ib.__wired){ ib.__wired=1; ib.onclick=function(){ openInvite(R, me); }; }
 
@@ -2352,7 +2352,8 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       var hs=$('.hero-sub');
       if(hs){
         var avL=R.ava||2, avT=String(R.avaText||'Moderat').toLowerCase();
-        hs.innerHTML='<b>'+R.kpis.trips+' aktive turer</b> nå. '+R.kpis.guides+' guider på vakt og alle sporingsenheter rapporterer normalt. Skredvarsel for regionen: <b>faregrad '+avL+' — '+avT+'</b>.';
+        var _tT=(R.kpis.trips===1?' aktiv tur':' aktive turer'), _gT=(R.kpis.guides===1?' guide':' guider');
+        hs.innerHTML='<b>'+R.kpis.trips+_tT+'</b> nå. '+R.kpis.guides+_gT+' på vakt og alle sporingsenheter rapporterer normalt. Skredvarsel for regionen: <b>faregrad '+avL+' — '+avT+'</b>.';
       }
       var chip=$('#opChip'), chipTx=$('#opChipTx');
       if(chip){
@@ -2389,7 +2390,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       sb.channel('web-admin-'+(orgId||'x'))
         .on('postgres_changes',{event:'INSERT',schema:'public',table:'events'},function(p){
           var isSos=String((p.new&&p.new.type)||'').toLowerCase()==='sos';
-          if(isSos){ var banner=$('#sosBanner'); if(banner){ banner.classList.remove('gone'); banner.removeAttribute('aria-hidden'); } }
+          if(isSos){ setTimeout(function(){ location.reload(); }, 900); }
         })
         .subscribe();
     }catch(e){}
