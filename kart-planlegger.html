@@ -158,7 +158,7 @@
   function sync(){ redraw(); document.getElementById('json').textContent=JSON.stringify({routePoints:routePoints,markers:markers},null,2); }
 
   map.on('click',function(e){
-    if(!currentTrip){ return; }
+    if(!currentTrip){ (function(){ var h=document.getElementById('noTripHint'); if(!h){ h=document.createElement('div'); h.id='noTripHint'; h.style.cssText='position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:9999;background:#c9a24b;color:#0d1b2e;font:600 13px Inter,system-ui,sans-serif;padding:10px 16px;border-radius:9px;box-shadow:0 8px 24px rgba(0,0,0,.4);max-width:88vw;text-align:center'; document.body.appendChild(h);} h.textContent='Velg en tur f\u00f8rst \u2014 eller opprett en i kommandosenteret (\u00abNy tur\u00bb).'; clearTimeout(h.__t); h.__t=setTimeout(function(){ h.remove(); },3500); })(); return; }
     var c={latitude:+e.latlng.lat.toFixed(6),longitude:+e.latlng.lng.toFixed(6)};
     if(mode==='route'){ routePoints.push(c); }
     else if(mode==='hazard'){ markers.push({id:'hazard-'+Date.now(),coordinate:c,type:'hazard'}); }
