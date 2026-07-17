@@ -1106,6 +1106,25 @@ body.lock{overflow:hidden}
     </article>
   </section>
 
+  <div class="sec-head rv" style="--d:0s">
+    <span class="sec-no plx" data-speed=".05">05</span><h2 class="sec-title" style="margin:0">Planlegging og ressurser</h2>
+    <div class="rule"></div><span class="sec-sub">Maler · kjøretøy · hundespann</span>
+  </div>
+  <section class="grid">
+    <article class="card sp4 rv" style="--d:.05s">
+      <div class="card-h"><svg class="ic"><use href="#i-file"/></svg><h3>Turmaler</h3><span class="hint" id="tplHint">—</span><button id="newTplBtn" type="button" style="margin-left:auto;font:600 11.5px var(--sans);color:#cfe2f5;background:rgba(74,159,224,.08);border:1px solid rgba(74,159,224,.35);border-radius:8px;padding:6px 11px;cursor:pointer;white-space:nowrap">Ny mal</button></div>
+      <div id="tplList" style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--muted)">Ingen maler registrert ennå.</div>
+    </article>
+    <article class="card sp4 rv" style="--d:.1s">
+      <div class="card-h"><svg class="ic"><use href="#i-mtn"/></svg><h3>Kjøretøy</h3><span class="hint" id="vehHint">—</span></div>
+      <div id="vehList" style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--muted)">Ingen kjøretøy registrert ennå.</div>
+    </article>
+    <article class="card sp4 rv" style="--d:.15s">
+      <div class="card-h"><svg class="ic"><use href="#i-users"/></svg><h3>Hundespann</h3><span class="hint" id="dogHint">—</span></div>
+      <div id="dogList" style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--muted)">Ingen hundespann registrert ennå.</div>
+    </article>
+  </section>
+
   <footer class="rv" style="--d:0s">
     <span class="beat"><i></i>Alle systemer operative</span>
     <span>Daedalus · Guide &amp; Safety — webadmin <b>v2.0</b></span>
@@ -1622,7 +1641,7 @@ function openGuide(i){
   var g=GUIDES[i]; if(!g||!drawer)return;
   lastFocus=document.activeElement;
   var av=$('#dAv'); if(g.avatar){ av.textContent=''; av.style.background='url('+g.avatar+') center/cover no-repeat'; } else { av.style.background=''; av.textContent=g.ini; }
-  av.style.background='linear-gradient(140deg,'+g.av[0]+','+g.av[1]+')';
+  if(!g.avatar){ av.style.background='linear-gradient(140deg,'+g.av[0]+','+g.av[1]+')'; }
   $('#dName').textContent=g.name;
   $('#dRole').textContent=g.role;
   var stEl=$('#dStatus'); stEl.className='g-st '+g.st[0]; stEl.textContent=g.st[1];
@@ -1630,7 +1649,8 @@ function openGuide(i){
   if(_ph){ $('#dCall').removeAttribute('data-toast'); $('#dCall').onclick=function(){ location.href='tel:'+_ph.replace(/\s+/g,''); }; }
   else { $('#dCall').onclick=null; $('#dCall').setAttribute('data-toast','Ingen telefon registrert|Guiden har ikke lagt inn telefonnummer i appen.'); }
   var _em=g.email||'';
-  if(_em){ $('#dMail').removeAttribute('data-toast'); $('#dMail').onclick=function(){ location.href='mailto:'+_em; }; }
+  if(window.sendGuidePush && g.id && String(g.id).indexOf('inv-')!==0){ $('#dMail').removeAttribute('data-toast'); $('#dMail').onclick=function(){ window.sendGuidePush(g); }; }
+  else if(_em){ $('#dMail').removeAttribute('data-toast'); $('#dMail').onclick=function(){ location.href='mailto:'+_em; }; }
   else { $('#dMail').onclick=null; $('#dMail').setAttribute('data-toast','Ingen e-post registrert|Guiden mangler e-postadresse.'); }
   var ch='';
   g.certs.forEach(function(c){
@@ -2050,6 +2070,9 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       '<div class="err" id="admErr"></div>'+
     '</form>';
   document.body.appendChild(ov);
+  var _ldEl=null;
+  try{ if(localStorage.getItem('sb-kyqjrlpsarbdwfbyjufa-auth-token')){ var _fEl=$('#admForm'); if(_fEl){ _fEl.style.display='none'; } _ldEl=document.createElement('div'); _ldEl.style.cssText='color:#8aa0bd;font-size:14px;text-align:center;padding:34px 12px;font-family:Inter,system-ui,sans-serif'; _ldEl.textContent='Laster \u00f8kt \u2026'; ov.appendChild(_ldEl); } }catch(e){}
+  function showLoginForm(){ var f=$('#admForm'); if(f) f.style.display=''; if(_ldEl&&_ldEl.parentNode){ _ldEl.parentNode.removeChild(_ldEl); _ldEl=null; } }
   function hideGate(){ ov.style.display='none'; }
   function showErr(m){ var e=$('#admErr'); if(e)e.textContent=m||''; }
 
@@ -2067,7 +2090,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
 
   // gjenoppta sesjon
   sb.auth.getSession().then(function(r){
-    if(r && r.data && r.data.session){ load().catch(function(e){ showErr((e&&e.message)||''); }); }
+    if(r && r.data && r.data.session){ load().catch(function(e){ showErr((e&&e.message)||''); showLoginForm(); }); } else { showLoginForm(); }
   });
 
   // ---------- datahenting ----------
@@ -2092,9 +2115,15 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
           var guideRows=(rr[0]&&rr[0].data)||[]; var tripRows=(rr[1]&&rr[1].data)||[];
           var invRows=(rr[2]&&rr[2].data)||[]; var subRow=((rr[3]&&rr[3].data)||[])[0]||null;
           invRows.forEach(function(iv){ guideRows.push({ id:'inv-'+iv.id, name:iv.name||iv.email, email:iv.email, role:'Invitert', __invite:true }); });
+          var guideIds=guideRows.filter(function(u){return !u.__invite;}).map(function(u){return u.id;});
+          var xQ = Promise.all([
+            guideIds.length? sb.from('trip_templates').select('*').in('guide_id',guideIds).order('created_at',{ascending:false}) : Promise.resolve({data:[]}),
+            orgId? sb.from('vehicles').select('*').eq('organization_id',orgId).order('created_at',{ascending:false}) : Promise.resolve({data:[]}),
+            orgId? sb.from('dog_teams').select('*').eq('organization_id',orgId).order('created_at',{ascending:false}) : Promise.resolve({data:[]})
+          ]);
           var tripIds=tripRows.map(function(t){return t.id;});
           var evP = tripIds.length? sb.from('events').select('*').in('trip_id',tripIds).order('created_at',{ascending:false}).limit(25) : Promise.resolve({data:[]});
-          return evP.then(function(evR){ return buildAndApply(me, orgId, guideRows, tripRows, (evR&&evR.data)||[], subRow); });
+          return Promise.all([evP, xQ]).then(function(z){ var evR=z[0]; var xr=z[1]; window.__RES={ templates:(xr[0]&&xr[0].data)||[], vehicles:(xr[1]&&xr[1].data)||[], dogs:(xr[2]&&xr[2].data)||[] }; return buildAndApply(me, orgId, guideRows, tripRows, (evR&&evR.data)||[], subRow); });
         });
       });
     });
@@ -2116,8 +2145,8 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       var certs=String(u.certifications||'').split(/\n|;/).map(function(x){return x.trim();}).filter(Boolean).map(function(c){ return [c,'registrert',66,'']; });
       if(!certs.length) certs=[['Ingen sertifiseringer registrert','—',0,'warn']];
       var roleLabel = String(u.role||'').toLowerCase().indexOf('admin')>-1? 'Administrator' : 'Guide';
-      var pos = onTrip? [ (onTrip.gps_coordinates||'—'), 'På tur: '+(onTrip.name||'') ] : [ '—', 'Sist sett: '+relTime(u.last_seen_at||u.updated_at||u.created_at) ];
-      return { ini:initials(u.name||u.email), name:u.name||u.email||'—', role:roleLabel, st:st, av:PAL[idx%PAL.length], phone:u.phone||'—', email:u.email||'', avatar:u.avatar_url||'', certs:certs, trips:myTrips.length?myTrips:[['Ingen turer registrert','—']], pos:pos };
+      var pos = onTrip? [ (onTrip.gps_coordinates||'—'), 'På tur: '+(onTrip.name||'') ] : [ 'Ingen aktiv tur', 'Sist aktiv i appen: '+relTime(u.last_seen_at||u.updated_at||u.created_at) ];
+      return { id:u.id, ini:initials(u.name||u.email), name:u.name||u.email||'—', role:roleLabel, st:st, av:PAL[idx%PAL.length], phone:u.phone||'—', email:u.email||'', avatar:u.avatar_url||'', certs:certs, trips:myTrips.length?myTrips:[['Ingen turer registrert','—']], pos:pos };
     });
 
     var TMAP={sos:['sos','SOS'],weather:['sys','Vær'],equipment:['warn','Utstyr'],hazard:['warn','Fare'],'near-accident':['warn','Nestenulykke'],checkpoint:['ok','Sjekkpunkt'],report:['rep','Rapport']};
@@ -2180,16 +2209,21 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
   function printTripReport(t, evs){
     var w=window.open('','_blank'); if(!w){ try{ toast('Kunne ikke åpne rapport','Tillat pop-up-vinduer for å skrive ut.'); }catch(e){} return; }
     var rows=(evs||[]).map(function(e){ return '<tr><td>'+new Date(e.created_at).toLocaleString('nb-NO')+'</td><td>'+_escR(e.type)+'</td><td>'+_escR(e.severity)+'</td><td>'+_escR(e.description)+'</td><td>'+_escR(e.action_taken)+'</td></tr>'; }).join('');
+    sb.from('participants').select('name,phone,emergency_contact,pickup_point').eq('trip_id',t.id).then(function(pr){
+    var plist=(pr&&pr.data)||[];
+    var prows=plist.map(function(p){ return '<tr><td>'+_escR(p.name||'—')+'</td><td>'+_escR(p.phone||'—')+'</td><td>'+_escR(p.emergency_contact||'—')+'</td><td>'+_escR(p.pickup_point||'—')+'</td></tr>'; }).join('');
     var h='<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Turrapport — '+_escR(t.name)+'</title><style>body{font-family:Inter,Arial,sans-serif;color:#0e1a2c;max-width:760px;margin:24px auto;padding:0 16px}h1{font-size:20px;margin:0 0 4px}h2{font-size:14px;margin:22px 0 6px}.k{color:#5a6b82;font-size:12px}table{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:6px}td,th{border:1px solid #d4dae3;padding:6px;text-align:left;vertical-align:top}th{background:#f4f6fa}</style></head><body>'+
       '<h1>Turrapport — '+_escR(t.name)+'</h1>'+
       '<p class="k">'+_escR(t.guide_name||'')+(t.organization_name?(' · '+_escR(t.organization_name)):'')+' · '+_escR(t.date||'')+' · status: '+_escR(t.status||'')+'</p>'+
       '<h2>Detaljer</h2><p class="k">Sted: '+_escR(t.start_location||'—')+'<br>Aktivitet: '+_escR(t.activity_type||'—')+' · Vanskelighet: '+_escR(t.difficulty||'—')+'<br>Skredfaregrad: '+_escR(t.avalanche_level||'—')+'<br>Sikkerhetssjekk: vær '+(t.weather_verified?'✓':'—')+' · utstyr '+(t.equipment_checked?'✓':'—')+' · nødkontakt '+(t.emergency_contact_notified?'✓':'—')+'</p>'+
+      ((plist.length)?('<h2>Deltakere ('+plist.length+')</h2><table><tr><th>Navn</th><th>Telefon</th><th>Nødkontakt</th><th>Oppmøte</th></tr>'+prows+'</table>'):'')+
       (t.report_summary?('<h2>Sammendrag</h2><p>'+_escR(t.report_summary)+'</p>'):'')+
       '<h2>Hendelser ('+(evs?evs.length:0)+')</h2>'+(rows?('<table><tr><th>Tid</th><th>Type</th><th>Alvor</th><th>Beskrivelse</th><th>Tiltak</th></tr>'+rows+'</table>'):'<p class="k">Ingen hendelser registrert.</p>')+
       '<p class="k" style="margin-top:26px">Generert '+new Date().toLocaleString('nb-NO')+' · Daedalus · Guide &amp; Safety</p>'+
       '<p style="font-size:10px;color:#7a8699;border-top:1px solid #e3e7ee;padding-top:8px;margin-top:6px;line-height:1.45">Ansvarsfraskrivelse: Daedalus er et hjelpemiddel for dokumentasjon, ikke en erstatning for profesjonell vurdering, opplæring eller sertifisering. Vær- og skreddata kan være forsinket eller unøyaktig og må verifiseres uavhengig. Guiden og selskapet har det fulle ansvaret for sikkerhetsbeslutninger. Vilkår: daedalus-app.no/terms</p>'+
       '<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print()},350)}<\/scr'+'ipt></body></html>';
     w.document.write(h); w.document.close();
+    });
   }
   function printDayReport(R){
     var w=window.open('','_blank'); if(!w){ try{ toast('Kunne ikke åpne rapport','Tillat pop-up-vinduer for å skrive ut.'); }catch(e){} return; }
@@ -2208,6 +2242,75 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       '<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print()},350)}<\/scr'+'ipt></body></html>';
     w.document.write(h); w.document.close();
   }
+  window.sendGuidePush=function(g){
+    var msg=window.prompt('Melding til '+(g.name||'guiden')+' (sendes som push til appen):');
+    if(!msg||!msg.trim()) return;
+    sb.auth.getSession().then(function(r){
+      var tok=r&&r.data&&r.data.session&&r.data.session.access_token;
+      if(!tok){ try{ toast('Ikke innlogget','Logg inn på nytt.'); }catch(e){} return; }
+      fetch('https://kyqjrlpsarbdwfbyjufa.supabase.co/functions/v1/send-push',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok},body:JSON.stringify({guide_id:g.id,message:msg.trim()})})
+      .then(function(res){ return res.json().catch(function(){ return {}; }); })
+      .then(function(j){
+        if(j&&j.ok&&j.delivered){ try{ toast('Melding sendt','Push levert til '+(g.name||'guiden')+'.'); }catch(e){} }
+        else if(j&&j.reason==='no_push_token'){ try{ toast('Guiden har ikke push aktiv','Åpner e-post i stedet.'); }catch(e){} if(g.email) location.href='mailto:'+g.email; }
+        else { try{ toast('Push utilgjengelig','Åpner e-post i stedet.'); }catch(e){} if(g.email) location.href='mailto:'+g.email; }
+      })
+      .catch(function(){ if(g.email) location.href='mailto:'+g.email; });
+    });
+  };
+
+  function renderPlanning(R, me){
+    var res=window.__RES||{templates:[],vehicles:[],dogs:[]};
+    var gname=function(id){ var g=(R.guidesRaw||[]).filter(function(x){return x.id===id;})[0]; return g? g.name : '—'; };
+    var th=$('#tplHint'); if(th) th.textContent=res.templates.length+' maler';
+    var vh=$('#vehHint'); if(vh) vh.textContent=res.vehicles.length+' stk';
+    var dh=$('#dogHint'); if(dh) dh.textContent=res.dogs.length+' spann';
+    var tl=$('#tplList');
+    if(tl){
+      tl.innerHTML = res.templates.length? res.templates.map(function(tp){ return '<div style="display:flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:8px 10px"><span style="flex:1;min-width:0"><b style="color:var(--text)">'+esc(tp.name||'(uten navn)')+'</b><br><span style="font-size:11.5px">'+esc(tp.activity_type||'—')+' · '+esc(tp.difficulty||'—')+' · '+esc(tp.start_location||'—')+' · '+esc(gname(tp.guide_id))+'</span></span><button type="button" data-deltpl="'+tp.id+'" style="border:1px solid rgba(232,133,124,.4);background:none;color:#e8857c;border-radius:7px;padding:4px 8px;font-size:11px;cursor:pointer">Slett</button></div>'; }).join('') : '<span style="font-size:12.5px">Ingen maler ennå — «Ny mal» oppretter en for valgt guide.</span>';
+      $$('#tplList [data-deltpl]').forEach(function(b){ b.onclick=function(){ if(!window.confirm('Slette malen?')) return; sb.from('trip_templates').delete().eq('id',b.getAttribute('data-deltpl')).then(function(r2){ if(r2&&r2.error){ try{ toast('Kunne ikke slette',r2.error.message); }catch(e){} } else { try{ toast('Mal slettet',''); }catch(e){} setTimeout(function(){ location.reload(); },500); } }); }; });
+    }
+    var vl=$('#vehList'); if(vl){ vl.innerHTML = res.vehicles.length? res.vehicles.map(function(v){ return '<div style="border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:8px 10px"><b style="color:var(--text)">'+esc(v.type||'Kjøretøy')+'</b> <span class="num">'+esc(v.registration||'')+'</span>'+(v.notes?('<br><span style="font-size:11.5px">'+esc(v.notes)+'</span>'):'')+'</div>'; }).join('') : '<span style="font-size:12.5px">Ingen kjøretøy registrert (legges inn i appen).</span>'; }
+    var dl=$('#dogList'); if(dl){ dl.innerHTML = res.dogs.length? res.dogs.map(function(d){ return '<div style="border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:8px 10px"><b style="color:var(--text)">'+esc(d.name||'Spann')+'</b> · '+(d.dog_count||0)+' hunder'+(d.notes?('<br><span style="font-size:11.5px">'+esc(d.notes)+'</span>'):'')+'</div>'; }).join('') : '<span style="font-size:12.5px">Ingen hundespann registrert (legges inn i appen).</span>'; }
+    var nb=$('#newTplBtn'); if(nb && !nb.__wired){ nb.__wired=1; nb.onclick=function(){ openNewTemplate(R, me); }; }
+  }
+
+  function openNewTemplate(R, me){
+    if(document.getElementById('tpOv')) return;
+    var TYPES=[['summit','Topptur'],['ski_touring','Skitur'],['glacier','Brevandring'],['climbing','Klatring'],['kayak','Kajakk'],['sea_kayaking','Havkajakk'],['river_guide','Elveguiding'],['dog_sledding','Hundekjøring'],['snowmobile_safari','Snøscooter'],['northern_lights_bus','Nordlysbuss'],['teambuilding','Teambuilding'],['course','Kurs'],['other','Annet']];
+    var DIFFS=[['easy','Lett'],['moderate','Moderat'],['challenging','Krevende'],['extreme','Ekstrem']];
+    var opt=function(arr,sel){ return arr.map(function(p){ return '<option value="'+p[0]+'"'+(p[0]===sel?' selected':'')+'>'+p[1]+'</option>'; }).join(''); };
+    var gopt=(R.guidesRaw||[]).filter(function(g){ return String(g.id).indexOf('inv-')!==0; }).map(function(g){ return '<option value="'+g.id+'"'+((me&&g.id===me.id)?' selected':'')+'>'+_escR(g.name)+'</option>'; }).join('');
+    var ov=document.createElement('div'); ov.id='tpOv';
+    ov.innerHTML='<style>#tpOv{position:fixed;inset:0;z-index:99998;display:flex;align-items:center;justify-content:center;background:rgba(8,14,26,.86);backdrop-filter:blur(8px);font-family:Inter,system-ui,sans-serif}#tpC{width:min(94vw,430px);max-height:92vh;overflow:auto;background:#16273f;border:1px solid #284063;border-radius:16px;padding:22px}#tpC h3{margin:0 0 4px;color:#eaf2fb;font-size:17px}#tpC p.s{margin:0 0 12px;color:#8aa0bd;font-size:12.5px}#tpC label{display:block;color:#8aa0bd;font-size:11.5px;margin:10px 0 4px}#tpC input,#tpC select,#tpC textarea{width:100%;box-sizing:border-box;padding:9px 11px;border-radius:9px;border:1px solid #284063;background:#0e1a2c;color:#eaf2fb;font-size:13.5px;font-family:inherit}#tpC .row{display:flex;gap:10px}#tpC .row>div{flex:1}#tpC .btns{display:flex;gap:10px;margin-top:16px}#tpC .btns button{flex:1;padding:11px;border:none;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer}#tpSave{background:linear-gradient(135deg,#4a9fe0,#3b82c4);color:#fff}#tpSave:disabled{opacity:.6}#tpCancel{background:#22364f;color:#cfe2f5}#tpErr{color:#e8857c;font-size:12px;margin-top:10px;min-height:14px}</style>'+
+      '<form id="tpC"><h3>Ny turmal</h3><p class="s">Malen blir tilgjengelig i valgt guides app under «Ny tur».</p>'+
+      '<label>Navn *</label><input id="tpName" required maxlength="120" autocomplete="off">'+
+      '<label>Startsted</label><input id="tpLoc" maxlength="120" autocomplete="off">'+
+      '<div class="row"><div><label>Aktivitet</label><select id="tpType">'+opt(TYPES,'summit')+'</select></div><div><label>Vanskelighet</label><select id="tpDiff">'+opt(DIFFS,'moderate')+'</select></div></div>'+
+      '<label>Guide (malen eies av)</label><select id="tpGuide">'+(gopt||'<option value="">(ingen)</option>')+'</select>'+
+      '<label>Utstyr</label><textarea id="tpEq" rows="2" maxlength="500"></textarea>'+
+      '<label>Notater</label><textarea id="tpNotes" rows="2" maxlength="500"></textarea>'+
+      '<div id="tpErr"></div>'+
+      '<div class="btns"><button type="button" id="tpCancel">Avbryt</button><button type="submit" id="tpSave">Lagre mal</button></div></form>';
+    document.body.appendChild(ov);
+    var close=function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); };
+    ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
+    document.getElementById('tpCancel').addEventListener('click',close);
+    document.getElementById('tpC').addEventListener('submit',function(e){
+      e.preventDefault();
+      var gv=function(id){ var el=document.getElementById(id); return el?String(el.value):''; };
+      var name=gv('tpName').trim(); var err=document.getElementById('tpErr');
+      if(!name){ err.textContent='Gi malen et navn.'; return; }
+      if(!gv('tpGuide')){ err.textContent='Velg guide.'; return; }
+      var btn=document.getElementById('tpSave'); btn.disabled=true; btn.textContent='Lagrer…';
+      sb.from('trip_templates').insert({ name:name, activity_type:gv('tpType'), start_location:gv('tpLoc').trim()||null, difficulty:gv('tpDiff'), equipment:gv('tpEq').trim()||null, notes:gv('tpNotes').trim()||null, guide_id:gv('tpGuide') }).then(function(res){
+        if(res&&res.error){ err.textContent='Kunne ikke lagre: '+res.error.message; btn.disabled=false; btn.textContent='Lagre mal'; return; }
+        close(); try{ toast('Mal lagret','Synlig i guidens app under Ny tur.'); }catch(e2){}
+        setTimeout(function(){ location.reload(); },600);
+      },function(){ err.textContent='Nettverksfeil — prøv igjen.'; btn.disabled=false; btn.textContent='Lagre mal'; });
+    });
+  }
+
   function openInvite(R, me){
     if(document.getElementById('igOv')) return;
     var orgName=R.orgName||'organisasjonen din';
@@ -2320,6 +2423,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     if(ch){ ch.textContent = (R.seats!=null)? (R.seatsUsed+' av '+R.seats+' seter') : (R.guides.length===1? '1 guide' : (R.guides.length+' guider')); }
     var su=$('#seatUpgrade'); if(su) su.style.display=(R.seats!=null && R.seatsUsed>=R.seats)? '' : 'none';
     var ib=$('#inviteGuideBtn'); if(ib && !ib.__wired){ ib.__wired=1; ib.onclick=function(){ openInvite(R, me); }; }
+    try{ renderPlanning(R, me); }catch(e){}
 
     var banner=$('#sosBanner');
     if(banner){
