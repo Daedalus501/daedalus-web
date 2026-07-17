@@ -1114,19 +1114,19 @@ body.lock{overflow:hidden}
   <section class="grid">
     <article class="card sp4 rv" style="--d:.02s">
       <div class="card-h"><svg class="ic"><use href="#i-mtn"/></svg><h3>Turadministrasjon</h3><span class="hint" id="tadmHint">—</span></div>
-      <div id="tripAdmList" style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--muted);max-height:340px;overflow:auto">Ingen turer ennå.</div>
+      <div id="tripAdmList" style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--muted);max-height:340px;overflow:auto;padding:6px 18px 16px">Ingen turer ennå.</div>
     </article>
     <article class="card sp4 rv" style="--d:.05s">
       <div class="card-h"><svg class="ic"><use href="#i-file"/></svg><h3>Turmaler</h3><span class="hint" id="tplHint">—</span><button id="newTplBtn" type="button" style="margin-left:auto;font:600 11.5px var(--sans);color:#cfe2f5;background:rgba(74,159,224,.08);border:1px solid rgba(74,159,224,.35);border-radius:8px;padding:6px 11px;cursor:pointer;white-space:nowrap">Ny mal</button></div>
-      <div id="tplList" style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--muted)">Ingen maler registrert ennå.</div>
+      <div id="tplList" style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--muted);padding:6px 18px 16px">Ingen maler registrert ennå.</div>
     </article>
     <article class="card sp4 rv" style="--d:.1s">
       <div class="card-h"><svg class="ic"><use href="#i-mtn"/></svg><h3>Kjøretøy</h3><span class="hint" id="vehHint">—</span></div>
-      <div id="vehList" style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--muted)">Ingen kjøretøy registrert ennå.</div>
+      <div id="vehList" style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--muted);padding:6px 18px 16px">Ingen kjøretøy registrert ennå.</div>
     </article>
     <article class="card sp4 rv" style="--d:.15s">
       <div class="card-h"><svg class="ic"><use href="#i-users"/></svg><h3>Hundespann</h3><span class="hint" id="dogHint">—</span></div>
-      <div id="dogList" style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--muted)">Ingen hundespann registrert ennå.</div>
+      <div id="dogList" style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--muted);padding:6px 18px 16px">Ingen hundespann registrert ennå.</div>
     </article>
   </section>
 
@@ -2211,7 +2211,8 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
 
   function fetchAva(){
     var t=dstr(new Date());
-    var url='https://api01.nve.no/hydrology/forecast/avalanche/v6.0.0/api/AvalancheWarningByRegion/Detail/3010/1/'+t+'/'+t;
+    var _reg='3010'; try{ var _c=getWxCfg(); if(_c&&_c.region) _reg=String(_c.region); }catch(e){}
+    var url='https://api01.nve.no/hydrology/forecast/avalanche/v6.0.0/api/AvalancheWarningByRegion/Detail/'+_reg+'/1/'+t+'/'+t;
     return fetch(url).then(function(r){return r.json();}).then(function(j){
       var d=Array.isArray(j)?j[0]:j; var lvl=parseInt(d&&d.DangerLevel,10);
       if(!(lvl>=1&&lvl<=5)) lvl=2;
@@ -2258,10 +2259,92 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       '<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print()},350)}<\/scr'+'ipt></body></html>';
     w.document.write(h); w.document.close();
   }
+  function getWxCfg(){
+    try{ var m=window.__ME; var raw=localStorage.getItem('dae_wx_'+((m&&m.organization_id)||'x')); return raw? JSON.parse(raw) : null; }catch(e){ return null; }
+  }
+  function setWxCfg(cfg){
+    try{ var m=window.__ME; localStorage.setItem('dae_wx_'+((m&&m.organization_id)||'x'), JSON.stringify(cfg)); }catch(e){}
+  }
+  function wxPoint(){
+    var cfg=getWxCfg();
+    if(cfg&&cfg.lat!=null) return {lat:cfg.lat,lng:cfg.lng,name:cfg.name||'Egendefinert'};
+    var c=null; (window.__TRIPS||[]).some(function(t){ if(t.gps_lat!=null&&t.gps_lng!=null){ c={lat:parseFloat(t.gps_lat),lng:parseFloat(t.gps_lng),name:t.name||'Turposisjon'}; return true; } return false; });
+    return c||{lat:69.65,lng:18.96,name:'Tromsø'};
+  }
+  function fetchSun(p){
+    try{
+      var d=new Date().toISOString().slice(0,10);
+      fetch('https://api.met.no/weatherapi/sunrise/3.0/sun?lat='+p.lat.toFixed(3)+'&lon='+p.lng.toFixed(3)+'&date='+d)
+      .then(function(r){ return r.ok? r.json(): null; })
+      .then(function(j){
+        if(!j) return;
+        var pr=j.properties||{}; var els=$$('.wx-it'); var el=els[2]; if(!el) return;
+        var b=el.querySelector('b'), s=el.querySelector('span');
+        var rise=pr.sunrise&&pr.sunrise.time, set=pr.sunset&&pr.sunset.time;
+        function hm(x){ try{ return new Date(x).toLocaleTimeString('nb-NO',{hour:'2-digit',minute:'2-digit'}); }catch(e){ return '—'; } }
+        if(rise&&set){ if(b) b.textContent='↑'+hm(rise)+' ↓'+hm(set); if(s) s.textContent='Sol i dag'; }
+        else if(!rise&&!set){ var mnd=new Date().getMonth(); var midnatt=(mnd>=3&&mnd<=8); if(b) b.textContent=midnatt?'Midnattssol':'Mørketid'; if(s) s.textContent=midnatt?'Sola går ikke ned':'Sola står ikke opp'; }
+      }).catch(function(){});
+    }catch(e){}
+  }
+  function openWxSettings(){
+    if(document.getElementById('wxOv')) return;
+    var cur=getWxCfg()||{};
+    var REG=[['3003','Nordenskiöld Land (Svalbard)'],['3006','Finnmarkskysten'],['3007','Vest-Finnmark'],['3009','Nord-Troms'],['3010','Lyngen / Tromsø'],['3011','Tromsø-området'],['3012','Sør-Troms'],['3013','Indre Troms'],['3014','Lofoten og Vesterålen'],['3015','Ofoten'],['3016','Salten'],['3017','Svartisen'],['3022','Trollheimen'],['3023','Romsdal'],['3024','Sunnmøre'],['3027','Indre Fjordane'],['3028','Jotunheimen'],['3029','Indre Sogn'],['3031','Voss'],['3032','Hallingdal'],['3034','Hardanger'],['3035','Vest-Telemark'],['3037','Heiane']];
+    var ropt=REG.map(function(r){ return '<option value="'+r[0]+'"'+((String(cur.region||'3010')===r[0])?' selected':'')+'>'+r[1]+' ('+r[0]+')</option>'; }).join('');
+    var ov=document.createElement('div'); ov.id='wxOv';
+    ov.innerHTML='<style>#wxOv{position:fixed;inset:0;z-index:99998;display:flex;align-items:center;justify-content:center;background:rgba(8,14,26,.86);backdrop-filter:blur(8px);font-family:Inter,system-ui,sans-serif}#wxC{width:min(94vw,460px);max-height:92vh;overflow:auto;background:#16273f;border:1px solid #284063;border-radius:16px;padding:22px;color:#c8d6e8}#wxC h3{margin:0 0 4px;color:#eaf2fb;font-size:16px}#wxC p.s{margin:0 0 12px;color:#8aa0bd;font-size:12.5px}#wxC label{display:block;color:#8aa0bd;font-size:11.5px;margin:10px 0 4px}#wxC input,#wxC select{width:100%;box-sizing:border-box;padding:8px 10px;border-radius:8px;border:1px solid #284063;background:#0e1a2c;color:#eaf2fb;font-size:13px}#wxC .btns{display:flex;gap:8px;margin-top:14px}#wxC .btns button{flex:1;padding:10px;border:none;border-radius:9px;font-size:12.5px;font-weight:600;cursor:pointer}</style>'
+      +'<div id="wxC"><h3>Vær- og skredinnstillinger</h3><p class="s">Velg punktet været hentes for (klikk i kartet) og skredregionen for varselet. Gjelder denne organisasjonen på denne maskinen.</p>'
+      +'<label>Stedsnavn</label><input id="wxName" maxlength="40" value="'+esc(cur.name||'')+'" placeholder="F.eks. Tamokdalen">'
+      +'<div id="wxMap" style="height:230px;border-radius:10px;margin-top:10px;overflow:hidden"></div>'
+      +'<div style="font-size:11.5px;color:#8aa0bd;margin-top:6px" id="wxCoord">'+(cur.lat!=null? ('Valgt: '+Number(cur.lat).toFixed(4)+', '+Number(cur.lng).toFixed(4)) : 'Ikke valgt — bruker turposisjon/Tromsø')+'</div>'
+      +'<label>Skredregion (Varsom)</label><select id="wxReg">'+ropt+'</select>'
+      +'<div class="btns"><button id="wxSave" style="background:linear-gradient(135deg,#4a9fe0,#3b82c4);color:#fff">Lagre</button><button id="wxReset" style="background:#22364f;color:#cfe2f5">Nullstill</button><button id="wxClose" style="background:#22364f;color:#cfe2f5">Lukk</button></div></div>';
+    document.body.appendChild(ov);
+    var close=function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); };
+    ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
+    document.getElementById('wxClose').onclick=close;
+    var sel={lat:cur.lat,lng:cur.lng};
+    try{
+      var start=(cur.lat!=null)?[cur.lat,cur.lng]:[(wxPoint().lat),(wxPoint().lng)];
+      var wm=L.map('wxMap').setView(start,8);
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(wm);
+      L.tileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png',{maxZoom:19,maxNativeZoom:18,bounds:[[57.7,3.9],[81.5,32.5]]}).addTo(wm);
+      var mk=(cur.lat!=null)? L.marker([cur.lat,cur.lng]).addTo(wm) : null;
+      wm.on('click',function(ev){ sel={lat:ev.latlng.lat,lng:ev.latlng.lng}; if(mk){ mk.setLatLng(ev.latlng); } else { mk=L.marker(ev.latlng).addTo(wm); } document.getElementById('wxCoord').textContent='Valgt: '+ev.latlng.lat.toFixed(4)+', '+ev.latlng.lng.toFixed(4); });
+      setTimeout(function(){ wm.invalidateSize(); },200);
+    }catch(e){}
+    document.getElementById('wxSave').onclick=function(){
+      var cfg={ lat:(sel.lat!=null)?sel.lat:null, lng:(sel.lng!=null)?sel.lng:null, name:document.getElementById('wxName').value.trim()||null, region:document.getElementById('wxReg').value };
+      setWxCfg(cfg); try{ toast('Vær-innstillinger lagret','Oppdaterer …'); }catch(e){}
+      close(); setTimeout(function(){ location.reload(); },500);
+    };
+    document.getElementById('wxReset').onclick=function(){
+      try{ var m=window.__ME; localStorage.removeItem('dae_wx_'+((m&&m.organization_id)||'x')); }catch(e){}
+      try{ toast('Nullstilt','Bruker turposisjon/Tromsø igjen.'); }catch(e){}
+      close(); setTimeout(function(){ location.reload(); },500);
+    };
+  }
+
+  function startReturnTicker(R, me){
+    if(window.__retTick) return; window.__retTick=1;
+    function tick(){
+      var el=$('#tripAdmList'); if(!el) return;
+      $$('#tripAdmList [data-ret]').forEach(function(sp){
+        var iso=sp.getAttribute('data-ret'); var due=Date.parse(iso); if(isNaN(due)) return;
+        var diff=due-Date.now(); var abs=Math.abs(diff);
+        var h=Math.floor(abs/3600000), m=Math.floor((abs%3600000)/60000);
+        if(diff>=0){ sp.textContent='Retur om '+(h? h+'t ':'')+m+'m'; sp.style.color='#5fb97a'; sp.style.fontWeight='600'; }
+        else { sp.textContent='OVERSKREDET '+(h? h+'t ':'')+m+'m'; sp.style.color='#e8857c'; sp.style.fontWeight='700'; }
+      });
+    }
+    tick(); setInterval(tick, 30000);
+  }
+
   function fetchMetWx(R){
     try{
-      var c=null; (window.__TRIPS||[]).some(function(t){ if(t.gps_lat!=null&&t.gps_lng!=null){ c=[parseFloat(t.gps_lat),parseFloat(t.gps_lng)]; return true; } return false; });
-      if(!c) c=[69.65,18.96];
+      var p=wxPoint(); var c=[p.lat,p.lng];
+      fetchSun(p);
       fetch('https://api.met.no/weatherapi/locationforecast/2.0/compact?lat='+c[0].toFixed(3)+'&lon='+c[1].toFixed(3))
       .then(function(r){ return r.ok? r.json(): null; })
       .then(function(j){
@@ -2272,7 +2355,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
         var els=$$('.wx-it');
         var dirs=['N','NØ','Ø','SØ','S','SV','V','NV'];
         var dir=dirs[Math.round(((d.wind_from_direction||0)%360)/45)%8];
-        if(els[0]){ var b0=els[0].querySelector('b'); var s0=els[0].querySelector('span'); if(b0&&d.air_temperature!=null) b0.innerHTML=d.air_temperature.toFixed(1).replace('.',',')+'&thinsp;°C'; if(s0) s0.textContent='MET · live'; }
+        if(els[0]){ var b0=els[0].querySelector('b'); var s0=els[0].querySelector('span'); if(b0&&d.air_temperature!=null) b0.innerHTML=d.air_temperature.toFixed(1).replace('.',',')+'&thinsp;°C'; if(s0) s0.textContent='MET · '+(p.name||'live'); }
         if(els[1]){ var b1=els[1].querySelector('b'); var s1=els[1].querySelector('span'); if(b1&&d.wind_speed!=null) b1.textContent=d.wind_speed.toFixed(0)+' m/s'; if(s1) s1.textContent='Fra '+dir; }
       }).catch(function(){});
     }catch(e){}
@@ -2325,9 +2408,11 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     var fbar='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px">'+fdef.map(function(f){ var on=(F===f[0]); return '<button type="button" data-tf="'+f[0]+'" style="border:1px solid '+(on?'#4a9fe0':'rgba(255,255,255,.14)')+';background:'+(on?'rgba(74,159,224,.12)':'none')+';color:'+(on?'#cfe2f5':'#8aa0bd')+';border-radius:7px;padding:3px 9px;font-size:11px;cursor:pointer">'+f[1]+'</button>'; }).join('')+'</div>';
     var show=(F==='alle')? trips : trips.filter(function(t){ return t.status===F; });
     el.innerHTML=fbar+(show.length? show.map(function(t){
+      var retIso='';
+      if(t.status==='active' && t.return_time){ var rd=(t.return_date||t.date||''); if(rd){ retIso=rd+'T'+String(t.return_time).slice(0,5)+':00'; } }
       return '<button type="button" data-tadm="'+t.id+'" style="display:flex;align-items:center;gap:9px;text-align:left;border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:8px 10px;background:none;color:var(--muted);cursor:pointer">'
         + stBadge(t.status)
-        + '<span style="flex:1;min-width:0"><b style="color:var(--text)">'+esc(t.name||'(uten navn)')+'</b><br><span style="font-size:11.5px">'+esc(t.date||'—')+' · '+esc(t.guide_name||'—')+'</span></span>'
+        + '<span style="flex:1;min-width:0"><b style="color:var(--text)">'+esc(t.name||'(uten navn)')+'</b><br><span style="font-size:11.5px">'+esc(t.date||'—')+' · '+esc(t.guide_name||'—')+'</span>'+(retIso?('<br><span data-ret="'+retIso+'" style="font-size:11px"></span>'):'')+'</span>'
         + '<span style="font-size:11px">Åpne →</span></button>';
     }).join('') : '<span style="font-size:12.5px">Ingen turer i dette filteret.</span>');
     $$('#tripAdmList [data-tf]').forEach(function(b){ b.onclick=function(){ window.__TADM_F=b.getAttribute('data-tf'); renderTripAdmin(R, me); }; });
@@ -2702,8 +2787,9 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
         if(/varsom\.no/i.test(h.textContent)){ h.__w=1; h.style.cursor='pointer'; h.style.textDecoration='underline'; h.onclick=function(){ window.open('https://www.varsom.no/snoskredvarsling/','_blank'); }; }
         else if(/Arkiv/i.test(h.textContent)){ h.__w=1; h.style.cursor='pointer'; h.style.textDecoration='underline'; h.onclick=function(){ openArchive(R, me); }; }
       });
-      $$('.wx-it').forEach(function(w){ if(w.__w) return; w.__w=1; w.style.cursor='pointer'; w.title='Åpne yr.no'; w.onclick=function(){ window.open('https://www.yr.no/nb/s%C3%B8k?q=Tamokdalen','_blank'); }; });
+      $$('.wx-it').forEach(function(w){ if(w.__w) return; w.__w=1; w.style.cursor='pointer'; w.title='Velg værsted'; w.onclick=function(){ openWxSettings(); }; });
       if(!window.__wxDone){ window.__wxDone=1; fetchMetWx(R); }
+      try{ startReturnTicker(R, me); }catch(e){}
       var _bell=$('#bell'); if(_bell && !_bell.__w){ _bell.__w=1; _bell.onclick=function(ev){ if(ev){ev.preventDefault();ev.stopPropagation();} toggleBellPanel(R); }; }
     }catch(e){}
 
