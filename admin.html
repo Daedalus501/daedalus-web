@@ -2215,7 +2215,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     var h='<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Turrapport — '+_escR(t.name)+'</title><style>body{font-family:Inter,Arial,sans-serif;color:#0e1a2c;max-width:760px;margin:24px auto;padding:0 16px}h1{font-size:20px;margin:0 0 4px}h2{font-size:14px;margin:22px 0 6px}.k{color:#5a6b82;font-size:12px}table{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:6px}td,th{border:1px solid #d4dae3;padding:6px;text-align:left;vertical-align:top}th{background:#f4f6fa}</style></head><body>'+
       '<h1>Turrapport — '+_escR(t.name)+'</h1>'+
       '<p class="k">'+_escR(t.guide_name||'')+(t.organization_name?(' · '+_escR(t.organization_name)):'')+' · '+_escR(t.date||'')+' · status: '+_escR(t.status||'')+'</p>'+
-      '<h2>Detaljer</h2><p class="k">Sted: '+_escR(t.start_location||'—')+'<br>Aktivitet: '+_escR(t.activity_type||'—')+' · Vanskelighet: '+_escR(t.difficulty||'—')+'<br>Skredfaregrad: '+_escR(t.avalanche_level||'—')+'<br>Sikkerhetssjekk: vær '+(t.weather_verified?'✓':'—')+' · utstyr '+(t.equipment_checked?'✓':'—')+' · nødkontakt '+(t.emergency_contact_notified?'✓':'—')+'</p>'+
+      '<h2>Detaljer</h2><p class="k">Sted: '+_escR(t.start_location||'—')+(t.return_date?('<br>Returdato: '+_escR(t.return_date)):'')+'<br>Aktivitet: '+_escR(t.activity_type||'—')+' · Vanskelighet: '+_escR(t.difficulty||'—')+'<br>Skredfaregrad: '+_escR(t.avalanche_level||'—')+'<br>Sikkerhetssjekk: vær '+(t.weather_verified?'✓':'—')+' · utstyr '+(t.equipment_checked?'✓':'—')+' · nødkontakt '+(t.emergency_contact_notified?'✓':'—')+'</p>'+
       ((plist.length)?('<h2>Deltakere ('+plist.length+')</h2><table><tr><th>Navn</th><th>Telefon</th><th>Nødkontakt</th><th>Oppmøte</th></tr>'+prows+'</table>'):'')+
       (t.report_summary?('<h2>Sammendrag</h2><p>'+_escR(t.report_summary)+'</p>'):'')+
       '<h2>Hendelser ('+(evs?evs.length:0)+')</h2>'+(rows?('<table><tr><th>Tid</th><th>Type</th><th>Alvor</th><th>Beskrivelse</th><th>Tiltak</th></tr>'+rows+'</table>'):'<p class="k">Ingen hendelser registrert.</p>')+
@@ -2365,7 +2365,9 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       '<label>Turnavn *</label><input id="ntName" required maxlength="120" autocomplete="off">'+
       '<label>Startsted *</label><input id="ntLoc" required maxlength="120" autocomplete="off">'+
       '<div class="row"><div><label>Startpunkt — bredde (valgfritt)</label><input id="ntLat" type="number" step="any" placeholder="f.eks. 69.65" autocomplete="off"></div><div><label>lengde</label><input id="ntLng" type="number" step="any" placeholder="18.96" autocomplete="off"></div></div>'+
+      '<button type="button" id="ntPickMap" style="margin-top:8px;width:100%;padding:9px;border:1px solid #284063;border-radius:9px;background:#0e1a2c;color:#8fb8de;font-size:12.5px;cursor:pointer">Velg startpunkt i kart</button><div id="ntMap" style="display:none;height:220px;border-radius:10px;margin-top:8px;overflow:hidden"></div>'+
       '<div class="row"><div><label>Dato *</label><input id="ntDate" type="date" required></div><div><label>Returtid *</label><input id="ntRet" type="time" required></div></div>'+
+      '<label>Returdato (ved overnatting — valgfritt)</label><input id="ntRetDate" type="date">'+
       '<div class="row"><div><label>Aktivitet</label><select id="ntType">'+opt(TYPES,'summit')+'</select></div><div><label>Vanskelighet</label><select id="ntDiff">'+opt(DIFFS,'moderate')+'</select></div></div>'+
       '<label>Guide</label><select id="ntGuide">'+(gopt||'<option value="">(ingen registrert)</option>')+'</select>'+
       '<label>Notater</label><textarea id="ntNotes" rows="2" maxlength="500"></textarea>'+
@@ -2375,6 +2377,36 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     var close=function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); };
     ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
     document.getElementById('ntCancel').addEventListener('click',close);
+    (function(){
+      var ntMapObj=null, ntMk=null;
+      var pickBtn=document.getElementById('ntPickMap');
+      if(pickBtn && window.L){
+        pickBtn.addEventListener('click',function(){
+          var d=document.getElementById('ntMap');
+          if(d.style.display==='none'){
+            d.style.display='';
+            if(!ntMapObj){
+              var la=parseFloat(document.getElementById('ntLat').value), ln=parseFloat(document.getElementById('ntLng').value);
+              var ctr=(!isNaN(la)&&!isNaN(ln))?[la,ln]:[69.1,19.7];
+              ntMapObj=L.map('ntMap').setView(ctr, (!isNaN(la))?12:8);
+              L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(ntMapObj);
+              L.tileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png',{maxZoom:19,maxNativeZoom:18,bounds:[[57.7,3.9],[81.5,32.5]]}).addTo(ntMapObj);
+              if(!isNaN(la)&&!isNaN(ln)){ ntMk=L.marker([la,ln]).addTo(ntMapObj); }
+              ntMapObj.on('click',function(ev){
+                document.getElementById('ntLat').value=ev.latlng.lat.toFixed(6);
+                document.getElementById('ntLng').value=ev.latlng.lng.toFixed(6);
+                if(ntMk){ ntMk.setLatLng(ev.latlng); } else { ntMk=L.marker(ev.latlng).addTo(ntMapObj); }
+              });
+            }
+            setTimeout(function(){ ntMapObj.invalidateSize(); },150);
+            pickBtn.textContent='Skjul kart';
+          } else {
+            d.style.display='none';
+            pickBtn.textContent='Velg startpunkt i kart';
+          }
+        });
+      } else if(pickBtn){ pickBtn.style.display='none'; }
+    })();
     document.getElementById('ntC').addEventListener('submit',function(e){
       e.preventDefault();
       var gv=function(id){ var el=document.getElementById(id); return el?String(el.value):''; };
@@ -2383,7 +2415,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       var guideId=gv('ntGuide'), guideName=''; (R.guidesRaw||[]).forEach(function(g){ if(g.id===guideId) guideName=g.name; });
       var save=document.getElementById('ntSave'); save.disabled=true; save.textContent='Lagrer…';
       var _glat=parseFloat(gv('ntLat')), _glng=parseFloat(gv('ntLng'));
-      var payload={ trip_id:'WEB-'+Date.now().toString(36).toUpperCase(), name:name, date:date, start_location:loc, return_time:ret, activity_type:gv('ntType'), difficulty:gv('ntDiff'), status:'draft', guide_id:guideId||(me&&me.id)||null, guide_name:guideName||(me&&(me.name||me.email))||'', organization_id:(me&&me.organization_id)||null, organization_name:R.orgName||'', notes:gv('ntNotes').trim()||null, gps_lat:isNaN(_glat)?null:_glat, gps_lng:isNaN(_glng)?null:_glng };
+      var payload={ trip_id:'WEB-'+Date.now().toString(36).toUpperCase(), name:name, date:date, start_location:loc, return_time:ret, activity_type:gv('ntType'), difficulty:gv('ntDiff'), status:'draft', guide_id:guideId||(me&&me.id)||null, guide_name:guideName||(me&&(me.name||me.email))||'', organization_id:(me&&me.organization_id)||null, organization_name:R.orgName||'', notes:gv('ntNotes').trim()||null, gps_lat:isNaN(_glat)?null:_glat, gps_lng:isNaN(_glng)?null:_glng, return_date:gv('ntRetDate')||null };
       sb.from('trips').insert(payload).then(function(res){
         if(res&&res.error){ err.textContent='Kunne ikke lagre: '+res.error.message; save.disabled=false; save.textContent='Opprett tur'; return; }
         close(); try{ toast('Tur opprettet','«'+name+'» er lagret som utkast.'); }catch(e){}
