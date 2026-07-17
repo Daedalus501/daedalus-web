@@ -2315,7 +2315,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     var evCache=[];
     function loadParts(){
       sb.from('participants').select('id,name,phone,emergency_contact').eq('trip_id',t.id).then(function(pr){
-        var list=(pr&&pr.data)||[]; var el=$('#taParts');
+        var list=(pr&&pr.data)||[]; var el=$('#taParts'); if(!el) return;
         el.innerHTML=list.length? list.map(function(p){ return '<div class="pl-row"><span style="flex:1"><b style="color:#eaf2fb">'+esc(p.name||'—')+'</b> · '+esc(p.phone||'—')+' · nød: '+esc(p.emergency_contact||'—')+'</span><button type="button" data-pdel="'+p.id+'" style="border:1px solid rgba(232,133,124,.4);background:none;color:#e8857c;border-radius:6px;padding:3px 7px;font-size:10.5px;cursor:pointer">Slett</button></div>'; }).join('') : '<span>Ingen deltakere registrert.</span>';
         $$('#taParts [data-pdel]').forEach(function(b){ b.onclick=function(){ if(!window.confirm('Slette deltakeren?')) return; sb.from('participants').delete().eq('id',b.getAttribute('data-pdel')).then(function(r2){ if(r2&&r2.error){ $('#taErr').textContent=r2.error.message; } else { logAdmin('deltaker_slettet', t.trip_id, ''); loadParts(); } }); }; });
       });
@@ -2330,7 +2330,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       });
     };
     sb.from('events').select('type,severity,description,created_at').eq('trip_id',t.id).order('created_at',{ascending:false}).limit(15).then(function(er){
-      evCache=(er&&er.data)||[]; var el=$('#taEvents');
+      evCache=(er&&er.data)||[]; var el=$('#taEvents'); if(!el) return;
       el.innerHTML=evCache.length? evCache.map(function(e){ var sev=String(e.severity||'').toLowerCase(); var col=(sev==='high'||sev==='critical')?'#e8857c':(sev==='medium'?'#c9a24b':'#8aa0bd'); return '<div class="ev-row"><span class="num">'+new Date(e.created_at).toLocaleString('nb-NO')+'</span> · <b style="color:'+col+'">'+esc(e.type||'')+' / '+esc(e.severity||'—')+'</b> · '+esc(e.description||'')+'</div>'; }).join('') : '<span style="color:#8aa0bd">Ingen hendelser.</span>';
     });
     $('#taPrint').onclick=function(){ sb.from('events').select('*').eq('trip_id',t.id).order('created_at',{ascending:false}).then(function(er){ printTripReport(t,(er&&er.data)||[]); }); };
