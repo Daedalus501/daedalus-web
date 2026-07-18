@@ -86,6 +86,7 @@
     <div class="blk">
       <h3>1 · Velg tur</h3>
       <select id="tripSel"><option value="">Logger inn …</option></select>
+      <button type="button" id="newTripBtn" style="margin-top:8px;width:100%;padding:9px 10px;border:1px solid rgba(96,165,250,.35);border-radius:9px;background:rgba(96,165,250,.10);color:#dbeafe;font:600 12.5px/1 Inter,system-ui,sans-serif;letter-spacing:.02em;cursor:pointer">+ Ny tur her</button>
       <div class="hint" id="tripHint">Velg en tur for å laste/tegne rute. Lagring skriver til denne turens map_data.</div>
     </div>
     <div class="blk">
@@ -195,6 +196,56 @@
     loadTrips();
   }
 
+  function openQuickTrip(){
+    if(document.getElementById('qtOv')) return;
+    var ov=document.createElement('div'); ov.id='qtOv';
+    ov.innerHTML='<style>#qtOv{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(6,12,24,.88);font-family:Inter,system-ui,sans-serif}#qtC{width:min(94vw,390px);background:#122036;border:1px solid #27405f;border-radius:14px;padding:20px;color:#c8d6e8;max-height:88vh;overflow:auto}#qtC h3{margin:0 0 4px;color:#eaf2fb;font-size:15px}#qtC .sub{color:#7e94b3;font-size:11.5px;margin:0 0 8px}#qtC label{display:block;color:#8aa0bd;font-size:11px;margin:9px 0 4px;text-transform:uppercase;letter-spacing:.04em}#qtC input,#qtC select{width:100%;box-sizing:border-box;padding:8px 10px;border-radius:8px;border:1px solid #27405f;background:#0c1729;color:#eaf2fb;font-size:13px}#qtC .row{display:flex;gap:8px}#qtC .row>div{flex:1}#qtC .btns{display:flex;gap:8px;margin-top:15px}#qtC .btns button{flex:1;padding:10px;border:none;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer}#qtErr{color:#e8857c;font-size:11.5px;min-height:14px;margin-top:6px}</style>'
+      +'<form id="qtC"><h3>Ny tur</h3><p class="sub">Opprettes som utkast \u2014 tegn og lagre l\u00f8ypa rett etterp\u00e5.</p>'
+      +'<label>Turnavn *</label><input id="qtName" required maxlength="120" placeholder="F.eks. Toppen via nordryggen">'
+      +'<label>Startsted *</label><input id="qtLoc" required maxlength="120" placeholder="F.eks. Tamokdalen parkering">'
+      +'<div class="row"><div><label>Dato *</label><input id="qtDate" type="date" required></div><div><label>Returtid *</label><input id="qtRet" type="time" required value="16:00"></div></div>'
+      +'<label>Guide</label><select id="qtGuide"><option value="">Laster \u2026</option></select>'
+      +'<div id="qtErr"></div>'
+      +'<div class="btns"><button type="button" id="qtCancel" style="background:#20344e;color:#cfe2f5">Avbryt</button><button type="submit" id="qtSave" style="background:linear-gradient(135deg,#4a9fe0,#3b82c4);color:#fff">Opprett og velg</button></div></form>';
+    document.body.appendChild(ov);
+    document.getElementById('qtDate').value=new Date().toISOString().slice(0,10);
+    var close=function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); };
+    ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
+    document.getElementById('qtCancel').addEventListener('click',close);
+    var meRow=null, orgName='';
+    sb.auth.getUser().then(function(u){
+      var uid=(u&&u.data&&u.data.user&&u.data.user.id)||null;
+      sb.from('users').select('id,name,email,organization_id').then(function(r2){
+        var rows=(r2&&r2.data)||[];
+        rows.forEach(function(x){ if(x.id===uid) meRow=x; });
+        if(!meRow) meRow=rows[0]||null;
+        var gsel=document.getElementById('qtGuide'); if(!gsel) return;
+        gsel.innerHTML=rows.map(function(g){ return '<option value="'+g.id+'"'+(g.id===uid?' selected':'')+'>'+String(g.name||g.email||'').replace(/</g,'&lt;')+'</option>'; }).join('')||'<option value="">(ingen guider)</option>';
+        if(meRow&&meRow.organization_id){ sb.from('organizations').select('name').eq('id',meRow.organization_id).single().then(function(r3){ if(r3&&r3.data) orgName=r3.data.name||''; }); }
+      });
+    });
+    document.getElementById('qtC').addEventListener('submit',function(e){
+      e.preventDefault();
+      var err=document.getElementById('qtErr');
+      var name=document.getElementById('qtName').value.trim(), loc=document.getElementById('qtLoc').value.trim();
+      var date=document.getElementById('qtDate').value, ret=document.getElementById('qtRet').value;
+      if(!name||!loc||!date||!ret){ err.textContent='Fyll ut turnavn, startsted, dato og returtid.'; return; }
+      if(!meRow||!meRow.organization_id){ err.textContent='Fant ikke organisasjonen din \u2014 logg inn p\u00e5 nytt.'; return; }
+      var gsel=document.getElementById('qtGuide'); var gid=gsel.value||meRow.id; var gnm=(gsel.selectedIndex>=0&&gsel.value)?gsel.options[gsel.selectedIndex].text:(meRow.name||meRow.email||'');
+      var btn=document.getElementById('qtSave'); btn.disabled=true; btn.textContent='Oppretter \u2026';
+      sb.from('trips').insert({ trip_id:'WEB-'+Date.now().toString(36).toUpperCase(), name:name, date:date, start_location:loc, return_time:ret, status:'draft', guide_id:gid, guide_name:gnm, organization_id:meRow.organization_id, organization_name:orgName }).select('id').single().then(function(r4){
+        if(r4&&r4.error){ err.textContent='Kunne ikke opprette: '+r4.error.message; btn.disabled=false; btn.textContent='Opprett og velg'; return; }
+        var nyId=r4&&r4.data&&r4.data.id;
+        close();
+        loadTrips();
+        var fors=0; var tv=setInterval(function(){
+          fors++; var sel=document.getElementById('tripSel');
+          if(sel&&nyId){ for(var i=0;i<sel.options.length;i++){ if(sel.options[i].value===nyId){ sel.value=nyId; sel.dispatchEvent(new Event('change')); clearInterval(tv); return; } } }
+          if(fors>12) clearInterval(tv);
+        },500);
+      });
+    });
+  }
   function loadTrips(){
     var sel=document.getElementById('tripSel'); sel.innerHTML='<option value="">Laster turer …</option>';
     sb.from('trips').select('id,trip_id,name,date,map_data,gps_lat,gps_lng,guide_name,organization_id').order('date',{ascending:false}).then(function(res){
@@ -205,6 +256,7 @@
     });
   }
 
+  var _ntb=document.getElementById('newTripBtn'); if(_ntb){ _ntb.addEventListener('click', openQuickTrip); }
   document.getElementById('tripSel').addEventListener('change',function(){
     var id=this.value; currentTrip=trips.filter(function(t){return t.id===id;})[0]||null;
     setMode(null);
