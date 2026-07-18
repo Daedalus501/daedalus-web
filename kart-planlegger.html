@@ -203,6 +203,7 @@
       +'<form id="qtC"><h3>Ny tur</h3><p class="sub">Opprettes som utkast \u2014 tegn og lagre l\u00f8ypa rett etterp\u00e5.</p>'
       +'<label>Turnavn *</label><input id="qtName" required maxlength="120" placeholder="F.eks. Toppen via nordryggen">'
       +'<label>Startsted *</label><input id="qtLoc" required maxlength="120" placeholder="F.eks. Tamokdalen parkering">'
+      +'<label>Aktivitet *</label><select id="qtType"><option value="summit">Topptur</option><option value="ski_touring">Skitur</option><option value="glacier">Brevandring</option><option value="climbing">Klatring</option><option value="kayak">Kajakk</option><option value="sea_kayaking">Havkajakk</option><option value="river_guide">Elveguiding</option><option value="dog_sledding">Hundekj\u00f8ring</option><option value="snowmobile_safari">Sn\u00f8scooter</option><option value="northern_lights_bus">Nordlysbuss</option><option value="teambuilding">Teambuilding</option><option value="course">Kurs</option><option value="other">Annet</option></select>'
       +'<div class="row"><div><label>Dato *</label><input id="qtDate" type="date" required></div><div><label>Returtid *</label><input id="qtRet" type="time" required value="16:00"></div></div>'
       +'<label>Guide</label><select id="qtGuide"><option value="">Laster \u2026</option></select>'
       +'<div id="qtErr"></div>'
@@ -233,7 +234,7 @@
       if(!meRow||!meRow.organization_id){ err.textContent='Fant ikke organisasjonen din \u2014 logg inn p\u00e5 nytt.'; return; }
       var gsel=document.getElementById('qtGuide'); var gid=gsel.value||meRow.id; var gnm=(gsel.selectedIndex>=0&&gsel.value)?gsel.options[gsel.selectedIndex].text:(meRow.name||meRow.email||'');
       var btn=document.getElementById('qtSave'); btn.disabled=true; btn.textContent='Oppretter \u2026';
-      sb.from('trips').insert({ trip_id:'WEB-'+Date.now().toString(36).toUpperCase(), name:name, date:date, start_location:loc, return_time:ret, status:'draft', guide_id:gid, guide_name:gnm, organization_id:meRow.organization_id, organization_name:orgName }).select('id').single().then(function(r4){
+      sb.from('trips').insert({ trip_id:'WEB-'+Date.now().toString(36).toUpperCase(), name:name, date:date, start_location:loc, return_time:ret, status:'draft', activity_type:document.getElementById('qtType').value, difficulty:'moderate', guide_id:gid, guide_name:gnm, organization_id:meRow.organization_id, organization_name:orgName }).select('id').single().then(function(r4){
         if(r4&&r4.error){ err.textContent='Kunne ikke opprette: '+r4.error.message; btn.disabled=false; btn.textContent='Opprett og velg'; return; }
         var nyId=r4&&r4.data&&r4.data.id;
         close();
