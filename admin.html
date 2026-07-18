@@ -1551,8 +1551,8 @@ function animAva(){
   if(avaDone)return; avaDone=true;
   var nd=$('#avaNeedle'), nEl=$('#avaN'), tEl=$('#avaT');
   if(!nd)return;
-  var lvl=(window.__REAL&&window.__REAL.ava!=null)?window.__REAL.ava:2;
-  if(lvl===0){ nd.style.transform='rotate(-90deg)'; if(nEl){ nEl.textContent='—'; } if(tEl){ tEl.textContent='Utenfor varslingssesong'; } return; }
+  var lvl=(window.__REAL&&window.__REAL.ava!=null)?window.__REAL.ava:0;
+  if(lvl===0){ nd.style.transform='rotate(-90deg)'; if(nEl){ nEl.textContent='—'; } if(tEl){ tEl.textContent=(window.__REAL&&window.__REAL.avaText)||'Utenfor varslingssesong'; } return; }
   var target=-90+(lvl-.5)*36;
   tween(1750,function(p){
     var rot=-90+(target+90)*p;
@@ -2246,7 +2246,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       if(!(lvl>=1&&lvl<=5)) return {lvl:0, txt:'Utenfor varslingssesong'};
       var TXT={1:'Liten',2:'Moderat',3:'Betydelig',4:'Stor',5:'Meget stor'};
       return {lvl:lvl, txt:TXT[lvl]};
-    });
+    }).catch(function(){ return {lvl:0, txt:'Varsel utilgjengelig'}; });
   }
 
   // ---------- rapport-utskrift (ekte, print-til-PDF) ----------
