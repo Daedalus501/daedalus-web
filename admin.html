@@ -1551,7 +1551,9 @@ function animAva(){
   if(avaDone)return; avaDone=true;
   var nd=$('#avaNeedle'), nEl=$('#avaN'), tEl=$('#avaT');
   if(!nd)return;
-  var lvl=(window.__REAL&&window.__REAL.ava!=null)?window.__REAL.ava:2; var target=-90+(lvl-.5)*36;
+  var lvl=(window.__REAL&&window.__REAL.ava!=null)?window.__REAL.ava:2;
+  if(lvl===0){ nd.style.transform='rotate(-90deg)'; if(nEl){ nEl.textContent='—'; } if(tEl){ tEl.textContent='Utenfor varslingssesong'; } return; }
+  var target=-90+(lvl-.5)*36;
   tween(1750,function(p){
     var rot=-90+(target+90)*p;
     nd.style.transform='rotate('+rot.toFixed(2)+'deg)';
@@ -2241,7 +2243,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     var url='https://api01.nve.no/hydrology/forecast/avalanche/v6.0.0/api/AvalancheWarningByRegion/Detail/'+_reg+'/1/'+t+'/'+t;
     return fetch(url).then(function(r){return r.json();}).then(function(j){
       var d=Array.isArray(j)?j[0]:j; var lvl=parseInt(d&&d.DangerLevel,10);
-      if(!(lvl>=1&&lvl<=5)) lvl=2;
+      if(!(lvl>=1&&lvl<=5)) return {lvl:0, txt:'Utenfor varslingssesong'};
       var TXT={1:'Liten',2:'Moderat',3:'Betydelig',4:'Stor',5:'Meget stor'};
       return {lvl:lvl, txt:TXT[lvl]};
     });
@@ -2277,7 +2279,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       '<h1>Dagsrapport — '+_escR(R.orgName||'Daedalus')+'</h1>'+
       '<p class="k">'+new Date().toLocaleDateString('nb-NO',{weekday:'long',year:'numeric',month:'long',day:'numeric'})+'</p>'+
       '<div class="grid"><div><b>'+(k.trips||0)+'</b> aktive turer</div><div><b>'+(k.guests||0)+'</b> gjester i felt</div><div><b>'+(k.guides||0)+'/'+(k.guidesTotal||0)+'</b> guider på vakt</div><div><b>'+(k.reports||0)+'</b> hendelser i dag</div></div>'+
-      '<h2>Skredvarsel</h2><p class="k">Faregrad '+(R.ava||2)+' — '+_escR(R.avaText||'Moderat')+' (Varsom, region 3010)</p>'+
+      '<h2>Skredvarsel</h2><p class="k">'+(R.ava>=1?('Faregrad '+R.ava+' — '+_escR(R.avaText||'')):'Utenfor varslingssesong')+' (Varsom)</p>'+
       '<h2>Guider</h2><ul>'+(gl||'<li class="k">Ingen registrert</li>')+'</ul>'+
       '<h2>Siste hendelser</h2><ul>'+(fl||'<li class="k">Ingen</li>')+'</ul>'+
       '<p class="k" style="margin-top:24px">Generert '+new Date().toLocaleString('nb-NO')+' · Daedalus · Guide &amp; Safety</p>'+
@@ -2501,7 +2503,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     linjer.push('DAGENS BRIEF — '+(R.orgName||'Daedalus')+' · '+new Date().toLocaleDateString('nb-NO',{weekday:'long',day:'numeric',month:'long'}));
     linjer.push('');
     linjer.push('VÆR: '+(wx[0]||'—')+' · vind '+(wx[1]||'—')+' · '+(wx[2]||'—'));
-    linjer.push('SKRED: faregrad '+(R.ava||'—')+' — '+(R.avaText||'')+' (Varsom)');
+    linjer.push(R.ava>=1? ('SKRED: faregrad '+R.ava+' — '+(R.avaText||'')+' (Varsom)') : 'SKRED: utenfor varslingssesong (Varsom)');
     linjer.push('');
     linjer.push('DAGENS TURER ('+dagens.length+'):');
     if(dagens.length){ dagens.forEach(function(t){ linjer.push('• '+(t.name||'')+' — '+(t.guide_name||'—')+' · retur '+String(t.return_time||'—').slice(0,5)+(t.return_date&&t.return_date!==t.date?(' ('+t.return_date+')'):'')+' · '+(STATUS_NO[t.status]||t.status)); }); }
@@ -3246,9 +3248,10 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       var hn=$('#heroName'); if(hn&&fn) hn.textContent=fn;
       var hs=$('.hero-sub');
       if(hs){
-        var avL=R.ava||2, avT=String(R.avaText||'Moderat').toLowerCase();
+        var avL=R.ava, avT=String(R.avaText||'').toLowerCase();
         var _tT=(R.kpis.trips===1?' aktiv tur':' aktive turer'), _gT=(R.kpis.guides===1?' guide':' guider');
-        hs.innerHTML='<b>'+R.kpis.trips+_tT+'</b> nå. '+R.kpis.guides+_gT+' på vakt og alle sporingsenheter rapporterer normalt. Skredvarsel for regionen: <b>faregrad '+avL+' — '+avT+'</b>.';
+        var avHtml=(avL>=1)?('Skredvarsel for regionen: <b>faregrad '+avL+' — '+avT+'</b>.'):'Skredvarsel: <b>utenfor varslingssesong</b> (Varsom).';
+        hs.innerHTML='<b>'+R.kpis.trips+_tT+'</b> nå. '+R.kpis.guides+_gT+' på vakt og alle sporingsenheter rapporterer normalt. '+avHtml;
       }
       var chip=$('#opChip'), chipTx=$('#opChipTx');
       if(chip){
