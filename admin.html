@@ -688,7 +688,7 @@ body.lock{overflow:hidden}
 .plx{will-change:transform}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>@keyframes landDrift{to{transform:translateX(-56px)}}#planetSvg .landG{animation:landDrift 44s linear infinite}.kpi{transition:transform .18s}.kpi:hover{transform:translateY(-2px)}#tripAdmList [data-tadm]:hover,.ar-row:hover{border-color:rgba(74,159,224,.45)!important}.rep:hover{background:rgba(74,159,224,.05)}.wx-it:hover b{color:#7fc0f5}</style>
+<style>@keyframes pDrift{to{transform:translateX(-56px)}}#planetSvg .pLand{animation:pDrift 44s linear infinite}#planetSvg .pCloud{animation:pDrift 26s linear infinite}.map-legend .chip{cursor:pointer;user-select:none;transition:opacity .2s}.map-legend .chip.off{opacity:.32;filter:grayscale(.7)}.kpi{transition:transform .18s}.kpi:hover{transform:translateY(-2px)}#tripAdmList [data-tadm]:hover,.ar-row:hover{border-color:rgba(74,159,224,.45)!important}.rep:hover{background:rgba(74,159,224,.05)}.wx-it:hover b{color:#7fc0f5}</style>
 </head>
 <body>
 <a class="skip" href="#main">Hopp til innhold</a>
@@ -932,11 +932,11 @@ body.lock{overflow:hidden}
     <article class="card map-card sp8 rv" id="mapCard" style="--d:.05s">
       <div class="card-h"><svg class="ic"><use href="#i-pin"/></svg><h3>Operativt kart — Tromsø / Tamokdalen</h3><span class="map-live"><i></i>LIVE</span><a class="map-open" href="/kart-planlegger.html" target="_blank" rel="noopener">Åpne planlegger<svg class="ic ic-s"><use href="#i-pin"/></svg></a></div>
       <div class="map-legend">
-        <span class="chip" style="color:var(--accent-soft)"><i></i>Turer</span>
-        <span class="chip" style="color:var(--gold-soft)"><i></i>Oppmøte</span>
-        <span class="chip" style="color:var(--amber)"><i></i>Observasjon</span>
-        <span class="chip" style="color:#e2837b"><i></i>SOS</span>
-        <span class="chip" style="margin-left:auto"><svg class="ic" style="width:11px;height:11px"><use href="#i-layers"/></svg>Rute: Tamokdalen topptur</span>
+        <span class="chip" id="chTur" title="Vis/skjul turer og ruter" style="color:var(--accent-soft)"><i></i>Turer</span>
+        <span class="chip" id="chMeet" title="Vis/skjul oppmøtepunkter" style="color:var(--gold-soft)"><i></i>Oppmøte</span>
+        <span class="chip" id="chObs" title="Vis/skjul faremarkeringer" style="color:var(--amber)"><i></i>Observasjon</span>
+        <span class="chip" id="chSos" title="Vis/skjul nødpunkter" style="color:#e2837b"><i></i>SOS</span>
+        <span class="chip" id="chRoute" title="Zoom til rutene" style="margin-left:auto"><svg class="ic" style="width:11px;height:11px"><use href="#i-layers"/></svg><span id="chRouteTxt">Ruter: —</span></span>
       </div>
       <div class="map-stage" id="mapStage">
         <div class="mapfall" aria-hidden="true">
@@ -1581,6 +1581,7 @@ function addRealOverlays(){
   try{ if(mk.length){ lmap.fitBounds(L.latLngBounds(mk.map(function(m){return [m.lat,m.lng];})).pad(0.4)); } }catch(e){}
 }
 function addOverlays(){
+  if(window.__LIVE_MAP) return;
   if(!lmap||!window.L)return;
   if(window.__REAL && window.__REAL.mapMarkers){ addRealOverlays(); return; }
   var route=[[69.130,19.700],[69.133,19.716],[69.130,19.733],[69.124,19.741],[69.121,19.757],[69.117,19.768],[69.115,19.780],[69.110,19.792],[69.108,19.806]];
@@ -1615,6 +1616,7 @@ function tryLeaflet(){
     tl.on('load',function(){
       if(tilesOn)return;
       tilesOn=true;
+      window.__TILESON=true;
       stageEl.classList.add('tiles-on');
       var at=$('#mapAttr'); if(at)at.textContent='© OpenStreetMap-bidragsytere · © CARTO';
       addOverlays();
@@ -1625,6 +1627,7 @@ function tryLeaflet(){
       if(errs>8&&!tilesOn){ try{ lmap.remove() }catch(e2){} lmap=null }
     });
     tl.addTo(lmap);
+    window.__LMAP=lmap;
     lmap.on('mousemove',function(e){ if(coordsEl&&tilesOn)coordsEl.textContent=fmtCoord(e.latlng.lat,e.latlng.lng) });
   }catch(e){ lmap=null }
 }
@@ -2642,33 +2645,148 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     var svg=document.getElementById('planetSvg'); if(!svg||svg.__init) return; svg.__init=1;
     var mnd=new Date().getMonth();
     var ses=(mnd===11||mnd<=1)?'vinter':(mnd<=4?'vaar':(mnd<=7?'sommer':'host'));
-    var pal={vinter:{hav:'#14283f',land:'#d9e6f2',kant:'#8fb8de'},vaar:{hav:'#123a52',land:'#4f9a5f',kant:'#7fd49a'},sommer:{hav:'#0f4058',land:'#5aa14e',kant:'#c9a24b'},host:{hav:'#232c3e',land:'#b07a3e',kant:'#e0a458'}}[ses];
-    var land='M0 20 Q6 12 14 16 T26 14 Q30 20 24 26 Q14 30 8 26 Q2 24 0 20 Z M34 30 Q42 24 50 30 Q54 36 46 40 Q38 42 34 36 Z M18 40 Q26 36 30 42 Q28 48 20 46 Q16 44 18 40 Z M40 8 Q46 5 50 9 Q52 14 46 16 Q40 15 40 8 Z';
-    svg.innerHTML='<defs><clipPath id="pClip"><circle cx="28" cy="28" r="26"/></clipPath><radialGradient id="pShade" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="rgba(255,255,255,.20)"/><stop offset=".45" stop-color="rgba(255,255,255,0)"/><stop offset="1" stop-color="rgba(0,0,0,.45)"/></radialGradient></defs>'
-      +'<g transform="rotate(-18 28 28)">'
-      +'<circle cx="28" cy="28" r="26" fill="'+pal.hav+'"/>'
-      +'<g clip-path="url(#pClip)"><g class="landG"><path d="'+land+'" fill="'+pal.land+'" opacity=".92"/><path d="'+land+'" fill="'+pal.land+'" opacity=".92" transform="translate(56 0)"/></g></g>'
-      +'<circle cx="28" cy="28" r="26" fill="url(#pShade)"/>'
-      +'<circle id="pNight" cx="28" cy="28" r="26" fill="rgba(4,10,20,.65)" clip-path="url(#pClip)" style="transition:opacity 1.2s" opacity="0"/>'
-      +'<circle cx="28" cy="28" r="26" fill="none" stroke="'+pal.kant+'" stroke-opacity=".5" stroke-width="1"/>'
+    var P={
+      vinter:{seaHi:'#3a729e',seaMid:'#17456e',seaDeep:'#071e38',land:'#e2ebf3',landDk:'#4b6f5e',peak:'#ffffff',atmo:'#d3e8ff',isS:1.5},
+      vaar:{seaHi:'#3f8ec4',seaMid:'#1c5a8c',seaDeep:'#0a2848',land:'#57a457',landDk:'#377954',peak:'#eef7f0',atmo:'#a5dcff',isS:1.15},
+      sommer:{seaHi:'#4a9bd4',seaMid:'#1f6398',seaDeep:'#0b2b50',land:'#43975a',landDk:'#2c6c41',peak:'#ecf6ef',atmo:'#8fd0ff',isS:.85},
+      host:{seaHi:'#3a83b4',seaMid:'#1a5180',seaDeep:'#092440',land:'#b5823f',landDk:'#7d5c2e',peak:'#f2ede2',atmo:'#ffd9a0',isS:1}
+    }[ses];
+    var A='M4.2 15.4 L6.4 13 L8.1 14.4 L9.3 12.4 L11.6 13.5 L13.2 12.2 L15.1 13.8 L17 12.9 L18.4 14.8 L20.3 14.1 L21.5 16 L20.4 17.6 L21.8 19.2 L20.1 20.7 L21 22.6 L19 23.4 L19.7 25.5 L17.4 26.1 L18 28.3 L15.7 28.6 L16.2 30.7 L13.9 30.3 L13 32.2 L11 31.1 L9.5 32.4 L8.2 30.5 L6.2 31 L5.6 28.8 L3.9 28.1 L4.8 26.1 L3.2 24.8 L4.5 23.2 L3.4 21.4 L4.9 20.2 L3.8 18.3 L5.4 17.4 Z';
+    var B='M29.5 30.5 L32.4 28.9 L35.2 29.8 L37.8 28.7 L40.6 30.2 L43.2 29.6 L44.8 31.6 L43.4 33.2 L44.3 35 L42.2 36.2 L42.8 38.2 L40.2 38 L39.2 40 L36.6 39 L34.4 40.4 L32.6 38.6 L30.2 38.9 L29.3 36.7 L27.3 35.8 L28.5 33.9 L27.4 32 L29 31.2 Z';
+    var C='M35 13.6 L37.8 12 L40.4 13 L43 12.2 L44.9 14 L43.8 15.7 L44.6 17.3 L42.2 17.9 L40.6 16.6 L38.2 17.2 L36.4 15.7 L35.2 16.4 L34.3 14.6 Z';
+    var D='M10 38 L12.6 36.8 L14.8 38 L14 40 L11.4 40.6 L9.4 39.4 Z';
+    var fjA='M7.5 17.5 L10.5 15.8 L13.5 17.2 L15.5 19.5 L13.8 21.8 L10.8 20.6 L8.8 22 L6.8 19.8 Z';
+    var fjB='M33 32 L36 30.8 L39 32.2 L41 34 L39 35.8 L35.5 35 L33.5 36.2 L31.8 34.2 Z';
+    var land='<path d="'+A+'" fill="'+P.land+'"/><path d="'+B+'" fill="'+P.land+'"/><path d="'+C+'" fill="'+P.land+'"/><path d="'+D+'" fill="'+P.land+'"/>'
+      +'<path d="'+fjA+'" fill="'+P.landDk+'" opacity=".75"/><path d="'+fjB+'" fill="'+P.landDk+'" opacity=".7"/>'
+      +'<path d="M10.2 16.4 l1.4 -1 1.5 1.1 -1.4 1 Z" fill="'+P.peak+'" opacity=".95"/><path d="M13 18.6 l1.2 -.8 1.2 .9 -1.2 .8 Z" fill="'+P.peak+'" opacity=".85"/>'
+      +'<ellipse cx="9.5" cy="25.5" rx="1.6" ry="1.1" fill="'+P.seaMid+'" opacity=".9"/><ellipse cx="37.5" cy="33.6" rx="1.2" ry=".8" fill="'+P.seaMid+'" opacity=".9"/>'
+      +'<circle cx="24.5" cy="23.5" r="1.1" fill="'+P.land+'"/><circle cx="26.8" cy="21.4" r=".7" fill="'+P.land+'"/><circle cx="33.2" cy="20.2" r=".9" fill="'+P.land+'"/><circle cx="21.8" cy="42.5" r="1.2" fill="'+P.land+'"/><circle cx="46.5" cy="41" r="1" fill="'+P.land+'"/><path d="M46.8 21.8 l2.2 -.9 1.8 1.2 -2 1.3 Z" fill="'+P.land+'"/><circle cx="0" cy="24" r="1.4" fill="'+P.land+'"/><circle cx="0" cy="40" r=".9" fill="'+P.land+'"/>';
+    var sky='<path d="M1 18.5 Q7 15.8 13 18.2 Q18 20.2 25 18.8 Q29 18.2 31.5 19.8 Q26 22.4 18 21.6 Q8 21.6 1 20.4 Z" fill="#fff" opacity=".5"/>'
+      +'<path d="M19 36.2 Q25 34 32 35.8 Q38 37.6 45 36 Q40.5 39.4 32.5 38.9 Q24.5 38.7 19 37.4 Z" fill="#fff" opacity=".42"/>'
+      +'<ellipse cx="9.5" cy="44.5" rx="5.5" ry="1.7" fill="#fff" opacity=".3"/><ellipse cx="43" cy="15.5" rx="5" ry="1.5" fill="#fff" opacity=".36"/><ellipse cx="0" cy="30" rx="4" ry="1.3" fill="#fff" opacity=".28"/>';
+    svg.innerHTML='<defs>'
+      +'<clipPath id="pClip"><circle cx="28" cy="28" r="25.5"/></clipPath>'
+      +'<radialGradient id="pSea" cx="38%" cy="32%" r="85%"><stop offset="0" stop-color="'+P.seaHi+'"/><stop offset=".55" stop-color="'+P.seaMid+'"/><stop offset="1" stop-color="'+P.seaDeep+'"/></radialGradient>'
+      +'<radialGradient id="pShade" cx="36%" cy="30%" r="78%"><stop offset="0" stop-color="#fff" stop-opacity=".26"/><stop offset=".34" stop-color="#fff" stop-opacity=".06"/><stop offset=".62" stop-color="#000" stop-opacity="0"/><stop offset=".88" stop-color="#000" stop-opacity=".38"/><stop offset="1" stop-color="#000" stop-opacity=".62"/></radialGradient>'
+      +'<linearGradient id="pIceN" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6fbff" stop-opacity=".95"/><stop offset="1" stop-color="#dcefff" stop-opacity="0"/></linearGradient>'
+      +'<linearGradient id="pIceS" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#f6fbff" stop-opacity=".92"/><stop offset="1" stop-color="#dcefff" stop-opacity="0"/></linearGradient>'
+      +'<linearGradient id="pNightG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#050d1c" stop-opacity="0"/><stop offset=".45" stop-color="#050d1c" stop-opacity=".2"/><stop offset="1" stop-color="#050d1c" stop-opacity=".97"/></linearGradient>'
+      +'<radialGradient id="pAtmo" cx="50%" cy="50%" r="50%"><stop offset=".78" stop-color="'+P.atmo+'" stop-opacity="0"/><stop offset=".9" stop-color="'+P.atmo+'" stop-opacity=".26"/><stop offset=".985" stop-color="'+P.atmo+'" stop-opacity=".7"/><stop offset="1" stop-color="'+P.atmo+'" stop-opacity=".4"/></radialGradient>'
+      +'<filter id="pB7" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation=".7"/></filter>'
+      +'<filter id="pB5" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation=".5"/></filter>'
+      +'</defs>'
+      +'<g transform="rotate(-14 28 28)">'
+      +'<circle cx="28" cy="28" r="25.5" fill="url(#pSea)"/>'
+      +'<g clip-path="url(#pClip)">'
+      +'<g class="pLand" opacity=".96"><g>'+land+'</g><g transform="translate(56 0)">'+land+'</g></g>'
+      +'<ellipse cx="28" cy="2.8" rx="20" ry="'+(5.5*P.isS)+'" fill="url(#pIceN)" filter="url(#pB5)"/>'
+      +'<ellipse cx="28" cy="53.2" rx="20" ry="'+(5.5*P.isS)+'" fill="url(#pIceS)" filter="url(#pB5)"/>'
+      +'<g class="pCloud" filter="url(#pB7)"><g>'+sky+'</g><g transform="translate(56 0)">'+sky+'</g></g>'
+      +'</g>'
+      +'<circle cx="28" cy="28" r="25.5" fill="url(#pShade)"/>'
+      +'<circle id="pNight" cx="28" cy="28" r="25.5" fill="url(#pNightG)" clip-path="url(#pClip)" style="transition:opacity 1.2s" opacity="0"/>'
+      +'<circle cx="28" cy="28" r="25.9" fill="url(#pAtmo)"/>'
       +'</g>';
     window.__updPlanet=function(){
       try{
         var n=document.getElementById('pNight'); if(!n) return;
         var s=window.__SUN||{mode:'ukjent'};
         if(s.mode==='midnight'){ n.setAttribute('opacity','0'); svg.style.filter='drop-shadow(0 0 9px rgba(201,162,75,.55))'; }
-        else if(s.mode==='polar'){ n.setAttribute('opacity','.78'); svg.style.filter='drop-shadow(0 0 8px rgba(74,159,224,.4))'; }
+        else if(s.mode==='polar'){ n.setAttribute('opacity','.82'); svg.style.filter='drop-shadow(0 0 8px rgba(74,159,224,.4))'; }
         else {
           var now=Date.now(); var natt;
           if(s.rise&&s.set){ natt=(now<Date.parse(s.rise)||now>Date.parse(s.set)); }
           else { var h=new Date().getHours(); natt=(h<6||h>=22); }
-          n.setAttribute('opacity', natt? '.62':'0');
+          n.setAttribute('opacity', natt? '.68':'0');
           svg.style.filter=natt? 'drop-shadow(0 0 8px rgba(74,159,224,.3))' : '';
         }
       }catch(e){}
     };
     window.__updPlanet();
     setInterval(function(){ try{ window.__updPlanet(); }catch(e){} }, 60000);
+  }
+
+  function initOpsMap(R, me){
+    if(window.__OPS_INIT) return; window.__OPS_INIT=1;
+    window.__LIVE_MAP=1;
+    var tries=0;
+    var wait=setInterval(function(){
+      tries++;
+      var lm=window.__LMAP;
+      if(lm && window.__TILESON){ clearInterval(wait); boot(lm); }
+      else if(tries>60){ clearInterval(wait); }
+    }, 700);
+    function boot(lm){
+      try{ lm.eachLayer(function(ly){ if(!(ly instanceof L.TileLayer)) lm.removeLayer(ly); }); }catch(e){}
+      var lag={ tur:L.layerGroup().addTo(lm), meet:L.layerGroup().addTo(lm), obs:L.layerGroup().addTo(lm), sos:L.layerGroup().addTo(lm) };
+      function pin(cls,ic,label){ return L.divIcon({className:'lf-wrap', html:'<div class="mk '+cls+' lf" style="--d:.1s"><span class="mk-pin"><svg class="ic"><use href="#'+ic+'"/></svg></span><span class="mk-lab">'+label+'</span></div>', iconSize:[30,30], iconAnchor:[15,30]}); }
+      function sosPin(label){ return L.divIcon({className:'lf-wrap', html:'<div class="mk-sos lf"><i class="ring"></i><i class="ring"></i><i class="ring"></i><i class="core"></i><span class="lab">'+label+'</span></div>', iconSize:[46,46], iconAnchor:[23,23]}); }
+      function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return c==='&'?'&amp;':(c==='<'?'&lt;':(c==='>'?'&gt;':'&quot;')); }); }
+      function openT(id){ return function(){ try{ openTripAdmin(R, me, id); }catch(e){} }; }
+      var firstFit=true;
+      function loadOps(){
+        var since=new Date(Date.now()-30*864e5).toISOString().slice(0,10);
+        sb.from('trips').select('id,name,date,status,gps_lat,gps_lng,guide_name,map_data').gte('date',since).order('date',{ascending:false}).limit(60).then(function(tr){
+          var trips=(tr&&tr.data)||[];
+          var ids=trips.map(function(t){ return t.id; });
+          var evP= ids.length? sb.from('events').select('id,trip_id,type,severity,created_at,acknowledged_at').in('trip_id',ids).order('created_at',{ascending:false}).limit(200) : Promise.resolve({data:[]});
+          evP.then(function(er){
+            var evs=(er&&er.data)||[];
+            var evByTrip={}; var sosByTrip={};
+            evs.forEach(function(e){
+              var isSos=String(e.type||'').toLowerCase()==='sos';
+              if(isSos){ if(!e.acknowledged_at && (Date.now()-Date.parse(e.created_at))<864e5){ (sosByTrip[e.trip_id]=sosByTrip[e.trip_id]||[]).push(e); } }
+              else { (evByTrip[e.trip_id]=evByTrip[e.trip_id]||[]).push(e); }
+            });
+            lag.tur.clearLayers(); lag.meet.clearLayers(); lag.obs.clearLayers(); lag.sos.clearLayers();
+            var bounds=[]; var ruter=0; var sisteRute=null;
+            trips.forEach(function(t){
+              var md=null; try{ md=typeof t.map_data==='string'?JSON.parse(t.map_data):t.map_data; }catch(e){}
+              var rp=(md&&md.routePoints)||[];
+              var pos=null;
+              if(t.gps_lat!=null&&t.gps_lng!=null) pos=[+t.gps_lat,+t.gps_lng];
+              else if(rp.length) pos=[+rp[0].latitude,+rp[0].longitude];
+              else if(md&&md.markers&&md.markers.length&&md.markers[0].coordinate) pos=[+md.markers[0].coordinate.latitude,+md.markers[0].coordinate.longitude];
+              if(pos&&(isNaN(pos[0])||isNaN(pos[1]))) pos=null;
+              if(rp.length>1){
+                ruter++; sisteRute=t.name;
+                var pts=rp.map(function(p){ return [+p.latitude,+p.longitude]; });
+                L.polyline(pts,{color:'#c9a24b',weight:2.5,opacity:.85,dashArray:t.status==='active'?null:'5 6'}).addTo(lag.tur);
+                pts.forEach(function(p){ bounds.push(p); });
+              }
+              if(pos){
+                bounds.push(pos);
+                var nEv=(evByTrip[t.id]||[]).length;
+                var stTxt=t.status==='active'?'Aktiv':(t.status==='completed'?'Fullført':(t.status==='cancelled'?'Avlyst':'Planlagt'));
+                var mk=L.marker(pos,{icon:pin('trip','i-mtn',esc(t.name)+' · '+stTxt+(nEv?(' · '+nEv+' hendelser'):''))}).addTo(lag.tur);
+                mk.on('click', openT(t.id));
+              }
+              ((md&&md.markers)||[]).forEach(function(m){
+                if(!m.coordinate) return;
+                var mp=[+m.coordinate.latitude,+m.coordinate.longitude];
+                if(isNaN(mp[0])||isNaN(mp[1])) return;
+                bounds.push(mp);
+                if(m.type==='meeting'){ var mm=L.marker(mp,{icon:pin('meet','i-pin','Oppmøte — '+esc(t.name))}).addTo(lag.meet); mm.on('click', openT(t.id)); }
+                else if(m.type==='hazard'){ var hm=L.marker(mp,{icon:pin('haz','i-alert','Fare — '+esc(t.name))}).addTo(lag.obs); hm.on('click', openT(t.id)); }
+                else if(m.type==='emergency'){ var em=L.marker(mp,{icon:sosPin('NØDPUNKT — '+esc(t.name).toUpperCase())}).addTo(lag.sos); em.on('click', openT(t.id)); }
+              });
+              (sosByTrip[t.id]||[]).forEach(function(){ if(pos){ var sm2=L.marker(pos,{icon:sosPin('SOS — '+esc(t.name).toUpperCase())}).addTo(lag.sos); sm2.on('click', openT(t.id)); } });
+            });
+            var rt=document.getElementById('chRouteTxt');
+            if(rt) rt.textContent= ruter? ('Ruter: '+ruter+(sisteRute?(' · siste: '+sisteRute):'')) : 'Ingen tegnede ruter';
+            if(firstFit && bounds.length){ firstFit=false; try{ lm.fitBounds(bounds,{padding:[36,36],maxZoom:12}); }catch(e){} }
+          });
+        });
+      }
+      function hook(id,key){ var el=document.getElementById(id); if(!el) return; el.addEventListener('click',function(){ var off=el.classList.toggle('off'); if(off) lm.removeLayer(lag[key]); else lag[key].addTo(lm); }); }
+      hook('chTur','tur'); hook('chMeet','meet'); hook('chObs','obs'); hook('chSos','sos');
+      var cr=document.getElementById('chRoute');
+      if(cr) cr.addEventListener('click',function(){ var pts=[]; lag.tur.eachLayer(function(ly){ if(ly.getLatLngs){ ly.getLatLngs().forEach(function(p){ pts.push([p.lat,p.lng]); }); } }); if(pts.length){ try{ lm.fitBounds(pts,{padding:[36,36],maxZoom:13}); }catch(e){} } else { try{ toast('Ingen ruter','Tegn en rute i kart-planleggeren, så vises den her.'); }catch(e){} } });
+      loadOps();
+      setInterval(loadOps, 60000);
+      window.__OPS_RELOAD=loadOps;
+    }
   }
 
   function logAdmin(action, target, details){
@@ -3082,6 +3200,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       if(!window.__wxDone){ window.__wxDone=1; fetchMetWx(R); }
       try{ startReturnTicker(R, me); }catch(e){}
       try{ initPlanet(); }catch(e){}
+      try{ initOpsMap(R, me); }catch(e){}
       var _bell=$('#bell'); if(_bell && !_bell.__w){ _bell.__w=1; _bell.onclick=function(ev){ if(ev){ev.preventDefault();ev.stopPropagation();} toggleBellPanel(R); }; }
       var _hb=$('#hmsBtn'); if(_hb && !_hb.__w){ _hb.__w=1; _hb.onclick=function(){ openHms(R, me); }; }
       var _cb=$('#calBtn'); if(_cb && !_cb.__w){ _cb.__w=1; _cb.onclick=function(){ openCalendar(R, me); }; }
