@@ -915,7 +915,7 @@ body.lock{overflow:hidden}
         </svg>
         <div class="gauge-c"><span class="v num"><span id="gNum">0</span><small>&thinsp;%</small></span><span class="l">Etterlevelse</span></div>
       </div>
-      <div class="gauge-list">
+      <div class="gauge-list" id="gaugeList">
         <div class="gauge-li"><svg class="ic ok"><use href="#i-check"/></svg><span><b>12 av 12</b> sjekklister levert før avgang</span></div>
         <div class="gauge-li"><svg class="ic ok"><use href="#i-check"/></svg><span>GPS-sporing aktiv på <b>alle enheter</b></span></div>
         <div class="gauge-li"><svg class="ic warn"><use href="#i-alert"/></svg><span><b>1 sertifikat</b> utløper om 14 dager — L. Eriksen</span></div>
@@ -1010,12 +1010,12 @@ body.lock{overflow:hidden}
         </svg>
         <div class="ava-read"><div class="n num" id="avaN">&ndash;</div><div class="t" id="avaT">Henter&hellip;</div></div>
       </div>
-      <div class="ava-meta">
+      <div class="ava-meta" id="avaMeta">
         <div class="li"><svg class="ic"><use href="#i-snow"/></svg><span>Skredproblem: <b>våt løssnø</b> i soleksponerte heng</span></div>
         <div class="li"><svg class="ic"><use href="#i-mtn"/></svg><span>Utsatt terreng: <b>over 600 moh.</b>, sektor NV&ndash;NØ</span></div>
         <div class="li"><svg class="ic"><use href="#i-clock"/></svg><span>Gyldig til <b>i kveld 23:59</b> · neste varsel 08:00</span></div>
       </div>
-      <div class="trend">
+      <div class="trend" id="avaTrend">
         <div class="trend-lab">5-døgns trend</div>
         <div class="trend-row">
           <div class="tbar" style="--h:40;--i:0"><i style="background:linear-gradient(180deg,#e8dd72,var(--v2))"></i><span>i dag</span></div>
@@ -2222,12 +2222,12 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     window.__REAL = {
       chartG:chartG, chartT:chartT, safety:safety, guides:guides, feed:feed, pool:[],
       kpis:{ trips:activeTrips.length, guests:guestsField, guides:guidesOnDuty, guidesTotal:guidesTotal, reports:reportsToday },
-      sos:sos, mapMarkers:mapMarkers, orgName:'', tripById:tripById, reports:_reports, guidesRaw:guideRows.map(function(u){ return {id:u.id, name:u.name||u.email}; })
+      sos:sos, mapMarkers:mapMarkers, orgName:'', tripById:tripById, reports:_reports, guidesRaw:guideRows.map(function(u){ return {id:u.id, name:u.name||u.email}; }), certsRaw:guideRows.map(function(u){ return {n:u.name||u.email, c:u.certifications}; })
     };
     window.__REAL.seats = (subRow && subRow.seats!=null)? Number(subRow.seats) : null;
     window.__REAL.seatsUsed = guidesTotal;
 
-    var pAva = fetchAva().then(function(a){ window.__REAL.ava=a.lvl; window.__REAL.avaText=a.txt; });
+    var pAva = fetchAva().then(function(a){ window.__REAL.ava=a.lvl; window.__REAL.avaText=a.txt; window.__REAL.avaProbs=a.probs||[]; window.__REAL.avaValidTo=a.validTo||null; });
     var pOrg = orgId? sb.from('organizations').select('name,emergency_plan,duty_phone').eq('id',orgId).maybeSingle().then(function(o){ if(o&&o.data){ if(o.data.name) window.__REAL.orgName=o.data.name; window.__REAL.orgMeta={emergency_plan:o.data.emergency_plan||null,duty_phone:o.data.duty_phone||null}; } }) : Promise.resolve();
     return Promise.all([pAva.catch(function(){}),pOrg.catch(function(){})]).then(function(){
       try{ updateStatic(window.__REAL, me); }catch(e){}
@@ -2245,7 +2245,8 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       var d=Array.isArray(j)?j[0]:j; var lvl=parseInt(d&&d.DangerLevel,10);
       if(!(lvl>=1&&lvl<=5)) return {lvl:0, txt:'Utenfor varslingssesong'};
       var TXT={1:'Liten',2:'Moderat',3:'Betydelig',4:'Stor',5:'Meget stor'};
-      return {lvl:lvl, txt:TXT[lvl]};
+      var probs=[]; try{ (d.AvalancheProblems||[]).forEach(function(p){ var n=p&&(p.AvalancheProblemTypeName||p.AvalancheExtName); if(n&&probs.indexOf(String(n))<0) probs.push(String(n)); }); }catch(e2){}
+      return {lvl:lvl, txt:TXT[lvl], probs:probs, validTo:(d&&d.ValidTo)||null};
     }).catch(function(){ return {lvl:0, txt:'Varsel utilgjengelig'}; });
   }
 
@@ -2842,7 +2843,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       +'<h4>HMS / sikkerhetssjekk</h4><div style="font-size:12.5px;line-height:1.9">Vær verifisert: '+chk(t.weather_verified)+' · Utstyr sjekket: '+chk(t.equipment_checked)+' · Nødkontakt varslet: '+chk(t.emergency_contact_notified)+'<br>Skredfaregrad: <b style="color:#eaf2fb">'+esc(t.avalanche_level||'ikke satt')+'</b> · Delt kart: '+chk(t.shared_map)+'<br>Admin-godkjenning: '+(t.approved_at? '<b style="color:#5fb97a">✓ godkjent '+new Date(t.approved_at).toLocaleDateString('nb-NO')+'</b>' : '<button type="button" id="taApprove" style="border:1px solid rgba(95,185,122,.45);background:rgba(95,185,122,.1);color:#5fb97a;border-radius:7px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer">Godkjenn tur</button>')+'</div>'
       +'<h4>Deltakere</h4><div id="taParts" style="min-height:20px;font-size:12.5px">Laster …</div>'
       +'<div class="row" style="margin-top:6px"><div><input id="taPN" placeholder="Navn" maxlength="80"></div><div><input id="taPP" placeholder="Telefon" maxlength="30"></div><div><input id="taPE" placeholder="Nødkontakt" maxlength="60"></div></div>'
-      +'<button type="button" id="taPAdd" style="margin-top:8px;width:100%;padding:8px;border:1px solid rgba(74,159,224,.35);border-radius:8px;background:rgba(74,159,224,.08);color:#cfe2f5;font-size:12px;cursor:pointer">Legg til deltaker</button>'
+      +'<button type="button" id="taPAdd" style="margin-top:8px;width:100%;padding:8px;border:1px solid rgba(74,159,224,.35);border-radius:8px;background:rgba(74,159,224,.08);color:#cfe2f5;font-size:12px;cursor:pointer">+ Legg til deltaker</button>'
       +'<h4>Hendelser</h4><div id="taEvents" style="font-size:12px">Laster …</div>'
       +'<div id="taErr"></div>'
       +'<div class="btns">'
@@ -3103,7 +3104,9 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       '<label>Returdato (ved overnatting — valgfritt)</label><input id="ntRetDate" type="date">'+
       '<div class="row"><div><label>Aktivitet</label><select id="ntType">'+opt(TYPES,'summit')+'</select></div><div><label>Vanskelighet</label><select id="ntDiff">'+opt(DIFFS,'moderate')+'</select></div></div>'+
       '<label>Guide</label><select id="ntGuide">'+(gopt||'<option value="">(ingen registrert)</option>')+'</select>'+
+      '<label>Utstyr (deles med guiden i appen)</label><textarea id="ntEquip" rows="2" maxlength="500" placeholder="F.eks. hjelm, sele, stegjern, isøks …"></textarea>'+
       '<label>Notater</label><textarea id="ntNotes" rows="2" maxlength="500"></textarea>'+
+      '<label>Gjenta</label><select id="ntRepeat"><option value="1">Ingen gjentakelse</option><option value="2">Ukentlig — 2 uker</option><option value="3">Ukentlig — 3 uker</option><option value="4">Ukentlig — 4 uker</option><option value="6">Ukentlig — 6 uker</option><option value="8">Ukentlig — 8 uker</option><option value="12">Ukentlig — 12 uker</option></select>'+
       '<div id="ntErr"></div>'+
       '<div class="btns"><button type="button" id="ntCancel">Avbryt</button><button type="submit" id="ntSave">Opprett tur</button></div></form>';
     document.body.appendChild(ov);
@@ -3148,17 +3151,77 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       var guideId=gv('ntGuide'), guideName=''; (R.guidesRaw||[]).forEach(function(g){ if(g.id===guideId) guideName=g.name; });
       var save=document.getElementById('ntSave'); save.disabled=true; save.textContent='Lagrer…';
       var _glat=parseFloat(gv('ntLat')), _glng=parseFloat(gv('ntLng'));
-      var payload={ trip_id:'WEB-'+Date.now().toString(36).toUpperCase(), name:name, date:date, start_location:loc, return_time:ret, activity_type:gv('ntType'), difficulty:gv('ntDiff'), status:'draft', guide_id:guideId||(me&&me.id)||null, guide_name:guideName||(me&&(me.name||me.email))||'', organization_id:(me&&me.organization_id)||null, organization_name:R.orgName||'', notes:gv('ntNotes').trim()||null, gps_lat:isNaN(_glat)?null:_glat, gps_lng:isNaN(_glng)?null:_glng, return_date:gv('ntRetDate')||null };
-      sb.from('trips').insert(payload).then(function(res){
+      var reps=Math.max(1,parseInt(gv('ntRepeat'),10)||1);
+      var basePayload={ name:name, start_location:loc, return_time:ret, activity_type:gv('ntType'), difficulty:gv('ntDiff'), status:'draft', guide_id:guideId||(me&&me.id)||null, guide_name:guideName||(me&&(me.name||me.email))||'', organization_id:(me&&me.organization_id)||null, organization_name:R.orgName||'', notes:gv('ntNotes').trim()||null, equipment:gv('ntEquip').trim()||null, gps_lat:isNaN(_glat)?null:_glat, gps_lng:isNaN(_glng)?null:_glng };
+      var rows=[]; var d0=new Date(date+'T12:00:00'); var rd0=gv('ntRetDate')?new Date(gv('ntRetDate')+'T12:00:00'):null;
+      for(var k=0;k<reps;k++){
+        var row={}; for(var kk in basePayload){ row[kk]=basePayload[kk]; }
+        var dk=new Date(d0.getTime()+k*7*864e5); row.date=dstr(dk);
+        row.return_date=rd0? dstr(new Date(rd0.getTime()+k*7*864e5)) : null;
+        row.trip_id='WEB-'+Date.now().toString(36).toUpperCase()+(reps>1?('-'+(k+1)):'');
+        rows.push(row);
+      }
+      sb.from('trips').insert(rows).select('id').then(function(res){
         if(res&&res.error){ err.textContent='Kunne ikke lagre: '+res.error.message; save.disabled=false; save.textContent='Opprett tur'; return; }
-        close(); try{ toast('Tur opprettet','«'+name+'» er lagret som utkast.'); }catch(e){}
-        setTimeout(function(){ location.href='/admin'; }, 800);
+        var nid=res&&res.data&&res.data[0]&&res.data[0].id;
+        close(); try{ toast('Tur opprettet',(reps>1?(reps+' turer (ukentlig) lagret. '):'')+'Åpner turen — legg til deltakere der.'); }catch(e){}
+        setTimeout(function(){ location.href='/admin'+(nid?('#tur='+nid):''); }, 700);
       }, function(){ err.textContent='Nettverksfeil — prøv igjen.'; save.disabled=false; save.textContent='Opprett tur'; });
     });
   }
 
   // ---------- statisk DOM ----------
   function updateStatic(R, me){
+    try{
+      var _gl=document.getElementById('gaugeList');
+      if(_gl){
+        var _ts=Object.keys(R.tripById||{}).map(function(k){return R.tripById[k];});
+        var _rel=_ts.filter(function(t){return t.status!=='cancelled';});
+        var _okS=_rel.filter(function(t){return !!(t.weather_verified&&t.equipment_checked)||!!t.safety_completed_at;}).length;
+        var _okG=_rel.filter(function(t){return !!t.approved_at;}).length;
+        var _ik=function(ok){ return ok?'<svg class="ic ok"><use href="#i-check"/></svg>':'<svg class="ic warn"><use href="#i-alert"/></svg>'; };
+        var _certVarsel=null, _harCert=false;
+        try{
+          var _n30=Date.now()+30*864e5; var _navn=[];
+          (R.certsRaw||[]).forEach(function(g){
+            var c=g.c; if(!c) return;
+            if(typeof c==='string'){ try{ c=JSON.parse(c); }catch(e3){ return; } }
+            if(!Array.isArray(c)||!c.length) return;
+            _harCert=true;
+            c.forEach(function(x){
+              var d=x&&(x.expiry||x.expires||x.valid_to||x.expiry_date||x.date);
+              var p=d?Date.parse(d):NaN;
+              if(!isNaN(p)&&p<_n30&&_navn.indexOf(g.n)<0){ _navn.push(g.n); }
+            });
+          });
+          if(_navn.length) _certVarsel='<b>'+_navn.length+' guide'+(_navn.length>1?'r':'')+'</b> med sertifikatutløp innen 30 dager — '+esc(_navn.slice(0,2).join(', '));
+        }catch(e4){}
+        var _rader=[
+          _ik(_rel.length>0&&_okS===_rel.length)+'<span><b>'+_okS+' av '+_rel.length+'</b> turer med fullført sikkerhetssjekk</span>',
+          _ik(_rel.length>0&&_okG===_rel.length)+'<span><b>'+_okG+' av '+_rel.length+'</b> turer admin-godkjent</span>',
+          _certVarsel? (_ik(false)+'<span>'+_certVarsel+'</span>') : (_harCert? (_ik(true)+'<span>Ingen sertifikatutløp neste 30 dager</span>') : '<svg class="ic"><use href="#i-users"/></svg><span>Sertifikater: ikke registrert på guidene ennå</span>')
+        ];
+        _gl.innerHTML=_rader.map(function(r){return '<div class="gauge-li">'+r+'</div>';}).join('');
+      }
+    }catch(e5){}
+    try{
+      var _am=document.getElementById('avaMeta'), _tr2=document.getElementById('avaTrend');
+      if(_am){
+        if(!(R.ava>=1)){
+          _am.innerHTML='<div class="li"><svg class="ic"><use href="#i-snow"/></svg><span>Varsom publiserer skredvarsel ca. 1. des – 31. mai. Utenfor sesongen: sjekk observasjoner på <b>varsom.no</b>.</span></div>';
+          if(_tr2) _tr2.style.display='none';
+        } else {
+          var _lj=[];
+          if(R.avaProbs&&R.avaProbs.length) _lj.push('<div class="li"><svg class="ic"><use href="#i-snow"/></svg><span>Skredproblem: <b>'+esc(R.avaProbs.slice(0,2).join(' · '))+'</b></span></div>');
+          if(R.avaValidTo){ var _vd=new Date(R.avaValidTo); if(!isNaN(_vd)) _lj.push('<div class="li"><svg class="ic"><use href="#i-clock"/></svg><span>Gyldig til <b>'+_vd.toLocaleString('nb-NO',{weekday:'long',hour:'2-digit',minute:'2-digit'})+'</b> (Varsom)</span></div>'); }
+          _am.innerHTML=_lj.join('');
+        }
+      }
+    }catch(e6){}
+    try{
+      var _hm=location.hash.match(/^#tur=([0-9a-f\-]{36})/i);
+      if(_hm && !window.__HASH_DONE){ window.__HASH_DONE=1; history.replaceState(null,'',location.pathname); setTimeout(function(){ try{ openTripAdmin(R, me, _hm[1]); }catch(e7){} }, 700); }
+    }catch(e8){}
     var kpiNums=$$('.kpi .kpi-num'); var vals=[R.kpis.trips,R.kpis.guests,R.kpis.guides,R.kpis.reports];
     kpiNums.forEach(function(el,i){
       var small=el.querySelector('small');
