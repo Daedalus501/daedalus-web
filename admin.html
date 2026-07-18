@@ -688,7 +688,7 @@ body.lock{overflow:hidden}
 .plx{will-change:transform}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>.kpi{transition:transform .18s}.kpi:hover{transform:translateY(-2px)}#tripAdmList [data-tadm]:hover,.ar-row:hover{border-color:rgba(74,159,224,.45)!important}.rep:hover{background:rgba(74,159,224,.05)}.wx-it:hover b{color:#7fc0f5}</style>
+<style>@keyframes landDrift{to{transform:translateX(-56px)}}#planetSvg .landG{animation:landDrift 44s linear infinite}.kpi{transition:transform .18s}.kpi:hover{transform:translateY(-2px)}#tripAdmList [data-tadm]:hover,.ar-row:hover{border-color:rgba(74,159,224,.45)!important}.rep:hover{background:rgba(74,159,224,.05)}.wx-it:hover b{color:#7fc0f5}</style>
 </head>
 <body>
 <a class="skip" href="#main">Hopp til innhold</a>
@@ -821,7 +821,7 @@ body.lock{overflow:hidden}
         <div class="clockwrap">
           <div class="bezel" aria-hidden="true">
             <svg viewBox="0 0 92 92" id="bezelSvg"></svg>
-            <div class="bezel-core"><svg class="ic"><use href="#i-compass"/></svg></div>
+            <div class="bezel-core"><svg id="planetSvg" viewBox="0 0 56 56" style="width:86%;height:86%;overflow:visible"></svg></div>
           </div>
           <div class="bigclock num" aria-live="off">
             <div class="t"><span id="clkHM">--:--</span><span class="sec" id="clkS">--</span></div>
@@ -2307,6 +2307,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
         function hm(x){ try{ return new Date(x).toLocaleTimeString('nb-NO',{hour:'2-digit',minute:'2-digit'}); }catch(e){ return '—'; } }
         if(rise&&set){ if(b) b.textContent='↑'+hm(rise)+' ↓'+hm(set); if(s) s.textContent='Sol i dag'; }
         else if(!rise&&!set){ var mnd=new Date().getMonth(); var midnatt=(mnd>=3&&mnd<=8); if(b) b.textContent=midnatt?'Midnattssol':'Mørketid'; if(s) s.textContent=midnatt?'Sola går ikke ned':'Sola står ikke opp'; }
+        try{ var _mn2=new Date().getMonth(); window.__SUN={ mode:(rise&&set)?'normal':(((_mn2>=3&&_mn2<=8))?'midnight':'polar'), rise:rise||null, set:set||null }; if(window.__updPlanet) window.__updPlanet(); }catch(e){}
       }).catch(function(){});
     }catch(e){}
   }
@@ -2635,6 +2636,39 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     var close=function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); };
     ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
     document.getElementById('epClose').onclick=close;
+  }
+
+  function initPlanet(){
+    var svg=document.getElementById('planetSvg'); if(!svg||svg.__init) return; svg.__init=1;
+    var mnd=new Date().getMonth();
+    var ses=(mnd===11||mnd<=1)?'vinter':(mnd<=4?'vaar':(mnd<=7?'sommer':'host'));
+    var pal={vinter:{hav:'#14283f',land:'#d9e6f2',kant:'#8fb8de'},vaar:{hav:'#123a52',land:'#4f9a5f',kant:'#7fd49a'},sommer:{hav:'#0f4058',land:'#5aa14e',kant:'#c9a24b'},host:{hav:'#232c3e',land:'#b07a3e',kant:'#e0a458'}}[ses];
+    var land='M0 20 Q6 12 14 16 T26 14 Q30 20 24 26 Q14 30 8 26 Q2 24 0 20 Z M34 30 Q42 24 50 30 Q54 36 46 40 Q38 42 34 36 Z M18 40 Q26 36 30 42 Q28 48 20 46 Q16 44 18 40 Z M40 8 Q46 5 50 9 Q52 14 46 16 Q40 15 40 8 Z';
+    svg.innerHTML='<defs><clipPath id="pClip"><circle cx="28" cy="28" r="26"/></clipPath><radialGradient id="pShade" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="rgba(255,255,255,.20)"/><stop offset=".45" stop-color="rgba(255,255,255,0)"/><stop offset="1" stop-color="rgba(0,0,0,.45)"/></radialGradient></defs>'
+      +'<g transform="rotate(-18 28 28)">'
+      +'<circle cx="28" cy="28" r="26" fill="'+pal.hav+'"/>'
+      +'<g clip-path="url(#pClip)"><g class="landG"><path d="'+land+'" fill="'+pal.land+'" opacity=".92"/><path d="'+land+'" fill="'+pal.land+'" opacity=".92" transform="translate(56 0)"/></g></g>'
+      +'<circle cx="28" cy="28" r="26" fill="url(#pShade)"/>'
+      +'<circle id="pNight" cx="28" cy="28" r="26" fill="rgba(4,10,20,.65)" clip-path="url(#pClip)" style="transition:opacity 1.2s" opacity="0"/>'
+      +'<circle cx="28" cy="28" r="26" fill="none" stroke="'+pal.kant+'" stroke-opacity=".5" stroke-width="1"/>'
+      +'</g>';
+    window.__updPlanet=function(){
+      try{
+        var n=document.getElementById('pNight'); if(!n) return;
+        var s=window.__SUN||{mode:'ukjent'};
+        if(s.mode==='midnight'){ n.setAttribute('opacity','0'); svg.style.filter='drop-shadow(0 0 9px rgba(201,162,75,.55))'; }
+        else if(s.mode==='polar'){ n.setAttribute('opacity','.78'); svg.style.filter='drop-shadow(0 0 8px rgba(74,159,224,.4))'; }
+        else {
+          var now=Date.now(); var natt;
+          if(s.rise&&s.set){ natt=(now<Date.parse(s.rise)||now>Date.parse(s.set)); }
+          else { var h=new Date().getHours(); natt=(h<6||h>=22); }
+          n.setAttribute('opacity', natt? '.62':'0');
+          svg.style.filter=natt? 'drop-shadow(0 0 8px rgba(74,159,224,.3))' : '';
+        }
+      }catch(e){}
+    };
+    window.__updPlanet();
+    setInterval(function(){ try{ window.__updPlanet(); }catch(e){} }, 60000);
   }
 
   function logAdmin(action, target, details){
@@ -3047,6 +3081,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       $$('.wx-it').forEach(function(w){ if(w.__w) return; w.__w=1; w.style.cursor='pointer'; w.title='Velg værsted'; w.onclick=function(){ openWxSettings(); }; });
       if(!window.__wxDone){ window.__wxDone=1; fetchMetWx(R); }
       try{ startReturnTicker(R, me); }catch(e){}
+      try{ initPlanet(); }catch(e){}
       var _bell=$('#bell'); if(_bell && !_bell.__w){ _bell.__w=1; _bell.onclick=function(ev){ if(ev){ev.preventDefault();ev.stopPropagation();} toggleBellPanel(R); }; }
       var _hb=$('#hmsBtn'); if(_hb && !_hb.__w){ _hb.__w=1; _hb.onclick=function(){ openHms(R, me); }; }
       var _cb=$('#calBtn'); if(_cb && !_cb.__w){ _cb.__w=1; _cb.onclick=function(){ openCalendar(R, me); }; }
