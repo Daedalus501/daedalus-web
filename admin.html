@@ -3011,7 +3011,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
 
   function openNewTemplate(R, me){
     if(document.getElementById('tpOv')) return;
-    var TYPES=[['summit','Topptur'],['ski_touring','Skitur'],['glacier','Brevandring'],['climbing','Klatring'],['kayak','Kajakk'],['sea_kayaking','Havkajakk'],['river_guide','Elveguiding'],['dog_sledding','Hundekjøring'],['snowmobile_safari','Snøscooter'],['northern_lights_bus','Nordlysbuss'],['teambuilding','Teambuilding'],['course','Kurs'],['other','Annet']];
+    var TYPES=[['summit','Topptur'],['ski_touring','Skitur'],['glacier','Brevandring'],['climbing','Klatring'],['kayak','Kajakk'],['sea_kayaking','Havkajakk'],['river_guide','Elveguiding'],['dog_sledding','Hundekjøring'],['snowmobile_safari','Snøscooter'],['northern_lights_bus','Nordlysbuss'],['teambuilding','Teambuilding'],['course','Kurs'],['hiking','Fjellvandring'],['ice_climbing','Isklatring'],['via_ferrata','Via ferrata'],['whale_safari','Hvalsafari'],['snowshoeing','Truging'],['other','Annet']];
     var DIFFS=[['easy','Lett'],['moderate','Moderat'],['challenging','Krevende'],['extreme','Ekstrem']];
     var opt=function(arr,sel){ return arr.map(function(p){ return '<option value="'+p[0]+'"'+(p[0]===sel?' selected':'')+'>'+p[1]+'</option>'; }).join(''); };
     var gopt=(R.guidesRaw||[]).filter(function(g){ return String(g.id).indexOf('inv-')!==0; }).map(function(g){ return '<option value="'+g.id+'"'+((me&&g.id===me.id)?' selected':'')+'>'+_escR(g.name)+'</option>'; }).join('');
@@ -3089,7 +3089,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
 
   function openNewTrip(R, me, presetDate){
     if(document.getElementById('ntOv')) return;
-    var TYPES=[['summit','Topptur'],['ski_touring','Skitur'],['glacier','Brevandring'],['climbing','Klatring'],['kayak','Kajakk'],['sea_kayaking','Havkajakk'],['river_guide','Elveguiding'],['dog_sledding','Hundekjøring'],['snowmobile_safari','Snøscooter'],['northern_lights_bus','Nordlysbuss'],['teambuilding','Teambuilding'],['course','Kurs'],['rescue_operation','Redningsoppdrag'],['other','Annet']];
+    var TYPES=[['summit','Topptur'],['ski_touring','Skitur'],['glacier','Brevandring'],['climbing','Klatring'],['kayak','Kajakk'],['sea_kayaking','Havkajakk'],['river_guide','Elveguiding'],['dog_sledding','Hundekjøring'],['snowmobile_safari','Snøscooter'],['northern_lights_bus','Nordlysbuss'],['teambuilding','Teambuilding'],['course','Kurs'],['rescue_operation','Redningsoppdrag'],['hiking','Fjellvandring'],['ice_climbing','Isklatring'],['via_ferrata','Via ferrata'],['whale_safari','Hvalsafari'],['snowshoeing','Truging'],['other','Annet']];
     var DIFFS=[['easy','Lett'],['moderate','Moderat'],['challenging','Krevende'],['extreme','Ekstrem']];
     var opt=function(arr,sel){ return arr.map(function(p){ return '<option value="'+p[0]+'"'+(p[0]===sel?' selected':'')+'>'+p[1]+'</option>'; }).join(''); };
     var gopt=(R.guidesRaw||[]).map(function(g){ return '<option value="'+g.id+'"'+((me&&g.id===me.id)?' selected':'')+'>'+_escR(g.name)+'</option>'; }).join('');
