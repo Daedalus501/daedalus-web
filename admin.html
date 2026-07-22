@@ -1703,7 +1703,7 @@ function openGuide(i){
     th+='<div class="d-trip"><svg class="ic"><use href="#i-mtn"/></svg><b>'+tr[0]+'</b><span>'+tr[1]+'</span></div>';
   });
   $('#dTrips').innerHTML=th;
-  $('#dPos').innerHTML='<b>'+g.pos[0]+'</b><br>'+g.pos[1];
+  $('#dPos').innerHTML='<b>'+esc(g.pos[0])+'</b><br>'+esc(g.pos[1]);
   drawer.classList.add('open'); drawer.removeAttribute('aria-hidden');
   backdrop.classList.add('open');
   document.body.classList.add('lock');
@@ -2193,7 +2193,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       return { id:u.id, ini:initials(u.name||u.email), name:u.name||u.email||'—', role:roleLabel, st:st, av:PAL[idx%PAL.length], phone:u.phone||'—', email:u.email||'', avatar:u.avatar_url||'', certs:certs, trips:myTrips.length?myTrips:[['Ingen turer registrert','—']], pos:pos };
     });
 
-    var TMAP={sos:['sos','SOS'],weather:['sys','Vær'],equipment:['warn','Utstyr'],hazard:['warn','Fare'],'near-accident':['warn','Nestenulykke'],checkpoint:['ok','Sjekkpunkt'],report:['rep','Rapport']};
+    var TMAP={sos:['sos','SOS'],weather:['sys','Vær'],'weather change':['sys','Vær'],equipment:['warn','Utstyr'],'equipment failure':['warn','Utstyr'],'route change':['warn','Ruteendring'],injury:['warn','Skade'],hazard:['warn','Fare'],'near-accident':['warn','Nestenulykke'],checkpoint:['ok','Sjekkpunkt'],report:['rep','Rapport']};
     var tripById={}; tripRows.forEach(function(t){tripById[t.id]=t;});
     var feed=eventRows.map(function(e){
       var ty=String(e.type||'').toLowerCase(); var m=TMAP[ty]||['ok','Hendelse'];
@@ -2206,7 +2206,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
 
     var okN=tripRows.filter(deriveOK).length;
     var safety = tripRows.length? Math.round(okN/tripRows.length*100) : 100;
-    var sos=eventRows.filter(function(e){ return String(e.type||'').toLowerCase()==='sos' && (Date.now()-Date.parse(e.created_at))<864e5; });
+    var sos=eventRows.filter(function(e){ return (String(e.type||'').toLowerCase()==='sos'||(String(e.severity||'').toLowerCase()==='critical'&&String(e.action_taken||'').toLowerCase().indexOf('emergency sos activated')>=0)) && (Date.now()-Date.parse(e.created_at))<864e5; });
 
     var guidesTotal=guideRows.filter(function(u){ return !u.__invite; }).length;
     var guidesOnDuty=guideRows.filter(function(u){ return String(u.role||'').toLowerCase().indexOf('invit')===-1; }).length;
@@ -2740,7 +2740,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
             var evs=(er&&er.data)||[];
             var evByTrip={}; var sosByTrip={};
             evs.forEach(function(e){
-              var isSos=String(e.type||'').toLowerCase()==='sos';
+              var isSos=(String(e.type||'').toLowerCase()==='sos'||(String(e.severity||'').toLowerCase()==='critical'&&String(e.action_taken||'').toLowerCase().indexOf('emergency sos activated')>=0));
               if(isSos){ if(!e.acknowledged_at && (Date.now()-Date.parse(e.created_at))<864e5){ (sosByTrip[e.trip_id]=sosByTrip[e.trip_id]||[]).push(e); } }
               else { (evByTrip[e.trip_id]=evByTrip[e.trip_id]||[]).push(e); }
             });
@@ -3351,7 +3351,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     try{
       var __rtJoin=function(){ try{ sb.channel('web-admin-'+(orgId||'x'))
         .on('postgres_changes',{event:'INSERT',schema:'public',table:'events'},function(p){
-          var isSos=String((p.new&&p.new.type)||'').toLowerCase()==='sos';
+          var isSos=(function(n){return !!(n&&(String(n.type||'').toLowerCase()==='sos'||(String(n.severity||'').toLowerCase()==='critical'&&String(n.action_taken||'').toLowerCase().indexOf('emergency sos activated')>=0)));})(p.new);
           if(isSos){ setTimeout(function(){ location.reload(); }, 900); }
         })
         .on('postgres_changes',{event:'INSERT',schema:'public',table:'guide_positions'},function(p){ try{ if(window.__GPS_PUSH&&p&&p.new) window.__GPS_PUSH(p.new); }catch(e){} }).subscribe(); }catch(e){} }; try{ sb.auth.onAuthStateChange(function(__ev,__s2){ try{ var __t2=__s2&&__s2.access_token; if(__t2&&sb.realtime&&sb.realtime.setAuth) sb.realtime.setAuth(__t2); }catch(e){} }); }catch(e){} sb.auth.getSession().then(function(__r){ try{ var __t=__r&&__r.data&&__r.data.session&&__r.data.session.access_token; if(__t&&sb.realtime&&sb.realtime.setAuth) sb.realtime.setAuth(__t); }catch(e){} __rtJoin(); }, function(){ __rtJoin(); });
