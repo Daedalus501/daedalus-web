@@ -1695,7 +1695,7 @@ function openGuide(i){
   })();
   var ch='';
   g.certs.forEach(function(c){
-    ch+='<div class="cert"><div class="l1"><b>'+c[0]+'</b><span>'+c[1]+'</span></div><div class="cert-bar '+c[3]+'"><i data-w="'+c[2]+'"></i></div></div>';
+    var _ec=function(x){return String(x==null?'':x).replace(/[&<>"]/g,function(k){return k==='&'?'&amp;':k==='<'?'&lt;':k==='>'?'&gt;':'&quot;';});}; ch+='<div class="cert"><div class="l1"><b>'+_ec(c[0])+'</b><span>'+_ec(c[1])+'</span></div><div class="cert-bar '+c[3]+'"><i data-w="'+c[2]+'"></i></div></div>';
   });
   $('#dCerts').innerHTML=ch;
   var th='';
@@ -1703,7 +1703,7 @@ function openGuide(i){
     th+='<div class="d-trip"><svg class="ic"><use href="#i-mtn"/></svg><b>'+tr[0]+'</b><span>'+tr[1]+'</span></div>';
   });
   $('#dTrips').innerHTML=th;
-  $('#dPos').innerHTML='<b>'+esc(g.pos[0])+'</b><br>'+esc(g.pos[1]);
+  var _ep=function(x){return String(x==null?'':x).replace(/[&<>"]/g,function(c){return c==='&'?'&amp;':c==='<'?'&lt;':c==='>'?'&gt;':'&quot;';});}; $('#dPos').innerHTML='<b>'+_ep(g.pos[0])+'</b><br>'+_ep(g.pos[1]);
   drawer.classList.add('open'); drawer.removeAttribute('aria-hidden');
   backdrop.classList.add('open');
   document.body.classList.add('lock');
@@ -2114,7 +2114,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     '</form>';
   document.body.appendChild(ov);
   var _ldEl=null;
-  try{ if(localStorage.getItem('sb-kyqjrlpsarbdwfbyjufa-auth-token')){ var _fEl=$('#admForm'); if(_fEl){ _fEl.style.display='none'; } _ldEl=document.createElement('div'); _ldEl.style.cssText='color:#8aa0bd;font-size:14px;text-align:center;padding:34px 12px;font-family:Inter,system-ui,sans-serif'; _ldEl.textContent='Laster \u00f8kt \u2026'; ov.appendChild(_ldEl); } }catch(e){}
+  try{ if(localStorage.getItem('sb-kyqjrlpsarbdwfbyjufa-auth-token')){ var _fEl=$('#admForm'); if(_fEl){ _fEl.style.display='none'; } _ldEl=document.createElement('div'); _ldEl.style.cssText='color:#8aa0bd;font-size:14px;text-align:center;padding:34px 12px;font-family:Inter,system-ui,sans-serif'; _ldEl.textContent='Laster økt \u2026'; ov.appendChild(_ldEl); } }catch(e){}
   function showLoginForm(){ var f=$('#admForm'); if(f) f.style.display=''; if(_ldEl&&_ldEl.parentNode){ _ldEl.parentNode.removeChild(_ldEl); _ldEl=null; } }
   function hideGate(){ ov.style.display='none'; }
   function showErr(m){ var e=$('#admErr'); if(e)e.textContent=m||''; }
