@@ -409,7 +409,7 @@ a{color:var(--accent-soft)}
 .js .mk{opacity:0; transform:translate(-50%,-180%)}
 .js .in .mk, .js .leaflet-marker-icon .mk{transition:opacity .6s ease, transform .8s var(--spring); transition-delay:var(--d,1.2s)}
 .js .in .mk{opacity:1; transform:translate(-50%,-100%)}
-.mk-sos{position:absolute; transform:translate(-50%,-50%); pointer-events:auto; width:46px; height:46px}
+.cert-bar.crit i{background:linear-gradient(90deg,#8c3f38,var(--red))}.mk-gps{position:relative;display:flex;align-items:center;gap:7px}.mk-gps .dot{width:13px;height:13px;border-radius:50%;background:#7fb1bd;border:2px solid #eaf6fa;box-shadow:0 0 0 0 rgba(127,177,189,.55);animation:gpsPulse 2.2s ease-out infinite}.mk-gps .glab{font-size:10.5px;font-weight:700;color:#eaf6fa;background:rgba(10,19,34,.82);border:1px solid rgba(127,177,189,.5);border-radius:6px;padding:2px 7px;white-space:nowrap}.mk-gps.stale .dot{background:#5a6b82;border-color:#9aa7b8;animation:none}.mk-gps.stale .glab{color:#9aa7b8;border-color:rgba(90,107,130,.6)}@keyframes gpsPulse{0%{box-shadow:0 0 0 0 rgba(127,177,189,.55)}70%{box-shadow:0 0 0 12px rgba(127,177,189,0)}100%{box-shadow:0 0 0 0 rgba(127,177,189,0)}}.mk-sos{position:absolute; transform:translate(-50%,-50%); pointer-events:auto; width:46px; height:46px}
 .mk-sos .core{position:absolute; inset:13px; border-radius:50%; background:var(--red);
   box-shadow:0 0 0 3px rgba(217,104,95,.35), 0 0 22px rgba(217,104,95,.9); animation:sosCore 1.4s ease-in-out infinite}
 @keyframes sosCore{50%{box-shadow:0 0 0 6px rgba(217,104,95,.18), 0 0 34px rgba(217,104,95,1)}}
@@ -936,7 +936,7 @@ body.lock{overflow:hidden}
         <span class="chip" id="chMeet" title="Vis/skjul oppmøtepunkter" style="color:var(--gold-soft)"><i></i>Oppmøte</span>
         <span class="chip" id="chObs" title="Vis/skjul faremarkeringer" style="color:var(--amber)"><i></i>Observasjon</span>
         <span class="chip" id="chSos" title="Vis/skjul nødpunkter" style="color:#e2837b"><i></i>SOS</span>
-        <span class="chip" id="chRoute" title="Zoom til rutene" style="margin-left:auto"><svg class="ic" style="width:11px;height:11px"><use href="#i-layers"/></svg><span id="chRouteTxt">Ruter: —</span></span>
+        <span class="chip" id="chGps" title="Vis/skjul guideposisjoner" style="color:var(--ice)"><i></i>Guider</span><span class="chip" id="chRoute" title="Zoom til rutene" style="margin-left:auto"><svg class="ic" style="width:11px;height:11px"><use href="#i-layers"/></svg><span id="chRouteTxt">Ruter: —</span></span>
       </div>
       <div class="map-stage" id="mapStage">
         <div class="mapfall" aria-hidden="true">
@@ -2724,7 +2724,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     }, 700);
     function boot(lm){
       try{ lm.eachLayer(function(ly){ if(!(ly instanceof L.TileLayer)) lm.removeLayer(ly); }); }catch(e){}
-      var lag={ tur:L.layerGroup().addTo(lm), meet:L.layerGroup().addTo(lm), obs:L.layerGroup().addTo(lm), sos:L.layerGroup().addTo(lm) };
+      var lag={ tur:L.layerGroup().addTo(lm), meet:L.layerGroup().addTo(lm), obs:L.layerGroup().addTo(lm), sos:L.layerGroup().addTo(lm), gps:L.layerGroup().addTo(lm) };
       function pin(cls,ic,label){ return L.divIcon({className:'lf-wrap', html:'<div class="mk '+cls+' lf" style="--d:.1s"><span class="mk-pin"><svg class="ic"><use href="#'+ic+'"/></svg></span><span class="mk-lab">'+label+'</span></div>', iconSize:[30,30], iconAnchor:[15,30]}); }
       function sosPin(label){ return L.divIcon({className:'lf-wrap', html:'<div class="mk-sos lf"><i class="ring"></i><i class="ring"></i><i class="ring"></i><i class="core"></i><span class="lab">'+label+'</span></div>', iconSize:[46,46], iconAnchor:[23,23]}); }
       function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return c==='&'?'&amp;':(c==='<'?'&lt;':(c==='>'?'&gt;':'&quot;')); }); }
@@ -2785,12 +2785,12 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
         });
       }
       function hook(id,key){ var el=document.getElementById(id); if(!el) return; el.addEventListener('click',function(){ var off=el.classList.toggle('off'); if(off) lm.removeLayer(lag[key]); else lag[key].addTo(lm); }); }
-      hook('chTur','tur'); hook('chMeet','meet'); hook('chObs','obs'); hook('chSos','sos');
+      hook('chTur','tur'); hook('chMeet','meet'); hook('chObs','obs'); hook('chSos','sos'); hook('chGps','gps'); var gpsFix={}; function gpsName(uid){ var g=(R.guidesRaw||[]).filter(function(x){ return x.id===uid; })[0]; return (g&&g.name)||'Guide'; } function gpsHM(iso){ try{ return new Date(iso).toLocaleTimeString('nb-NO',{hour:'2-digit',minute:'2-digit'}); }catch(e){ return '--:--'; } } function gpsIcon(name,stale,iso){ var lab=esc(name)+(stale?(' · sist sett '+gpsHM(iso)):''); return L.divIcon({className:'lf-wrap', html:'<div class="mk-gps'+(stale?' stale':'')+'"><i class="dot"></i><span class="glab">'+lab+'</span></div>', iconSize:[16,16], iconAnchor:[8,8]}); } function gpsDrawerSync(uid,f){ try{ var gs=(R.guides||[]); for(var i=0;i<gs.length;i++){ if(gs[i].id===uid){ var st2=(Date.now()-Date.parse(f.recorded_at))>6e5; gs[i].pos=[ (+f.lat).toFixed(4)+'° N, '+(+f.lng).toFixed(4)+'° Ø', (st2?('Sist sett '+gpsHM(f.recorded_at)):('Live GPS · '+gpsHM(f.recorded_at))) ]; var dp=document.getElementById('dPos'); var dn=document.getElementById('dName'); if(dp&&dn&&dn.textContent===gs[i].name){ dp.innerHTML='<b>'+esc(gs[i].pos[0])+'</b><br>'+esc(gs[i].pos[1]); } } } }catch(e){} } function renderGps(){ Object.keys(gpsFix).forEach(function(uid){ var f=gpsFix[uid]; var st3=(Date.now()-Date.parse(f.recorded_at))>6e5; if(!f.marker){ f.marker=L.marker([+f.lat,+f.lng],{icon:gpsIcon(f.name,st3,f.recorded_at),zIndexOffset:800}).addTo(lag.gps); } else { f.marker.setLatLng([+f.lat,+f.lng]); f.marker.setIcon(gpsIcon(f.name,st3,f.recorded_at)); } }); } function gpsTake(row){ if(!row||row.lat==null||row.lng==null||!row.user_id) return; var cur=gpsFix[row.user_id]; if(cur&&cur.recorded_at&&row.recorded_at&&Date.parse(row.recorded_at)<Date.parse(cur.recorded_at)) return; gpsFix[row.user_id]={lat:row.lat,lng:row.lng,recorded_at:row.recorded_at||new Date().toISOString(),name:gpsName(row.user_id),marker:cur&&cur.marker}; gpsDrawerSync(row.user_id,gpsFix[row.user_id]); } function loadGps(){ try{ var gsince=new Date(Date.now()-72e5).toISOString(); sb.from('guide_positions').select('user_id,lat,lng,recorded_at').gte('recorded_at',gsince).order('recorded_at',{ascending:false}).limit(400).then(function(r){ var rows=(r&&r.data)||[]; var seen={}; rows.forEach(function(row){ if(seen[row.user_id]) return; seen[row.user_id]=1; gpsTake(row); }); renderGps(); }); }catch(e){} } window.__GPS_PUSH=function(row){ try{ gpsTake(row); renderGps(); }catch(e){} };
       var cr=document.getElementById('chRoute');
       if(cr) cr.addEventListener('click',function(){ var pts=[]; lag.tur.eachLayer(function(ly){ if(ly.getLatLngs){ ly.getLatLngs().forEach(function(p){ pts.push([p.lat,p.lng]); }); } }); if(pts.length){ try{ lm.fitBounds(pts,{padding:[36,36],maxZoom:13}); }catch(e){} } else { try{ toast('Ingen ruter','Tegn en rute i kart-planleggeren, så vises den her.'); }catch(e){} } });
       loadOps();
       setInterval(loadOps, 60000);
-      window.__OPS_RELOAD=loadOps;
+      window.__OPS_RELOAD=loadOps; loadGps(); setInterval(renderGps, 60000);
     }
   }
 
@@ -3354,7 +3354,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
           var isSos=String((p.new&&p.new.type)||'').toLowerCase()==='sos';
           if(isSos){ setTimeout(function(){ location.reload(); }, 900); }
         })
-        .subscribe();
+        .on('postgres_changes',{event:'INSERT',schema:'public',table:'guide_positions'},function(p){ try{ if(window.__GPS_PUSH&&p&&p.new) window.__GPS_PUSH(p.new); }catch(e){} }).subscribe();
     }catch(e){}
   }
 })();
