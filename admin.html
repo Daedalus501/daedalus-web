@@ -3349,12 +3349,12 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
   function startRealtime(orgId){
     if(!sb||!sb.channel) return;
     try{
-      sb.channel('web-admin-'+(orgId||'x'))
+      var __rtJoin=function(){ try{ sb.channel('web-admin-'+(orgId||'x'))
         .on('postgres_changes',{event:'INSERT',schema:'public',table:'events'},function(p){
           var isSos=String((p.new&&p.new.type)||'').toLowerCase()==='sos';
           if(isSos){ setTimeout(function(){ location.reload(); }, 900); }
         })
-        .on('postgres_changes',{event:'INSERT',schema:'public',table:'guide_positions'},function(p){ try{ if(window.__GPS_PUSH&&p&&p.new) window.__GPS_PUSH(p.new); }catch(e){} }).subscribe();
+        .on('postgres_changes',{event:'INSERT',schema:'public',table:'guide_positions'},function(p){ try{ if(window.__GPS_PUSH&&p&&p.new) window.__GPS_PUSH(p.new); }catch(e){} }).subscribe(); }catch(e){} }; try{ sb.auth.onAuthStateChange(function(__ev,__s2){ try{ var __t2=__s2&&__s2.access_token; if(__t2&&sb.realtime&&sb.realtime.setAuth) sb.realtime.setAuth(__t2); }catch(e){} }); }catch(e){} sb.auth.getSession().then(function(__r){ try{ var __t=__r&&__r.data&&__r.data.session&&__r.data.session.access_token; if(__t&&sb.realtime&&sb.realtime.setAuth) sb.realtime.setAuth(__t); }catch(e){} __rtJoin(); }, function(){ __rtJoin(); });
     }catch(e){}
   }
 })();
