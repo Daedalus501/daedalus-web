@@ -2617,6 +2617,144 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
   // ---------- SLUTT R1 GUIDETIMER ----------
 
   try{window.__GH={hent:__ghHent,compute:__ghCompute};}catch(e){}
+  /* R3 — INTERNKONTROLL-EKSPORTPAKKE
+     Splices inn i script #4 (samme scope som openHms). Bruker sb, window.__REAL,
+     window.__TRIPS og STATUS_NO. Feiler stille hvis sb mangler. */
+  function __ikEsc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function __ikIso(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+  function __ikP(n){return (n<10?'0':'')+n;}
+  function __ikDato(v){if(!v)return '—';var d=new Date(/^\d{4}-\d{2}-\d{2}$/.test(String(v))?v+'T12:00:00':v);if(isNaN(d.getTime()))return String(v);return __ikP(d.getDate())+'.'+__ikP(d.getMonth()+1)+'.'+d.getFullYear();}
+  function __ikTid(v){if(!v)return '—';var d=new Date(v);if(isNaN(d.getTime()))return String(v);return __ikP(d.getDate())+'.'+__ikP(d.getMonth()+1)+'.'+d.getFullYear()+' '+__ikP(d.getHours())+':'+__ikP(d.getMinutes());}
+  function __ikKont(x){if(x==null)return '';if(typeof x!=='object')return String(x);var d=[x.name||x.navn||x.fullName||'',x.relation||x.relasjon||'',x.phone||x.telefon||x.number||x.phoneNumber||''];return d.filter(Boolean).join(' · ');}
+  function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return STATUS_NO[s];}catch(e){}return s||'';}
+  function __ikSev(s){try{if(typeof window.__sevNo==='function')return window.__sevNo(s);}catch(e){}return s||'—';}
+  function __ikMld(t){var el=document.getElementById('ikMld');if(el)el.textContent=t;}
+  function __ikHent(R,fra,til,ok,feil){
+    var guider=((R&&R.guidesRaw)||[]).filter(function(g){return String(g.id).indexOf('inv-')!==0;});
+    var gids=guider.map(function(g){return g.id;});
+    var pTur=sb.from('trips').select('id,trip_id,name,activity_type,date,status,guide_id,guide_name,weather_verified,equipment_checked,emergency_contact_notified,approved_at').gte('date',fra).lte('date',til).order('date',{ascending:true}).limit(1000);
+    var pAvv=sb.from('events').select('trip_id,type,severity,description,action_taken,created_at,acknowledged_at').in('severity',['high','critical']).gte('created_at',fra+'T00:00:00').lte('created_at',til+'T23:59:59').order('created_at',{ascending:false}).limit(500);
+    var pNod=gids.length?sb.from('emergency_setups').select('user_id,data,updated_at').in('user_id',gids):Promise.resolve({data:[]});
+    Promise.all([pTur,pAvv,pNod]).then(function(r){
+      if(r[0]&&r[0].error){feil(r[0].error);return;}
+      ok({turer:(r[0]&&r[0].data)||[],avvik:(r[1]&&!r[1].error&&r[1].data)||[],nod:(r[2]&&!r[2].error&&r[2].data)||[],guider:guider,
+        avvikFeil:!!(r[1]&&r[1].error),nodFeil:!!(r[2]&&r[2].error)});
+    },feil);
+  }
+  function __ikHtml(R,fra,til,p){
+    var E=__ikEsc, meta=(window.__REAL&&window.__REAL.orgMeta)||{};
+    var org=(R&&R.orgName)||(window.__REAL&&window.__REAL.orgName)||'Daedalus';
+    var turNavn={};
+    (p.turer||[]).forEach(function(t){turNavn[t.id]=t.name||t.trip_id||'';});
+    try{(window.__TRIPS||[]).forEach(function(t){if(!turNavn[t.id])turNavn[t.id]=t.name||t.trip_id||'';});}catch(e){}
+    var nodPer={}; (p.nod||[]).forEach(function(r){nodPer[r.user_id]=r;});
+    var reelle=(p.turer||[]).filter(function(t){return t.status!=='draft';});
+    var kompl=reelle.filter(function(t){return !!(t.weather_verified&&t.equipment_checked&&t.emergency_contact_notified);}).length;
+    var jn=function(v){return v?'<b class="ja">Ja</b>':'<span class="nei">Nei</span>';};
+    var tom=function(s){return '<span class="mut">'+s+'</span>';};
+    var h='<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Internkontroll — '+E(org)+' '+E(fra)+' – '+E(til)+'</title><style>'
+     +'body{font:13px/1.55 system-ui,Segoe UI,sans-serif;color:#111;margin:30px;max-width:1000px}'
+     +'h1{font-size:20px;margin:0 0 2px}h2{font-size:14px;margin:22px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px}'
+     +'table{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:4px}'
+     +'th,td{border:1px solid #ccc;padding:4px 7px;text-align:left;vertical-align:top}th{background:#f0f3f7}'
+     +'.sub{color:#555;font-size:11.5px}.mut{color:#777}.ja{color:#1d7a44}.nei{color:#a8322a}'
+     +'.plan{white-space:pre-wrap;border:1px solid #ccc;border-radius:6px;padding:10px 12px;background:#fafbfd;font-size:12px}'
+     +'.kpi{display:flex;gap:12px;flex-wrap:wrap;margin:9px 0 2px}.kpi div{border:1px solid #d4dae3;border-radius:8px;padding:7px 11px;font-size:12px}'
+     +'.foot{margin-top:26px;color:#555;font-size:10.5px;border-top:1px solid #ccc;padding-top:8px;line-height:1.5}'
+     +'@media print{body{margin:12mm}h2{page-break-after:avoid}tr{page-break-inside:avoid}}'
+     +'</style></head><body>';
+    h+='<h1>Internkontroll — dokumentasjonspakke</h1><div class="sub">'+E(org)+' · Periode '+E(__ikDato(fra))+' – '+E(__ikDato(til))+' · Generert '+E(__ikTid(new Date().toISOString()))+'</div>';
+    h+='<div class="kpi"><div>Turer i perioden: <b>'+reelle.length+'</b></div><div>Fullstendig sjekket: <b>'+kompl+' av '+reelle.length+'</b></div><div>Avvik (høy/kritisk): <b>'+(p.avvik||[]).length+'</b></div><div>Guider: <b>'+(p.guider||[]).length+'</b></div></div>';
+    var gl=(p.guider||[]).map(function(g){return E(g.name);}).join(', ');
+    h+='<h2>1. Organisasjon</h2><table>'
+     +'<tr><th style="width:190px">Organisasjon</th><td>'+E(org)+'</td></tr>'
+     +'<tr><th>Vaktleder-telefon</th><td>'+(meta.duty_phone?E(meta.duty_phone):tom('Ikke registrert'))+'</td></tr>'
+     +'<tr><th>Guider i teamet</th><td>'+(gl||tom('Ingen registrert'))+'</td></tr>'
+     +'<tr><th>Rapportperiode</th><td>'+E(__ikDato(fra))+' – '+E(__ikDato(til))+'</td></tr></table>';
+    h+='<h2>2. Beredskapsplan</h2>'+(meta.emergency_plan?('<div class="plan">'+E(meta.emergency_plan)+'</div>'):('<p>'+tom('Ingen beredskapsplan er registrert på organisasjonen.')+'</p>'));
+    h+='<h2>3. Nødprosedyrer per guide</h2>';
+    if(!(p.guider||[]).length){ h+='<p>'+tom('Ingen guider registrert.')+'</p>'; }
+    else{
+      h+='<table><tr><th style="width:150px">Guide</th><th>Nødkontakter</th><th>Nærmeste redning</th><th>SOS-melding</th><th style="width:110px">Oppdatert</th></tr>';
+      (p.guider||[]).forEach(function(g){
+        var r=nodPer[g.id], d=(r&&r.data)||null;
+        if(!d){ h+='<tr><td>'+E(g.name)+'</td><td colspan="4">'+tom(p.nodFeil?'Ikke tilgjengelig':'Ikke satt')+'</td></tr>'; return; }
+        var ct=(d.emergencyContacts||[]).map(__ikKont).filter(Boolean);
+        var rn=[d.nearestRescueName,d.nearestRescueLocation,d.nearestRescuePhone].filter(Boolean);
+        h+='<tr><td>'+E(g.name)+'</td><td>'+(ct.length?E(ct.join(' · ')):tom('—'))+'</td><td>'+(rn.length?E(rn.join(' · ')):tom('—'))+'</td><td>'+(d.sosMessage?E(d.sosMessage):tom('—'))+'</td><td>'+E(__ikTid(r.updated_at))+'</td></tr>';
+      });
+      h+='</table>';
+    }
+    h+='<h2>4. Sikkerhetssjekk-historikk</h2>';
+    if(!reelle.length){ h+='<p>'+tom('Ingen turer utenom utkast i perioden.')+'</p>'; }
+    else{
+      h+='<p class="sub">'+kompl+' av '+reelle.length+' turer har alle tre sjekkpunkter bekreftet.</p>'
+       +'<table><tr><th style="width:78px">Dato</th><th>Tur</th><th>Guide</th><th style="width:70px">Status</th><th style="width:44px">Vær</th><th style="width:56px">Utstyr</th><th style="width:80px">Nødkontakt</th><th style="width:78px">Godkjent</th></tr>';
+      reelle.forEach(function(t){
+        h+='<tr><td>'+E(__ikDato(t.date))+'</td><td>'+E(t.name||t.trip_id||'')+'</td><td>'+E(t.guide_name||'')+'</td><td>'+E(__ikStat(t.status))+'</td><td>'+jn(t.weather_verified)+'</td><td>'+jn(t.equipment_checked)+'</td><td>'+jn(t.emergency_contact_notified)+'</td><td>'+(t.approved_at?E(__ikDato(t.approved_at)):'<span class="nei">Nei</span>')+'</td></tr>';
+      });
+      h+='</table>';
+    }
+    h+='<h2>5. Avvik — høy og kritisk alvorsgrad</h2>';
+    if(p.avvikFeil){ h+='<p>'+tom('Avviksdata kunne ikke hentes.')+'</p>'; }
+    else if(!(p.avvik||[]).length){ h+='<p>'+tom('Ingen registrerte avvik med alvorsgrad høy eller kritisk i perioden.')+'</p>'; }
+    else{
+      h+='<table><tr><th style="width:105px">Tid</th><th>Tur</th><th style="width:130px">Type / alvor</th><th>Beskrivelse</th><th>Tiltak</th><th style="width:105px">Kvittert</th></tr>';
+      (p.avvik||[]).forEach(function(e){
+        h+='<tr><td>'+E(__ikTid(e.created_at))+'</td><td>'+E(turNavn[e.trip_id]||'—')+'</td><td>'+E(e.type||'')+' / '+E(__ikSev(e.severity))+'</td><td>'+E(e.description||'')+'</td><td>'+(e.action_taken?E(e.action_taken):tom('—'))+'</td><td>'+(e.acknowledged_at?E(__ikTid(e.acknowledged_at)):'<span class="nei">Ikke kvittert</span>')+'</td></tr>';
+      });
+      h+='</table>';
+    }
+    h+='<div class="foot">Grunnlag: turer og hendelser registrert i Daedalus i valgt periode. Sikkerhetssjekk viser guidens bekreftelse av vær, utstyr og varsling av nødkontakt før start; «Godkjent» er tidspunktet turen ble godkjent av administrator. Nødprosedyrer er guidens egne oppføringer i appen og vises slik de var ved generering.<br>Ansvarsfraskrivelse: Daedalus er et hjelpemiddel for dokumentasjon, ikke en erstatning for profesjonell vurdering, opplæring eller sertifisering. Vær- og skreddata kan være forsinket eller unøyaktig og må verifiseres uavhengig. Guiden og selskapet har det fulle ansvaret for sikkerhetsbeslutninger. Vilkår: daedalus-app.no/terms<br>Generert '+E(__ikTid(new Date().toISOString()))+' · Daedalus · Guide &amp; Safety</div></body></html>';
+    return h;
+  }
+  function __ikDialog(R){
+    if(document.getElementById('ikOv'))return;
+    var iDag=new Date(), start=new Date(iDag.getFullYear(),0,1);
+    var ov=document.createElement('div'); ov.id='ikOv';
+    ov.innerHTML='<style>#ikOv{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:rgba(8,14,26,.86);backdrop-filter:blur(8px);font-family:Inter,system-ui,sans-serif}'
+     +'#ikC{width:min(94vw,440px);background:#16273f;border:1px solid #284063;border-radius:16px;padding:22px;color:#c8d6e8}'
+     +'#ikC h3{margin:0 0 6px;font-size:16px;color:#eaf2fb}#ikC p{margin:0 0 14px;color:#8aa0bd;font-size:12px;line-height:1.5}'
+     +'#ikC label{font-size:12px;opacity:.85}'
+     +'#ikC input{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:inherit;border-radius:6px;padding:4px 7px;margin-left:6px;font:inherit;font-size:12px}'
+     +'#ikC .r{display:flex;gap:14px;flex-wrap:wrap}#ikC .b{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}'
+     +'#ikC .b button{padding:9px 13px;border:none;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;background:#22364f;color:#cfe2f5}'
+     +'#ikC .b button.p{background:#4a9fe0;color:#06192c}#ikMld{font-size:11.5px;color:#8aa0bd;margin-top:11px;min-height:16px;line-height:1.45}</style>'
+     +'<div id="ikC"><h3>Internkontroll — eksportpakke</h3>'
+     +'<p>Samler organisasjonsinfo, beredskapsplan, nødprosedyrer per guide, sikkerhetssjekker og avvik i én utskriftsvennlig rapport.</p>'
+     +'<div class="r"><label>Fra <input type="date" id="ikFra" value="'+__ikIso(start)+'"></label>'
+     +'<label>Til <input type="date" id="ikTil" value="'+__ikIso(iDag)+'"></label></div>'
+     +'<div id="ikMld"></div>'
+     +'<div class="b"><button id="ikGo" class="p">Lag rapport</button><button id="ikAvb" style="margin-left:auto">Avbryt</button></div></div>';
+    document.body.appendChild(ov);
+    var lukk=function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); };
+    ov.addEventListener('click',function(e){ if(e.target===ov) lukk(); });
+    document.getElementById('ikAvb').onclick=lukk;
+    document.getElementById('ikGo').onclick=function(){
+      var fra=(document.getElementById('ikFra')||{}).value||__ikIso(start);
+      var til=(document.getElementById('ikTil')||{}).value||__ikIso(iDag);
+      if(fra>til){ __ikMld('Fra-dato må være før til-dato.'); return; }
+      var w=null; try{ w=window.open('','_blank'); }catch(e){}
+      if(!w){ __ikMld('Kunne ikke åpne rapportvindu. Tillat pop-up-vinduer for daedalus-app.no og prøv igjen.'); return; }
+      try{ w.document.write('<!doctype html><meta charset="utf-8"><title>Internkontroll</title><p style="font:14px system-ui;margin:32px;color:#333">Henter data …</p>'); }catch(e){}
+      var knapp=document.getElementById('ikGo'); if(knapp) knapp.disabled=true;
+      __ikMld('Henter data …');
+      try{
+        __ikHent(R,fra,til,function(pakke){
+          try{ w.document.open(); w.document.write(__ikHtml(R,fra,til,pakke)); w.document.close(); setTimeout(function(){ try{ w.print(); }catch(e){} },350); }catch(e){}
+          lukk();
+        },function(err){
+          try{ w.close(); }catch(e){}
+          __ikMld('Kunne ikke hente data: '+String((err&&err.message)||err||'ukjent feil'));
+          var k=document.getElementById('ikGo'); if(k) k.disabled=false;
+        });
+      }catch(e){
+        try{ w.close(); }catch(e2){}
+        __ikMld('Kunne ikke hente data.');
+        if(knapp) knapp.disabled=false;
+      }
+    };
+  }
   function openHms(R, me){
     if(document.getElementById('hmOv')) return;
     var trips=window.__TRIPS||[];
@@ -2627,11 +2765,12 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       +'<div id="hmC"><h3>HMS og innsikt</h3><p style="margin:0;color:#8aa0bd;font-size:12px">Avvik, revisjonslogg, etterlevelse og teamstatistikk — dokumentasjon for internkontroll.</p>'
       +'<div class="tabs"><button data-hf="avvik" class="on">Avvik</button><button data-hf="logg">Revisjonslogg</button><button data-hf="etter">Etterlevelse</button><button data-hf="team">Team (30 d)</button><button data-hf="timer">Guidetimer</button></div>'
       +'<div id="hmBody" style="font-size:12.5px">Laster …</div>'
-      +'<div class="btns"><button id="hmCsvT">Eksporter turer (CSV)</button><button id="hmCsvE">Eksporter hendelser (CSV)</button><button id="hmClose" style="margin-left:auto">Lukk</button></div></div>';
+      +'<div class="btns"><button id="hmCsvT">Eksporter turer (CSV)</button><button id="hmCsvE">Eksporter hendelser (CSV)</button><button id="hmIk">Internkontroll (PDF)</button><button id="hmClose" style="margin-left:auto">Lukk</button></div></div>';
     document.body.appendChild(ov);
     var close=function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); };
     ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
     document.getElementById('hmClose').onclick=close;
+    try{ var _ik=document.getElementById('hmIk'); if(_ik) _ik.onclick=function(){ __ikDialog(R); }; }catch(e){}
     var evAll=null;
     function hentEv(cb){
       if(evAll){ cb(evAll); return; }
