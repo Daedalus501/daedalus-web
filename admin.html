@@ -1755,9 +1755,9 @@ function openGuide(i){
     var _ec=function(x){return String(x==null?'':x).replace(/[&<>"]/g,function(k){return k==='&'?'&amp;':k==='<'?'&lt;':k==='>'?'&gt;':'&quot;';});}; ch+='<div class="cert"><div class="l1"><b>'+_ec(c[0])+'</b><span>'+_ec(c[1])+'</span></div><div class="cert-bar '+c[3]+'"><i data-w="'+c[2]+'"></i></div></div>';
   });
   $('#dCerts').innerHTML=ch;__svlHint(g);
-  var th='';
+  var th=''; var _te=function(x){return String(x==null?'':x).replace(/[&<>"]/g,function(k){return k==='&'?'&amp;':k==='<'?'&lt;':k==='>'?'&gt;':'&quot;';});};
   g.trips.forEach(function(tr){
-    th+='<div class="d-trip"><svg class="ic"><use href="#i-mtn"/></svg><b>'+tr[0]+'</b><span>'+tr[1]+'</span></div>';
+    th+='<div class="d-trip"><svg class="ic"><use href="#i-mtn"/></svg><b>'+_te(tr[0])+'</b><span>'+_te(tr[1])+'</span></div>';
   });
   $('#dTrips').innerHTML=th;
   var _ep=function(x){return String(x==null?'':x).replace(/[&<>"]/g,function(c){return c==='&'?'&amp;':c==='<'?'&lt;':c==='>'?'&gt;':'&quot;';});}; $('#dPos').innerHTML='<b>'+_ep(g.pos[0])+'</b><br>'+_ep(g.pos[1]);
@@ -2274,8 +2274,8 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     var reportsToday=eventRows.filter(function(e){ var d=new Date(e.created_at); return !isNaN(d)&&dstr(d)===todayStr; }).length;
 
     var mapMarkers=[];
-    activeTrips.forEach(function(t){ var c=parseGps(t.gps_coordinates)||((t.gps_lat!=null&&t.gps_lng!=null)?[parseFloat(t.gps_lat),parseFloat(t.gps_lng)]:null); if(c) mapMarkers.push({lat:c[0],lng:c[1],cls:'trip',ic:'i-mtn',label:(t.name||'Tur')+' · '+tripParticipants(t)+' gj.',tripId:t.id}); });
-    sos.forEach(function(e){ var tr=tripById[e.trip_id]; var c=llArr(tr); if(c) mapMarkers.push({lat:c[0],lng:c[1],sos:true,label:'SOS · '+(tr.name||'')}); });
+    activeTrips.forEach(function(t){ var c=parseGps(t.gps_coordinates)||((t.gps_lat!=null&&t.gps_lng!=null)?[parseFloat(t.gps_lat),parseFloat(t.gps_lng)]:null); if(c) mapMarkers.push({lat:c[0],lng:c[1],cls:'trip',ic:'i-mtn',label:esc(t.name||'Tur')+' · '+tripParticipants(t)+' gj.',tripId:t.id}); });
+    sos.forEach(function(e){ var tr=tripById[e.trip_id]; var c=llArr(tr); if(c) mapMarkers.push({lat:c[0],lng:c[1],sos:true,label:'SOS · '+esc(tr.name||'')}); });
     var _done=tripRows.filter(function(t){ return t.status==='completed' || (t.report_summary&&String(t.report_summary).trim()); }).sort(function(a,b){ return Date.parse(b.date||b.created_at||0)-Date.parse(a.date||a.created_at||0); }).slice(0,8);
     var _reports=_done.map(function(t){ return { trip:t, events:eventRows.filter(function(e){ return e.trip_id===t.id; }) }; });
     window.__REAL = {
@@ -3270,9 +3270,9 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
                 bounds.push(mp);
                 if(m.type==='meeting'){ var mm=L.marker(mp,{icon:pin('meet','i-pin','Oppmøte — '+esc(t.name))}).addTo(lag.meet); mm.on('click', openT(t.id)); }
                 else if(m.type==='hazard'){ var hm=L.marker(mp,{icon:pin('haz','i-alert','Fare — '+esc(t.name))}).addTo(lag.obs); hm.on('click', openT(t.id)); }
-                else if(m.type==='emergency'){ var em=L.marker(mp,{icon:sosPin('NØDPUNKT — '+esc(t.name).toUpperCase())}).addTo(lag.sos); em.on('click', openT(t.id)); }
+                else if(m.type==='emergency'){ var em=L.marker(mp,{icon:sosPin('NØDPUNKT — '+esc(String(t.name||'').toUpperCase()))}).addTo(lag.sos); em.on('click', openT(t.id)); }
               });
-              (sosByTrip[t.id]||[]).forEach(function(){ if(pos){ var sm2=L.marker(pos,{icon:sosPin('SOS — '+esc(t.name).toUpperCase())}).addTo(lag.sos); sm2.on('click', openT(t.id)); } });
+              (sosByTrip[t.id]||[]).forEach(function(){ if(pos){ var sm2=L.marker(pos,{icon:sosPin('SOS — '+esc(String(t.name||'').toUpperCase()))}).addTo(lag.sos); sm2.on('click', openT(t.id)); } });
             });
             var rt=document.getElementById('chRouteTxt');
             if(rt) rt.textContent= ruter? ('Ruter: '+ruter+(sisteRute?(' · siste: '+sisteRute):'')) : 'Ingen tegnede ruter';
@@ -3811,7 +3811,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       if(hs){
         var avL=R.ava, avT=String(R.avaText||'').toLowerCase();
         var _tT=(R.kpis.trips===1?' aktiv tur':' aktive turer'), _gT=(R.kpis.guides===1?' guide':' guider');
-        var avHtml=(avL>=1)?('Skredvarsel for regionen: <b>faregrad '+avL+' — '+avT+'</b>.'):'Skredvarsel: <b>utenfor varslingssesong</b> (Varsom).';
+        var avHtml=(avL>=1)?('Skredvarsel for regionen: <b>faregrad '+avL+' — '+esc(avT)+'</b>.'):'Skredvarsel: <b>utenfor varslingssesong</b> (Varsom).';
         hs.innerHTML='<b>'+R.kpis.trips+_tT+'</b> nå. '+R.kpis.guides+_gT+' på vakt og alle sporingsenheter rapporterer normalt. '+avHtml;
       }
       var chip=$('#opChip'), chipTx=$('#opChipTx');
