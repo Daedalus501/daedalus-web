@@ -1194,6 +1194,7 @@ body.lock{overflow:hidden}
     <div class="d-sec">
       <h5>Sertifiseringer</h5>
       <div id="dCerts"></div>
+      <div id="dSval"></div>
     </div>
     <div class="d-sec">
       <h5>Siste turer</h5>
@@ -1679,6 +1680,54 @@ var GUIDES=[
    pos:['Ikke på vakt','Sist innlogget: Tromsø base, i går 16:40.']}
 ];
 var drawer=$('#drawer'), backdrop=$('#backdrop'), lastFocus=null;
+/* R2 — SVALBARD-GUIDEGODKJENNING I GUIDEPROFIL
+   Splices inn i script #3 (samme scope som openGuide). Bruker window.__GH
+   (eksponert fra R1-blokken i script #4). Feiler stille hvis __GH mangler. */
+var __SVL_KRAV=1500, __SVL_MND=36, __SVL_TOKEN=0, __SVL_CACHE=null;
+function __svlEsc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function __svlN(n){return (Math.round(n*10)/10).toFixed(1).replace('.',',');}
+function __svlIso(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+function __svlSkriv(h){var el=document.getElementById('dSval');if(el)el.innerHTML=h;}
+function __svlKort(hoyre,under){return '<div class="cert"><div class="l1"><b>Svalbard-guidegodkjenning</b><span class="emg-mut" style="font-size:11.5px">'+hoyre+'</span></div>'+(under||'')+'</div>';}
+function __svlData(fraV,tilV,ok,feil){
+  var n=fraV+'|'+tilV, na=Date.now();
+  if(__SVL_CACHE&&__SVL_CACHE.n===n&&(na-__SVL_CACHE.t)<300000){ok(__SVL_CACHE.trips,__SVL_CACHE.pos);return;}
+  window.__GH.hent(fraV,tilV,function(trips,pos){__SVL_CACHE={n:n,t:Date.now(),trips:trips,pos:pos};ok(trips,pos);},feil);
+}
+function __svlHint(g){
+  var el=document.getElementById('dSval');if(!el)return;
+  var min=++__SVL_TOKEN;
+  var GH=window.__GH;
+  if(!GH||typeof GH.hent!=='function'||typeof GH.compute!=='function'){__svlSkriv('');return;}
+  __svlSkriv(__svlKort('beregner …',''));
+  var til=new Date(),fra=new Date();fra.setMonth(fra.getMonth()-__SVL_MND);
+  var fraV=__svlIso(fra),tilV=__svlIso(til);
+  var gid=(g&&g.id)?String(g.id):'',gnavn=(g&&(g.name||g.email))?String(g.name||g.email).toLowerCase():'';
+  function stopp(){if(min===__SVL_TOKEN)__svlSkriv('');}
+  try{
+    __svlData(fraV,tilV,function(trips,pos){
+      if(min!==__SVL_TOKEN)return;
+      var res=GH.compute(trips,pos,fraV,tilV);
+      var mine=(res&&res.perTrip?res.perTrip:[]).filter(function(r){
+        if(gid&&r.guide_id)return String(r.guide_id)===gid;
+        return !!gnavn&&String(r.guide==null?'':r.guide).toLowerCase()===gnavn;
+      });
+      var sum=0,dok=0,uten=0;
+      mine.forEach(function(r){if(r.timer!=null){sum+=r.timer;dok++;}else uten++;});
+      sum=Math.round(sum*10)/10;
+      var pct=Math.max(0,Math.min(100,Math.round(sum/__SVL_KRAV*1000)/10));
+      var farge=sum>=__SVL_KRAV?'var(--green)':(pct>=50?'var(--amber)':'var(--accent)');
+      var status=sum>=__SVL_KRAV?'Kravet til dokumenterte timer er oppfylt.':'Mangler '+__svlN(__SVL_KRAV-sum)+' t for unntaket for erfarne guider.';
+      var under='<div class="cert-bar"><i data-svl="'+pct+'%" style="background:'+farge+'"></i></div>'
+        +'<div class="emg-mut" style="font-size:11px;margin-top:7px;line-height:1.55">'+__svlEsc(status)
+        +' Teller '+dok+' tur'+(dok===1?'':'er')+' med tidsdokumentasjon'+(uten?' · '+uten+' uten':'')+'.'
+        +' Krav om guidegodkjenning på Svalbard gjelder fra 1.7.2027; unntaket for erfarne krever minst '+__SVL_KRAV+' dokumenterte guidetimer siste '+__SVL_MND+' mnd. Kun turer registrert i Daedalus telles.</div>';
+      __svlSkriv(__svlKort(__svlN(sum)+' / '+__SVL_KRAV+' t siste '+__SVL_MND+' mnd',under));
+      setTimeout(function(){var b=document.querySelector('#dSval .cert-bar i');if(b)b.style.width=b.getAttribute('data-svl');},60);
+    },stopp);
+  }catch(e){stopp();}
+}
+
 function openGuide(i){
   var g=GUIDES[i]; if(!g||!drawer)return;
   lastFocus=document.activeElement;
@@ -1705,7 +1754,7 @@ function openGuide(i){
   g.certs.forEach(function(c){
     var _ec=function(x){return String(x==null?'':x).replace(/[&<>"]/g,function(k){return k==='&'?'&amp;':k==='<'?'&lt;':k==='>'?'&gt;':'&quot;';});}; ch+='<div class="cert"><div class="l1"><b>'+_ec(c[0])+'</b><span>'+_ec(c[1])+'</span></div><div class="cert-bar '+c[3]+'"><i data-w="'+c[2]+'"></i></div></div>';
   });
-  $('#dCerts').innerHTML=ch;
+  $('#dCerts').innerHTML=ch;__svlHint(g);
   var th='';
   g.trips.forEach(function(tr){
     th+='<div class="d-trip"><svg class="ic"><use href="#i-mtn"/></svg><b>'+tr[0]+'</b><span>'+tr[1]+'</span></div>';
@@ -2567,6 +2616,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
   }
   // ---------- SLUTT R1 GUIDETIMER ----------
 
+  try{window.__GH={hent:__ghHent,compute:__ghCompute};}catch(e){}
   function openHms(R, me){
     if(document.getElementById('hmOv')) return;
     var trips=window.__TRIPS||[];
