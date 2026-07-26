@@ -2198,7 +2198,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
   // ---------- datahenting ----------
   function tripParticipants(t){ return (t.participants && t.participants[0] && t.participants[0].count) || 0; }
   function tripDate(t){ var d=new Date(t.date||t.created_at); return isNaN(d)?null:d; }
-  function deriveOK(t){ if(t.weather_verified==null&&t.equipment_checked==null) return t.status==='completed'; return !!(t.weather_verified&&t.equipment_checked); }
+  function deriveOK(t){ if(t.safety_completed_at) return true; if(t.weather_verified==null&&t.equipment_checked==null&&t.emergency_contact_notified==null) return t.status==='completed'; return !!(t.weather_verified&&t.equipment_checked&&t.emergency_contact_notified); }
 
   function load(){
     return sb.auth.getUser().then(function(u){
@@ -2664,7 +2664,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
      +'@media print{body{margin:12mm}h2{page-break-after:avoid}tr{page-break-inside:avoid}}'
      +'</style></head><body>';
     h+='<h1>Internkontroll — dokumentasjonspakke</h1><div class="sub">'+E(org)+' · Periode '+E(__ikDato(fra))+' – '+E(__ikDato(til))+' · Generert '+E(__ikTid(new Date().toISOString()))+'</div>';
-    h+='<div class="kpi"><div>Turer i perioden: <b>'+reelle.length+'</b></div><div>Fullstendig sjekket: <b>'+kompl+' av '+reelle.length+'</b></div><div>Avvik (høy/kritisk): <b>'+(p.avvik||[]).length+'</b></div><div>Guider: <b>'+(p.guider||[]).length+'</b></div></div>';
+    h+='<div class="kpi"><div>Turer i perioden: <b>'+reelle.length+'</b></div><div>Grunnsjekk komplett: <b>'+kompl+' av '+reelle.length+'</b></div><div>Avvik (høy/kritisk): <b>'+(p.avvik||[]).length+'</b></div><div>Guider: <b>'+(p.guider||[]).length+'</b></div></div>';
     var gl=(p.guider||[]).map(function(g){return E(g.name);}).join(', ');
     h+='<h2>1. Organisasjon</h2><table>'
      +'<tr><th style="width:190px">Organisasjon</th><td>'+E(org)+'</td></tr>'
@@ -2876,7 +2876,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
      +'<tr><th>Vær kontrollert</th><td>'+jn(t.weather_verified)+'</td></tr>'
      +'<tr><th>Utstyr kontrollert</th><td>'+jn(t.equipment_checked)+'</td></tr>'
      +'<tr><th>Nødkontakt varslet</th><td>'+jn(t.emergency_contact_notified)+'</td></tr>'
-     +'<tr><th>Sikkerhetssjekk fullført</th><td>'+(t.safety_completed_at?E(__syTid(t.safety_completed_at)):tom('Ikke fullført'))+'</td></tr>'
+     +'<tr><th>Grunnsjekk fullført (vær, utstyr, nødkontakt)</th><td>'+(t.safety_completed_at?E(__syTid(t.safety_completed_at)):tom('Ikke fullført'))+'</td></tr>'
      +'<tr><th>Skredvarsel</th><td>'+v(t.avalanche_level,'Ikke registrert')+'</td></tr>'
      +(xtra.length?('<tr><th>Aktivitetsspesifikk sjekk</th><td>'+xtra.join(' · ')+'</td></tr>'):'')
      +'</table>';
@@ -2902,7 +2902,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       if(t.report_summary) h+='<p class="sub" style="margin:10px 0 0">Turrapport</p><div class="plan">'+E(t.report_summary)+'</div>';
     }
     h+='<table class="sign"><tr><th style="width:50%">Sted og dato</th><th>Ansvarlig for arrangementet (signatur)</th></tr><tr><td></td><td></td></tr></table>';
-    h+='<div class="foot">Grunnlag: opplysninger registrert i Daedalus for denne turen, hentet ved generering. Koordinater er oppgitt i desimalgrader (WGS84). Rutelengde er summen av luftlinje mellom rutepunktene og tilsvarer ikke nødvendigvis faktisk marsjlengde.<br>Ansvarsfraskrivelse: Daedalus er et hjelpemiddel for dokumentasjon og erstatter ikke melde- eller søknadsplikt etter gjeldende regelverk, eller profesjonell vurdering, opplæring og sertifisering. Vær-, skred- og posisjonsdata kan være forsinket eller unøyaktig og må verifiseres uavhengig. Guiden og selskapet har det fulle ansvaret for sikkerhetsbeslutninger. Vilkår: daedalus-app.no/terms<br>Generert '+E(__syTid(new Date().toISOString()))+' · Daedalus · Guide &amp; Safety</div></body></html>';
+    h+='<div class="foot">Grunnlag: opplysninger registrert i Daedalus for denne turen, hentet ved generering. Koordinater er oppgitt i desimalgrader (WGS84). Rutelengde er summen av luftlinje mellom rutepunktene og tilsvarer ikke nødvendigvis faktisk marsjlengde. «Grunnsjekk fullført» viser tidspunktet guiden bekreftet vær, utstyr og varsling av nødkontakt. Aktivitetsspesifikke punkter vises separat; turen kan ikke aktiveres i appen før også disse er bekreftet.<br>Ansvarsfraskrivelse: Daedalus er et hjelpemiddel for dokumentasjon og erstatter ikke melde- eller søknadsplikt etter gjeldende regelverk, eller profesjonell vurdering, opplæring og sertifisering. Vær-, skred- og posisjonsdata kan være forsinket eller unøyaktig og må verifiseres uavhengig. Guiden og selskapet har det fulle ansvaret for sikkerhetsbeslutninger. Vilkår: daedalus-app.no/terms<br>Generert '+E(__syTid(new Date().toISOString()))+' · Daedalus · Guide &amp; Safety</div></body></html>';
     return h;
   }
   function __sySkriv(R,t){
@@ -3675,7 +3675,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       if(_gl){
         var _ts=Object.keys(R.tripById||{}).map(function(k){return R.tripById[k];});
         var _rel=_ts.filter(function(t){return t.status!=='cancelled';});
-        var _okS=_rel.filter(function(t){return !!(t.weather_verified&&t.equipment_checked)||!!t.safety_completed_at;}).length;
+        var _okS=_rel.filter(function(t){return !!t.safety_completed_at||!!(t.weather_verified&&t.equipment_checked&&t.emergency_contact_notified);}).length;
         var _okG=_rel.filter(function(t){return !!t.approved_at;}).length;
         var _ik=function(ok){ return ok?'<svg class="ic ok"><use href="#i-check"/></svg>':'<svg class="ic warn"><use href="#i-alert"/></svg>'; };
         var _certVarsel=null, _harCert=false;
@@ -3695,7 +3695,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
           if(_navn.length) _certVarsel='<b>'+_navn.length+' guide'+(_navn.length>1?'r':'')+'</b> med sertifikatutløp innen 30 dager — '+esc(_navn.slice(0,2).join(', '));
         }catch(e4){}
         var _rader=[
-          _ik(_rel.length>0&&_okS===_rel.length)+'<span><b>'+_okS+' av '+_rel.length+'</b> turer med fullført sikkerhetssjekk</span>',
+          _ik(_rel.length>0&&_okS===_rel.length)+'<span><b>'+_okS+' av '+_rel.length+'</b> turer med fullført grunnsjekk</span>',
           _ik(_rel.length>0&&_okG===_rel.length)+'<span><b>'+_okG+' av '+_rel.length+'</b> turer admin-godkjent</span>',
           _certVarsel? (_ik(false)+'<span>'+_certVarsel+'</span>') : (_harCert? (_ik(true)+'<span>Ingen sertifikatutløp neste 30 dager</span>') : '<svg class="ic"><use href="#i-users"/></svg><span>Sertifikater: ikke registrert på guidene ennå</span>')
         ];
