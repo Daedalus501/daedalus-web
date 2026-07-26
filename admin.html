@@ -2626,13 +2626,18 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
   function __ikDato(v){if(!v)return '—';var d=new Date(/^\d{4}-\d{2}-\d{2}$/.test(String(v))?v+'T12:00:00':v);if(isNaN(d.getTime()))return String(v);return __ikP(d.getDate())+'.'+__ikP(d.getMonth()+1)+'.'+d.getFullYear();}
   function __ikTid(v){if(!v)return '—';var d=new Date(v);if(isNaN(d.getTime()))return String(v);return __ikP(d.getDate())+'.'+__ikP(d.getMonth()+1)+'.'+d.getFullYear()+' '+__ikP(d.getHours())+':'+__ikP(d.getMinutes());}
   function __ikKont(x){if(x==null)return '';if(typeof x!=='object')return String(x);var d=[x.name||x.navn||x.fullName||'',x.relation||x.relasjon||'',x.phone||x.telefon||x.number||x.phoneNumber||''];return d.filter(Boolean).join(' · ');}
-  function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return STATUS_NO[s];}catch(e){}return s||'';}
+  /* Aktivitetsspesifikke sikkerhetspunkter. BEVISST DUPLIKAT av XT i R4-blokka:
+   de to ligger i hver sin script-blokk, og felles scope kan ikke verifiseres.
+   Rekkefolgen er 8 opprinnelige + de 19 fra F1-migrasjonen, i migrasjonsrekkefolge.
+   Endres den ene, MA den andre endres likt - harnessene krysstester dette. */
+var __IKXT=[['rope_harness_inspected','Tau og sele kontrollert'],['tidal_data_checked','Tidevannsdata sjekket'],['wave_height_assessed','Bølgehøyde vurdert'],['flotation_devices_checked','Flyteutstyr kontrollert'],['water_level_checked','Vannstand sjekket'],['rescue_throw_bag_ready','Kastesekk klar'],['participant_medical_noted','Helseopplysninger notert'],['first_aid_kit_present','Førstehjelpsutstyr med'],['headcount_confirmed','Hodetelling bekreftet'],['all_guests_accounted_for','Alle gjester gjort rede for'],['thermal_suits_issued','Termodresser utlevert'],['hot_drinks_available','Varm drikke tilgjengelig'],['driver_vehicle_winter_ready','Kjøretøy vinterklargjort'],['road_conditions_checked','Kjøreforhold sjekket'],['helmets_thermal_suits','Hjelmer og termodresser'],['kill_switch_lanyards','Dødmannsknapp-snorer'],['fuel_checked','Drivstoff kontrollert'],['driver_licenses_verified','Førerkort kontrollert'],['convoy_roles_assigned','Kolonneroller fordelt'],['ice_conditions_verified','Isforhold verifisert'],['recovery_plan','Bergingsplan på plass'],['dog_team_health_checked','Hundespannets helse sjekket'],['harnesses_ganglines_inspected','Seler og liner kontrollert'],['sled_brakes_snow_hooks','Sledebrems og snøanker'],['guest_safety_briefing_done','Sikkerhetsbrief for gjester gjennomført'],['thermal_gear_issued','Termoutstyr utlevert'],['trail_conditions_checked','Løypeforhold sjekket']];
+function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return STATUS_NO[s];}catch(e){}return s||'';}
   function __ikSev(s){try{if(typeof window.__sevNo==='function')return window.__sevNo(s);}catch(e){}return s||'—';}
   function __ikMld(t){var el=document.getElementById('ikMld');if(el)el.textContent=t;}
   function __ikHent(R,fra,til,ok,feil){
     var guider=((R&&R.guidesRaw)||[]).filter(function(g){return String(g.id).indexOf('inv-')!==0;});
     var gids=guider.map(function(g){return g.id;});
-    var pTur=sb.from('trips').select('id,trip_id,name,activity_type,date,status,guide_id,guide_name,weather_verified,equipment_checked,emergency_contact_notified,approved_at').gte('date',fra).lte('date',til).order('date',{ascending:true}).limit(1000);
+    var pTur=sb.from('trips').select('id,trip_id,name,activity_type,date,status,guide_id,guide_name,weather_verified,equipment_checked,emergency_contact_notified,approved_at,rope_harness_inspected,tidal_data_checked,wave_height_assessed,flotation_devices_checked,water_level_checked,rescue_throw_bag_ready,participant_medical_noted,first_aid_kit_present,headcount_confirmed,all_guests_accounted_for,thermal_suits_issued,hot_drinks_available,driver_vehicle_winter_ready,road_conditions_checked,helmets_thermal_suits,kill_switch_lanyards,fuel_checked,driver_licenses_verified,convoy_roles_assigned,ice_conditions_verified,recovery_plan,dog_team_health_checked,harnesses_ganglines_inspected,sled_brakes_snow_hooks,guest_safety_briefing_done,thermal_gear_issued,trail_conditions_checked').gte('date',fra).lte('date',til).order('date',{ascending:true}).limit(1000);
     var pAvv=sb.from('events').select('trip_id,type,severity,description,action_taken,created_at,acknowledged_at').in('severity',['high','critical']).gte('created_at',fra+'T00:00:00').lte('created_at',til+'T23:59:59').order('created_at',{ascending:false}).limit(500);
     var pNod=gids.length?sb.from('emergency_setups').select('user_id,data,updated_at').in('user_id',gids):Promise.resolve({data:[]});
     Promise.all([pTur,pAvv,pNod]).then(function(r){
@@ -2694,6 +2699,20 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
         h+='<tr><td>'+E(__ikDato(t.date))+'</td><td>'+E(t.name||t.trip_id||'')+'</td><td>'+E(t.guide_name||'')+'</td><td>'+E(__ikStat(t.status))+'</td><td>'+jn(t.weather_verified)+'</td><td>'+jn(t.equipment_checked)+'</td><td>'+jn(t.emergency_contact_notified)+'</td><td>'+(t.approved_at?E(__ikDato(t.approved_at)):'<span class="nei">Nei</span>')+'</td></tr>';
       });
       h+='</table>';
+      var akt=[];
+      reelle.forEach(function(t){
+        var b=__IKXT.filter(function(x){return t[x[0]]===true;});
+        if(b.length)akt.push({t:t,b:b});
+      });
+      h+='<p class="sub" style="margin-top:16px">Aktivitetsspesifikke sikkerhetspunkter bekreftet av guiden. Hvilke punkter som kreves varierer med aktivitetstype.</p>';
+      if(!akt.length){ h+='<p>'+tom('Ingen aktivitetsspesifikke punkter er bekreftet på turene i perioden.')+'</p>'; }
+      else{
+        h+='<table><tr><th style="width:78px">Dato</th><th style="width:170px">Tur</th><th style="width:52px">Antall</th><th>Bekreftede punkter</th></tr>';
+        akt.forEach(function(r){
+          h+='<tr><td>'+E(__ikDato(r.t.date))+'</td><td>'+E(r.t.name||r.t.trip_id||'')+'</td><td><b class="ja">'+r.b.length+'</b></td><td>'+r.b.map(function(x){return E(x[1]);}).join(' · ')+'</td></tr>';
+        });
+        h+='</table>';
+      }
     }
     h+='<h2>5. Avvik — høy og kritisk alvorsgrad</h2>';
     if(p.avvikFeil){ h+='<p>'+tom('Avviksdata kunne ikke hentes.')+'</p>'; }
@@ -2705,7 +2724,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       });
       h+='</table>';
     }
-    h+='<div class="foot">Grunnlag: turer og hendelser registrert i Daedalus i valgt periode. Sikkerhetssjekk viser guidens bekreftelse av vær, utstyr og varsling av nødkontakt før start; «Godkjent» er tidspunktet turen ble godkjent av administrator. Nødprosedyrer er guidens egne oppføringer i appen og vises slik de var ved generering.<br>Ansvarsfraskrivelse: Daedalus er et hjelpemiddel for dokumentasjon, ikke en erstatning for profesjonell vurdering, opplæring eller sertifisering. Vær- og skreddata kan være forsinket eller unøyaktig og må verifiseres uavhengig. Guiden og selskapet har det fulle ansvaret for sikkerhetsbeslutninger. Vilkår: daedalus-app.no/terms<br>Generert '+E(__ikTid(new Date().toISOString()))+' · Daedalus · Guide &amp; Safety</div></body></html>';
+    h+='<div class="foot">Grunnlag: turer og hendelser registrert i Daedalus i valgt periode. Sikkerhetssjekk viser guidens bekreftelse av vær, utstyr og varsling av nødkontakt før start; «Godkjent» er tidspunktet turen ble godkjent av administrator. Aktivitetsspesifikke punkter varierer med aktivitetstype og listes slik guiden bekreftet dem i appen før start. Nødprosedyrer er guidens egne oppføringer i appen og vises slik de var ved generering.<br>Ansvarsfraskrivelse: Daedalus er et hjelpemiddel for dokumentasjon, ikke en erstatning for profesjonell vurdering, opplæring eller sertifisering. Vær- og skreddata kan være forsinket eller unøyaktig og må verifiseres uavhengig. Guiden og selskapet har det fulle ansvaret for sikkerhetsbeslutninger. Vilkår: daedalus-app.no/terms<br>Generert '+E(__ikTid(new Date().toISOString()))+' · Daedalus · Guide &amp; Safety</div></body></html>';
     return h;
   }
   function __ikDialog(R){
@@ -2804,7 +2823,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     var ant=(p.del||[]).length;
     if(!ant){try{ant=Number(((t.participants||[])[0]||{}).count)||0;}catch(e){ant=0;}}
     var dist=__syDist(rp);
-    var XT=[['rope_harness_inspected','Tau og sele kontrollert'],['tidal_data_checked','Tidevannsdata sjekket'],['wave_height_assessed','Bølgehøyde vurdert'],['flotation_devices_checked','Flyteutstyr kontrollert'],['water_level_checked','Vannstand sjekket'],['rescue_throw_bag_ready','Kastesekk klar'],['participant_medical_noted','Helseopplysninger notert'],['first_aid_kit_present','Førstehjelpsutstyr med']];
+    var XT=[['rope_harness_inspected','Tau og sele kontrollert'],['tidal_data_checked','Tidevannsdata sjekket'],['wave_height_assessed','Bølgehøyde vurdert'],['flotation_devices_checked','Flyteutstyr kontrollert'],['water_level_checked','Vannstand sjekket'],['rescue_throw_bag_ready','Kastesekk klar'],['participant_medical_noted','Helseopplysninger notert'],['first_aid_kit_present','Førstehjelpsutstyr med'],['headcount_confirmed','Hodetelling bekreftet'],['all_guests_accounted_for','Alle gjester gjort rede for'],['thermal_suits_issued','Termodresser utlevert'],['hot_drinks_available','Varm drikke tilgjengelig'],['driver_vehicle_winter_ready','Kjøretøy vinterklargjort'],['road_conditions_checked','Kjøreforhold sjekket'],['helmets_thermal_suits','Hjelmer og termodresser'],['kill_switch_lanyards','Dødmannsknapp-snorer'],['fuel_checked','Drivstoff kontrollert'],['driver_licenses_verified','Førerkort kontrollert'],['convoy_roles_assigned','Kolonneroller fordelt'],['ice_conditions_verified','Isforhold verifisert'],['recovery_plan','Bergingsplan på plass'],['dog_team_health_checked','Hundespannets helse sjekket'],['harnesses_ganglines_inspected','Seler og liner kontrollert'],['sled_brakes_snow_hooks','Sledebrems og snøanker'],['guest_safety_briefing_done','Sikkerhetsbrief for gjester gjennomført'],['thermal_gear_issued','Termoutstyr utlevert'],['trail_conditions_checked','Løypeforhold sjekket']];
     var xtra=XT.filter(function(x){return t[x[0]]===true;}).map(function(x){return E(x[1]);});
     var retur=[__syDato(t.return_date||t.date),t.return_time||''].filter(Boolean).join(' kl. ');
     var h='<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Sysselmesteren — vedlegg '+E(t.trip_id||'')+'</title><style>'
@@ -2902,7 +2921,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
       if(t.report_summary) h+='<p class="sub" style="margin:10px 0 0">Turrapport</p><div class="plan">'+E(t.report_summary)+'</div>';
     }
     h+='<table class="sign"><tr><th style="width:50%">Sted og dato</th><th>Ansvarlig for arrangementet (signatur)</th></tr><tr><td></td><td></td></tr></table>';
-    h+='<div class="foot">Grunnlag: opplysninger registrert i Daedalus for denne turen, hentet ved generering. Koordinater er oppgitt i desimalgrader (WGS84). Rutelengde er summen av luftlinje mellom rutepunktene og tilsvarer ikke nødvendigvis faktisk marsjlengde. «Grunnsjekk fullført» viser tidspunktet guiden bekreftet vær, utstyr og varsling av nødkontakt. Aktivitetsspesifikke punkter vises separat; turen kan ikke aktiveres i appen før også disse er bekreftet.<br>Ansvarsfraskrivelse: Daedalus er et hjelpemiddel for dokumentasjon og erstatter ikke melde- eller søknadsplikt etter gjeldende regelverk, eller profesjonell vurdering, opplæring og sertifisering. Vær-, skred- og posisjonsdata kan være forsinket eller unøyaktig og må verifiseres uavhengig. Guiden og selskapet har det fulle ansvaret for sikkerhetsbeslutninger. Vilkår: daedalus-app.no/terms<br>Generert '+E(__syTid(new Date().toISOString()))+' · Daedalus · Guide &amp; Safety</div></body></html>';
+    h+='<div class="foot">Grunnlag: opplysninger registrert i Daedalus for denne turen, hentet ved generering. Koordinater er oppgitt i desimalgrader (WGS84). Rutelengde er summen av luftlinje mellom rutepunktene og tilsvarer ikke nødvendigvis faktisk marsjlengde. «Grunnsjekk fullført» viser tidspunktet guiden bekreftet vær, utstyr og varsling av nødkontakt. Aktivitetsspesifikke punkter vises separat; også disse bekreftes av guiden i samme sjekkliste.<br>Ansvarsfraskrivelse: Daedalus er et hjelpemiddel for dokumentasjon og erstatter ikke melde- eller søknadsplikt etter gjeldende regelverk, eller profesjonell vurdering, opplæring og sertifisering. Vær-, skred- og posisjonsdata kan være forsinket eller unøyaktig og må verifiseres uavhengig. Guiden og selskapet har det fulle ansvaret for sikkerhetsbeslutninger. Vilkår: daedalus-app.no/terms<br>Generert '+E(__syTid(new Date().toISOString()))+' · Daedalus · Guide &amp; Safety</div></body></html>';
     return h;
   }
   function __sySkriv(R,t){
