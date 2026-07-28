@@ -273,6 +273,28 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
 .mq-item svg{width:17px;height:17px;color:var(--gold);opacity:.8}
 .mq-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);opacity:.5}
 
+/* ---------- segments (Velg din verden) ---------- */
+.sec-seg{padding-top:76px}
+.sec-seg .container{display:flex;flex-direction:column;align-items:center;text-align:center}
+.sec-seg .sec-h,.sec-seg .sec-intro{margin-inline:auto}
+.sec-seg .seg-stage{width:100%}
+.seg-panel{text-align:left}
+.seg-chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:36px 0 28px}
+.seg-chip{appearance:none;cursor:pointer;border:1px solid var(--line);background:rgba(22,39,63,.55);color:#a8b6cc;font-family:var(--sans);font-size:13.5px;font-weight:600;letter-spacing:.05em;padding:10px 19px;border-radius:999px;transition:color .25s,border-color .25s,background .25s,transform .25s}
+.seg-chip:hover{color:var(--text);border-color:rgba(201,162,75,.5);transform:translateY(-1px)}
+.seg-chip.on{background:linear-gradient(135deg,rgba(201,162,75,.18),rgba(201,162,75,.05));border-color:var(--gold);color:var(--gold2)}
+.seg-stage{max-width:780px;margin:0 auto}
+.seg-panel{display:none;background:rgba(19,35,63,.55);border:1px solid var(--line);border-radius:18px;padding:30px 34px;box-shadow:0 18px 50px rgba(0,0,0,.35)}
+.seg-panel.on{display:block;animation:segIn .45s var(--ease) both}
+@keyframes segIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.seg-note{font-size:14.5px;color:var(--muted);margin:0 0 18px;line-height:1.6}
+.seg-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:12px 26px}
+.seg-list li{position:relative;padding-left:27px;font-size:14.5px;line-height:1.5;color:var(--text)}
+.seg-list li::before{content:"";position:absolute;left:0;top:.36em;width:14px;height:14px;border-radius:50%;border:1px solid var(--gold);background:radial-gradient(circle at 35% 35%,rgba(201,162,75,.55),rgba(201,162,75,.08))}
+.seg-base{margin:22px 0 0;font-size:12.5px;letter-spacing:.05em;color:#71829c}
+.seg-panel-sv{border-color:rgba(201,162,75,.55);background:linear-gradient(160deg,rgba(201,162,75,.08),rgba(19,35,63,.7))}
+@media(max-width:640px){.seg-list{grid-template-columns:1fr}.seg-panel{padding:24px 20px}.seg-chip{padding:9px 15px;font-size:13px}}
+
 /* ---------- sections ---------- */
 .sec{position:relative;padding:96px 0}
 .kicker{display:flex;align-items:center;gap:12px;font-size:11.5px;font-weight:600;letter-spacing:.26em;text-transform:uppercase;color:var(--gold)}
@@ -638,17 +660,19 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
       <span class="mq-item"><svg aria-hidden="true"><use href="#i-gem"/></svg><span data-i18n="mq1">YR VÆRDATA</span></span><i class="mq-dot"></i>
       <span class="mq-item"><svg aria-hidden="true"><use href="#i-gem"/></svg><span data-i18n="mq2">VARSOM SKREDVARSEL</span></span><i class="mq-dot"></i>
       <span class="mq-item"><svg aria-hidden="true"><use href="#i-gem"/></svg><span data-i18n="mq3">KARTVERKET TOPO</span></span><i class="mq-dot"></i>
-      <span class="mq-item"><svg aria-hidden="true"><use href="#i-gem"/></svg><span data-i18n="mq4">GPS-SPORING</span></span><i class="mq-dot"></i>
+      <span class="mq-item"><svg aria-hidden="true"><use href="#i-gem"/></svg><span data-i18n="mq4">LIVE GPS-SPORING</span></span><i class="mq-dot"></i>
       <span class="mq-item"><svg aria-hidden="true"><use href="#i-gem"/></svg><span data-i18n="mq5">SOS VIA SMS</span></span><i class="mq-dot"></i>
       <span class="mq-item"><svg aria-hidden="true"><use href="#i-gem"/></svg><span data-i18n="mq6">JURIDISK PDF</span></span><i class="mq-dot"></i>
       <span class="mq-item"><svg aria-hidden="true"><use href="#i-gem"/></svg><span data-i18n="mq7">GDPR-KOMPATIBEL</span></span><i class="mq-dot"></i>
+      <span class="mq-item"><svg aria-hidden="true"><use href="#i-gem"/></svg><span data-i18n="mq8">19 AKTIVITETSTYPER</span></span><i class="mq-dot"></i>
       <span class="mq-item"><svg aria-hidden="true"><use href="#i-gem"/></svg><span data-i18n="mq1">YR VÆRDATA</span></span><i class="mq-dot"></i>
       <span class="mq-item"><svg aria-hidden="true"><use href="#i-gem"/></svg><span data-i18n="mq2">VARSOM SKREDVARSEL</span></span><i class="mq-dot"></i>
       <span class="mq-item"><svg aria-hidden="true"><use href="#i-gem"/></svg><span data-i18n="mq3">KARTVERKET TOPO</span></span><i class="mq-dot"></i>
-      <span class="mq-item"><svg aria-hidden="true"><use href="#i-gem"/></svg><span data-i18n="mq4">GPS-SPORING</span></span><i class="mq-dot"></i>
+      <span class="mq-item"><svg aria-hidden="true"><use href="#i-gem"/></svg><span data-i18n="mq4">LIVE GPS-SPORING</span></span><i class="mq-dot"></i>
       <span class="mq-item"><svg aria-hidden="true"><use href="#i-gem"/></svg><span data-i18n="mq5">SOS VIA SMS</span></span><i class="mq-dot"></i>
       <span class="mq-item"><svg aria-hidden="true"><use href="#i-gem"/></svg><span data-i18n="mq6">JURIDISK PDF</span></span><i class="mq-dot"></i>
       <span class="mq-item"><svg aria-hidden="true"><use href="#i-gem"/></svg><span data-i18n="mq7">GDPR-KOMPATIBEL</span></span><i class="mq-dot"></i>
+      <span class="mq-item"><svg aria-hidden="true"><use href="#i-gem"/></svg><span data-i18n="mq8">19 AKTIVITETSTYPER</span></span><i class="mq-dot"></i>
     </div>
   </div>
 
@@ -663,7 +687,7 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
         <div class="ftabs">
           <button class="ftab on" type="button" data-tab="1" aria-pressed="true">
             <span class="ftab-num">01</span>
-            <span class="ftab-tx"><b data-i18n="f1.t">Obligatorisk sikkerhetssjekk</b><span class="ftab-body" data-i18n="f1.b">En tidsstemplet og bekreftet sikkerhetssjekk kreves før turen aktiveres. Vær, skredvarsel, utstyr og nødkontakter — verifisert og lagret. Automatisk integrasjon med YR og Varsom.</span></span>
+            <span class="ftab-tx"><b data-i18n="f1.t">Aktivitetsspesifikk sikkerhetssjekk</b><span class="ftab-body" data-i18n="f1.b">Tidsstemplet sikkerhetssjekk tilpasset aktiviteten — 19 turtyper med egne kontrollpunkter, fra skredvarsel og tau/sele til isforhold, kolonneroller og hundespann. Verifisert, lagret og synlig for organisasjonen i sanntid. Automatisk integrasjon med YR og Varsom.</span></span>
             <span class="ftab-bar"><i></i></span>
           </button>
           <button class="ftab" type="button" data-tab="2" aria-pressed="false">
@@ -683,12 +707,12 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
           </button>
           <button class="ftab" type="button" data-tab="5" aria-pressed="false">
             <span class="ftab-num">05</span>
-            <span class="ftab-tx"><b data-i18n="f5.t">SOS nødknapp</b><span class="ftab-body" data-i18n="f5.b">Ett bekreftet trykk sender GPS-posisjon, tur-ID og guideinformasjon til alle nødkontakter via SMS — og logger hendelsen automatisk som kritisk.</span></span>
+            <span class="ftab-tx"><b data-i18n="f5.t">SOS nødknapp</b><span class="ftab-body" data-i18n="f5.b">Ett bekreftet trykk sender GPS-posisjon, tur-ID og guideinformasjon til alle nødkontakter via SMS — og logger hendelsen automatisk som kritisk. Samtidig utløses sanntidsalarm i organisasjonens kommandosenter med live posisjon.</span></span>
             <span class="ftab-bar"><i></i></span>
           </button>
           <button class="ftab" type="button" data-tab="6" aria-pressed="false">
             <span class="ftab-num">06</span>
-            <span class="ftab-tx"><b data-i18n="f6.t">Organisasjonens sikkerhetsoversikt</b><span class="ftab-body" data-i18n="f6.b">Koordinatorer ser alle aktive turer, sikkerhetssjekk-statuser og delte farekart i sanntid. Full revisjonslogg for alle guider og operasjoner — alltid klar for inspeksjon.</span></span>
+            <span class="ftab-tx"><b data-i18n="f6.t">Organisasjonens sikkerhetsoversikt</b><span class="ftab-body" data-i18n="f6.b">Koordinatorer ser alle aktive turer med live GPS-posisjon, sikkerhetssjekk-statuser og delte farekart i sanntid — med nedtelling til forventet retur og varsel når tiden løper ut. Full revisjonslogg for alle guider og operasjoner — alltid klar for inspeksjon.</span></span>
             <span class="ftab-bar"><i></i></span>
           </button>
         </div>
@@ -872,6 +896,109 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
           <span class="bp-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><circle cx="12" cy="12" r="3.6"/><path d="M12 3.4v5M12 15.6v5M3.4 12h5M15.6 12h5"/></svg></span>
           <span class="bp-label" data-i18n="p6">Redningsgrupper</span>
         </div>
+        <div class="bp reveal" style="--d:.3s">
+          <span class="bp-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="15.2" r="3.1"/><circle cx="7.4" cy="10.2" r="1.6"/><circle cx="12" cy="8.4" r="1.6"/><circle cx="16.6" cy="10.2" r="1.6"/></svg></span>
+          <span class="bp-label" data-i18n="p7">Hundekjøring- og scooteroperatører</span>
+        </div>
+        <div class="bp reveal" style="--d:.35s">
+          <span class="bp-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18"/><path d="m4.5 7.6 15 8.8"/><path d="m19.5 7.6-15 8.8"/><path d="M12 3l-2 2.4M12 3l2 2.4M12 21l-2-2.4M12 21l2-2.4"/></svg></span>
+          <span class="bp-label" data-i18n="p8">Svalbard-operatører</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SEGMENTS ============ -->
+  <section class="sec sec-seg" id="segments">
+    <div class="container">
+      <p class="kicker center reveal" data-i18n="seg.kicker">Velg din verden</p>
+      <h2 class="sec-h reveal" style="--d:.06s" data-i18n="seg.h">Din aktivitet. Dine kontrollpunkter.</h2>
+      <p class="sec-intro reveal" style="--d:.12s" data-i18n="seg.intro">Daedalus kjenner operasjonen din. Velg aktivitet — og se de faktiske kontrollpunktene appen krever bekreftet før turen kan aktiveres. Ingen generiske skjemaer.</p>
+
+      <div class="seg-chips reveal" style="--d:.16s" id="segChips" role="tablist" aria-label="Aktiviteter">
+        <button class="seg-chip on" type="button" data-seg="1" aria-pressed="true" data-i18n="seg.c1">Hundekjøring</button>
+        <button class="seg-chip" type="button" data-seg="2" aria-pressed="false" data-i18n="seg.c2">Snøscooter</button>
+        <button class="seg-chip" type="button" data-seg="3" aria-pressed="false" data-i18n="seg.c3">Nordlys</button>
+        <button class="seg-chip" type="button" data-seg="4" aria-pressed="false" data-i18n="seg.c4">Topptur &amp; ski</button>
+        <button class="seg-chip" type="button" data-seg="5" aria-pressed="false" data-i18n="seg.c5">Bre &amp; klatring</button>
+        <button class="seg-chip" type="button" data-seg="6" aria-pressed="false" data-i18n="seg.c6">Kajakk &amp; hav</button>
+        <button class="seg-chip" type="button" data-seg="7" aria-pressed="false" data-i18n="seg.c7">Svalbard</button>
+      </div>
+
+      <div class="seg-stage reveal" style="--d:.2s">
+        <div class="seg-panel on" data-seg="1">
+          <p class="seg-note" data-i18n="seg.s1.n">Fra appens sikkerhetssjekk for hundekjøring — turen kan ikke aktiveres før alt er bekreftet:</p>
+          <ul class="seg-list">
+            <li data-i18n="seg.s1.p1">Hundespannets helse sjekket</li>
+            <li data-i18n="seg.s1.p2">Seler og trekkliner inspisert</li>
+            <li data-i18n="seg.s1.p3">Sledebremser og snøkroker</li>
+            <li data-i18n="seg.s1.p4">Sikkerhetsbriefing for gjester gjennomført</li>
+            <li data-i18n="seg.s1.p5">Termalutstyr utdelt</li>
+            <li data-i18n="seg.s1.p6">Løypeforhold sjekket</li>
+          </ul>
+          <p class="seg-base" data-i18n="seg.base">+ Vær verifisert (YR) · Utstyr sjekket · Nødkontakt varslet — obligatorisk på alle turer</p>
+        </div>
+        <div class="seg-panel" data-seg="2">
+          <p class="seg-note" data-i18n="seg.s2.n">Fra appens sikkerhetssjekk for snøscootersafari:</p>
+          <ul class="seg-list">
+            <li data-i18n="seg.s2.p1">Hjelmer og termodrakter</li>
+            <li data-i18n="seg.s2.p2">Nødstopp-snor</li>
+            <li data-i18n="seg.s2.p3">Drivstoff sjekket</li>
+            <li data-i18n="seg.s2.p4">Førerkort verifisert</li>
+            <li data-i18n="seg.s2.p5">Kolonne-roller tildelt (leder/bakerst)</li>
+            <li data-i18n="seg.s2.p6">Isforhold verifisert</li>
+            <li data-i18n="seg.s2.p7">Redningsplan klar</li>
+          </ul>
+          <p class="seg-base" data-i18n="seg.base">+ Vær verifisert (YR) · Utstyr sjekket · Nødkontakt varslet — obligatorisk på alle turer</p>
+        </div>
+        <div class="seg-panel" data-seg="3">
+          <p class="seg-note" data-i18n="seg.s3.n">Fra appens sikkerhetssjekk for nordlystur:</p>
+          <ul class="seg-list">
+            <li data-i18n="seg.s3.p1">Antall bekreftet</li>
+            <li data-i18n="seg.s3.p2">Alle gjester redegjort for ved hvert stopp</li>
+            <li data-i18n="seg.s3.p3">Termodrakter utdelt</li>
+            <li data-i18n="seg.s3.p4">Varm drikke tilgjengelig</li>
+            <li data-i18n="seg.s3.p5">Førstehjelpsskrin til stede</li>
+            <li data-i18n="seg.s3.p6">Sjåfør og kjøretøy vinterklart</li>
+            <li data-i18n="seg.s3.p7">Veiforhold sjekket</li>
+          </ul>
+          <p class="seg-base" data-i18n="seg.base">+ Vær verifisert (YR) · Utstyr sjekket · Nødkontakt varslet — obligatorisk på alle turer</p>
+        </div>
+        <div class="seg-panel" data-seg="4">
+          <p class="seg-note" data-i18n="seg.s4.n">Fra appens sikkerhetssjekk for topptur og ski:</p>
+          <ul class="seg-list">
+            <li data-i18n="seg.s4.p1">Snøskredvarselsnivå — hentes automatisk fra Varsom for turens posisjon</li>
+            <li data-i18n="seg.s4.p2">Tau og sele inspisert</li>
+          </ul>
+          <p class="seg-base" data-i18n="seg.base">+ Vær verifisert (YR) · Utstyr sjekket · Nødkontakt varslet — obligatorisk på alle turer</p>
+        </div>
+        <div class="seg-panel" data-seg="5">
+          <p class="seg-note" data-i18n="seg.s5.n">Fra appens sikkerhetssjekk for bre, klatring og via ferrata:</p>
+          <ul class="seg-list">
+            <li data-i18n="seg.s5.p1">Tau og sele inspisert</li>
+            <li data-i18n="seg.s5.p2">Snøskredvarselsnivå — automatisk fra Varsom</li>
+          </ul>
+          <p class="seg-base" data-i18n="seg.base">+ Vær verifisert (YR) · Utstyr sjekket · Nødkontakt varslet — obligatorisk på alle turer</p>
+        </div>
+        <div class="seg-panel" data-seg="6">
+          <p class="seg-note" data-i18n="seg.s6.n">Fra appens sikkerhetssjekk for kajakk og havpadling:</p>
+          <ul class="seg-list">
+            <li data-i18n="seg.s6.p1">Tidevannsdata sjekket</li>
+            <li data-i18n="seg.s6.p2">Bølgehøyde vurdert</li>
+            <li data-i18n="seg.s6.p3">Flyteutstyr sjekket</li>
+          </ul>
+          <p class="seg-base" data-i18n="seg.base">+ Vær verifisert (YR) · Utstyr sjekket · Nødkontakt varslet — obligatorisk på alle turer</p>
+        </div>
+        <div class="seg-panel seg-panel-sv" data-seg="7">
+          <p class="seg-note" data-i18n="seg.s7.n">Bygget for den nye feltsikkerhetsforskriften på Svalbard:</p>
+          <ul class="seg-list">
+            <li data-i18n="seg.s7.p1">Dokumenterte guidetimer per guide — automatisk per tur</li>
+            <li data-i18n="seg.s7.p2">Internkontroll-eksport for turoperatører</li>
+            <li data-i18n="seg.s7.p3">Signert PDF-dokumentasjon — klar som vedlegg til Sysselmesteren</li>
+            <li data-i18n="seg.s7.p4">Sikkerhetssjekk for scooter, hundespann og nordlys — bygget inn</li>
+            <li data-i18n="seg.s7.p5">Full revisjonslogg for hele organisasjonen</li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
@@ -912,6 +1039,7 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
             <li><svg aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="pf7">Farekart for hele organisasjonen</span></li>
             <li><svg aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="pf8">Sanntids sikkerhetsoversikt</span></li>
             <li><svg aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="pf9">Full revisjonslogg</span></li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="pf10">Guidetimer og internkontroll-eksport (Svalbard-klar)</span></li>
           </ul>
           <a class="btn btn-primary btn-block magnet" href="https://buy.stripe.com/7sY28s1DD8kb2w92f40Fi00" target="_blank" rel="noopener" data-i18n="price.cta">Kom i gang</a>
           <p class="price-note" data-i18n="price.note">€25 per aktive sete / mnd · eks. mva · faktureres månedlig</p>
@@ -1083,12 +1211,12 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
       "chip2.t": "Hendelse logget",
       "chip2.s": "GPS festet · 14:32",
       "mq1": "YR VÆRDATA", "mq2": "VARSOM SKREDVARSEL", "mq3": "KARTVERKET TOPO",
-      "mq4": "GPS-SPORING", "mq5": "SOS VIA SMS", "mq6": "JURIDISK PDF", "mq7": "GDPR-KOMPATIBEL",
+      "mq4": "LIVE GPS-SPORING", "mq5": "SOS VIA SMS", "mq6": "JURIDISK PDF", "mq7": "GDPR-KOMPATIBEL", "mq8": "19 AKTIVITETSTYPER",
       "feat.kicker": "Slik beskytter Daedalus deg",
       "feat.h": "Dokumenter hver avgjørelse. Før noe går galt.",
       "feat.intro": "Daedalus er ikke en turbok. Det er et juridisk og operativt skjold — bygget for profesjonelle som bærer ansvar for andres liv i felt.",
-      "f1.t": "Obligatorisk sikkerhetssjekk",
-      "f1.b": "En tidsstemplet og bekreftet sikkerhetssjekk kreves før turen aktiveres. Vær, skredvarsel, utstyr og nødkontakter — verifisert og lagret. Automatisk integrasjon med YR og Varsom.",
+      "f1.t": "Aktivitetsspesifikk sikkerhetssjekk",
+      "f1.b": "Tidsstemplet sikkerhetssjekk tilpasset aktiviteten — 19 turtyper med egne kontrollpunkter, fra skredvarsel og tau/sele til isforhold, kolonneroller og hundespann. Verifisert, lagret og synlig for organisasjonen i sanntid. Automatisk integrasjon med YR og Varsom.",
       "f2.t": "Strukturert hendelseslogg",
       "f2.b": "Logg nær-ulykker, skader og utstyrssvikt i sanntid — med GPS, tidsstempel, alvorlighetsgrad og tiltak. Uforanderlige poster klare for forsikring og granskning.",
       "f3.t": "Faremarkering og ruteplanlegging",
@@ -1096,9 +1224,9 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
       "f4.t": "Juridisk PDF-rapport",
       "f4.b": "En komplett, signert turrapport genereres automatisk ved avslutning. Inkluderer sikkerhetssjekk, deltakerliste, hendelseslogg, kart og sertifiseringer. Bygget for forsikring og sertifiseringsorganer.",
       "f5.t": "SOS nødknapp",
-      "f5.b": "Ett bekreftet trykk sender GPS-posisjon, tur-ID og guideinformasjon til alle nødkontakter via SMS — og logger hendelsen automatisk som kritisk.",
+      "f5.b": "Ett bekreftet trykk sender GPS-posisjon, tur-ID og guideinformasjon til alle nødkontakter via SMS — og logger hendelsen automatisk som kritisk. Samtidig utløses sanntidsalarm i organisasjonens kommandosenter med live posisjon.",
       "f6.t": "Organisasjonens sikkerhetsoversikt",
-      "f6.b": "Koordinatorer ser alle aktive turer, sikkerhetssjekk-statuser og delte farekart i sanntid. Full revisjonslogg for alle guider og operasjoner — alltid klar for inspeksjon.",
+      "f6.b": "Koordinatorer ser alle aktive turer med live GPS-posisjon, sikkerhetssjekk-statuser og delte farekart i sanntid — med nedtelling til forventet retur og varsel når tiden løper ut. Full revisjonslogg for alle guider og operasjoner — alltid klar for inspeksjon.",
       "map.kicker": "Sanntid",
       "map.h": "Hele operasjonen. Ett kart.",
       "map.intro": "Koordinatorer ser alle aktive turer, guider og delte farekart i sanntid — fra fjorden til toppen.",
@@ -1108,6 +1236,52 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
       "built.h": "Profesjonelle som bærer ansvar.",
       "p1": "Fjellguider", "p2": "Kajakkinstruktører", "p3": "Klatreinstruktører",
       "p4": "Skiguider", "p5": "Friluftslivslærere", "p6": "Redningsgrupper",
+      "p7": "Hundekjøring- og scooteroperatører", "p8": "Svalbard-operatører",
+      "seg.kicker": "Velg din verden",
+      "seg.h": "Din aktivitet. Dine kontrollpunkter.",
+      "seg.intro": "Daedalus kjenner operasjonen din. Velg aktivitet — og se de faktiske kontrollpunktene appen krever bekreftet før turen kan aktiveres. Ingen generiske skjemaer.",
+      "seg.c1": "Hundekjøring", "seg.c2": "Snøscooter", "seg.c3": "Nordlys",
+      "seg.c4": "Topptur & ski", "seg.c5": "Bre & klatring", "seg.c6": "Kajakk & hav", "seg.c7": "Svalbard",
+      "seg.s1.n": "Fra appens sikkerhetssjekk for hundekjøring — turen kan ikke aktiveres før alt er bekreftet:",
+      "seg.s1.p1": "Hundespannets helse sjekket",
+      "seg.s1.p2": "Seler og trekkliner inspisert",
+      "seg.s1.p3": "Sledebremser og snøkroker",
+      "seg.s1.p4": "Sikkerhetsbriefing for gjester gjennomført",
+      "seg.s1.p5": "Termalutstyr utdelt",
+      "seg.s1.p6": "Løypeforhold sjekket",
+      "seg.s2.n": "Fra appens sikkerhetssjekk for snøscootersafari:",
+      "seg.s2.p1": "Hjelmer og termodrakter",
+      "seg.s2.p2": "Nødstopp-snor",
+      "seg.s2.p3": "Drivstoff sjekket",
+      "seg.s2.p4": "Førerkort verifisert",
+      "seg.s2.p5": "Kolonne-roller tildelt (leder/bakerst)",
+      "seg.s2.p6": "Isforhold verifisert",
+      "seg.s2.p7": "Redningsplan klar",
+      "seg.s3.n": "Fra appens sikkerhetssjekk for nordlystur:",
+      "seg.s3.p1": "Antall bekreftet",
+      "seg.s3.p2": "Alle gjester redegjort for ved hvert stopp",
+      "seg.s3.p3": "Termodrakter utdelt",
+      "seg.s3.p4": "Varm drikke tilgjengelig",
+      "seg.s3.p5": "Førstehjelpsskrin til stede",
+      "seg.s3.p6": "Sjåfør og kjøretøy vinterklart",
+      "seg.s3.p7": "Veiforhold sjekket",
+      "seg.s4.n": "Fra appens sikkerhetssjekk for topptur og ski:",
+      "seg.s4.p1": "Snøskredvarselsnivå — hentes automatisk fra Varsom for turens posisjon",
+      "seg.s4.p2": "Tau og sele inspisert",
+      "seg.s5.n": "Fra appens sikkerhetssjekk for bre, klatring og via ferrata:",
+      "seg.s5.p1": "Tau og sele inspisert",
+      "seg.s5.p2": "Snøskredvarselsnivå — automatisk fra Varsom",
+      "seg.s6.n": "Fra appens sikkerhetssjekk for kajakk og havpadling:",
+      "seg.s6.p1": "Tidevannsdata sjekket",
+      "seg.s6.p2": "Bølgehøyde vurdert",
+      "seg.s6.p3": "Flyteutstyr sjekket",
+      "seg.s7.n": "Bygget for den nye feltsikkerhetsforskriften på Svalbard:",
+      "seg.s7.p1": "Dokumenterte guidetimer per guide — automatisk per tur",
+      "seg.s7.p2": "Internkontroll-eksport for turoperatører",
+      "seg.s7.p3": "Signert PDF-dokumentasjon — klar som vedlegg til Sysselmesteren",
+      "seg.s7.p4": "Sikkerhetssjekk for scooter, hundespann og nordlys — bygget inn",
+      "seg.s7.p5": "Full revisjonslogg for hele organisasjonen",
+      "seg.base": "+ Vær verifisert (YR) · Utstyr sjekket · Nødkontakt varslet — obligatorisk på alle turer",
       "price.kicker": "Prising",
       "price.h": "Bygget for profesjonelle operasjoner.",
       "price.sub": "Full tilgang for hele organisasjonen, fakturert per aktive sete. Solo-guider abonnerer i appen.",
@@ -1123,6 +1297,7 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
       "pf7": "Farekart for hele organisasjonen",
       "pf8": "Sanntids sikkerhetsoversikt",
       "pf9": "Full revisjonslogg",
+      "pf10": "Guidetimer og internkontroll-eksport (Svalbard-klar)",
       "price.cta": "Kom i gang",
       "price.note": "€25 per aktive sete / mnd · eks. mva · faktureres månedlig",
       "cta.h": "Vær beskyttet før du trenger det.",
@@ -1193,12 +1368,12 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
       "chip2.t": "Incident logged",
       "chip2.s": "GPS pinned · 14:32",
       "mq1": "YR WEATHER", "mq2": "VARSOM AVALANCHE", "mq3": "KARTVERKET TOPO",
-      "mq4": "GPS TRACKING", "mq5": "SOS VIA SMS", "mq6": "LEGAL-GRADE PDF", "mq7": "GDPR COMPLIANT",
+      "mq4": "LIVE GPS TRACKING", "mq5": "SOS VIA SMS", "mq6": "LEGAL-GRADE PDF", "mq7": "GDPR COMPLIANT", "mq8": "19 ACTIVITY TYPES",
       "feat.kicker": "How Daedalus protects you",
       "feat.h": "Document every decision. Before something goes wrong.",
       "feat.intro": "Daedalus is not a trip journal. It's a legal and operational shield — built for professionals who carry responsibility for other people's lives in the field.",
-      "f1.t": "Mandatory pre-trip safety check",
-      "f1.b": "A timestamped, signed safety check is required before any trip activates. Weather, avalanche forecast, equipment and emergency contacts — verified and logged. Auto-integrated with YR and Varsom.",
+      "f1.t": "Activity-specific safety check",
+      "f1.b": "A timestamped safety check tailored to your activity — 19 trip types with their own control points, from avalanche forecast and rope/harness to ice conditions, convoy roles and dog teams. Verified, logged and visible to your organization in real time. Auto-integrated with YR and Varsom.",
       "f2.t": "Structured incident logging",
       "f2.b": "Log near-misses, injuries, route changes and equipment failures in real time — with GPS, timestamp, severity and actions taken. Immutable records ready for insurance and investigation.",
       "f3.t": "Hazard mapping & route planning",
@@ -1206,9 +1381,9 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
       "f4.t": "Legal-grade PDF reports",
       "f4.b": "A complete, signed trip report is generated automatically on every trip closure. Includes safety check, participant list, incident log, map and guide certifications. Built for insurance, courts and certification bodies.",
       "f5.t": "SOS emergency button",
-      "f5.b": "One confirmed press sends GPS position, trip ID and guide details to all emergency contacts via SMS — and logs the event automatically as a critical incident with full timestamp.",
+      "f5.b": "One confirmed press sends GPS position, trip ID and guide details to all emergency contacts via SMS — and logs the event automatically as a critical incident with full timestamp. At the same moment, a real-time alarm fires in your organization's command center with live position.",
       "f6.t": "Organization safety oversight",
-      "f6.b": "Coordinators see all active trips, safety check statuses and shared hazard maps in real time. Full audit trail for every guide and operation — always ready for inspection.",
+      "f6.b": "Coordinators see every active trip with live GPS position, safety check statuses and shared hazard maps in real time — with a countdown to expected return and an alert when time runs out. Full audit trail for every guide and operation — always ready for inspection.",
       "map.kicker": "Real time",
       "map.h": "Your entire operation. One map.",
       "map.intro": "Coordinators see every active trip, guide and shared hazard map in real time — from the fjord to the summit.",
@@ -1218,6 +1393,52 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
       "built.h": "Professionals who carry responsibility.",
       "p1": "Mountain Guides", "p2": "Kayak Guides", "p3": "Climbing Instructors",
       "p4": "Ski Guides", "p5": "Outdoor Educators", "p6": "Rescue Teams",
+      "p7": "Dog Sledding & Snowmobile Operators", "p8": "Svalbard Operators",
+      "seg.kicker": "Choose your world",
+      "seg.h": "Your activity. Your control points.",
+      "seg.intro": "Daedalus knows your operation. Pick an activity — and see the actual control points the app requires before a trip can activate. No generic forms.",
+      "seg.c1": "Dog sledding", "seg.c2": "Snowmobile", "seg.c3": "Northern lights",
+      "seg.c4": "Ski touring", "seg.c5": "Glacier & climbing", "seg.c6": "Kayak & sea", "seg.c7": "Svalbard",
+      "seg.s1.n": "From the app\u2019s dog sledding safety check — the trip cannot activate until everything is confirmed:",
+      "seg.s1.p1": "Dog team health checked",
+      "seg.s1.p2": "Harnesses and ganglines inspected",
+      "seg.s1.p3": "Sled brakes and snow hooks",
+      "seg.s1.p4": "Guest safety briefing done",
+      "seg.s1.p5": "Thermal gear issued",
+      "seg.s1.p6": "Trail conditions checked",
+      "seg.s2.n": "From the app\u2019s snowmobile safari safety check:",
+      "seg.s2.p1": "Helmets and thermal suits",
+      "seg.s2.p2": "Kill-switch lanyards",
+      "seg.s2.p3": "Fuel checked",
+      "seg.s2.p4": "Driver licenses verified",
+      "seg.s2.p5": "Convoy roles assigned (lead/sweep)",
+      "seg.s2.p6": "Ice conditions verified",
+      "seg.s2.p7": "Recovery plan in place",
+      "seg.s3.n": "From the app\u2019s northern lights safety check:",
+      "seg.s3.p1": "Headcount confirmed",
+      "seg.s3.p2": "All guests accounted for at each stop",
+      "seg.s3.p3": "Thermal suits issued",
+      "seg.s3.p4": "Hot drinks available",
+      "seg.s3.p5": "First aid kit present",
+      "seg.s3.p6": "Driver and vehicle winter-ready",
+      "seg.s3.p7": "Road conditions checked",
+      "seg.s4.n": "From the app\u2019s ski touring safety check:",
+      "seg.s4.p1": "Avalanche forecast level — fetched automatically from Varsom for your trip position",
+      "seg.s4.p2": "Rope & harness inspected",
+      "seg.s5.n": "From the app\u2019s glacier, climbing and via ferrata safety check:",
+      "seg.s5.p1": "Rope & harness inspected",
+      "seg.s5.p2": "Avalanche forecast level — automatic from Varsom",
+      "seg.s6.n": "From the app\u2019s kayak and sea kayaking safety check:",
+      "seg.s6.p1": "Tidal data checked",
+      "seg.s6.p2": "Wave height assessed",
+      "seg.s6.p3": "Flotation devices checked",
+      "seg.s7.n": "Built for the new field safety regulations on Svalbard:",
+      "seg.s7.p1": "Documented guide hours per guide — automatic per trip",
+      "seg.s7.p2": "Internal control export for tour operators",
+      "seg.s7.p3": "Signed PDF documentation — ready as an attachment for the Governor of Svalbard",
+      "seg.s7.p4": "Safety checks for snowmobile, dog sledding and northern lights — built in",
+      "seg.s7.p5": "Full audit trail for your whole organization",
+      "seg.base": "+ Weather verified (YR) · Equipment checked · Emergency contact notified — mandatory on every trip",
       "price.kicker": "Pricing",
       "price.h": "Built for professional operations.",
       "price.sub": "Full access for your whole organization, billed per active seat. Solo guides subscribe in the app.",
@@ -1233,6 +1454,7 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
       "pf7": "Organization-wide hazard maps",
       "pf8": "Real-time safety oversight dashboard",
       "pf9": "Full audit trail",
+      "pf10": "Guide hours & internal control export (Svalbard-ready)",
       "price.cta": "Get started",
       "price.note": "€25 per active seat / month · excl. VAT · billed monthly",
       "cta.h": "Be protected before you need it.",
@@ -1277,6 +1499,26 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
     langWrap.addEventListener("click", function (e) {
       var btn = e.target.closest ? e.target.closest(".lang-btn") : null;
       if (btn && btn.getAttribute("data-lang") !== lang) setLang(btn.getAttribute("data-lang"));
+    });
+  }
+
+  /* ================= segments ================= */
+  var segChips = document.getElementById("segChips");
+  if (segChips) {
+    segChips.addEventListener("click", function (e) {
+      var btn = e.target.closest ? e.target.closest(".seg-chip") : null;
+      if (!btn) return;
+      var id = btn.getAttribute("data-seg");
+      var chips = segChips.querySelectorAll(".seg-chip");
+      for (var i = 0; i < chips.length; i++) {
+        var on = chips[i] === btn;
+        chips[i].classList.toggle("on", on);
+        chips[i].setAttribute("aria-pressed", on ? "true" : "false");
+      }
+      var panels = document.querySelectorAll(".seg-panel");
+      for (var j = 0; j < panels.length; j++) {
+        panels[j].classList.toggle("on", panels[j].getAttribute("data-seg") === id);
+      }
     });
   }
 
