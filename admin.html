@@ -2291,7 +2291,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
     return Promise.all([pAva.catch(function(){}),pOrg.catch(function(){})]).then(function(){
       try{ updateStatic(window.__REAL, me); }catch(e){}
       hideGate();
-      if(window.__BOOT) window.__BOOT();
+      if(window.__BOOT) window.__BOOT(); if(!window.__KPI_TICK){ window.__KPI_TICK=setInterval(function(){ try{ load().catch(function(){}); }catch(e){} }, 120000); }
       startRealtime(orgId);
     });
   }
@@ -3743,9 +3743,8 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
     kpiNums.forEach(function(el,i){
       var small=el.querySelector('small');
       el.setAttribute('data-count', String(vals[i]!=null?vals[i]:0));
-      el.removeAttribute('data-done');
-      if(i===2 && small){ small.innerHTML='&thinsp;/&thinsp;'+R.kpis.guidesTotal; }
-    });
+      if(i===2 && small){ small.innerHTML='&thinsp;/&thinsp;'+R.kpis.guidesTotal; } if(el.getAttribute('data-done')){ el.innerHTML=(vals[i]!=null?vals[i]:0)+(small?small.outerHTML:''); } else { el.removeAttribute('data-done'); }
+      });
     $$('.kpi .delta').forEach(function(d){ d.style.display='none'; });
     var notes=$$('.kpi .kpi-note');
     if(notes[0])notes[0].textContent=R.kpis.trips+(R.kpis.trips===1?' aktiv tur nå':' aktive turer nå');
@@ -3863,7 +3862,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
   }
 
   // ---------- realtime (kritisk: live SOS) ----------
-  function startRealtime(orgId){
+  function startRealtime(orgId){ if(window.__RT_ON) return; window.__RT_ON=1;
     if(!sb||!sb.channel) return;
     try{
       var __rtJoin=function(){ try{ sb.channel('web-admin-'+(orgId||'x'))
