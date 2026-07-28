@@ -503,8 +503,126 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
 @media (max-width:480px){.auth-card{padding:26px 20px 22px}.auth-row{flex-direction:column;gap:0}}
 @media (prefers-reduced-motion:reduce){.auth-card{animation:none}}
 </style>
+
+<style id="v3">
+/* ============ VISUAL V3 ============ */
+.v3-progress{position:fixed;top:0;left:0;right:0;height:2.5px;z-index:300;background:transparent;pointer-events:none}
+.v3-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8a6a25,var(--gold),var(--gold2));box-shadow:0 0 12px rgba(201,162,75,.55);transition:width .12s linear}
+.v3-aurora{position:absolute;inset:-12% -6% auto;height:78%;z-index:1;pointer-events:none;filter:blur(46px) saturate(1.25);opacity:.6;mix-blend-mode:screen}
+.v3-aurora i{position:absolute;border-radius:50%;will-change:transform}
+.v3-aurora i:nth-child(1){left:4%;top:6%;width:58%;height:56%;background:radial-gradient(48% 42% at 50% 50%,rgba(64,205,150,.34),rgba(64,205,150,.07) 60%,transparent 75%);animation:v3a1 17s ease-in-out infinite alternate}
+.v3-aurora i:nth-child(2){left:38%;top:0;width:52%;height:62%;background:radial-gradient(46% 40% at 50% 50%,rgba(84,160,255,.26),rgba(84,160,255,.05) 60%,transparent 78%);animation:v3a2 21s ease-in-out infinite alternate}
+.v3-aurora i:nth-child(3){left:20%;top:16%;width:44%;height:48%;background:radial-gradient(44% 40% at 50% 50%,rgba(150,110,235,.17),transparent 72%);animation:v3a3 25s ease-in-out infinite alternate}
+@keyframes v3a1{from{transform:translate(-4%,-2%) rotate(-7deg) scaleY(.9)}to{transform:translate(6%,4%) rotate(5deg) scaleY(1.12)}}
+@keyframes v3a2{from{transform:translate(3%,2%) rotate(6deg)}to{transform:translate(-5%,-4%) rotate(-4deg) scaleX(1.14)}}
+@keyframes v3a3{from{transform:translate(-2%,3%) scale(.94)}to{transform:translate(4%,-5%) scale(1.1)}}
+@media (prefers-reduced-motion: reduce){.v3-aurora i{animation:none}}
+@media (max-width:760px){.v3-aurora{filter:blur(30px);opacity:.45}}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:150px;z-index:1;pointer-events:none;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 150' preserveAspectRatio='none'><path d='M0 150 L0 96 L140 118 L300 52 L410 96 L560 24 L700 88 L830 40 L980 108 L1120 62 L1260 112 L1360 84 L1440 100 L1440 150 Z' fill='%230a1322'/><path d='M0 96 L140 118 L300 52 L410 96 L560 24 L700 88 L830 40 L980 108 L1120 62 L1260 112 L1360 84 L1440 100' fill='none' stroke='%23c9a24b' stroke-opacity='.34' stroke-width='1.4'/></svg>") center bottom/100% 100% no-repeat}
+.sec-built,.sec-seg{position:relative}
+.sec-built::before,.sec-seg::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='620' height='620' viewBox='0 0 620 620'><g fill='none' stroke='%23c9a24b' stroke-opacity='.055' stroke-width='1'><path d='M110 310c0-96 86-176 200-176s200 80 200 176-86 176-200 176-200-80-200-176z'/><path d='M150 310c0-76 70-140 160-140s160 64 160 140-70 140-160 140-160-64-160-140z'/><path d='M190 310c0-56 54-104 120-104s120 48 120 104-54 104-120 104-120-48-120-104z'/><path d='M235 310c0-38 34-70 75-70s75 32 75 70-34 70-75 70-75-32-75-70z'/><path d='M60 310c0-118 106-216 250-216s250 98 250 216-106 216-250 216S60 428 60 310z'/></g></svg>") 0 0/620px 620px}
+.sec-built>.container,.sec-seg>.container{position:relative;z-index:1}
+@property --v3rot{syntax:'<angle>';initial-value:0deg;inherits:false}
+.price-card{overflow:visible}
+.price-card::before{content:"";position:absolute;inset:-2px;border-radius:25px;padding:2px;background:conic-gradient(from calc(var(--v3rot) + 115deg),rgba(201,162,75,.12),rgba(227,192,113,1) 10%,rgba(255,232,180,.75) 16%,rgba(201,162,75,.85) 24%,rgba(201,162,75,.1) 42%,rgba(201,162,75,.08) 58%,rgba(127,192,245,.6) 72%,rgba(201,162,75,.1) 86%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;animation:v3rot 9s linear infinite;pointer-events:none}
+@keyframes v3rot{to{--v3rot:360deg}}
+@media (prefers-reduced-motion: reduce){.price-card::before{animation:none}}
+.price-card{box-shadow:0 30px 70px rgba(2,7,16,.55),0 0 90px rgba(201,162,75,.16)}
+.price-shell{position:relative}
+.price-shell::before{content:"";position:absolute;inset:-70px -110px;pointer-events:none;background:radial-gradient(52% 52% at 50% 46%,rgba(201,162,75,.13),rgba(201,162,75,.04) 55%,transparent 75%);z-index:-1}
+.sec-cta{position:relative}
+.sec-cta::before{content:"";position:absolute;inset:auto 0 0;height:88%;pointer-events:none;background:radial-gradient(64% 90% at 50% 112%,rgba(201,162,75,.30),rgba(201,162,75,.10) 42%,transparent 70%),radial-gradient(40% 55% at 24% 100%,rgba(64,205,150,.10),transparent 70%),radial-gradient(40% 55% at 76% 100%,rgba(84,160,255,.09),transparent 70%)}
+.sec-cta::after{content:"";position:absolute;left:12%;right:12%;bottom:0;height:1px;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(227,192,113,.55) 30%,rgba(227,192,113,.85) 50%,rgba(227,192,113,.55) 70%,transparent);box-shadow:0 0 24px 2px rgba(201,162,75,.35)}
+.sec-cta>.container{position:relative;z-index:1}
+.ftab{position:relative;overflow:hidden}
+.ftab::after{content:"";position:absolute;top:0;bottom:0;left:-70%;width:45%;background:linear-gradient(105deg,transparent,rgba(227,192,113,.09),transparent);transform:skewX(-18deg);transition:left .7s var(--ease);pointer-events:none}
+.ftab:hover::after{left:125%}
+.seg-chip.on{animation:v3chip 3.2s ease-in-out infinite}
+@keyframes v3chip{0%,100%{box-shadow:0 0 0 0 rgba(201,162,75,.0)}50%{box-shadow:0 0 22px 0 rgba(201,162,75,.28)}}
+@media (prefers-reduced-motion: reduce){.seg-chip.on{animation:none}}
+.hero-title{position:relative}
+.hero-title::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 42%,rgba(255,246,220,.26) 50%,transparent 58%) no-repeat;background-size:260% 100%;background-position:130% 0;mix-blend-mode:overlay;pointer-events:none;animation:v3shine 7s ease-in-out infinite}
+@keyframes v3shine{0%,62%{background-position:130% 0}82%,100%{background-position:-130% 0}}
+@media (prefers-reduced-motion: reduce){.hero-title::after{animation:none;opacity:0}}
+::selection{background:rgba(201,162,75,.35);color:#fff}
+html{scrollbar-color:#2c4468 #0a1322}
+*::-webkit-scrollbar{width:11px}
+*::-webkit-scrollbar-track{background:#0a1322}
+*::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#2c4468,#1d3050);border-radius:8px;border:2px solid #0a1322}
+*::-webkit-scrollbar-thumb:hover{background:#3a537c}
+.kicker::before{background:linear-gradient(90deg,var(--gold2),var(--gold),transparent)}
+/* ============ PRODUKT — Dette får du (kollapsbar) ============ */
+.sec-prod{padding:34px 0 44px}
+.prod-toggle{display:flex;align-items:center;gap:20px;width:100%;max-width:860px;margin:0 auto;appearance:none;cursor:pointer;text-align:left;font-family:var(--sans);background:linear-gradient(135deg,rgba(201,162,75,.09),rgba(19,35,63,.65));border:1px solid rgba(201,162,75,.4);border-radius:18px;padding:18px 24px;transition:border-color .3s,box-shadow .3s,transform .3s}
+.prod-toggle:hover{border-color:var(--gold);box-shadow:0 18px 50px rgba(0,0,0,.45),0 0 0 1px rgba(201,162,75,.25);transform:translateY(-2px)}
+.prod-mini{display:flex;flex:none}
+.prod-mini img{width:38px;height:64px;object-fit:cover;object-position:top;border-radius:8px;border:1.5px solid #2c4468;box-shadow:0 6px 16px rgba(0,0,0,.5)}
+.prod-mini img+img{margin-left:-14px}
+.prod-mini img:nth-child(2){transform:translateY(4px) rotate(2deg)}
+.prod-mini img:nth-child(3){transform:translateY(8px) rotate(4deg)}
+.prod-toggle-tx{flex:1;min-width:0}
+.prod-kick{display:block;font-size:11px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-bottom:5px}
+.prod-title{display:block;font-family:var(--serif);font-weight:520;font-size:clamp(17px,2vw,22px);line-height:1.25;color:var(--text)}
+.prod-arrow{flex:none;width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:1px solid var(--gold);color:var(--gold2);transition:transform .45s var(--ease),background .3s}
+.prod-arrow svg{width:19px;height:19px}
+.sec-prod.open .prod-arrow{transform:rotate(180deg);background:rgba(201,162,75,.14)}
+.prod-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .65s var(--ease)}
+.sec-prod.open .prod-body{grid-template-rows:1fr}
+.prod-inner{overflow:hidden;opacity:0;transform:translateY(14px);transition:opacity .5s .15s,transform .6s .15s var(--ease)}
+.sec-prod.open .prod-inner{opacity:1;transform:none}
+.prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;margin:46px auto 0;max-width:1160px}
+.prod-card{position:relative;margin:0;text-align:left}
+.prod-step{position:absolute;top:-14px;left:14px;z-index:2;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:linear-gradient(135deg,var(--gold),#8a6a25);color:#0a1322;font-weight:700;font-size:15px;box-shadow:0 6px 18px rgba(0,0,0,.45)}
+.prod-frame{border-radius:26px;overflow:hidden;border:1px solid rgba(201,162,75,.35);background:#0d1a2f;box-shadow:0 24px 60px rgba(0,0,0,.5);transition:transform .35s var(--ease),box-shadow .35s}
+.prod-frame img{display:block;width:100%;height:auto}
+.prod-card:hover .prod-frame{transform:translateY(-8px);box-shadow:0 34px 80px rgba(0,0,0,.6),0 0 0 1px rgba(201,162,75,.5)}
+.prod-card figcaption{padding:16px 6px 0}
+.prod-card figcaption b{display:block;font-size:15.5px;margin-bottom:6px;color:var(--text)}
+.prod-card figcaption span{font-size:13.5px;line-height:1.55;color:var(--muted)}
+.cmd-wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:44px;align-items:center;margin:70px auto 8px;max-width:1160px;text-align:left}
+.cmd-h{font-family:var(--serif);font-weight:520;font-size:clamp(24px,2.6vw,34px);line-height:1.12;margin:14px 0 20px;color:var(--text)}
+.cmd-steps{list-style:none;margin:0;padding:0;counter-reset:c}
+.cmd-steps li{position:relative;padding:0 0 16px 44px;counter-increment:c;font-size:14.5px;line-height:1.6;color:var(--muted)}
+.cmd-steps li b{color:var(--text)}
+.cmd-steps li::before{content:counter(c);position:absolute;left:0;top:0;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:1px solid var(--gold);color:var(--gold2);font-size:13px;font-weight:700}
+.cmd-note{margin:10px 0 0;font-size:12.5px;letter-spacing:.04em;color:#71829c}
+.cmd-browser{border-radius:16px;overflow:hidden;border:1px solid var(--line);background:#0d1a2f;box-shadow:0 30px 80px rgba(0,0,0,.55)}
+.cmd-bar{display:flex;align-items:center;gap:7px;padding:11px 14px;background:#16273f;border-bottom:1px solid var(--line)}
+.cmd-bar i{width:10px;height:10px;border-radius:50%;background:#2c4468}
+.cmd-bar i:first-child{background:#d9685f}.cmd-bar i:nth-child(2){background:#e0a458}.cmd-bar i:nth-child(3){background:#5fb97a}
+.cmd-bar span{margin-left:10px;font-size:11.5px;letter-spacing:.06em;color:#71829c}
+.cmd-body{padding:16px}
+.cmd-sos{display:flex;align-items:center;gap:10px;background:linear-gradient(90deg,rgba(217,104,95,.22),rgba(217,104,95,.08));border:1px solid rgba(217,104,95,.55);border-radius:10px;padding:10px 14px;font-size:12.5px;color:#f0b1aa;margin-bottom:14px}
+.cmd-sos em{margin-left:auto;font-style:normal;font-size:11.5px;font-weight:700;letter-spacing:.05em;color:#0a1322;background:#d9685f;padding:6px 12px;border-radius:8px;white-space:nowrap}
+.cmd-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.cmd-kpi{background:rgba(22,39,63,.7);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.cmd-kpi span{display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#71829c;margin-bottom:4px}
+.cmd-kpi b{font-size:22px;color:var(--text)}
+.cmd-main{display:grid;grid-template-columns:1.15fr .85fr;gap:10px}
+.cmd-map{position:relative;min-height:210px;border-radius:10px;border:1px solid var(--line);background:radial-gradient(120% 120% at 30% 20%,#17304f 0%,#0f2036 55%,#0c1830 100%)}
+.cmd-maplab{position:absolute;left:12px;bottom:10px;font-size:10px;letter-spacing:.14em;color:#5a7093}
+.cmd-dot{position:absolute;width:13px;height:13px;border-radius:50%;background:var(--sky2);box-shadow:0 0 0 5px rgba(127,192,245,.2),0 0 18px rgba(127,192,245,.8)}
+.cmd-dot.d2{background:var(--green);box-shadow:0 0 0 5px rgba(95,185,122,.18),0 0 18px rgba(95,185,122,.7)}
+.cmd-route{position:absolute;left:30%;top:30%;width:34%;height:34%;border:1.5px dashed rgba(127,192,245,.5);border-radius:50% 40% 55% 45%;transform:rotate(14deg)}
+.cmd-hz{position:absolute;font-size:13px;color:#e0a458;filter:drop-shadow(0 0 8px rgba(224,164,88,.7))}
+.cmd-side{display:flex;flex-direction:column;gap:8px}
+.cmd-guide{display:flex;align-items:center;gap:10px;background:rgba(22,39,63,.7);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+.cmd-guide i{width:9px;height:9px;border-radius:50%;background:#3a537c;flex:none}
+.cmd-guide i.on{background:var(--green);box-shadow:0 0 10px rgba(95,185,122,.8)}
+.cmd-guide b{display:block;font-size:12.5px;color:var(--text)}
+.cmd-guide span{display:block;font-size:11px;color:#71829c}
+.cmd-guide em{margin-left:auto;font-style:normal;font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--green);white-space:nowrap}
+.cmd-guide em.idle{color:#71829c}
+.cmd-rep{background:rgba(22,39,63,.7);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:auto}
+.cmd-rep b{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#71829c;margin-bottom:6px}
+.cmd-rep span{display:block;font-size:11.5px;color:#a8b6cc;padding:3px 0}
+.cmd-shotnote{margin:12px 0 0;font-size:11.5px;color:#5a7093;text-align:center}
+@media(max-width:1000px){.prod-grid{grid-template-columns:1fr 1fr}.cmd-wrap{grid-template-columns:1fr}}
+@media(max-width:560px){.prod-grid{grid-template-columns:1fr}.cmd-kpis{grid-template-columns:1fr 1fr}.cmd-main{grid-template-columns:1fr}.prod-toggle{gap:14px;padding:15px 18px}.prod-mini img{width:30px;height:52px}}
+</style>
 </head>
 <body class="booting" id="top">
+<div class="v3-progress" aria-hidden="true"><i id="v3bar"></i></div>
 <a class="skip" href="#main" data-i18n="skip">Hopp til innhold</a>
 
 <!-- preloader -->
@@ -561,6 +679,7 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
     <canvas id="gl" class="gl" aria-hidden="true"></canvas>
     <canvas id="fx" class="fx" aria-hidden="true"></canvas>
     <div class="hero-fade" aria-hidden="true"></div>
+    <div class="v3-aurora" aria-hidden="true"><i></i><i></i><i></i></div>
 
     <div class="hero-in container">
       <div class="hero-copy">
@@ -1003,6 +1122,105 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
     </div>
   </section>
 
+  <!-- ============ PRODUKT — DETTE FÅR DU ============ -->
+  <section class="sec sec-prod" id="product">
+    <div class="container">
+      <button class="prod-toggle" id="prodToggle" type="button" aria-expanded="false" aria-controls="prodBody">
+        <span class="prod-mini" aria-hidden="true">
+          <img src="app-steg-1.jpg" alt="" loading="lazy">
+          <img src="app-steg-2.jpg" alt="" loading="lazy">
+          <img src="app-steg-3.jpg" alt="" loading="lazy">
+        </span>
+        <span class="prod-toggle-tx">
+          <span class="prod-kick" data-i18n="prod.kick">Dette får du</span>
+          <span class="prod-title" data-i18n="prod.title">Se appen og kommandosenteret — ekte skjermbilder, steg for steg</span>
+        </span>
+        <span class="prod-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+      </button>
+      <div class="prod-body" id="prodBody">
+        <div class="prod-inner">
+          <div class="prod-grid">
+            <figure class="prod-card">
+              <span class="prod-step">1</span>
+              <div class="prod-frame"><img src="app-steg-1.jpg" alt="Opprett tur — velg blant 19 aktivitetstyper" loading="lazy"></div>
+              <figcaption>
+                <b data-i18n="prod.s1.t">Opprett turen</b>
+                <span data-i18n="prod.s1.b">Velg blant 19 aktivitetstyper — fra skitur og brevandring til snøscooter og hundekjøring. Dato, sted og vær fylles inn med live data fra MET.</span>
+              </figcaption>
+            </figure>
+            <figure class="prod-card">
+              <span class="prod-step">2</span>
+              <div class="prod-frame"><img src="app-steg-2.jpg" alt="Sikkerhetssjekk — grunnsjekker og arktisk sikkerhet" loading="lazy"></div>
+              <figcaption>
+                <b data-i18n="prod.s2.t">Bekreft sikkerhetssjekken</b>
+                <span data-i18n="prod.s2.b">Sjekklisten tilpasser seg aktiviteten. Turen lar seg ikke aktivere før alt er bekreftet — det er hele poenget.</span>
+              </figcaption>
+            </figure>
+            <figure class="prod-card">
+              <span class="prod-step">3</span>
+              <div class="prod-frame"><img src="app-steg-3.jpg" alt="Aktiv tur — live vær, koordinater og forventet retur" loading="lazy"></div>
+              <figcaption>
+                <b data-i18n="prod.s3.t">Aktiver — og vær i felt</b>
+                <span data-i18n="prod.s3.b">Live vær, koordinater og forventet retur ligger på turen. GPS-posisjonen din deles med kommandosenteret så lenge turen er aktiv.</span>
+              </figcaption>
+            </figure>
+            <figure class="prod-card">
+              <span class="prod-step">4</span>
+              <div class="prod-frame"><img src="app-steg-4.jpg" alt="Turdetaljer — sertifiseringer og PDF-rapport klar" loading="lazy"></div>
+              <figcaption>
+                <b data-i18n="prod.s4.t">Avslutt — rapporten skriver seg selv</b>
+                <span data-i18n="prod.s4.b">Sikkerhetssjekk, deltakere, hendelser, kart og sertifiseringer samles i en signert PDF i det turen avsluttes. Klar for forsikring, tilsyn eller kunde.</span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="cmd-wrap">
+            <div class="cmd-copy">
+              <p class="kicker" data-i18n="prod.cmd.kick">Kommandosenteret</p>
+              <h3 class="cmd-h" data-i18n="prod.cmd.h">Hjemme ser de alt. Mens det skjer.</h3>
+              <ol class="cmd-steps">
+                <li><b data-i18n="prod.cmd.s1t">Følg guidene live.</b> <span data-i18n="prod.cmd.s1b">Hver aktiv tur vises på kartet med GPS-posisjon, rute og delte faremarkeringer.</span></li>
+                <li><b data-i18n="prod.cmd.s2t">Retur-nedtelling per tur.</b> <span data-i18n="prod.cmd.s2b">Når forventet retur passeres uten at turen er avsluttet, varsler skjermen — rødt og tydelig.</span></li>
+                <li><b data-i18n="prod.cmd.s3t">SOS går rett hit.</b> <span data-i18n="prod.cmd.s3b">Trykker en guide SOS i felt, slår alarmen inn med posisjon i sanntid. Kvitter når situasjonen er håndtert — alt logges.</span></li>
+                <li><b data-i18n="prod.cmd.s4t">Godkjenn og dokumentér.</b> <span data-i18n="prod.cmd.s4b">Godkjenn planlagte turer, følg hendelser og hent signerte PDF-rapporter — per tur eller for hele organisasjonen.</span></li>
+              </ol>
+              <p class="cmd-note" data-i18n="prod.note">Følger med i organisasjonsabonnementet. Ingen installasjon — åpne daedalus-app.no/admin og logg inn.</p>
+            </div>
+            <div class="cmd-shot">
+              <div class="cmd-browser">
+                <div class="cmd-bar"><i></i><i></i><i></i><span>daedalus-app.no/admin</span></div>
+                <div class="cmd-body">
+                  <div class="cmd-sos">&#9888; SOS — Snøscootertur Tamokdalen · 69.2155, 19.5732 · for 2 min siden <em data-i18n="prod.ack">Kvitter alarm</em></div>
+                  <div class="cmd-kpis">
+                    <div class="cmd-kpi"><span data-i18n="prod.k1">Aktive turer</span><b>3</b></div>
+                    <div class="cmd-kpi"><span data-i18n="prod.k2">Gjester i fjellet</span><b>14</b></div>
+                    <div class="cmd-kpi"><span data-i18n="prod.k3">Guider på vakt</span><b>2&thinsp;/&thinsp;5</b></div>
+                    <div class="cmd-kpi"><span data-i18n="prod.k4">Rapporter i dag</span><b>4</b></div>
+                  </div>
+                  <div class="cmd-main">
+                    <div class="cmd-map">
+                      <span class="cmd-dot" style="left:34%;top:38%"></span>
+                      <span class="cmd-dot d2" style="left:58%;top:52%"></span>
+                      <span class="cmd-route"></span>
+                      <span class="cmd-hz" style="left:47%;top:30%">&#9888;</span>
+                      <span class="cmd-maplab" data-i18n="prod.maplab">OPERATIVT KART · LIVE</span>
+                    </div>
+                    <div class="cmd-side">
+                      <div class="cmd-guide"><i class="on"></i><div><b>Guide 1</b><span>Snøscootersafari · Retur 17:00</span></div><em data-i18n="prod.ontrip">PÅ TUR</em></div>
+                      <div class="cmd-guide"><i class="on"></i><div><b>Guide 2</b><span>Topptur · Retur om 42 min</span></div><em data-i18n="prod.ontrip2">PÅ TUR</em></div>
+                      <div class="cmd-guide"><i></i><div><b>Guide 3</b><span>Siste tur i går</span></div><em class="idle" data-i18n="prod.idle">LEDIG</em></div>
+                      <div class="cmd-rep"><b data-i18n="prod.rep">Siste rapporter</b><span>Turrapport — Tamokdalen · PDF · signert</span><span>Turrapport — Lyngen topptur · PDF · signert</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p class="cmd-shotnote" data-i18n="prod.shotnote">Illustrasjon av kommandosenteret</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ PRICING ============ -->
   <section class="sec sec-price" id="pricing">
     <div class="container">
@@ -1282,6 +1500,33 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
       "seg.s7.p4": "Sikkerhetssjekk for scooter, hundespann og nordlys — bygget inn",
       "seg.s7.p5": "Full revisjonslogg for hele organisasjonen",
       "seg.base": "+ Vær verifisert (YR) · Utstyr sjekket · Nødkontakt varslet — obligatorisk på alle turer",
+      "prod.kick": "Dette får du",
+      "prod.title": "Se appen og kommandosenteret — ekte skjermbilder, steg for steg",
+      "prod.s1.t": "Opprett turen",
+      "prod.s1.b": "Velg blant 19 aktivitetstyper — fra skitur og brevandring til snøscooter og hundekjøring. Dato, sted og vær fylles inn med live data fra MET.",
+      "prod.s2.t": "Bekreft sikkerhetssjekken",
+      "prod.s2.b": "Sjekklisten tilpasser seg aktiviteten. Turen lar seg ikke aktivere før alt er bekreftet — det er hele poenget.",
+      "prod.s3.t": "Aktiver — og vær i felt",
+      "prod.s3.b": "Live vær, koordinater og forventet retur ligger på turen. GPS-posisjonen din deles med kommandosenteret så lenge turen er aktiv.",
+      "prod.s4.t": "Avslutt — rapporten skriver seg selv",
+      "prod.s4.b": "Sikkerhetssjekk, deltakere, hendelser, kart og sertifiseringer samles i en signert PDF i det turen avsluttes. Klar for forsikring, tilsyn eller kunde.",
+      "prod.cmd.kick": "Kommandosenteret",
+      "prod.cmd.h": "Hjemme ser de alt. Mens det skjer.",
+      "prod.cmd.s1t": "Følg guidene live.",
+      "prod.cmd.s1b": "Hver aktiv tur vises på kartet med GPS-posisjon, rute og delte faremarkeringer.",
+      "prod.cmd.s2t": "Retur-nedtelling per tur.",
+      "prod.cmd.s2b": "Når forventet retur passeres uten at turen er avsluttet, varsler skjermen — rødt og tydelig.",
+      "prod.cmd.s3t": "SOS går rett hit.",
+      "prod.cmd.s3b": "Trykker en guide SOS i felt, slår alarmen inn med posisjon i sanntid. Kvitter når situasjonen er håndtert — alt logges.",
+      "prod.cmd.s4t": "Godkjenn og dokumentér.",
+      "prod.cmd.s4b": "Godkjenn planlagte turer, følg hendelser og hent signerte PDF-rapporter — per tur eller for hele organisasjonen.",
+      "prod.note": "Følger med i organisasjonsabonnementet. Ingen installasjon — åpne daedalus-app.no/admin og logg inn.",
+      "prod.ack": "Kvitter alarm",
+      "prod.k1": "Aktive turer", "prod.k2": "Gjester i fjellet", "prod.k3": "Guider på vakt", "prod.k4": "Rapporter i dag",
+      "prod.maplab": "OPERATIVT KART · LIVE",
+      "prod.ontrip": "PÅ TUR", "prod.ontrip2": "PÅ TUR", "prod.idle": "LEDIG",
+      "prod.rep": "Siste rapporter",
+      "prod.shotnote": "Illustrasjon av kommandosenteret",
       "price.kicker": "Prising",
       "price.h": "Bygget for profesjonelle operasjoner.",
       "price.sub": "Full tilgang for hele organisasjonen, fakturert per aktive sete. Solo-guider abonnerer i appen.",
@@ -1439,6 +1684,33 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
       "seg.s7.p4": "Safety checks for snowmobile, dog sledding and northern lights — built in",
       "seg.s7.p5": "Full audit trail for your whole organization",
       "seg.base": "+ Weather verified (YR) · Equipment checked · Emergency contact notified — mandatory on every trip",
+      "prod.kick": "What you get",
+      "prod.title": "See the app and the command center — real screenshots, step by step",
+      "prod.s1.t": "Create the trip",
+      "prod.s1.b": "Choose from 19 activity types — from ski touring and glacier hikes to snowmobile and dog sledding. Date, location and weather are filled in with live MET data.",
+      "prod.s2.t": "Confirm the safety check",
+      "prod.s2.b": "The checklist adapts to the activity. The trip cannot be activated until everything is confirmed — that is the whole point.",
+      "prod.s3.t": "Activate — and head out",
+      "prod.s3.b": "Live weather, coordinates and expected return sit on the trip. Your GPS position is shared with the command center while the trip is active.",
+      "prod.s4.t": "Finish — the report writes itself",
+      "prod.s4.b": "Safety check, participants, incidents, map and certifications are compiled into a signed PDF the moment the trip ends. Ready for insurance, inspection or client.",
+      "prod.cmd.kick": "The command center",
+      "prod.cmd.h": "Back home, they see everything. As it happens.",
+      "prod.cmd.s1t": "Follow guides live.",
+      "prod.cmd.s1b": "Every active trip appears on the map with GPS position, route and shared hazard markings.",
+      "prod.cmd.s2t": "Return countdown per trip.",
+      "prod.cmd.s2b": "If expected return passes without the trip being closed, the screen alerts — red and unmistakable.",
+      "prod.cmd.s3t": "SOS lands here.",
+      "prod.cmd.s3b": "When a guide presses SOS in the field, the alarm fires with real-time position. Acknowledge when handled — everything is logged.",
+      "prod.cmd.s4t": "Approve and document.",
+      "prod.cmd.s4b": "Approve planned trips, follow incidents and pull signed PDF reports — per trip or for the whole organization.",
+      "prod.note": "Included in the organization subscription. No installation — open daedalus-app.no/admin and log in.",
+      "prod.ack": "Acknowledge",
+      "prod.k1": "Active trips", "prod.k2": "Guests in the field", "prod.k3": "Guides on duty", "prod.k4": "Reports today",
+      "prod.maplab": "OPERATIONS MAP · LIVE",
+      "prod.ontrip": "ON TRIP", "prod.ontrip2": "ON TRIP", "prod.idle": "AVAILABLE",
+      "prod.rep": "Latest reports",
+      "prod.shotnote": "Illustration of the command center",
       "price.kicker": "Pricing",
       "price.h": "Built for professional operations.",
       "price.sub": "Full access for your whole organization, billed per active seat. Solo guides subscribe in the app.",
@@ -2295,6 +2567,32 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
 
   applyLang();
   handleLink();
+})();
+</script>
+<script>
+(function () {
+  "use strict";
+  var bar = document.getElementById("v3bar");
+  if (bar) {
+    var t = 0;
+    var up = function () {
+      var h = document.documentElement;
+      var max = h.scrollHeight - h.clientHeight;
+      bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + "%";
+      t = 0;
+    };
+    window.addEventListener("scroll", function () { if (!t) t = requestAnimationFrame(up); }, { passive: true });
+    up();
+  }
+  var prodSec = document.querySelector(".sec-prod");
+  var prodToggle = document.getElementById("prodToggle");
+  if (prodToggle && prodSec) {
+    prodToggle.addEventListener("click", function () {
+      var open = prodSec.classList.toggle("open");
+      prodToggle.setAttribute("aria-expanded", open ? "true" : "false");
+      if (open) { setTimeout(function () { try { prodToggle.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) {} }, 120); }
+    });
+  }
 })();
 </script>
 </body>
