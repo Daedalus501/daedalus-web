@@ -1478,11 +1478,11 @@ function runCounter(card){
 /* ================= activity chart ================= */
 var chartDays=['man','tir','ons','tor','fre','lør','søn'];
 var chartG=[42,51,38,64,72,88,76], chartT=[4,6,3,7,8,10,9], chartX=[],chartY=[];
-function chartYpos(v){ return 210-(v/90)*194 }
+function chartYpos(v){ return 210-(v/(window.__CHARTMAX||90))*194 }
 function buildChart(){
   var svg=$('#chart'); if(!svg)return;
   var i,xi;
-  [0,30,60,90].forEach(function(v){
+  (window.__CHARTTICKS||[0,30,60,90]).forEach(function(v){
     var y=chartYpos(v).toFixed(1);
     var p=document.createElementNS(SVGNS,'path');
     p.setAttribute('class','gl'); p.setAttribute('d','M34,'+y+' H626'); p.setAttribute('fill','none');
@@ -1493,7 +1493,7 @@ function buildChart(){
   });
   for(i=0;i<7;i++){
     xi=34+i*(592/6); chartX.push(xi);
-    var bh=(chartT[i]/10)*150;
+    var bh=(chartT[i]/(window.__BARMAX||10))*150;
     var r=document.createElementNS(SVGNS,'rect');
     r.setAttribute('class','bar'); r.setAttribute('x',(xi-13).toFixed(1)); r.setAttribute('y',(210-bh).toFixed(1));
     r.setAttribute('width','26'); r.setAttribute('height',bh.toFixed(1)); r.setAttribute('rx','4');
@@ -2094,7 +2094,7 @@ function afterBoot(){
   startEta();
 }
 function init(){
-  try{ var R=window.__REAL; if(R){ if(R.chartG)chartG=R.chartG; if(R.chartT)chartT=R.chartT; if(R.guides)GUIDES=R.guides; if(R.feed)FEED0=R.feed; if(R.pool)POOL=R.pool; } }catch(e){}
+  try{ var R=window.__REAL; if(R){ if(R.chartG)chartG=R.chartG; if(R.chartT)chartT=R.chartT; try{ var _cm=Math.max.apply(null,chartG.concat([1])); var _step=Math.max(10,Math.ceil(_cm/30)*10); window.__CHARTMAX=_step*3; window.__CHARTTICKS=[0,_step,_step*2,_step*3]; window.__BARMAX=Math.max(5,Math.ceil(Math.max.apply(null,chartT.concat([1]))/5)*5); }catch(e2){} if(R.guides)GUIDES=R.guides; if(R.feed)FEED0=R.feed; if(R.pool)POOL=R.pool; } }catch(e){}
   buildTopo();
   sizeBG();
   startBG();
@@ -2265,7 +2265,7 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
 
     var okN=tripRows.filter(deriveOK).length;
     var safety = tripRows.length? Math.round(okN/tripRows.length*100) : 100;
-    var sos=eventRows.filter(function(e){ return (String(e.type||'').toLowerCase()==='sos'||(String(e.severity||'').toLowerCase()==='critical'&&String(e.action_taken||'').toLowerCase().indexOf('emergency sos activated')>=0)) && (Date.now()-Date.parse(e.created_at))<864e5; });
+    var sos=eventRows.filter(function(e){ return !e.acknowledged_at && (String(e.type||'').toLowerCase()==='sos'||(String(e.severity||'').toLowerCase()==='critical'&&String(e.action_taken||'').toLowerCase().indexOf('emergency sos activated')>=0)) && (Date.now()-Date.parse(e.created_at))<864e5; });
 
     var guidesTotal=guideRows.filter(function(u){ return !u.__invite; }).length;
     var guidesOnDuty=guideRows.filter(function(u){ return String(u.role||'').toLowerCase().indexOf('invit')===-1; }).length;
@@ -3748,10 +3748,10 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
     });
     $$('.kpi .delta').forEach(function(d){ d.style.display='none'; });
     var notes=$$('.kpi .kpi-note');
-    if(notes[0])notes[0].textContent=R.kpis.trips+' aktive turer nå';
-    if(notes[1])notes[1].textContent=R.kpis.guests+' gjester i felt';
+    if(notes[0])notes[0].textContent=R.kpis.trips+(R.kpis.trips===1?' aktiv tur nå':' aktive turer nå');
+    if(notes[1])notes[1].textContent=R.kpis.guests+(R.kpis.guests===1?' gjest i felt':' gjester i felt');
     if(notes[2])notes[2].textContent=R.kpis.guides+' av '+R.kpis.guidesTotal+' tilgjengelig';
-    if(notes[3])notes[3].textContent=R.kpis.reports+' hendelser i dag';
+    if(notes[3])notes[3].textContent=R.kpis.reports+(R.kpis.reports===1?' hendelse i dag':' hendelser i dag');
 
     var rows=$$('#glist .g-row');
     rows.forEach(function(row,i){
@@ -3855,8 +3855,8 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       $$('.hero-cta .btn').forEach(function(btn){ if(/Dagsrapport/i.test(btn.textContent)){ btn.removeAttribute('data-toast'); btn.onclick=function(){ printDayReport(R); }; } });
       $$('.hero-cta .btn, .qa .btn, button').forEach(function(btn){ if(/^\s*Ny tur\s*$/i.test(btn.textContent)){ btn.removeAttribute('data-toast'); btn.onclick=function(ev){ if(ev){ev.preventDefault();ev.stopPropagation();} openNewTrip(R, me); }; } });
       $$('footer .lnk').forEach(function(a){ if(/Personvern/i.test(a.textContent)){ a.removeAttribute('data-toast'); a.setAttribute('href','/privacy'); a.setAttribute('target','_blank'); } });
-      var meBtn2=$('.me'); if(meBtn2 && !meBtn2.__wired){ meBtn2.__wired=1; meBtn2.style.cursor='pointer'; meBtn2.title='Klikk for å logge ut'; meBtn2.addEventListener('click', function(){ if(window.confirm('Logg ut av Daedalus?')){ try{ sb.auth.signOut().then(function(){ location.href='/admin'; }); }catch(e){ location.href='/admin'; } } }); }
-      if(R.sos&&R.sos.length&&R.sos[0]&&R.sos[0].id){ var _sosBtn=$('#sosAck'); if(_sosBtn&&!_sosBtn.__ackw){ _sosBtn.__ackw=1; var _eid=R.sos[0].id; _sosBtn.addEventListener('click',function(){ try{ sb.from('events').update({acknowledged_at:new Date().toISOString(),acknowledged_by:(me&&me.id)||null}).eq('id',_eid).select().then(function(res){ if(res&&!res.error&&(!res.data||!res.data.length)){ try{ toast('Kvittering ble avvist av databasen (ingen rader endret). Kontakt admin.'); }catch(e){} return; } if(!(res&&res.error)){ try{ toast('Alarm kvittert','Lagret i hendelsesloggen.'); }catch(e){} } }); }catch(e){} }); } }
+      var _brnd=$('.brand'); if(_brnd && !_brnd.__w){ _brnd.__w=1; _brnd.style.cursor='pointer'; _brnd.title='Oppdater siden'; _brnd.onclick=function(){ location.reload(); }; } var meBtn2=$('.me'); if(meBtn2 && !meBtn2.__wired){ meBtn2.__wired=1; meBtn2.style.cursor='pointer'; meBtn2.title='Klikk for å logge ut'; meBtn2.addEventListener('click', function(){ if(window.confirm('Logg ut av Daedalus?')){ try{ sb.auth.signOut().then(function(){ location.href='/admin'; }); }catch(e){ location.href='/admin'; } } }); }
+      if(R.sos&&R.sos.length&&R.sos[0]&&R.sos[0].id){ var _sosBtn=$('#sosAck'); if(_sosBtn&&!_sosBtn.__ackw){ _sosBtn.__ackw=1; var _eid=R.sos[0].id; _sosBtn.addEventListener('click',function(){ try{ sb.from('events').update({acknowledged_at:new Date().toISOString(),acknowledged_by:(me&&me.id)||null}).eq('id',_eid).select().then(function(res){ if(res&&!res.error&&(!res.data||!res.data.length)){ try{ toast('Kvittering ble avvist av databasen (ingen rader endret). Kontakt admin.'); }catch(e){} return; } if(!(res&&res.error)){ try{ toast('Alarm kvittert','Lagret i hendelsesloggen.'); }catch(e){} setTimeout(function(){ location.reload(); },700); } }); }catch(e){} }); } }
       if(R.sos && R.sos.length){ var _se=R.sos[0]; var _st=(R.tripById&&R.tripById[_se.trip_id])||{}; var _l1b=$('.sos .sos-tx .l1 b'); if(_l1b){ _l1b.textContent=(_se.description||'SOS-alarm utløst')+(_st.name?(' — '+_st.name):''); } var _l2=$('.sos .sos-tx .l2'); if(_l2){ var _tt=_se.created_at?new Date(_se.created_at).toLocaleTimeString('nb-NO',{hour:'2-digit',minute:'2-digit'}):'—'; var _pos=(_st.gps_lat!=null&&_st.gps_lng!=null)?(Number(_st.gps_lat).toFixed(4)+'° N, '+Number(_st.gps_lng).toFixed(4)+'° Ø'):'ukjent'; _l2.innerHTML='Utløst kl. <b class="num">'+_tt+'</b>'+(_st.guide_name?(' · Guide: <b>'+_escR(_st.guide_name)+'</b>'):'')+' · Posisjon: <b class="num">'+_escR(_pos)+'</b>'; } var _eta=$('.sos .sos-eta'); if(_eta){ _eta.style.display='none'; } }
       if(window.ACTIONS && window.ACTIONS.length){ var _A=window.ACTIONS; _A.forEach(function(a){ if(a.l==='Ny tur'){ a.f=function(){ openNewTrip(R,me); }; } else if(/Generer dagsrapport/i.test(a.l)){ a.f=function(){ printDayReport(R); }; } else if(/Kvitter SOS/i.test(a.l)){ a.f=(R.sos&&R.sos.length)? function(){ var b=$('#sosAck'); if(b) b.click(); } : function(){ try{ toast('Ingen aktive alarmer','Ingen SOS å kvittere nå.'); }catch(e){} }; } }); var _ng=_A.filter(function(a){ return a.h!=='Guider'; }); (R.guides||[]).forEach(function(g,i){ _ng.push({l:'Guideprofil — '+(g.name||'Guide'), h:'Guider', i:'i-users', f:(function(idx){ return function(){ if(window.openGuide) window.openGuide(idx); }; })(i)}); }); _A.length=0; Array.prototype.push.apply(_A,_ng); }
     }catch(e){}
