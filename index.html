@@ -551,6 +551,21 @@ html{scrollbar-color:#2c4468 #0a1322}
 *::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#2c4468,#1d3050);border-radius:8px;border:2px solid #0a1322}
 *::-webkit-scrollbar-thumb:hover{background:#3a537c}
 .kicker::before{background:linear-gradient(90deg,var(--gold2),var(--gold),transparent)}
+/* ---------- opphav (Laget i Tamokdalen) ---------- */
+.sec-org{padding:74px 0;position:relative;overflow:hidden}
+.sec-org::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(60% 70% at 20% 40%,rgba(74,159,224,.10),transparent 68%)}
+.org-wrap{position:relative;z-index:1;display:grid;grid-template-columns:.85fr 1.15fr;gap:52px;align-items:center}
+.org-h{font-family:var(--serif);font-weight:520;font-size:clamp(26px,3.2vw,38px);line-height:1.12;letter-spacing:-.01em;margin:14px 0 18px;color:var(--text)}
+.org-h em{font-style:normal;color:var(--gold2)}
+.org-b{font-size:15px;line-height:1.7;color:var(--muted);max-width:46ch}
+.org-b+.org-b{margin-top:14px}
+.org-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.org-meta span{font-size:11.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold2);border:1px solid rgba(201,162,75,.42);border-radius:999px;padding:7px 15px;background:rgba(201,162,75,.06)}
+.org-shot{position:relative;border-radius:20px;overflow:hidden;border:1px solid rgba(201,162,75,.32);box-shadow:0 30px 78px rgba(2,7,16,.6)}
+.org-shot img{display:block;width:100%;height:auto}
+.org-shot::after{content:"";position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 90px rgba(10,19,34,.55)}
+@media(max-width:900px){.org-wrap{grid-template-columns:1fr;gap:34px}.org-b{max-width:none}}
+
 /* ============ PRODUKT — Dette får du (kollapsbar) ============ */
 .sec-prod{padding:34px 0 44px}
 .prod-toggle{display:flex;align-items:center;gap:20px;width:100%;max-width:860px;margin:0 auto;appearance:none;cursor:pointer;text-align:left;font-family:var(--sans);background:linear-gradient(135deg,rgba(201,162,75,.09),rgba(19,35,63,.65));border:1px solid rgba(201,162,75,.4);border-radius:18px;padding:18px 24px;transition:border-color .3s,box-shadow .3s,transform .3s}
@@ -1221,6 +1236,28 @@ html{scrollbar-color:#2c4468 #0a1322}
     </div>
   </section>
 
+  <!-- ============ OPPHAV — LAGET I TAMOKDALEN ============ -->
+  <section class="sec sec-org" id="opphav">
+    <div class="container">
+      <div class="org-wrap">
+        <div class="org-copy reveal">
+          <p class="kicker" data-i18n="org.kicker">Laget i Tamokdalen</p>
+          <h2 class="org-h" data-i18n="org.h">Bygget av en som kjenner terrenget. <em>Tilgjengelig i hele Norden.</em></h2>
+          <p class="org-b" data-i18n="org.b1">Daedalus er utviklet i Tamokdalen i Troms — ikke i et kontorlandskap langt unna fjellet. Sjekklistene, faregradene og nødkjeden er formet av folk som selv har hatt ansvar for andre i felt, i mørketid og i vær som snur.</p>
+          <p class="org-b" data-i18n="org.b2">Appen er på norsk og engelsk, integrert med YR, Varsom, MET og Kartverket, og tilgjengelig for guider og operatører i hele Norden.</p>
+          <div class="org-meta">
+            <span data-i18n="org.m1">Norsk selskap</span>
+            <span data-i18n="org.m2">Data lagret i EU</span>
+            <span data-i18n="org.m3">GDPR-kompatibel</span>
+          </div>
+        </div>
+        <div class="org-shot reveal" style="--d:.1s">
+          <img src="norden.jpg" alt="Daedalus — bygget for de som leder, tilgjengelig i hele Norden" loading="lazy" width="1400" height="933">
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ PRICING ============ -->
   <section class="sec sec-price" id="pricing">
     <div class="container">
@@ -1527,6 +1564,11 @@ html{scrollbar-color:#2c4468 #0a1322}
       "prod.ontrip": "PÅ TUR", "prod.ontrip2": "PÅ TUR", "prod.idle": "LEDIG",
       "prod.rep": "Siste rapporter",
       "prod.shotnote": "Illustrasjon av kommandosenteret",
+      "org.kicker": "Laget i Tamokdalen",
+      "org.h": "Bygget av en som kjenner terrenget. Tilgjengelig i hele Norden.",
+      "org.b1": "Daedalus er utviklet i Tamokdalen i Troms — ikke i et kontorlandskap langt unna fjellet. Sjekklistene, faregradene og nødkjeden er formet av folk som selv har hatt ansvar for andre i felt, i mørketid og i vær som snur.",
+      "org.b2": "Appen er på norsk og engelsk, integrert med YR, Varsom, MET og Kartverket, og tilgjengelig for guider og operatører i hele Norden.",
+      "org.m1": "Norsk selskap", "org.m2": "Data lagret i EU", "org.m3": "GDPR-kompatibel",
       "price.kicker": "Prising",
       "price.h": "Bygget for profesjonelle operasjoner.",
       "price.sub": "Full tilgang for hele organisasjonen, fakturert per aktive sete. Solo-guider abonnerer i appen.",
@@ -1711,6 +1753,11 @@ html{scrollbar-color:#2c4468 #0a1322}
       "prod.ontrip": "ON TRIP", "prod.ontrip2": "ON TRIP", "prod.idle": "AVAILABLE",
       "prod.rep": "Latest reports",
       "prod.shotnote": "Illustration of the command center",
+      "org.kicker": "Made in Tamokdalen",
+      "org.h": "Built by someone who knows the terrain. Available across the Nordics.",
+      "org.b1": "Daedalus is developed in Tamokdalen, Northern Norway — not in an office far from the mountain. The checklists, hazard levels and emergency chain are shaped by people who have carried responsibility for others in the field, in polar night and in weather that turns.",
+      "org.b2": "The app is in Norwegian and English, integrated with YR, Varsom, MET and the Norwegian Mapping Authority, and available to guides and operators across the Nordics.",
+      "org.m1": "Norwegian company", "org.m2": "Data stored in the EU", "org.m3": "GDPR compliant",
       "price.kicker": "Pricing",
       "price.h": "Built for professional operations.",
       "price.sub": "Full access for your whole organization, billed per active seat. Solo guides subscribe in the app.",
