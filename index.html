@@ -538,8 +538,8 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
 .price-shell{position:relative}
 .price-shell::before{content:"";position:absolute;inset:-70px -110px;pointer-events:none;background:radial-gradient(52% 52% at 50% 46%,rgba(201,162,75,.13),rgba(201,162,75,.04) 55%,transparent 75%);z-index:-1}
 .sec-cta{position:relative}
-.sec-cta::before{content:"";position:absolute;inset:auto 0 0;height:88%;pointer-events:none;background:radial-gradient(64% 90% at 50% 112%,rgba(201,162,75,.30),rgba(201,162,75,.10) 42%,transparent 70%),radial-gradient(40% 55% at 24% 100%,rgba(64,205,150,.10),transparent 70%),radial-gradient(40% 55% at 76% 100%,rgba(84,160,255,.09),transparent 70%)}
-.sec-cta::after{content:"";position:absolute;left:12%;right:12%;bottom:0;height:1px;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(227,192,113,.55) 30%,rgba(227,192,113,.85) 50%,rgba(227,192,113,.55) 70%,transparent);box-shadow:0 0 24px 2px rgba(201,162,75,.35)}
+.sec-cta::before{content:"";position:absolute;inset:auto 0 0;height:88%;pointer-events:none;z-index:1;background:radial-gradient(64% 90% at 50% 112%,rgba(201,162,75,.30),rgba(201,162,75,.10) 42%,transparent 70%),radial-gradient(40% 55% at 24% 100%,rgba(64,205,150,.10),transparent 70%),radial-gradient(40% 55% at 76% 100%,rgba(84,160,255,.09),transparent 70%)}
+.sec-cta::after{content:"";position:absolute;left:12%;right:12%;bottom:0;height:1px;pointer-events:none;z-index:1;background:linear-gradient(90deg,transparent,rgba(227,192,113,.55) 30%,rgba(227,192,113,.85) 50%,rgba(227,192,113,.55) 70%,transparent);box-shadow:0 0 24px 2px rgba(201,162,75,.35)}
 .sec-cta>.container{position:relative;z-index:1}
 .ftab{position:relative;overflow:hidden}
 .ftab::after{content:"";position:absolute;top:0;bottom:0;left:-70%;width:45%;background:linear-gradient(105deg,transparent,rgba(227,192,113,.09),transparent);transform:skewX(-18deg);transition:left .7s var(--ease);pointer-events:none}
@@ -560,7 +560,7 @@ html{scrollbar-color:#2c4468 #0a1322}
 .kicker::before{background:linear-gradient(90deg,var(--gold2),var(--gold),transparent)}
 /* ---------- opphav (Laget i Tamokdalen) ---------- */
 .sec-org{padding:74px 0;position:relative;overflow:hidden}
-.sec-org::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(60% 70% at 20% 40%,rgba(74,159,224,.10),transparent 68%)}
+.sec-org::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;background:radial-gradient(60% 70% at 20% 40%,rgba(74,159,224,.10),transparent 68%)}
 .org-wrap{position:relative;z-index:1;display:grid;grid-template-columns:.85fr 1.15fr;gap:52px;align-items:center}
 .org-h{font-family:var(--serif);font-weight:520;font-size:clamp(26px,3.2vw,38px);line-height:1.12;letter-spacing:-.01em;margin:14px 0 18px;color:var(--text)}
 .org-h em{font-style:normal;color:var(--gold2)}
@@ -570,18 +570,13 @@ html{scrollbar-color:#2c4468 #0a1322}
 .org-meta span{font-size:11.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold2);border:1px solid rgba(201,162,75,.42);border-radius:999px;padding:7px 15px;background:rgba(201,162,75,.06)}
 .org-shot{position:relative;border-radius:20px;overflow:hidden;border:1px solid rgba(201,162,75,.32);box-shadow:0 30px 78px rgba(2,7,16,.6)}
 .org-shot img{display:block;width:100%;height:auto}
-.org-tri{display:flex;gap:14px;margin-top:26px}
-.tri-p{position:relative;flex:1;height:480px;margin:0;border-radius:18px;overflow:hidden;border:1px solid var(--line);box-shadow:0 24px 60px rgba(2,7,16,.5);transition:flex .65s var(--ease)}
-.tri-p img{width:100%;height:100%;object-fit:cover;object-position:50% 42%;display:block;transform:scale(1.02);transition:transform .9s var(--ease)}
-.tri-p.tp2 img{object-position:50% 30%}
-.tri-p::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,19,34,0) 55%,rgba(10,19,34,.7));pointer-events:none}
-.tri-p figcaption{position:absolute;left:16px;right:16px;bottom:13px;z-index:1;display:flex;align-items:center;gap:9px;font:600 10.5px/1.25 var(--sans);letter-spacing:.15em;text-transform:uppercase;color:#e3ecf8;text-shadow:0 1px 8px rgba(0,0,0,.55);opacity:.85;transition:opacity .4s}
-.tri-p figcaption::before{content:"";width:16px;height:1px;background:var(--gold);flex:none}
-.tri-p:hover{flex:1.65}
-.tri-p:hover img{transform:scale(1.06)}
-.tri-p:hover figcaption{opacity:1}
-@media(max-width:760px){.org-tri{flex-direction:column;gap:12px;margin-top:20px}.tri-p{height:210px;flex:none!important}}
-@media(prefers-reduced-motion:reduce){.tri-p{transition:none}.tri-p img{transition:none;transform:none}}
+.sec-bg{position:absolute;inset:0;pointer-events:none}
+.sec-bg img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.06)}
+.sec-bg::after{content:"";position:absolute;inset:0}
+.sec-org .sec-bg img{object-position:50% 30%}
+.sec-org .sec-bg::after{background:linear-gradient(100deg,rgba(10,19,34,.94) 0%,rgba(10,19,34,.8) 40%,rgba(10,19,34,.42) 100%),linear-gradient(180deg,var(--bg0) 0%,rgba(10,19,34,0) 18%,rgba(10,19,34,0) 82%,var(--bg0) 100%)}
+.sec-cta .sec-bg img{object-position:50% 40%}
+.sec-cta .sec-bg::after{background:radial-gradient(60% 55% at 50% 46%,rgba(10,19,34,.55),rgba(10,19,34,0) 100%),linear-gradient(180deg,var(--bg0) 0%,rgba(10,19,34,.66) 24%,rgba(10,19,34,.74) 72%,var(--bg0) 100%)}
 .org-shot::after{content:"";position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 90px rgba(10,19,34,.55)}
 @media(max-width:900px){.org-wrap{grid-template-columns:1fr;gap:34px}.org-b{max-width:none}}
 
@@ -1228,6 +1223,7 @@ html{scrollbar-color:#2c4468 #0a1322}
 
   <!-- ============ OPPHAV — LAGET I TAMOKDALEN ============ -->
   <section class="sec sec-org" id="opphav">
+    <div class="sec-bg" aria-hidden="true"><img src="tamok-sommer.jpg" alt="" loading="lazy" width="1360" height="1582"></div>
     <div class="container">
       <div class="org-wrap">
         <div class="org-copy reveal">
@@ -1245,20 +1241,7 @@ html{scrollbar-color:#2c4468 #0a1322}
           <img src="norden.jpg" alt="Daedalus — bygget for de som leder, tilgjengelig i hele Norden" loading="lazy" width="1400" height="933">
         </div>
       </div>
-      <div class="org-tri reveal" style="--d:.18s">
-        <figure class="tri-p tp1">
-          <img src="tamok-vinter.jpg" alt="Vindpakket snø og fjelltopp i Tamokdalen om vinteren" loading="lazy" width="1242" height="1500">
-          <figcaption><span data-i18n="org.g1">Fjellet · vinter</span></figcaption>
-        </figure>
-        <figure class="tri-p tp2">
-          <img src="tamok-felt.jpg" alt="Feltbase halvt nedsnødd i vidda" loading="lazy" width="1360" height="1582">
-          <figcaption><span data-i18n="org.g2">Feltbasen · vår</span></figcaption>
-        </figure>
-        <figure class="tri-p tp3">
-          <img src="tamok-sommer.jpg" alt="Tamokdalen om sommeren, sett fra fjellryggen" loading="lazy" width="1360" height="1582">
-          <figcaption><span data-i18n="org.g3">Tamokdalen · sommer</span></figcaption>
-        </figure>
-      </div>
+
     </div>
   </section>
 
@@ -1309,6 +1292,7 @@ html{scrollbar-color:#2c4468 #0a1322}
 
   <!-- ============ FINAL CTA ============ -->
   <section class="sec sec-cta" id="download">
+    <div class="sec-bg" aria-hidden="true"><img src="tamok-felt.jpg" alt="" loading="lazy" width="1360" height="1582"></div>
     <div class="container cta-wrap">
       <img class="cta-emblem" src="icon.png" alt="" decoding="async" aria-hidden="true" onerror="this.style.display='none'">
       <h2 class="sec-h reveal" data-i18n="cta.h">Vær beskyttet før du trenger det.</h2>
@@ -1589,9 +1573,6 @@ html{scrollbar-color:#2c4468 #0a1322}
       "org.m1": "Norsk selskap",
       "org.m2": "Data lagret i EU",
       "org.m3": "GDPR-kompatibel",
-      "org.g1": "Fjellet · vinter",
-      "org.g2": "Feltbasen · vår",
-      "org.g3": "Tamokdalen · sommer",
       "price.kicker": "Prising",
       "price.h": "Bygget for profesjonelle operasjoner.",
       "price.sub": "Full tilgang for hele organisasjonen, fakturert per aktive sete. Solo-guider abonnerer i appen.",
@@ -1799,9 +1780,6 @@ html{scrollbar-color:#2c4468 #0a1322}
       "org.m1": "Norwegian company",
       "org.m2": "Data stored in the EU",
       "org.m3": "GDPR compliant",
-      "org.g1": "The mountain · winter",
-      "org.g2": "The field base · spring",
-      "org.g3": "The Tamok valley · summer",
       "price.kicker": "Pricing",
       "price.h": "Built for professional operations.",
       "price.sub": "Full access for your whole organization, billed per active seat. Solo guides subscribe in the app.",
@@ -2009,9 +1987,6 @@ html{scrollbar-color:#2c4468 #0a1322}
       "org.m1": "Norskt företag",
       "org.m2": "Data lagrad i EU",
       "org.m3": "GDPR-kompatibel",
-      "org.g1": "Fjället · vinter",
-      "org.g2": "Fältbasen · vår",
-      "org.g3": "Tamokdalen · sommar",
       "price.kicker": "Priser",
       "price.h": "Byggd för professionella operationer.",
       "price.sub": "Full tillgång för hela organisationen, faktureras per aktiv plats. Sologuider abonnerar i appen.",
@@ -2219,9 +2194,6 @@ html{scrollbar-color:#2c4468 #0a1322}
       "org.m1": "Norsk selskab",
       "org.m2": "Data opbevaret i EU",
       "org.m3": "GDPR-kompatibel",
-      "org.g1": "Fjeldet · vinter",
-      "org.g2": "Feltbasen · forår",
-      "org.g3": "Tamokdalen · sommer",
       "price.kicker": "Priser",
       "price.h": "Bygget til professionelle operationer.",
       "price.sub": "Fuld adgang for hele organisationen, faktureret pr. aktiv plads. Sologuider abonnerer i appen.",
@@ -2429,9 +2401,6 @@ html{scrollbar-color:#2c4468 #0a1322}
       "org.m1": "Norjalainen yritys",
       "org.m2": "Data tallennettu EU:hun",
       "org.m3": "GDPR-yhteensopiva",
-      "org.g1": "Tunturi · talvi",
-      "org.g2": "Kenttätukikohta · kevät",
-      "org.g3": "Tamokdalen · kesä",
       "price.kicker": "Hinnoittelu",
       "price.h": "Rakennettu ammattimaisiin operaatioihin.",
       "price.sub": "Täysi käyttöoikeus koko organisaatiolle, laskutetaan aktiivista paikkaa kohden. Yksin toimivat oppaat tilaavat sovelluksessa.",
@@ -2639,9 +2608,6 @@ html{scrollbar-color:#2c4468 #0a1322}
       "org.m1": "Norskt fyrirtæki",
       "org.m2": "Gögn geymd í ESB",
       "org.m3": "GDPR-samhæft",
-      "org.g1": "Fjallið · vetur",
-      "org.g2": "Bækistöðin · vor",
-      "org.g3": "Tamokdalen · sumar",
       "price.kicker": "Verð",
       "price.h": "Byggt fyrir faglegan rekstur.",
       "price.sub": "Fullur aðgangur fyrir allt fyrirtækið, innheimt fyrir hvert virkt sæti. Sjálfstæðir leiðsögumenn gerast áskrifendur í appinu.",
