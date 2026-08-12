@@ -577,6 +577,15 @@ html{scrollbar-color:#2c4468 #0a1322}
 .sec-org .sec-bg::after{background:linear-gradient(100deg,rgba(10,19,34,.94) 0%,rgba(10,19,34,.8) 40%,rgba(10,19,34,.42) 100%),linear-gradient(180deg,var(--bg0) 0%,rgba(10,19,34,0) 18%,rgba(10,19,34,0) 82%,var(--bg0) 100%)}
 .sec-cta .sec-bg img{object-position:50% 40%}
 .sec-cta .sec-bg::after{background:radial-gradient(60% 55% at 50% 46%,rgba(10,19,34,.55),rgba(10,19,34,0) 100%),linear-gradient(180deg,var(--bg0) 0%,rgba(10,19,34,.66) 24%,rgba(10,19,34,.74) 72%,var(--bg0) 100%)}
+.sec-chip{z-index:2}
+.org-chip{position:absolute;right:4.5%;bottom:18px}
+.cta-chip{position:absolute;right:6%;bottom:40px}
+@keyframes chipPingGreen{0%{box-shadow:0 0 0 0 rgba(95,185,122,.4)}70%{box-shadow:0 0 0 10px rgba(95,185,122,0)}100%{box-shadow:0 0 0 0 rgba(95,185,122,0)}}
+@keyframes chipPingGold{0%{box-shadow:0 0 0 0 rgba(201,162,75,.4)}70%{box-shadow:0 0 0 10px rgba(201,162,75,0)}100%{box-shadow:0 0 0 0 rgba(201,162,75,0)}}
+.org-chip .chip-ic{animation:chipPingGreen 2.8s ease-out infinite}
+.cta-chip .chip-ic{animation:chipPingGold 2.8s ease-out infinite}
+@media(max-width:900px){.org-chip,.cta-chip{display:none}}
+@media(prefers-reduced-motion:reduce){.org-chip .chip-ic,.cta-chip .chip-ic{animation:none}}
 .org-shot::after{content:"";position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 90px rgba(10,19,34,.55)}
 @media(max-width:900px){.org-wrap{grid-template-columns:1fr;gap:34px}.org-b{max-width:none}}
 
@@ -1224,6 +1233,10 @@ html{scrollbar-color:#2c4468 #0a1322}
   <!-- ============ OPPHAV — LAGET I TAMOKDALEN ============ -->
   <section class="sec sec-org" id="opphav">
     <div class="sec-bg" aria-hidden="true"><img src="tamok-sommer.jpg" alt="" loading="lazy" width="1360" height="1582"></div>
+    <div class="chip sec-chip org-chip" aria-hidden="true">
+      <span class="chip-ic green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s6.5-5.2 6.5-10.2A6.5 6.5 0 0 0 5.5 10.8C5.5 15.8 12 21 12 21Z"/><circle cx="12" cy="10.8" r="2.3"/></svg></span>
+      <span><strong data-i18n="org.c1t">Aktiv tur — Tamokdalen</strong><em data-i18n="org.c1s">GPS delt med kommandosenteret</em></span>
+    </div>
     <div class="container">
       <div class="org-wrap">
         <div class="org-copy reveal">
@@ -1293,6 +1306,10 @@ html{scrollbar-color:#2c4468 #0a1322}
   <!-- ============ FINAL CTA ============ -->
   <section class="sec sec-cta" id="download">
     <div class="sec-bg" aria-hidden="true"><img src="tamok-felt.jpg" alt="" loading="lazy" width="1360" height="1582"></div>
+    <div class="chip sec-chip cta-chip" aria-hidden="true">
+      <span class="chip-ic gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span>
+      <span><strong data-i18n="cta.c1t">Forventet retur 17:00</strong><em data-i18n="cta.c1s">Varsles automatisk hvis tiden passeres</em></span>
+    </div>
     <div class="container cta-wrap">
       <img class="cta-emblem" src="icon.png" alt="" decoding="async" aria-hidden="true" onerror="this.style.display='none'">
       <h2 class="sec-h reveal" data-i18n="cta.h">Vær beskyttet før du trenger det.</h2>
@@ -1573,6 +1590,8 @@ html{scrollbar-color:#2c4468 #0a1322}
       "org.m1": "Norsk selskap",
       "org.m2": "Data lagret i EU",
       "org.m3": "GDPR-kompatibel",
+      "org.c1t": "Aktiv tur — Tamokdalen",
+      "org.c1s": "GPS delt med kommandosenteret",
       "price.kicker": "Prising",
       "price.h": "Bygget for profesjonelle operasjoner.",
       "price.sub": "Full tilgang for hele organisasjonen, fakturert per aktive sete. Solo-guider abonnerer i appen.",
@@ -1595,6 +1614,8 @@ html{scrollbar-color:#2c4468 #0a1322}
       "price.note": "€25 per aktive sete / mnd · eks. mva · faktureres månedlig",
       "cta.h": "Vær beskyttet før du trenger det.",
       "cta.b": "Last ned Daedalus og kjør din første fullt dokumenterte, juridisk beskyttede tur på minutter.",
+      "cta.c1t": "Forventet retur 17:00",
+      "cta.c1s": "Varsles automatisk hvis tiden passeres",
       "foot.tag": "Sikkerhet og operasjonssystem for profesjonelle ledere i naturen.",
       "foot.features": "Funksjoner",
       "foot.privacy": "Personvern",
@@ -1780,6 +1801,8 @@ html{scrollbar-color:#2c4468 #0a1322}
       "org.m1": "Norwegian company",
       "org.m2": "Data stored in the EU",
       "org.m3": "GDPR compliant",
+      "org.c1t": "Active trip — the Tamok valley",
+      "org.c1s": "GPS shared with the command center",
       "price.kicker": "Pricing",
       "price.h": "Built for professional operations.",
       "price.sub": "Full access for your whole organization, billed per active seat. Solo guides subscribe in the app.",
@@ -1802,6 +1825,8 @@ html{scrollbar-color:#2c4468 #0a1322}
       "price.note": "€25 per active seat / month · excl. VAT · billed monthly",
       "cta.h": "Be protected before you need it.",
       "cta.b": "Download Daedalus and run your first fully documented, legally protected trip in minutes.",
+      "cta.c1t": "Expected return 17:00",
+      "cta.c1s": "Alerts automatically if the time passes",
       "foot.tag": "Safety & Operations System for Professional Outdoor Leaders.",
       "foot.features": "Features",
       "foot.privacy": "Privacy",
@@ -1987,6 +2012,8 @@ html{scrollbar-color:#2c4468 #0a1322}
       "org.m1": "Norskt företag",
       "org.m2": "Data lagrad i EU",
       "org.m3": "GDPR-kompatibel",
+      "org.c1t": "Aktiv tur — Tamokdalen",
+      "org.c1s": "GPS delas med ledningscentralen",
       "price.kicker": "Priser",
       "price.h": "Byggd för professionella operationer.",
       "price.sub": "Full tillgång för hela organisationen, faktureras per aktiv plats. Sologuider abonnerar i appen.",
@@ -2009,6 +2036,8 @@ html{scrollbar-color:#2c4468 #0a1322}
       "price.note": "€25 per aktiv plats / mån · exkl. moms · faktureras månadsvis",
       "cta.h": "Var skyddad innan du behöver det.",
       "cta.b": "Ladda ner Daedalus och genomför din första fullt dokumenterade, juridiskt skyddade tur på några minuter.",
+      "cta.c1t": "Förväntad återkomst 17:00",
+      "cta.c1s": "Larmar automatiskt om tiden passeras",
       "foot.tag": "Säkerhets- och driftsystem för professionella ledare i naturen.",
       "foot.features": "Funktioner",
       "foot.privacy": "Integritet",
@@ -2194,6 +2223,8 @@ html{scrollbar-color:#2c4468 #0a1322}
       "org.m1": "Norsk selskab",
       "org.m2": "Data opbevaret i EU",
       "org.m3": "GDPR-kompatibel",
+      "org.c1t": "Aktiv tur — Tamokdalen",
+      "org.c1s": "GPS deles med kommandocentralen",
       "price.kicker": "Priser",
       "price.h": "Bygget til professionelle operationer.",
       "price.sub": "Fuld adgang for hele organisationen, faktureret pr. aktiv plads. Sologuider abonnerer i appen.",
@@ -2216,6 +2247,8 @@ html{scrollbar-color:#2c4468 #0a1322}
       "price.note": "€25 pr. aktiv plads / md. · ekskl. moms · faktureres månedligt",
       "cta.h": "Vær beskyttet, før du får brug for det.",
       "cta.b": "Hent Daedalus og gennemfør din første fuldt dokumenterede, juridisk beskyttede tur på få minutter.",
+      "cta.c1t": "Forventet retur 17:00",
+      "cta.c1s": "Alarmerer automatisk, hvis tiden passeres",
       "foot.tag": "Sikkerheds- og driftssystem til professionelle ledere i naturen.",
       "foot.features": "Funktioner",
       "foot.privacy": "Privatliv",
@@ -2401,6 +2434,8 @@ html{scrollbar-color:#2c4468 #0a1322}
       "org.m1": "Norjalainen yritys",
       "org.m2": "Data tallennettu EU:hun",
       "org.m3": "GDPR-yhteensopiva",
+      "org.c1t": "Aktiivinen retki — Tamokdalen",
+      "org.c1s": "GPS jaettu komentokeskukselle",
       "price.kicker": "Hinnoittelu",
       "price.h": "Rakennettu ammattimaisiin operaatioihin.",
       "price.sub": "Täysi käyttöoikeus koko organisaatiolle, laskutetaan aktiivista paikkaa kohden. Yksin toimivat oppaat tilaavat sovelluksessa.",
@@ -2423,6 +2458,8 @@ html{scrollbar-color:#2c4468 #0a1322}
       "price.note": "25 € per aktiivinen paikka / kk · + alv · laskutetaan kuukausittain",
       "cta.h": "Ole suojattu ennen kuin tarvitset sitä.",
       "cta.b": "Lataa Daedalus ja tee ensimmäinen täysin dokumentoitu, juridisesti suojattu retkesi minuuteissa.",
+      "cta.c1t": "Odotettu paluu 17:00",
+      "cta.c1s": "Hälyttää automaattisesti, jos aika ylittyy",
       "foot.tag": "Turvallisuus- ja toiminnanohjausjärjestelmä luonnossa työskenteleville ammattilaisille.",
       "foot.features": "Ominaisuudet",
       "foot.privacy": "Tietosuoja",
@@ -2608,6 +2645,8 @@ html{scrollbar-color:#2c4468 #0a1322}
       "org.m1": "Norskt fyrirtæki",
       "org.m2": "Gögn geymd í ESB",
       "org.m3": "GDPR-samhæft",
+      "org.c1t": "Virk ferð — Tamokdalen",
+      "org.c1s": "GPS deilt með stjórnstöðinni",
       "price.kicker": "Verð",
       "price.h": "Byggt fyrir faglegan rekstur.",
       "price.sub": "Fullur aðgangur fyrir allt fyrirtækið, innheimt fyrir hvert virkt sæti. Sjálfstæðir leiðsögumenn gerast áskrifendur í appinu.",
@@ -2630,6 +2669,8 @@ html{scrollbar-color:#2c4468 #0a1322}
       "price.note": "€25 á virkt sæti / mán. · án vsk. · innheimt mánaðarlega",
       "cta.h": "Vertu varinn áður en þú þarft á því að halda.",
       "cta.b": "Sæktu Daedalus og farðu þína fyrstu fullskjalfestu, lögvernduðu ferð á nokkrum mínútum.",
+      "cta.c1t": "Áætluð heimkoma 17:00",
+      "cta.c1s": "Gerir sjálfkrafa viðvart ef tíminn líður",
       "foot.tag": "Öryggis- og aðgerðakerfi fyrir fagfólk sem leiðir ferðir í náttúrunni.",
       "foot.features": "Eiginleikar",
       "foot.privacy": "Persónuvernd",
