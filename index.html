@@ -112,12 +112,19 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
 .nav-actions{margin-left:auto;display:flex;align-items:center;gap:14px}
 
 /* ---------- language toggle ---------- */
-.lang{position:relative;display:flex;background:rgba(22,39,63,.85);border:1px solid var(--line);border-radius:999px;padding:3px}
-.lang-thumb{position:absolute;top:3px;left:3px;width:calc(50% - 3px);height:calc(100% - 6px);border-radius:999px;background:linear-gradient(135deg,#3c83c4,var(--sky2));box-shadow:0 2px 10px rgba(74,159,224,.4);transition:transform .35s var(--ease)}
-.lang.en .lang-thumb{transform:translateX(100%)}
-.lang-btn{position:relative;z-index:1;appearance:none;border:0;background:none;color:var(--muted);font:600 11px/1 var(--sans);letter-spacing:.1em;padding:7px 13px;border-radius:999px;cursor:pointer;transition:color .3s}
-.lang-btn.is-on{color:#0a1322}
-.lang-btn:not(.is-on):hover{color:var(--text)}
+.lang{position:relative}
+.lang-cur{display:flex;align-items:center;gap:8px;appearance:none;background:rgba(22,39,63,.85);border:1px solid var(--line);border-radius:999px;padding:7px 13px;color:var(--text);cursor:pointer;font:600 11px/1 var(--sans);letter-spacing:.1em;transition:border-color .3s,box-shadow .3s}
+.lang-cur:hover{border-color:rgba(201,162,75,.55);box-shadow:0 0 0 3px rgba(201,162,75,.08)}
+.flg{width:20px;height:14.5px;border-radius:3px;overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,.14),0 1px 3px rgba(0,0,0,.35);flex:none}
+.lang-caret{width:10px;height:6px;color:var(--muted);transition:transform .35s var(--ease);flex:none}
+.lang.open .lang-caret{transform:rotate(180deg)}
+.lang-menu{position:absolute;top:calc(100% + 10px);right:0;min-width:178px;background:linear-gradient(180deg,rgba(16,30,52,.98),rgba(11,22,40,.98));border:1px solid var(--line);border-radius:16px;padding:7px;box-shadow:0 24px 60px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.05);opacity:0;visibility:hidden;transform:translateY(-8px) scale(.97);transform-origin:top right;transition:opacity .28s var(--ease),transform .28s var(--ease),visibility 0s linear .28s;z-index:70;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.lang.open .lang-menu{opacity:1;visibility:visible;transform:none;transition:opacity .28s var(--ease),transform .28s var(--ease)}
+.lang-opt{display:flex;align-items:center;gap:10px;width:100%;text-align:left;appearance:none;background:none;border:0;border-radius:10px;padding:9px 11px;color:var(--muted);font:500 12.5px/1 var(--sans);letter-spacing:.02em;cursor:pointer;transition:background .2s,color .2s}
+.lang-opt:hover{background:rgba(201,162,75,.09);color:var(--text)}
+.lang-opt.is-on{color:var(--gold2)}
+.lang-check{margin-left:auto;font-style:normal;font-size:11px;color:var(--gold);opacity:0;transform:scale(.6);transition:opacity .25s,transform .25s var(--ease)}
+.lang-opt.is-on .lang-check{opacity:1;transform:none}
 
 /* ---------- buttons ---------- */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border-radius:12px;font-weight:600;letter-spacing:.01em;cursor:pointer;will-change:transform;transition:transform .45s var(--ease),box-shadow .35s,border-color .35s,background .35s}
@@ -602,38 +609,14 @@ html{scrollbar-color:#2c4468 #0a1322}
 .cmd-steps li::before{content:counter(c);position:absolute;left:0;top:0;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:1px solid var(--gold);color:var(--gold2);font-size:13px;font-weight:700}
 .cmd-note{margin:10px 0 0;font-size:12.5px;letter-spacing:.04em;color:#71829c}
 .cmd-browser{border-radius:16px;overflow:hidden;border:1px solid var(--line);background:#0d1a2f;box-shadow:0 30px 80px rgba(0,0,0,.55)}
+.cmd-video{display:block;width:100%;height:auto;background:#0d1a2f}
 .cmd-bar{display:flex;align-items:center;gap:7px;padding:11px 14px;background:#16273f;border-bottom:1px solid var(--line)}
 .cmd-bar i{width:10px;height:10px;border-radius:50%;background:#2c4468}
 .cmd-bar i:first-child{background:#d9685f}.cmd-bar i:nth-child(2){background:#e0a458}.cmd-bar i:nth-child(3){background:#5fb97a}
 .cmd-bar span{margin-left:10px;font-size:11.5px;letter-spacing:.06em;color:#71829c}
-.cmd-body{padding:16px}
-.cmd-sos{display:flex;align-items:center;gap:10px;background:linear-gradient(90deg,rgba(217,104,95,.22),rgba(217,104,95,.08));border:1px solid rgba(217,104,95,.55);border-radius:10px;padding:10px 14px;font-size:12.5px;color:#f0b1aa;margin-bottom:14px}
-.cmd-sos em{margin-left:auto;font-style:normal;font-size:11.5px;font-weight:700;letter-spacing:.05em;color:#0a1322;background:#d9685f;padding:6px 12px;border-radius:8px;white-space:nowrap}
-.cmd-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
-.cmd-kpi{background:rgba(22,39,63,.7);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
-.cmd-kpi span{display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#71829c;margin-bottom:4px}
-.cmd-kpi b{font-size:22px;color:var(--text)}
-.cmd-main{display:grid;grid-template-columns:1.15fr .85fr;gap:10px}
-.cmd-map{position:relative;min-height:210px;border-radius:10px;border:1px solid var(--line);background:radial-gradient(120% 120% at 30% 20%,#17304f 0%,#0f2036 55%,#0c1830 100%)}
-.cmd-maplab{position:absolute;left:12px;bottom:10px;font-size:10px;letter-spacing:.14em;color:#5a7093}
-.cmd-dot{position:absolute;width:13px;height:13px;border-radius:50%;background:var(--sky2);box-shadow:0 0 0 5px rgba(127,192,245,.2),0 0 18px rgba(127,192,245,.8)}
-.cmd-dot.d2{background:var(--green);box-shadow:0 0 0 5px rgba(95,185,122,.18),0 0 18px rgba(95,185,122,.7)}
-.cmd-route{position:absolute;left:30%;top:30%;width:34%;height:34%;border:1.5px dashed rgba(127,192,245,.5);border-radius:50% 40% 55% 45%;transform:rotate(14deg)}
-.cmd-hz{position:absolute;font-size:13px;color:#e0a458;filter:drop-shadow(0 0 8px rgba(224,164,88,.7))}
-.cmd-side{display:flex;flex-direction:column;gap:8px}
-.cmd-guide{display:flex;align-items:center;gap:10px;background:rgba(22,39,63,.7);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
-.cmd-guide i{width:9px;height:9px;border-radius:50%;background:#3a537c;flex:none}
-.cmd-guide i.on{background:var(--green);box-shadow:0 0 10px rgba(95,185,122,.8)}
-.cmd-guide b{display:block;font-size:12.5px;color:var(--text)}
-.cmd-guide span{display:block;font-size:11px;color:#71829c}
-.cmd-guide em{margin-left:auto;font-style:normal;font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--green);white-space:nowrap}
-.cmd-guide em.idle{color:#71829c}
-.cmd-rep{background:rgba(22,39,63,.7);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:auto}
-.cmd-rep b{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#71829c;margin-bottom:6px}
-.cmd-rep span{display:block;font-size:11.5px;color:#a8b6cc;padding:3px 0}
 .cmd-shotnote{margin:12px 0 0;font-size:11.5px;color:#5a7093;text-align:center}
 @media(max-width:1000px){.prod-grid{grid-template-columns:1fr 1fr}.cmd-wrap{grid-template-columns:1fr}}
-@media(max-width:560px){.prod-grid{grid-template-columns:1fr}.cmd-kpis{grid-template-columns:1fr 1fr}.cmd-main{grid-template-columns:1fr}.prod-toggle{gap:14px;padding:15px 18px}.prod-mini img{width:30px;height:52px}}
+@media(max-width:560px){.prod-grid{grid-template-columns:1fr}.prod-toggle{gap:14px;padding:15px 18px}.prod-mini img{width:30px;height:52px}}
 </style>
 </head>
 <body class="booting" id="top">
@@ -677,10 +660,28 @@ html{scrollbar-color:#2c4468 #0a1322}
       <a class="navlink" href="#pricing" data-i18n="nav.pricing">Prising</a>
     </nav>
     <div class="nav-actions">
-      <div class="lang" id="langToggle" role="group" aria-label="Språk / Language">
-        <span class="lang-thumb" aria-hidden="true"></span>
-        <button class="lang-btn is-on" type="button" data-lang="no" aria-pressed="true">NO</button>
-        <button class="lang-btn" type="button" data-lang="en" aria-pressed="false">EN</button>
+      <div class="lang" id="langToggle">
+        <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+          <symbol id="fl-no" viewBox="0 0 22 16"><rect width="22" height="16" fill="#BA0C2F"/><rect x="6" width="4" height="16" fill="#fff"/><rect y="6" width="22" height="4" fill="#fff"/><rect x="7" width="2" height="16" fill="#00205B"/><rect y="7" width="22" height="2" fill="#00205B"/></symbol>
+          <symbol id="fl-en" viewBox="0 0 22 16"><rect width="22" height="16" fill="#012169"/><path d="M0,0 22,16 M22,0 0,16" stroke="#fff" stroke-width="3.2"/><path d="M0,0 22,16 M22,0 0,16" stroke="#C8102E" stroke-width="1.3"/><rect x="8.3" width="5.4" height="16" fill="#fff"/><rect y="5.3" width="22" height="5.4" fill="#fff"/><rect x="9.4" width="3.2" height="16" fill="#C8102E"/><rect y="6.4" width="22" height="3.2" fill="#C8102E"/></symbol>
+          <symbol id="fl-sv" viewBox="0 0 22 16"><rect width="22" height="16" fill="#006AA7"/><rect x="6.5" width="3" height="16" fill="#FECC02"/><rect y="6.5" width="22" height="3" fill="#FECC02"/></symbol>
+          <symbol id="fl-da" viewBox="0 0 22 16"><rect width="22" height="16" fill="#C8102E"/><rect x="6.5" width="3" height="16" fill="#fff"/><rect y="6.5" width="22" height="3" fill="#fff"/></symbol>
+          <symbol id="fl-fi" viewBox="0 0 22 16"><rect width="22" height="16" fill="#fff"/><rect x="6" width="4" height="16" fill="#002F6C"/><rect y="6" width="22" height="4" fill="#002F6C"/></symbol>
+          <symbol id="fl-is" viewBox="0 0 22 16"><rect width="22" height="16" fill="#02529C"/><rect x="6" width="4" height="16" fill="#fff"/><rect y="6" width="22" height="4" fill="#fff"/><rect x="7" width="2" height="16" fill="#DC1E35"/><rect y="7" width="22" height="2" fill="#DC1E35"/></symbol>
+        </svg>
+        <button class="lang-cur" id="langCur" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Velg språk / Choose language">
+          <svg class="flg" aria-hidden="true"><use href="#fl-no"></use></svg>
+          <span id="langCurCode">NO</span>
+          <svg class="lang-caret" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="lang-menu" id="langMenu" role="listbox" aria-label="Språk / Language">
+        <button class="lang-opt is-on" type="button" role="option" data-lang="no" aria-selected="true"><svg class="flg" aria-hidden="true"><use href="#fl-no"></use></svg><span>Norsk</span><i class="lang-check" aria-hidden="true">&#10003;</i></button>
+        <button class="lang-opt" type="button" role="option" data-lang="en" aria-selected="false"><svg class="flg" aria-hidden="true"><use href="#fl-en"></use></svg><span>English</span><i class="lang-check" aria-hidden="true">&#10003;</i></button>
+        <button class="lang-opt" type="button" role="option" data-lang="sv" aria-selected="false"><svg class="flg" aria-hidden="true"><use href="#fl-sv"></use></svg><span>Svenska</span><i class="lang-check" aria-hidden="true">&#10003;</i></button>
+        <button class="lang-opt" type="button" role="option" data-lang="da" aria-selected="false"><svg class="flg" aria-hidden="true"><use href="#fl-da"></use></svg><span>Dansk</span><i class="lang-check" aria-hidden="true">&#10003;</i></button>
+        <button class="lang-opt" type="button" role="option" data-lang="fi" aria-selected="false"><svg class="flg" aria-hidden="true"><use href="#fl-fi"></use></svg><span>Suomi</span><i class="lang-check" aria-hidden="true">&#10003;</i></button>
+        <button class="lang-opt" type="button" role="option" data-lang="is" aria-selected="false"><svg class="flg" aria-hidden="true"><use href="#fl-is"></use></svg><span>Íslenska</span><i class="lang-check" aria-hidden="true">&#10003;</i></button>
+        </div>
       </div>
       <a class="btn btn-ghost btn-sm magnet" href="#" data-i18n="nav.login">Logg inn</a>
     </div>
@@ -1203,32 +1204,9 @@ html{scrollbar-color:#2c4468 #0a1322}
             <div class="cmd-shot">
               <div class="cmd-browser">
                 <div class="cmd-bar"><i></i><i></i><i></i><span>daedalus-app.no/admin</span></div>
-                <div class="cmd-body">
-                  <div class="cmd-sos">&#9888; SOS — Snøscootertur Tamokdalen · 69.2155, 19.5732 · for 2 min siden <em data-i18n="prod.ack">Kvitter alarm</em></div>
-                  <div class="cmd-kpis">
-                    <div class="cmd-kpi"><span data-i18n="prod.k1">Aktive turer</span><b>3</b></div>
-                    <div class="cmd-kpi"><span data-i18n="prod.k2">Gjester i fjellet</span><b>14</b></div>
-                    <div class="cmd-kpi"><span data-i18n="prod.k3">Guider på vakt</span><b>2&thinsp;/&thinsp;5</b></div>
-                    <div class="cmd-kpi"><span data-i18n="prod.k4">Rapporter i dag</span><b>4</b></div>
-                  </div>
-                  <div class="cmd-main">
-                    <div class="cmd-map">
-                      <span class="cmd-dot" style="left:34%;top:38%"></span>
-                      <span class="cmd-dot d2" style="left:58%;top:52%"></span>
-                      <span class="cmd-route"></span>
-                      <span class="cmd-hz" style="left:47%;top:30%">&#9888;</span>
-                      <span class="cmd-maplab" data-i18n="prod.maplab">OPERATIVT KART · LIVE</span>
-                    </div>
-                    <div class="cmd-side">
-                      <div class="cmd-guide"><i class="on"></i><div><b>Guide 1</b><span>Snøscootersafari · Retur 17:00</span></div><em data-i18n="prod.ontrip">PÅ TUR</em></div>
-                      <div class="cmd-guide"><i class="on"></i><div><b>Guide 2</b><span>Topptur · Retur om 42 min</span></div><em data-i18n="prod.ontrip2">PÅ TUR</em></div>
-                      <div class="cmd-guide"><i></i><div><b>Guide 3</b><span>Siste tur i går</span></div><em class="idle" data-i18n="prod.idle">LEDIG</em></div>
-                      <div class="cmd-rep"><b data-i18n="prod.rep">Siste rapporter</b><span>Turrapport — Tamokdalen · PDF · signert</span><span>Turrapport — Lyngen topptur · PDF · signert</span></div>
-                    </div>
-                  </div>
-                </div>
+                <video class="cmd-video" muted loop playsinline preload="metadata" poster="kommandosenter-poster.jpg" aria-label="Opptak fra kommandosenteret"><source src="Daedalus-kommandosenter.mp4" type="video/mp4"></video>
               </div>
-              <p class="cmd-shotnote" data-i18n="prod.shotnote">Illustrasjon av kommandosenteret</p>
+              <p class="cmd-shotnote" data-i18n="prod.shotnote">Opptak fra kommandosenteret (demodata)</p>
             </div>
           </div>
         </div>
@@ -1458,15 +1436,23 @@ html{scrollbar-color:#2c4468 #0a1322}
       "ph6.r2": "Tamokdalen · topptur ski",
       "ph6.r3": "Kvaløya · havkajakk",
       "ph6.r4": "Sertifisering · brekurs",
-      "ph6.on": "PÅ TUR", "ph6.on2": "PÅ TUR", "ph6.on3": "PÅ TUR",
+      "ph6.on": "PÅ TUR",
+      "ph6.on2": "PÅ TUR",
+      "ph6.on3": "PÅ TUR",
       "ph6.off": "BASE",
       "ph6.note": "FULL REVISJONSLOGG",
       "chip1.t": "Juridisk rapport generert",
       "chip1.s": "PDF · signert",
       "chip2.t": "Hendelse logget",
       "chip2.s": "GPS festet · 14:32",
-      "mq1": "YR VÆRDATA", "mq2": "VARSOM SKREDVARSEL", "mq3": "KARTVERKET TOPO",
-      "mq4": "LIVE GPS-SPORING", "mq5": "SOS VIA SMS", "mq6": "JURIDISK PDF", "mq7": "GDPR-KOMPATIBEL", "mq8": "19 AKTIVITETSTYPER",
+      "mq1": "YR VÆRDATA",
+      "mq2": "VARSOM SKREDVARSEL",
+      "mq3": "KARTVERKET TOPO",
+      "mq4": "LIVE GPS-SPORING",
+      "mq5": "SOS VIA SMS",
+      "mq6": "JURIDISK PDF",
+      "mq7": "GDPR-KOMPATIBEL",
+      "mq8": "19 AKTIVITETSTYPER",
       "feat.kicker": "Slik beskytter Daedalus deg",
       "feat.h": "Dokumenter hver avgjørelse. Før noe går galt.",
       "feat.intro": "Daedalus er ikke en turbok. Det er et juridisk og operativt skjold — bygget for profesjonelle som bærer ansvar for andres liv i felt.",
@@ -1486,17 +1472,28 @@ html{scrollbar-color:#2c4468 #0a1322}
       "map.h": "Hele operasjonen. Ett kart.",
       "map.intro": "Koordinatorer ser alle aktive turer, guider og delte farekart i sanntid — fra fjorden til toppen.",
       "map.demo": "DEMO-DATA",
-      "hud.a": "3 GUIDER UTE", "hud.as": "Live posisjon · GPS",
+      "hud.a": "3 GUIDER UTE",
+      "hud.as": "Live posisjon · GPS",
       "built.kicker": "Bygget for",
       "built.h": "Profesjonelle som bærer ansvar.",
-      "p1": "Fjellguider", "p2": "Kajakkinstruktører", "p3": "Klatreinstruktører",
-      "p4": "Skiguider", "p5": "Friluftslivslærere", "p6": "Redningsgrupper",
-      "p7": "Hundekjøring- og scooteroperatører", "p8": "Svalbard-operatører",
+      "p1": "Fjellguider",
+      "p2": "Kajakkinstruktører",
+      "p3": "Klatreinstruktører",
+      "p4": "Skiguider",
+      "p5": "Friluftslivslærere",
+      "p6": "Redningsgrupper",
+      "p7": "Hundekjøring- og scooteroperatører",
+      "p8": "Svalbard-operatører",
       "seg.kicker": "Velg din verden",
       "seg.h": "Din aktivitet. Dine kontrollpunkter.",
       "seg.intro": "Daedalus kjenner operasjonen din. Velg aktivitet — og se de faktiske kontrollpunktene appen krever bekreftet før turen kan aktiveres. Ingen generiske skjemaer.",
-      "seg.c1": "Hundekjøring", "seg.c2": "Snøscooter", "seg.c3": "Nordlys",
-      "seg.c4": "Topptur & ski", "seg.c5": "Bre & klatring", "seg.c6": "Kajakk & hav", "seg.c7": "Svalbard",
+      "seg.c1": "Hundekjøring",
+      "seg.c2": "Snøscooter",
+      "seg.c3": "Nordlys",
+      "seg.c4": "Topptur & ski",
+      "seg.c5": "Bre & klatring",
+      "seg.c6": "Kajakk & hav",
+      "seg.c7": "Svalbard",
       "seg.s1.n": "Fra appens sikkerhetssjekk for hundekjøring — turen kan ikke aktiveres før alt er bekreftet:",
       "seg.s1.p1": "Hundespannets helse sjekket",
       "seg.s1.p2": "Seler og trekkliner inspisert",
@@ -1558,23 +1555,22 @@ html{scrollbar-color:#2c4468 #0a1322}
       "prod.cmd.s4t": "Godkjenn og dokumentér.",
       "prod.cmd.s4b": "Godkjenn planlagte turer, følg hendelser og hent signerte PDF-rapporter — per tur eller for hele organisasjonen.",
       "prod.note": "Følger med i organisasjonsabonnementet. Ingen installasjon — åpne daedalus-app.no/admin og logg inn.",
-      "prod.ack": "Kvitter alarm",
-      "prod.k1": "Aktive turer", "prod.k2": "Gjester i fjellet", "prod.k3": "Guider på vakt", "prod.k4": "Rapporter i dag",
-      "prod.maplab": "OPERATIVT KART · LIVE",
-      "prod.ontrip": "PÅ TUR", "prod.ontrip2": "PÅ TUR", "prod.idle": "LEDIG",
-      "prod.rep": "Siste rapporter",
-      "prod.shotnote": "Illustrasjon av kommandosenteret",
+      "prod.shotnote": "Opptak fra kommandosenteret (demodata)",
       "org.kicker": "Laget i Tamokdalen",
       "org.h": "Bygget av en som kjenner terrenget. Tilgjengelig i hele Norden.",
       "org.b1": "Daedalus er utviklet i Tamokdalen i Troms — ikke i et kontorlandskap langt unna fjellet. Sjekklistene, faregradene og nødkjeden er formet av folk som selv har hatt ansvar for andre i felt, i mørketid og i vær som snur.",
       "org.b2": "Appen er på norsk og engelsk, integrert med YR, Varsom, MET og Kartverket, og tilgjengelig for guider og operatører i hele Norden.",
-      "org.m1": "Norsk selskap", "org.m2": "Data lagret i EU", "org.m3": "GDPR-kompatibel",
+      "org.m1": "Norsk selskap",
+      "org.m2": "Data lagret i EU",
+      "org.m3": "GDPR-kompatibel",
       "price.kicker": "Prising",
       "price.h": "Bygget for profesjonelle operasjoner.",
       "price.sub": "Full tilgang for hele organisasjonen, fakturert per aktive sete. Solo-guider abonnerer i appen.",
       "price.plan": "ORGANISASJON",
       "price.per": "per sete / mnd · eks. mva",
-      "seats.l": "DERES TEAM", "seats.u": "seter", "seats.t": "Estimert per måned · eks. mva",
+      "seats.l": "DERES TEAM",
+      "seats.u": "seter",
+      "seats.t": "Estimert per måned · eks. mva",
       "pf1": "Obligatorisk sikkerhetssjekk før tur",
       "pf2": "Juridisk PDF-rapport",
       "pf3": "Hendelseslogg i sanntid med GPS",
@@ -1647,15 +1643,23 @@ html{scrollbar-color:#2c4468 #0a1322}
       "ph6.r2": "Tamokdalen · ski touring",
       "ph6.r3": "Kvaløya · sea kayaking",
       "ph6.r4": "Certification · glacier course",
-      "ph6.on": "ON TRIP", "ph6.on2": "ON TRIP", "ph6.on3": "ON TRIP",
+      "ph6.on": "ON TRIP",
+      "ph6.on2": "ON TRIP",
+      "ph6.on3": "ON TRIP",
       "ph6.off": "BASE",
       "ph6.note": "FULL AUDIT TRAIL",
       "chip1.t": "Legal report generated",
       "chip1.s": "PDF · signed",
       "chip2.t": "Incident logged",
       "chip2.s": "GPS pinned · 14:32",
-      "mq1": "YR WEATHER", "mq2": "VARSOM AVALANCHE", "mq3": "KARTVERKET TOPO",
-      "mq4": "LIVE GPS TRACKING", "mq5": "SOS VIA SMS", "mq6": "LEGAL-GRADE PDF", "mq7": "GDPR COMPLIANT", "mq8": "19 ACTIVITY TYPES",
+      "mq1": "YR WEATHER",
+      "mq2": "VARSOM AVALANCHE",
+      "mq3": "KARTVERKET TOPO",
+      "mq4": "LIVE GPS TRACKING",
+      "mq5": "SOS VIA SMS",
+      "mq6": "LEGAL-GRADE PDF",
+      "mq7": "GDPR COMPLIANT",
+      "mq8": "19 ACTIVITY TYPES",
       "feat.kicker": "How Daedalus protects you",
       "feat.h": "Document every decision. Before something goes wrong.",
       "feat.intro": "Daedalus is not a trip journal. It's a legal and operational shield — built for professionals who carry responsibility for other people's lives in the field.",
@@ -1675,25 +1679,36 @@ html{scrollbar-color:#2c4468 #0a1322}
       "map.h": "Your entire operation. One map.",
       "map.intro": "Coordinators see every active trip, guide and shared hazard map in real time — from the fjord to the summit.",
       "map.demo": "DEMO DATA",
-      "hud.a": "3 GUIDES OUT", "hud.as": "Live position · GPS",
+      "hud.a": "3 GUIDES OUT",
+      "hud.as": "Live position · GPS",
       "built.kicker": "Built for",
       "built.h": "Professionals who carry responsibility.",
-      "p1": "Mountain Guides", "p2": "Kayak Guides", "p3": "Climbing Instructors",
-      "p4": "Ski Guides", "p5": "Outdoor Educators", "p6": "Rescue Teams",
-      "p7": "Dog Sledding & Snowmobile Operators", "p8": "Svalbard Operators",
+      "p1": "Mountain Guides",
+      "p2": "Kayak Guides",
+      "p3": "Climbing Instructors",
+      "p4": "Ski Guides",
+      "p5": "Outdoor Educators",
+      "p6": "Rescue Teams",
+      "p7": "Dog Sledding & Snowmobile Operators",
+      "p8": "Svalbard Operators",
       "seg.kicker": "Choose your world",
       "seg.h": "Your activity. Your control points.",
       "seg.intro": "Daedalus knows your operation. Pick an activity — and see the actual control points the app requires before a trip can activate. No generic forms.",
-      "seg.c1": "Dog sledding", "seg.c2": "Snowmobile", "seg.c3": "Northern lights",
-      "seg.c4": "Ski touring", "seg.c5": "Glacier & climbing", "seg.c6": "Kayak & sea", "seg.c7": "Svalbard",
-      "seg.s1.n": "From the app\u2019s dog sledding safety check — the trip cannot activate until everything is confirmed:",
+      "seg.c1": "Dog sledding",
+      "seg.c2": "Snowmobile",
+      "seg.c3": "Northern lights",
+      "seg.c4": "Ski touring",
+      "seg.c5": "Glacier & climbing",
+      "seg.c6": "Kayak & sea",
+      "seg.c7": "Svalbard",
+      "seg.s1.n": "From the app’s dog sledding safety check — the trip cannot activate until everything is confirmed:",
       "seg.s1.p1": "Dog team health checked",
       "seg.s1.p2": "Harnesses and ganglines inspected",
       "seg.s1.p3": "Sled brakes and snow hooks",
       "seg.s1.p4": "Guest safety briefing done",
       "seg.s1.p5": "Thermal gear issued",
       "seg.s1.p6": "Trail conditions checked",
-      "seg.s2.n": "From the app\u2019s snowmobile safari safety check:",
+      "seg.s2.n": "From the app’s snowmobile safari safety check:",
       "seg.s2.p1": "Helmets and thermal suits",
       "seg.s2.p2": "Kill-switch lanyards",
       "seg.s2.p3": "Fuel checked",
@@ -1701,7 +1716,7 @@ html{scrollbar-color:#2c4468 #0a1322}
       "seg.s2.p5": "Convoy roles assigned (lead/sweep)",
       "seg.s2.p6": "Ice conditions verified",
       "seg.s2.p7": "Recovery plan in place",
-      "seg.s3.n": "From the app\u2019s northern lights safety check:",
+      "seg.s3.n": "From the app’s northern lights safety check:",
       "seg.s3.p1": "Headcount confirmed",
       "seg.s3.p2": "All guests accounted for at each stop",
       "seg.s3.p3": "Thermal suits issued",
@@ -1709,13 +1724,13 @@ html{scrollbar-color:#2c4468 #0a1322}
       "seg.s3.p5": "First aid kit present",
       "seg.s3.p6": "Driver and vehicle winter-ready",
       "seg.s3.p7": "Road conditions checked",
-      "seg.s4.n": "From the app\u2019s ski touring safety check:",
+      "seg.s4.n": "From the app’s ski touring safety check:",
       "seg.s4.p1": "Avalanche forecast level — fetched automatically from Varsom for your trip position",
       "seg.s4.p2": "Rope & harness inspected",
-      "seg.s5.n": "From the app\u2019s glacier, climbing and via ferrata safety check:",
+      "seg.s5.n": "From the app’s glacier, climbing and via ferrata safety check:",
       "seg.s5.p1": "Rope & harness inspected",
       "seg.s5.p2": "Avalanche forecast level — automatic from Varsom",
-      "seg.s6.n": "From the app\u2019s kayak and sea kayaking safety check:",
+      "seg.s6.n": "From the app’s kayak and sea kayaking safety check:",
       "seg.s6.p1": "Tidal data checked",
       "seg.s6.p2": "Wave height assessed",
       "seg.s6.p3": "Flotation devices checked",
@@ -1747,23 +1762,22 @@ html{scrollbar-color:#2c4468 #0a1322}
       "prod.cmd.s4t": "Approve and document.",
       "prod.cmd.s4b": "Approve planned trips, follow incidents and pull signed PDF reports — per trip or for the whole organization.",
       "prod.note": "Included in the organization subscription. No installation — open daedalus-app.no/admin and log in.",
-      "prod.ack": "Acknowledge",
-      "prod.k1": "Active trips", "prod.k2": "Guests in the field", "prod.k3": "Guides on duty", "prod.k4": "Reports today",
-      "prod.maplab": "OPERATIONS MAP · LIVE",
-      "prod.ontrip": "ON TRIP", "prod.ontrip2": "ON TRIP", "prod.idle": "AVAILABLE",
-      "prod.rep": "Latest reports",
-      "prod.shotnote": "Illustration of the command center",
+      "prod.shotnote": "Recording from the command center (demo data)",
       "org.kicker": "Made in Tamokdalen",
       "org.h": "Built by someone who knows the terrain. Available across the Nordics.",
       "org.b1": "Daedalus is developed in Tamokdalen, Northern Norway — not in an office far from the mountain. The checklists, hazard levels and emergency chain are shaped by people who have carried responsibility for others in the field, in polar night and in weather that turns.",
       "org.b2": "The app is in Norwegian and English, integrated with YR, Varsom, MET and the Norwegian Mapping Authority, and available to guides and operators across the Nordics.",
-      "org.m1": "Norwegian company", "org.m2": "Data stored in the EU", "org.m3": "GDPR compliant",
+      "org.m1": "Norwegian company",
+      "org.m2": "Data stored in the EU",
+      "org.m3": "GDPR compliant",
       "price.kicker": "Pricing",
       "price.h": "Built for professional operations.",
       "price.sub": "Full access for your whole organization, billed per active seat. Solo guides subscribe in the app.",
       "price.plan": "ORGANIZATION",
       "price.per": "per seat / mo · excl. VAT",
-      "seats.l": "YOUR TEAM", "seats.u": "seats", "seats.t": "Estimated per month · excl. VAT",
+      "seats.l": "YOUR TEAM",
+      "seats.u": "seats",
+      "seats.t": "Estimated per month · excl. VAT",
       "pf1": "Mandatory pre-trip safety checks",
       "pf2": "Legal-grade PDF reports",
       "pf3": "Real-time incident logging with GPS",
@@ -1783,42 +1797,912 @@ html{scrollbar-color:#2c4468 #0a1322}
       "foot.privacy": "Privacy",
       "foot.terms": "Terms",
       "foot.line": "© 2026 Daedalus. Europe. GDPR compliant."
+    },
+    sv: {
+      "skip": "Hoppa till innehåll",
+      "nav.features": "Funktioner",
+      "nav.map": "Realtid",
+      "nav.pricing": "Priser",
+      "nav.login": "Logga in",
+      "cue": "SKROLLA",
+      "hero.eyebrow": "SÄKERHET & DRIFT — iOS & ANDROID",
+      "hero.sub": "Säkerhets- och driftsystem för professionella ledare i naturen",
+      "hero.body": "Guidens sista försvarslinje. Daedalus är den juridiska och operativa dokumentationsplattformen för professionella som tar med människor ut i naturen. Säkerhetskontroll, händelselogg, SOS-larm och automatiska rapporter — byggt för att skydda dig innan något går fel.",
+      "hero.note": "För sologuider · företag från €25/plats exkl. moms · ingen bindningstid",
+      "badge.as": "Hämta i",
+      "badge.gp": "Ladda ned på",
+      "ph.status": "AKTIV TUR",
+      "ph.pre": "FÖRE TUR",
+      "ph.trip": "Romsdalseggen · 8 deltagare",
+      "ph.check": "Säkerhetskontroll",
+      "ph.confirmed": "BEKRÄFTAD",
+      "ph.c1": "Väder · YR",
+      "ph.c2": "Lavinprognos · Varsom",
+      "ph.c3": "Utrustning verifierad",
+      "ph.c4": "Nödkontakter",
+      "ph.sos": "Håll för nödlarm",
+      "ph.ready": "KLAR FÖR AKTIVERING",
+      "ph.go": "Aktivera tur",
+      "ph2.h": "Händelselogg",
+      "ph2.i1": "Tillbud · lös sten",
+      "ph2.i1s": "14:32 · måttlig · åtgärd loggförd",
+      "ph2.i2": "Ruttändring · vind",
+      "ph2.i2s": "12:18 · låg · alternativ rutt vald",
+      "ph2.i3": "Utrustningsfel · stegjärn",
+      "ph2.i3s": "10:05 · hög · reserv utdelad",
+      "ph2.note": "OFÖRÄNDERLIG · TIDSSTÄMPLAD",
+      "ph3.live": "RISKKARTA",
+      "ph3.a": "FARA MARKERAD",
+      "ph3.b": "DELAD MED ORG",
+      "ph4.live": "RAPPORT",
+      "ph4.t": "Turrapport — Romsdalseggen",
+      "ph4.s1": "SÄKERHETSKONTROLL",
+      "ph4.s2": "DELTAGARE · 8",
+      "ph4.s3": "HÄNDELSER · 3",
+      "ph4.s4": "KARTA & CERTIFIERINGAR",
+      "ph4.stamp": "SIGNERAD",
+      "ph5.live": "NÖDLÄGE",
+      "ph5.s1": "SKICKAR GPS-POSITION",
+      "ph5.s2": "LARMAR NÖDKONTAKTER VIA SMS",
+      "ph6.live": "ORG-ÖVERSIKT",
+      "ph6.h": "Aktiva operationer",
+      "ph6.r1": "Romsdalseggen · 8 deltagare",
+      "ph6.r2": "Tamokdalen · topptur skidor",
+      "ph6.r3": "Kvaløya · havskajak",
+      "ph6.r4": "Certifiering · glaciärkurs",
+      "ph6.on": "PÅ TUR",
+      "ph6.on2": "PÅ TUR",
+      "ph6.on3": "PÅ TUR",
+      "ph6.off": "BAS",
+      "ph6.note": "FULL REVISIONSLOGG",
+      "chip1.t": "Juridisk rapport genererad",
+      "chip1.s": "PDF · signerad",
+      "chip2.t": "Händelse loggad",
+      "chip2.s": "GPS fäst · 14:32",
+      "mq1": "YR VÄDERDATA",
+      "mq2": "VARSOM LAVINPROGNOS",
+      "mq3": "KARTVERKET TOPO",
+      "mq4": "LIVE GPS-SPÅRNING",
+      "mq5": "SOS VIA SMS",
+      "mq6": "JURIDISK PDF",
+      "mq7": "GDPR-KOMPATIBEL",
+      "mq8": "19 AKTIVITETSTYPER",
+      "feat.kicker": "Så skyddar Daedalus dig",
+      "feat.h": "Dokumentera varje beslut. Innan något går fel.",
+      "feat.intro": "Daedalus är ingen turdagbok. Det är en juridisk och operativ sköld — byggd för professionella som bär ansvar för andras liv i fält.",
+      "f1.t": "Aktivitetsspecifik säkerhetskontroll",
+      "f1.b": "Tidsstämplad säkerhetskontroll anpassad efter aktiviteten — 19 turtyper med egna kontrollpunkter, från lavinprognos och rep/sele till isförhållanden, kolonnroller och hundspann. Verifierad, sparad och synlig för organisationen i realtid. Automatisk integration med YR och Varsom.",
+      "f2.t": "Strukturerad händelselogg",
+      "f2.b": "Logga tillbud, skador och utrustningsfel i realtid — med GPS, tidsstämpel, allvarlighetsgrad och åtgärd. Oföränderliga poster redo för försäkring och granskning.",
+      "f3.t": "Faromarkering och ruttplanering",
+      "f3.b": "Rita planerade rutter, markera farliga områden och nödutgångar. Dela riskkartor live med organisationen — dokumentation på att risken bedömdes.",
+      "f4.t": "Juridisk PDF-rapport",
+      "f4.b": "En komplett, signerad turrapport genereras automatiskt vid avslut. Innehåller säkerhetskontroll, deltagarlista, händelselogg, karta och certifieringar. Byggd för försäkringsbolag och certifieringsorgan.",
+      "f5.t": "SOS-nödknapp",
+      "f5.b": "Ett bekräftat tryck skickar GPS-position, tur-ID och guideinformation till alla nödkontakter via SMS — och loggar händelsen automatiskt som kritisk. Samtidigt utlöses realtidslarm i organisationens ledningscentral med live-position.",
+      "f6.t": "Organisationens säkerhetsöversikt",
+      "f6.b": "Koordinatorer ser alla aktiva turer med live GPS-position, säkerhetskontrollstatus och delade riskkartor i realtid — med nedräkning till förväntad återkomst och larm när tiden går ut. Full revisionslogg för alla guider och operationer — alltid redo för inspektion.",
+      "map.kicker": "Realtid",
+      "map.h": "Hela operationen. En karta.",
+      "map.intro": "Koordinatorer ser alla aktiva turer, guider och delade riskkartor i realtid — från fjorden till toppen.",
+      "map.demo": "DEMODATA",
+      "hud.a": "3 GUIDER UTE",
+      "hud.as": "Live-position · GPS",
+      "built.kicker": "Byggd för",
+      "built.h": "Professionella som bär ansvar.",
+      "p1": "Fjällguider",
+      "p2": "Kajakinstruktörer",
+      "p3": "Klätterinstruktörer",
+      "p4": "Skidguider",
+      "p5": "Friluftslärare",
+      "p6": "Räddningsgrupper",
+      "p7": "Hundspanns- och skoteroperatörer",
+      "p8": "Svalbard-operatörer",
+      "seg.kicker": "Välj din värld",
+      "seg.h": "Din aktivitet. Dina kontrollpunkter.",
+      "seg.intro": "Daedalus känner din verksamhet. Välj aktivitet — och se de faktiska kontrollpunkter appen kräver bekräftade innan turen kan aktiveras. Inga generiska formulär.",
+      "seg.c1": "Hundspann",
+      "seg.c2": "Snöskoter",
+      "seg.c3": "Norrsken",
+      "seg.c4": "Topptur & skidor",
+      "seg.c5": "Glaciär & klättring",
+      "seg.c6": "Kajak & hav",
+      "seg.c7": "Svalbard",
+      "seg.s1.n": "Från appens säkerhetskontroll för hundspann — turen kan inte aktiveras förrän allt är bekräftat:",
+      "seg.s1.p1": "Hundspannets hälsa kontrollerad",
+      "seg.s1.p2": "Selar och draglinor inspekterade",
+      "seg.s1.p3": "Slädbromsar och snöankare",
+      "seg.s1.p4": "Säkerhetsgenomgång för gäster genomförd",
+      "seg.s1.p5": "Termoutrustning utdelad",
+      "seg.s1.p6": "Spårförhållanden kontrollerade",
+      "seg.s2.n": "Från appens säkerhetskontroll för snöskotersafari:",
+      "seg.s2.p1": "Hjälmar och termooveraller",
+      "seg.s2.p2": "Nödstoppslina",
+      "seg.s2.p3": "Bränsle kontrollerat",
+      "seg.s2.p4": "Körkort verifierat",
+      "seg.s2.p5": "Kolonnroller tilldelade (ledare/sist)",
+      "seg.s2.p6": "Isförhållanden verifierade",
+      "seg.s2.p7": "Räddningsplan klar",
+      "seg.s3.n": "Från appens säkerhetskontroll för norrskenstur:",
+      "seg.s3.p1": "Antal bekräftat",
+      "seg.s3.p2": "Alla gäster inräknade vid varje stopp",
+      "seg.s3.p3": "Termooveraller utdelade",
+      "seg.s3.p4": "Varm dryck tillgänglig",
+      "seg.s3.p5": "Förbandslåda på plats",
+      "seg.s3.p6": "Förare och fordon vinterrustade",
+      "seg.s3.p7": "Vägförhållanden kontrollerade",
+      "seg.s4.n": "Från appens säkerhetskontroll för topptur och skidor:",
+      "seg.s4.p1": "Lavinprognosnivå — hämtas automatiskt från Varsom för turens position",
+      "seg.s4.p2": "Rep och sele inspekterade",
+      "seg.s5.n": "Från appens säkerhetskontroll för glaciär, klättring och via ferrata:",
+      "seg.s5.p1": "Rep och sele inspekterade",
+      "seg.s5.p2": "Lavinprognosnivå — automatiskt från Varsom",
+      "seg.s6.n": "Från appens säkerhetskontroll för kajak och havspaddling:",
+      "seg.s6.p1": "Tidvattendata kontrollerade",
+      "seg.s6.p2": "Våghöjd bedömd",
+      "seg.s6.p3": "Flytutrustning kontrollerad",
+      "seg.s7.n": "Byggd för den nya fältsäkerhetsföreskriften på Svalbard:",
+      "seg.s7.p1": "Dokumenterade guidetimmar per guide — automatiskt per tur",
+      "seg.s7.p2": "Internkontrollexport för turoperatörer",
+      "seg.s7.p3": "Signerad PDF-dokumentation — klar som bilaga till Sysselmesteren",
+      "seg.s7.p4": "Säkerhetskontroll för skoter, hundspann och norrsken — inbyggd",
+      "seg.s7.p5": "Full revisionslogg för hela organisationen",
+      "seg.base": "+ Väder verifierat (YR) · Utrustning kontrollerad · Nödkontakt larmad — obligatoriskt på alla turer",
+      "prod.kick": "Det här får du",
+      "prod.title": "Se appen och ledningscentralen — riktiga skärmbilder, steg för steg",
+      "prod.s1.t": "Skapa turen",
+      "prod.s1.b": "Välj bland 19 aktivitetstyper — från skidtur och glaciärvandring till snöskoter och hundspann. Datum, plats och väder fylls i med livedata från MET.",
+      "prod.s2.t": "Bekräfta säkerhetskontrollen",
+      "prod.s2.b": "Checklistan anpassar sig efter aktiviteten. Turen går inte att aktivera förrän allt är bekräftat — det är hela poängen.",
+      "prod.s3.t": "Aktivera — och var i fält",
+      "prod.s3.b": "Live-väder, koordinater och förväntad återkomst ligger på turen. Din GPS-position delas med ledningscentralen så länge turen är aktiv.",
+      "prod.s4.t": "Avsluta — rapporten skriver sig själv",
+      "prod.s4.b": "Säkerhetskontroll, deltagare, händelser, karta och certifieringar samlas i en signerad PDF i samma stund som turen avslutas. Redo för försäkring, tillsyn eller kund.",
+      "prod.cmd.kick": "Ledningscentralen",
+      "prod.cmd.h": "Hemma ser de allt. Medan det händer.",
+      "prod.cmd.s1t": "Följ guiderna live.",
+      "prod.cmd.s1b": "Varje aktiv tur visas på kartan med GPS-position, rutt och delade faromarkeringar.",
+      "prod.cmd.s2t": "Nedräkning till återkomst per tur.",
+      "prod.cmd.s2b": "När förväntad återkomst passeras utan att turen avslutats larmar skärmen — rött och tydligt.",
+      "prod.cmd.s3t": "SOS går direkt hit.",
+      "prod.cmd.s3b": "Trycker en guide på SOS i fält slår larmet in med position i realtid. Kvittera när situationen är hanterad — allt loggas.",
+      "prod.cmd.s4t": "Godkänn och dokumentera.",
+      "prod.cmd.s4b": "Godkänn planerade turer, följ händelser och hämta signerade PDF-rapporter — per tur eller för hela organisationen.",
+      "prod.note": "Ingår i organisationsabonnemanget. Ingen installation — öppna daedalus-app.no/admin och logga in.",
+      "prod.shotnote": "Inspelning från ledningscentralen (demodata)",
+      "org.kicker": "Skapad i Tamokdalen",
+      "org.h": "Byggd av någon som känner terrängen. Tillgänglig i hela Norden.",
+      "org.b1": "Daedalus är utvecklad i Tamokdalen i Troms — inte i ett kontorslandskap långt från fjället. Checklistorna, farograderna och nödkedjan är formade av människor som själva har haft ansvar för andra i fält, i mörkertid och i väder som vänder.",
+      "org.b2": "Appen finns på norska och engelska, är integrerad med YR, Varsom, MET och Kartverket, och tillgänglig för guider och operatörer i hela Norden.",
+      "org.m1": "Norskt företag",
+      "org.m2": "Data lagrad i EU",
+      "org.m3": "GDPR-kompatibel",
+      "price.kicker": "Priser",
+      "price.h": "Byggd för professionella operationer.",
+      "price.sub": "Full tillgång för hela organisationen, faktureras per aktiv plats. Sologuider abonnerar i appen.",
+      "price.plan": "ORGANISATION",
+      "price.per": "per plats / mån · exkl. moms",
+      "seats.l": "ERT TEAM",
+      "seats.u": "platser",
+      "seats.t": "Uppskattat per månad · exkl. moms",
+      "pf1": "Obligatorisk säkerhetskontroll före tur",
+      "pf2": "Juridisk PDF-rapport",
+      "pf3": "Händelselogg i realtid med GPS",
+      "pf4": "Riskkarta + väderintegration",
+      "pf5": "SOS nöd-SMS",
+      "pf6": "Betala bara för aktiva platser",
+      "pf7": "Riskkarta för hela organisationen",
+      "pf8": "Säkerhetsöversikt i realtid",
+      "pf9": "Full revisionslogg",
+      "pf10": "Guidetimmar och internkontrollexport (Svalbard-redo)",
+      "price.cta": "Kom igång",
+      "price.note": "€25 per aktiv plats / mån · exkl. moms · faktureras månadsvis",
+      "cta.h": "Var skyddad innan du behöver det.",
+      "cta.b": "Ladda ner Daedalus och genomför din första fullt dokumenterade, juridiskt skyddade tur på några minuter.",
+      "foot.tag": "Säkerhets- och driftsystem för professionella ledare i naturen.",
+      "foot.features": "Funktioner",
+      "foot.privacy": "Integritet",
+      "foot.terms": "Villkor",
+      "foot.line": "© 2026 Daedalus. Europa. GDPR-kompatibel."
+    },
+    da: {
+      "skip": "Spring til indhold",
+      "nav.features": "Funktioner",
+      "nav.map": "Realtid",
+      "nav.pricing": "Priser",
+      "nav.login": "Log ind",
+      "cue": "SCROLL",
+      "hero.eyebrow": "SIKKERHED & DRIFT — iOS & ANDROID",
+      "hero.sub": "Sikkerheds- og driftssystem til professionelle ledere i naturen",
+      "hero.body": "Guidens sidste forsvarslinje. Daedalus er den juridiske og operative dokumentationsplatform for professionelle, der tager folk med ud i naturen. Sikkerhedstjek, hændelseslog, SOS-alarmer og automatiske rapporter — bygget til at beskytte dig, før noget går galt.",
+      "hero.note": "Til sologuider · virksomhed fra €25/plads ekskl. moms · ingen binding",
+      "badge.as": "Hent i",
+      "badge.gp": "Få den på",
+      "ph.status": "AKTIV TUR",
+      "ph.pre": "FØR TUR",
+      "ph.trip": "Romsdalseggen · 8 deltagere",
+      "ph.check": "Sikkerhedstjek",
+      "ph.confirmed": "BEKRÆFTET",
+      "ph.c1": "Vejr · YR",
+      "ph.c2": "Lavinevarsel · Varsom",
+      "ph.c3": "Udstyr verificeret",
+      "ph.c4": "Nødkontakter",
+      "ph.sos": "Hold for nødalarm",
+      "ph.ready": "KLAR TIL AKTIVERING",
+      "ph.go": "Aktivér tur",
+      "ph2.h": "Hændelseslog",
+      "ph2.i1": "Nærved-ulykke · løs sten",
+      "ph2.i1s": "14:32 · moderat · tiltag logget",
+      "ph2.i2": "Ruteændring · vind",
+      "ph2.i2s": "12:18 · lav · alternativ rute valgt",
+      "ph2.i3": "Udstyrssvigt · steigeisen",
+      "ph2.i3s": "10:05 · høj · reserve udleveret",
+      "ph2.note": "UFORANDERLIG · TIDSSTEMPLET",
+      "ph3.live": "FAREKORT",
+      "ph3.a": "FARE MARKERET",
+      "ph3.b": "DELT MED ORG",
+      "ph4.live": "RAPPORT",
+      "ph4.t": "Turrapport — Romsdalseggen",
+      "ph4.s1": "SIKKERHEDSTJEK",
+      "ph4.s2": "DELTAGERE · 8",
+      "ph4.s3": "HÆNDELSER · 3",
+      "ph4.s4": "KORT & CERTIFICERINGER",
+      "ph4.stamp": "SIGNERET",
+      "ph5.live": "NØDTILSTAND",
+      "ph5.s1": "SENDER GPS-POSITION",
+      "ph5.s2": "ALARMERER NØDKONTAKTER VIA SMS",
+      "ph6.live": "ORG-OVERBLIK",
+      "ph6.h": "Aktive operationer",
+      "ph6.r1": "Romsdalseggen · 8 deltagere",
+      "ph6.r2": "Tamokdalen · topptur på ski",
+      "ph6.r3": "Kvaløya · havkajak",
+      "ph6.r4": "Certificering · gletsjerkursus",
+      "ph6.on": "PÅ TUR",
+      "ph6.on2": "PÅ TUR",
+      "ph6.on3": "PÅ TUR",
+      "ph6.off": "BASE",
+      "ph6.note": "FULD REVISIONSLOG",
+      "chip1.t": "Juridisk rapport genereret",
+      "chip1.s": "PDF · signeret",
+      "chip2.t": "Hændelse logget",
+      "chip2.s": "GPS fastlåst · 14:32",
+      "mq1": "YR VEJRDATA",
+      "mq2": "VARSOM LAVINEVARSEL",
+      "mq3": "KARTVERKET TOPO",
+      "mq4": "LIVE GPS-SPORING",
+      "mq5": "SOS VIA SMS",
+      "mq6": "JURIDISK PDF",
+      "mq7": "GDPR-KOMPATIBEL",
+      "mq8": "19 AKTIVITETSTYPER",
+      "feat.kicker": "Sådan beskytter Daedalus dig",
+      "feat.h": "Dokumentér hver beslutning. Før noget går galt.",
+      "feat.intro": "Daedalus er ikke en turbog. Det er et juridisk og operativt skjold — bygget til professionelle, der bærer ansvar for andres liv i felten.",
+      "f1.t": "Aktivitetsspecifikt sikkerhedstjek",
+      "f1.b": "Tidsstemplet sikkerhedstjek tilpasset aktiviteten — 19 turtyper med egne kontrolpunkter, fra lavinevarsel og reb/sele til isforhold, kolonneroller og hundeslæde. Verificeret, gemt og synligt for organisationen i realtid. Automatisk integration med YR og Varsom.",
+      "f2.t": "Struktureret hændelseslog",
+      "f2.b": "Log nærved-ulykker, skader og udstyrssvigt i realtid — med GPS, tidsstempel, alvorlighedsgrad og tiltag. Uforanderlige poster klar til forsikring og granskning.",
+      "f3.t": "Faremarkering og ruteplanlægning",
+      "f3.b": "Tegn planlagte ruter, markér fareområder og nødudgange. Del live farekort med organisationen — dokumentation for, at risikoen blev vurderet.",
+      "f4.t": "Juridisk PDF-rapport",
+      "f4.b": "En komplet, signeret turrapport genereres automatisk ved afslutning. Indeholder sikkerhedstjek, deltagerliste, hændelseslog, kort og certificeringer. Bygget til forsikring og certificeringsorganer.",
+      "f5.t": "SOS-nødknap",
+      "f5.b": "Ét bekræftet tryk sender GPS-position, tur-ID og guideinformation til alle nødkontakter via SMS — og logger automatisk hændelsen som kritisk. Samtidig udløses realtidsalarm i organisationens kommandocentral med live position.",
+      "f6.t": "Organisationens sikkerhedsoverblik",
+      "f6.b": "Koordinatorer ser alle aktive ture med live GPS-position, sikkerhedstjek-status og delte farekort i realtid — med nedtælling til forventet retur og alarm, når tiden løber ud. Fuld revisionslog for alle guider og operationer — altid klar til inspektion.",
+      "map.kicker": "Realtid",
+      "map.h": "Hele operationen. Ét kort.",
+      "map.intro": "Koordinatorer ser alle aktive ture, guider og delte farekort i realtid — fra fjorden til toppen.",
+      "map.demo": "DEMODATA",
+      "hud.a": "3 GUIDER UDE",
+      "hud.as": "Live position · GPS",
+      "built.kicker": "Bygget til",
+      "built.h": "Professionelle, der bærer ansvar.",
+      "p1": "Bjergguider",
+      "p2": "Kajakinstruktører",
+      "p3": "Klatreinstruktører",
+      "p4": "Skiguider",
+      "p5": "Friluftsvejledere",
+      "p6": "Redningsgrupper",
+      "p7": "Hundeslæde- og snescooteroperatører",
+      "p8": "Svalbard-operatører",
+      "seg.kicker": "Vælg din verden",
+      "seg.h": "Din aktivitet. Dine kontrolpunkter.",
+      "seg.intro": "Daedalus kender din operation. Vælg aktivitet — og se de faktiske kontrolpunkter, appen kræver bekræftet, før turen kan aktiveres. Ingen generiske skemaer.",
+      "seg.c1": "Hundeslæde",
+      "seg.c2": "Snescooter",
+      "seg.c3": "Nordlys",
+      "seg.c4": "Topptur & ski",
+      "seg.c5": "Gletsjer & klatring",
+      "seg.c6": "Kajak & hav",
+      "seg.c7": "Svalbard",
+      "seg.s1.n": "Fra appens sikkerhedstjek for hundeslæde — turen kan ikke aktiveres, før alt er bekræftet:",
+      "seg.s1.p1": "Hundespandets helbred tjekket",
+      "seg.s1.p2": "Seler og trækliner inspiceret",
+      "seg.s1.p3": "Slædebremser og sneankre",
+      "seg.s1.p4": "Sikkerhedsbriefing for gæster gennemført",
+      "seg.s1.p5": "Termoudstyr udleveret",
+      "seg.s1.p6": "Sporforhold tjekket",
+      "seg.s2.n": "Fra appens sikkerhedstjek for snescootersafari:",
+      "seg.s2.p1": "Hjelme og termodragter",
+      "seg.s2.p2": "Nødstop-snor",
+      "seg.s2.p3": "Brændstof tjekket",
+      "seg.s2.p4": "Kørekort verificeret",
+      "seg.s2.p5": "Kolonneroller tildelt (fører/bagerst)",
+      "seg.s2.p6": "Isforhold verificeret",
+      "seg.s2.p7": "Redningsplan klar",
+      "seg.s3.n": "Fra appens sikkerhedstjek for nordlystur:",
+      "seg.s3.p1": "Antal bekræftet",
+      "seg.s3.p2": "Alle gæster gjort rede for ved hvert stop",
+      "seg.s3.p3": "Termodragter udleveret",
+      "seg.s3.p4": "Varm drik tilgængelig",
+      "seg.s3.p5": "Førstehjælpskasse til stede",
+      "seg.s3.p6": "Chauffør og køretøj vinterklar",
+      "seg.s3.p7": "Vejforhold tjekket",
+      "seg.s4.n": "Fra appens sikkerhedstjek for topptur og ski:",
+      "seg.s4.p1": "Lavinevarslingsniveau — hentes automatisk fra Varsom for turens position",
+      "seg.s4.p2": "Reb og sele inspiceret",
+      "seg.s5.n": "Fra appens sikkerhedstjek for gletsjer, klatring og via ferrata:",
+      "seg.s5.p1": "Reb og sele inspiceret",
+      "seg.s5.p2": "Lavinevarslingsniveau — automatisk fra Varsom",
+      "seg.s6.n": "Fra appens sikkerhedstjek for kajak og havkajak:",
+      "seg.s6.p1": "Tidevandsdata tjekket",
+      "seg.s6.p2": "Bølgehøjde vurderet",
+      "seg.s6.p3": "Flydeudstyr tjekket",
+      "seg.s7.n": "Bygget til den nye feltsikkerhedsforskrift på Svalbard:",
+      "seg.s7.p1": "Dokumenterede guidetimer pr. guide — automatisk pr. tur",
+      "seg.s7.p2": "Internkontrol-eksport til turoperatører",
+      "seg.s7.p3": "Signeret PDF-dokumentation — klar som bilag til Sysselmesteren",
+      "seg.s7.p4": "Sikkerhedstjek for scooter, hundeslæde og nordlys — indbygget",
+      "seg.s7.p5": "Fuld revisionslog for hele organisationen",
+      "seg.base": "+ Vejr verificeret (YR) · Udstyr tjekket · Nødkontakt alarmeret — obligatorisk på alle ture",
+      "prod.kick": "Det får du",
+      "prod.title": "Se appen og kommandocentralen — ægte skærmbilleder, trin for trin",
+      "prod.s1.t": "Opret turen",
+      "prod.s1.b": "Vælg blandt 19 aktivitetstyper — fra skitur og gletsjervandring til snescooter og hundeslæde. Dato, sted og vejr udfyldes med live data fra MET.",
+      "prod.s2.t": "Bekræft sikkerhedstjekket",
+      "prod.s2.b": "Tjeklisten tilpasser sig aktiviteten. Turen kan ikke aktiveres, før alt er bekræftet — det er hele pointen.",
+      "prod.s3.t": "Aktivér — og vær i felten",
+      "prod.s3.b": "Live vejr, koordinater og forventet retur ligger på turen. Din GPS-position deles med kommandocentralen, så længe turen er aktiv.",
+      "prod.s4.t": "Afslut — rapporten skriver sig selv",
+      "prod.s4.b": "Sikkerhedstjek, deltagere, hændelser, kort og certificeringer samles i en signeret PDF, i det øjeblik turen afsluttes. Klar til forsikring, tilsyn eller kunde.",
+      "prod.cmd.kick": "Kommandocentralen",
+      "prod.cmd.h": "Derhjemme ser de alt. Mens det sker.",
+      "prod.cmd.s1t": "Følg guiderne live.",
+      "prod.cmd.s1b": "Hver aktiv tur vises på kortet med GPS-position, rute og delte faremarkeringer.",
+      "prod.cmd.s2t": "Retur-nedtælling pr. tur.",
+      "prod.cmd.s2b": "Når forventet retur passeres, uden at turen er afsluttet, advarer skærmen — rødt og tydeligt.",
+      "prod.cmd.s3t": "SOS går direkte hertil.",
+      "prod.cmd.s3b": "Trykker en guide på SOS i felten, slår alarmen ind med position i realtid. Kvittér, når situationen er håndteret — alt logges.",
+      "prod.cmd.s4t": "Godkend og dokumentér.",
+      "prod.cmd.s4b": "Godkend planlagte ture, følg hændelser og hent signerede PDF-rapporter — pr. tur eller for hele organisationen.",
+      "prod.note": "Følger med i organisationsabonnementet. Ingen installation — åbn daedalus-app.no/admin og log ind.",
+      "prod.shotnote": "Optagelse fra kommandocentralen (demodata)",
+      "org.kicker": "Skabt i Tamokdalen",
+      "org.h": "Bygget af en, der kender terrænet. Tilgængelig i hele Norden.",
+      "org.b1": "Daedalus er udviklet i Tamokdalen i Troms — ikke i et kontorlandskab langt fra fjeldet. Tjeklisterne, faregraderne og nødkæden er formet af folk, der selv har haft ansvar for andre i felten, i mørketid og i vejr, der vender.",
+      "org.b2": "Appen er på norsk og engelsk, integreret med YR, Varsom, MET og Kartverket, og tilgængelig for guider og operatører i hele Norden.",
+      "org.m1": "Norsk selskab",
+      "org.m2": "Data opbevaret i EU",
+      "org.m3": "GDPR-kompatibel",
+      "price.kicker": "Priser",
+      "price.h": "Bygget til professionelle operationer.",
+      "price.sub": "Fuld adgang for hele organisationen, faktureret pr. aktiv plads. Sologuider abonnerer i appen.",
+      "price.plan": "ORGANISATION",
+      "price.per": "pr. plads / md. · ekskl. moms",
+      "seats.l": "JERES TEAM",
+      "seats.u": "pladser",
+      "seats.t": "Estimeret pr. måned · ekskl. moms",
+      "pf1": "Obligatorisk sikkerhedstjek før tur",
+      "pf2": "Juridisk PDF-rapport",
+      "pf3": "Hændelseslog i realtid med GPS",
+      "pf4": "Farekort + vejrintegration",
+      "pf5": "SOS nød-SMS",
+      "pf6": "Betal kun for aktive pladser",
+      "pf7": "Farekort for hele organisationen",
+      "pf8": "Sikkerhedsoverblik i realtid",
+      "pf9": "Fuld revisionslog",
+      "pf10": "Guidetimer og internkontrol-eksport (Svalbard-klar)",
+      "price.cta": "Kom i gang",
+      "price.note": "€25 pr. aktiv plads / md. · ekskl. moms · faktureres månedligt",
+      "cta.h": "Vær beskyttet, før du får brug for det.",
+      "cta.b": "Hent Daedalus og gennemfør din første fuldt dokumenterede, juridisk beskyttede tur på få minutter.",
+      "foot.tag": "Sikkerheds- og driftssystem til professionelle ledere i naturen.",
+      "foot.features": "Funktioner",
+      "foot.privacy": "Privatliv",
+      "foot.terms": "Vilkår",
+      "foot.line": "© 2026 Daedalus. Europa. GDPR-kompatibel."
+    },
+    fi: {
+      "skip": "Siirry sisältöön",
+      "nav.features": "Ominaisuudet",
+      "nav.map": "Reaaliaika",
+      "nav.pricing": "Hinnoittelu",
+      "nav.login": "Kirjaudu",
+      "cue": "VIERITÄ",
+      "hero.eyebrow": "TURVALLISUUS & OPERAATIOT — iOS & ANDROID",
+      "hero.sub": "Turvallisuus- ja toiminnanohjausjärjestelmä luonnossa työskenteleville ammattilaisille",
+      "hero.body": "Oppaan viimeinen puolustuslinja. Daedalus on juridinen ja operatiivinen dokumentointialusta ammattilaisille, jotka vievät ihmisiä luontoon. Turvallisuustarkastus, tapahtumaloki, SOS-hälytykset ja automaattiset raportit — rakennettu suojaamaan sinua ennen kuin jokin menee pieleen.",
+      "hero.note": "Yksin toimiville oppaille · yrityksille alk. 25 €/paikka + alv · ei sitoutumista",
+      "badge.as": "Lataa",
+      "badge.gp": "Hanki se",
+      "ph.status": "AKTIIVINEN RETKI",
+      "ph.pre": "ENNEN RETKEÄ",
+      "ph.trip": "Romsdalseggen · 8 osallistujaa",
+      "ph.check": "Turvallisuustarkastus",
+      "ph.confirmed": "VAHVISTETTU",
+      "ph.c1": "Sää · YR",
+      "ph.c2": "Lumivyöryennuste · Varsom",
+      "ph.c3": "Varusteet tarkastettu",
+      "ph.c4": "Hätäyhteystiedot",
+      "ph.sos": "Pidä pohjassa hätähälytystä varten",
+      "ph.ready": "VALMIS AKTIVOINTIIN",
+      "ph.go": "Aktivoi retki",
+      "ph2.h": "Tapahtumaloki",
+      "ph2.i1": "Läheltä piti -tilanne · irtokivi",
+      "ph2.i1s": "14:32 · kohtalainen · toimenpide kirjattu",
+      "ph2.i2": "Reittimuutos · tuuli",
+      "ph2.i2s": "12:18 · matala · vaihtoehtoinen reitti valittu",
+      "ph2.i3": "Varustevika · jääraudat",
+      "ph2.i3s": "10:05 · korkea · varavaruste annettu",
+      "ph2.note": "MUUTTUMATON · AIKALEIMATTU",
+      "ph3.live": "VAARAKARTTA",
+      "ph3.a": "VAARA MERKITTY",
+      "ph3.b": "JAETTU ORGANISAATIOLLE",
+      "ph4.live": "RAPORTTI",
+      "ph4.t": "Retkiraportti — Romsdalseggen",
+      "ph4.s1": "TURVALLISUUSTARKASTUS",
+      "ph4.s2": "OSALLISTUJAT · 8",
+      "ph4.s3": "TAPAHTUMAT · 3",
+      "ph4.s4": "KARTTA & SERTIFIKAATIT",
+      "ph4.stamp": "ALLEKIRJOITETTU",
+      "ph5.live": "HÄTÄTILA",
+      "ph5.s1": "LÄHETTÄÄ GPS-SIJAINNIN",
+      "ph5.s2": "HÄLYTTÄÄ HÄTÄYHTEYSHENKILÖT TEKSTIVIESTILLÄ",
+      "ph6.live": "ORGANISAATION YLEISKUVA",
+      "ph6.h": "Aktiiviset operaatiot",
+      "ph6.r1": "Romsdalseggen · 8 osallistujaa",
+      "ph6.r2": "Tamokdalen · hiihtovaellus",
+      "ph6.r3": "Kvaløya · merikajakki",
+      "ph6.r4": "Sertifiointi · jäätikkökurssi",
+      "ph6.on": "RETKELLÄ",
+      "ph6.on2": "RETKELLÄ",
+      "ph6.on3": "RETKELLÄ",
+      "ph6.off": "TUKIKOHTA",
+      "ph6.note": "TÄYSI AUDITOINTILOKI",
+      "chip1.t": "Juridinen raportti luotu",
+      "chip1.s": "PDF · allekirjoitettu",
+      "chip2.t": "Tapahtuma kirjattu",
+      "chip2.s": "GPS tallennettu · 14:32",
+      "mq1": "YR-SÄÄDATA",
+      "mq2": "VARSOM-LUMIVYÖRYENNUSTE",
+      "mq3": "KARTVERKET-TOPOKARTTA",
+      "mq4": "LIVE GPS-SEURANTA",
+      "mq5": "SOS TEKSTIVIESTILLÄ",
+      "mq6": "JURIDINEN PDF",
+      "mq7": "GDPR-YHTEENSOPIVA",
+      "mq8": "19 AKTIVITEETTITYYPPIÄ",
+      "feat.kicker": "Näin Daedalus suojaa sinua",
+      "feat.h": "Dokumentoi jokainen päätös. Ennen kuin jokin menee pieleen.",
+      "feat.intro": "Daedalus ei ole retkipäiväkirja. Se on juridinen ja operatiivinen kilpi — rakennettu ammattilaisille, jotka kantavat vastuun toisten hengestä maastossa.",
+      "f1.t": "Aktiviteettikohtainen turvallisuustarkastus",
+      "f1.b": "Aikaleimattu turvallisuustarkastus mukautettuna aktiviteettiin — 19 retkityyppiä omine tarkastuspisteineen, lumivyöryennusteesta ja köysistä/valjaista jääolosuhteisiin, kolonnarooleihin ja koiravaljakkoon. Vahvistettu, tallennettu ja organisaation nähtävissä reaaliajassa. Automaattinen integraatio YR:ään ja Varsomiin.",
+      "f2.t": "Jäsennelty tapahtumaloki",
+      "f2.b": "Kirjaa läheltä piti -tilanteet, vammat ja varusteviat reaaliajassa — GPS:llä, aikaleimalla, vakavuusasteella ja toimenpiteillä. Muuttumattomat merkinnät valmiina vakuutusyhtiölle ja tutkintaan.",
+      "f3.t": "Vaaramerkinnät ja reittisuunnittelu",
+      "f3.b": "Piirrä suunnitellut reitit, merkitse vaara-alueet ja hätäpoistumistiet. Jaa live-vaarakartat organisaatiolle — dokumentaatio siitä, että riskit arvioitiin.",
+      "f4.t": "Juridinen PDF-raportti",
+      "f4.b": "Täydellinen, allekirjoitettu retkiraportti luodaan automaattisesti retken päättyessä. Sisältää turvallisuustarkastuksen, osallistujaluettelon, tapahtumalokin, kartan ja sertifikaatit. Rakennettu vakuutusyhtiöitä ja sertifiointielimiä varten.",
+      "f5.t": "SOS-hätäpainike",
+      "f5.b": "Yksi vahvistettu painallus lähettää GPS-sijainnin, retkitunnuksen ja oppaan tiedot kaikille hätäyhteyshenkilöille tekstiviestillä — ja kirjaa tapahtuman automaattisesti kriittiseksi. Samalla organisaation komentokeskuksessa laukeaa reaaliaikainen hälytys live-sijainnilla.",
+      "f6.t": "Organisaation turvallisuusyleiskuva",
+      "f6.b": "Koordinaattorit näkevät kaikki aktiiviset retket live GPS-sijainteineen, turvallisuustarkastusten tiloineen ja jaettuine vaarakarttoineen reaaliajassa — sekä lähtölaskennan odotettuun paluuseen ja hälytyksen, kun aika umpeutuu. Täysi auditointiloki kaikista oppaista ja operaatioista — aina valmiina tarkastukseen.",
+      "map.kicker": "Reaaliaika",
+      "map.h": "Koko operaatio. Yksi kartta.",
+      "map.intro": "Koordinaattorit näkevät kaikki aktiiviset retket, oppaat ja jaetut vaarakartat reaaliajassa — vuonolta huipulle.",
+      "map.demo": "DEMODATA",
+      "hud.a": "3 OPASTA MAASTOSSA",
+      "hud.as": "Live-sijainti · GPS",
+      "built.kicker": "Rakennettu heille",
+      "built.h": "Ammattilaiset, jotka kantavat vastuun.",
+      "p1": "Vuoristo-oppaat",
+      "p2": "Melontaohjaajat",
+      "p3": "Kiipeilyohjaajat",
+      "p4": "Hiihto-oppaat",
+      "p5": "Eräopettajat",
+      "p6": "Pelastusryhmät",
+      "p7": "Koiravaljakko- ja moottorikelkkayrittäjät",
+      "p8": "Huippuvuorten toimijat",
+      "seg.kicker": "Valitse maailmasi",
+      "seg.h": "Sinun aktiviteettisi. Sinun tarkastuspisteesi.",
+      "seg.intro": "Daedalus tuntee toimintasi. Valitse aktiviteetti — ja katso todelliset tarkastuspisteet, jotka sovellus vaatii vahvistetuiksi ennen kuin retken voi aktivoida. Ei geneerisiä lomakkeita.",
+      "seg.c1": "Koiravaljakko",
+      "seg.c2": "Moottorikelkka",
+      "seg.c3": "Revontulet",
+      "seg.c4": "Hiihtovaellus",
+      "seg.c5": "Jäätikkö & kiipeily",
+      "seg.c6": "Kajakki & meri",
+      "seg.c7": "Huippuvuoret",
+      "seg.s1.n": "Sovelluksen koiravaljakon turvallisuustarkastuksesta — retkeä ei voi aktivoida ennen kuin kaikki on vahvistettu:",
+      "seg.s1.p1": "Koiravaljakon kunto tarkastettu",
+      "seg.s1.p2": "Valjaat ja vetoköydet tarkastettu",
+      "seg.s1.p3": "Rekijarrut ja lumiankkurit",
+      "seg.s1.p4": "Turvallisuusperehdytys vieraille pidetty",
+      "seg.s1.p5": "Lämpövarusteet jaettu",
+      "seg.s1.p6": "Reittiolosuhteet tarkastettu",
+      "seg.s2.n": "Sovelluksen moottorikelkkasafarin turvallisuustarkastuksesta:",
+      "seg.s2.p1": "Kypärät ja lämpöhaalarit",
+      "seg.s2.p2": "Hätäkatkaisimen naru",
+      "seg.s2.p3": "Polttoaine tarkastettu",
+      "seg.s2.p4": "Ajokortti varmistettu",
+      "seg.s2.p5": "Kolonnaroolit jaettu (johtaja/viimeinen)",
+      "seg.s2.p6": "Jääolosuhteet varmistettu",
+      "seg.s2.p7": "Pelastussuunnitelma valmis",
+      "seg.s3.n": "Sovelluksen revontuliretken turvallisuustarkastuksesta:",
+      "seg.s3.p1": "Osallistujamäärä vahvistettu",
+      "seg.s3.p2": "Kaikki vieraat laskettu jokaisella pysähdyksellä",
+      "seg.s3.p3": "Lämpöhaalarit jaettu",
+      "seg.s3.p4": "Lämmintä juotavaa saatavilla",
+      "seg.s3.p5": "Ensiapupakkaus mukana",
+      "seg.s3.p6": "Kuljettaja ja ajoneuvo talvikunnossa",
+      "seg.s3.p7": "Tieolosuhteet tarkastettu",
+      "seg.s4.n": "Sovelluksen hiihtovaelluksen turvallisuustarkastuksesta:",
+      "seg.s4.p1": "Lumivyöryennusteen taso — haetaan automaattisesti Varsomista retken sijainnille",
+      "seg.s4.p2": "Köysi ja valjaat tarkastettu",
+      "seg.s5.n": "Sovelluksen jäätikön, kiipeilyn ja via ferratan turvallisuustarkastuksesta:",
+      "seg.s5.p1": "Köysi ja valjaat tarkastettu",
+      "seg.s5.p2": "Lumivyöryennusteen taso — automaattisesti Varsomista",
+      "seg.s6.n": "Sovelluksen kajakin ja merimelonnan turvallisuustarkastuksesta:",
+      "seg.s6.p1": "Vuorovesitiedot tarkastettu",
+      "seg.s6.p2": "Aallonkorkeus arvioitu",
+      "seg.s6.p3": "Kelluntavarusteet tarkastettu",
+      "seg.s7.n": "Rakennettu Huippuvuorten uutta kenttäturvallisuusasetusta varten:",
+      "seg.s7.p1": "Dokumentoidut opastunnit opasta kohden — automaattisesti retkittäin",
+      "seg.s7.p2": "Sisäisen valvonnan vienti matkanjärjestäjille",
+      "seg.s7.p3": "Allekirjoitettu PDF-dokumentaatio — valmis liitteeksi Sysselmesterenille",
+      "seg.s7.p4": "Turvallisuustarkastus moottorikelkalle, koiravaljakolle ja revontulille — sisäänrakennettu",
+      "seg.s7.p5": "Täysi auditointiloki koko organisaatiolle",
+      "seg.base": "+ Sää varmistettu (YR) · Varusteet tarkastettu · Hätäyhteyshenkilölle ilmoitettu — pakollista kaikilla retkillä",
+      "prod.kick": "Tämän saat",
+      "prod.title": "Katso sovellus ja komentokeskus — aitoja kuvakaappauksia, vaihe vaiheelta",
+      "prod.s1.t": "Luo retki",
+      "prod.s1.b": "Valitse 19 aktiviteettityypistä — hiihtoretkestä ja jäätikkövaelluksesta moottorikelkkaan ja koiravaljakkoon. Päivämäärä, paikka ja sää täyttyvät MET:n live-datalla.",
+      "prod.s2.t": "Vahvista turvallisuustarkastus",
+      "prod.s2.b": "Tarkistuslista mukautuu aktiviteettiin. Retkeä ei voi aktivoida ennen kuin kaikki on vahvistettu — se on koko idea.",
+      "prod.s3.t": "Aktivoi — ja ole maastossa",
+      "prod.s3.b": "Live-sää, koordinaatit ja odotettu paluu ovat retkellä. GPS-sijaintisi jaetaan komentokeskukselle niin kauan kuin retki on aktiivinen.",
+      "prod.s4.t": "Päätä retki — raportti kirjoittaa itsensä",
+      "prod.s4.b": "Turvallisuustarkastus, osallistujat, tapahtumat, kartta ja sertifikaatit kootaan allekirjoitettuun PDF:ään heti retken päättyessä. Valmis vakuutusyhtiölle, valvontaan tai asiakkaalle.",
+      "prod.cmd.kick": "Komentokeskus",
+      "prod.cmd.h": "Kotona he näkevät kaiken. Sillä hetkellä kun se tapahtuu.",
+      "prod.cmd.s1t": "Seuraa oppaita livenä.",
+      "prod.cmd.s1b": "Jokainen aktiivinen retki näkyy kartalla GPS-sijainnin, reitin ja jaettujen vaaramerkintöjen kanssa.",
+      "prod.cmd.s2t": "Paluulaskenta retkittäin.",
+      "prod.cmd.s2b": "Kun odotettu paluuaika ylittyy eikä retkeä ole päätetty, näyttö hälyttää — punaisena ja selkeästi.",
+      "prod.cmd.s3t": "SOS tulee suoraan tänne.",
+      "prod.cmd.s3b": "Kun opas painaa SOS:ää maastossa, hälytys laukeaa reaaliaikaisella sijainnilla. Kuittaa, kun tilanne on hoidettu — kaikki kirjataan.",
+      "prod.cmd.s4t": "Hyväksy ja dokumentoi.",
+      "prod.cmd.s4b": "Hyväksy suunnitellut retket, seuraa tapahtumia ja lataa allekirjoitetut PDF-raportit — retkittäin tai koko organisaatiolle.",
+      "prod.note": "Sisältyy organisaatiotilaukseen. Ei asennusta — avaa daedalus-app.no/admin ja kirjaudu.",
+      "prod.shotnote": "Tallenne komentokeskuksesta (demodata)",
+      "org.kicker": "Tehty Tamokdalenissa",
+      "org.h": "Rakentanut joku, joka tuntee maaston. Saatavilla koko Pohjolassa.",
+      "org.b1": "Daedalus on kehitetty Tamokdalenissa Tromssassa — ei toimistomaisemassa kaukana tunturista. Tarkistuslistat, vaara-asteet ja hätäketjun ovat muotoilleet ihmiset, jotka ovat itse kantaneet vastuun toisista maastossa, kaamoksessa ja säässä, joka kääntyy.",
+      "org.b2": "Sovellus on norjaksi ja englanniksi, integroitu YR:ään, Varsomiin, MET:iin ja Kartverketiin, ja saatavilla oppaille ja toimijoille koko Pohjolassa.",
+      "org.m1": "Norjalainen yritys",
+      "org.m2": "Data tallennettu EU:hun",
+      "org.m3": "GDPR-yhteensopiva",
+      "price.kicker": "Hinnoittelu",
+      "price.h": "Rakennettu ammattimaisiin operaatioihin.",
+      "price.sub": "Täysi käyttöoikeus koko organisaatiolle, laskutetaan aktiivista paikkaa kohden. Yksin toimivat oppaat tilaavat sovelluksessa.",
+      "price.plan": "ORGANISAATIO",
+      "price.per": "per paikka / kk · + alv",
+      "seats.l": "TEIDÄN TIIMINNE",
+      "seats.u": "paikkaa",
+      "seats.t": "Arvio kuukaudessa · + alv",
+      "pf1": "Pakollinen turvallisuustarkastus ennen retkeä",
+      "pf2": "Juridinen PDF-raportti",
+      "pf3": "Tapahtumaloki reaaliajassa GPS:llä",
+      "pf4": "Vaarakartta + sääintegraatio",
+      "pf5": "SOS-hätätekstiviesti",
+      "pf6": "Maksa vain aktiivisista paikoista",
+      "pf7": "Vaarakartta koko organisaatiolle",
+      "pf8": "Reaaliaikainen turvallisuusyleiskuva",
+      "pf9": "Täysi auditointiloki",
+      "pf10": "Opastunnit ja sisäisen valvonnan vienti (Huippuvuoret-valmis)",
+      "price.cta": "Aloita",
+      "price.note": "25 € per aktiivinen paikka / kk · + alv · laskutetaan kuukausittain",
+      "cta.h": "Ole suojattu ennen kuin tarvitset sitä.",
+      "cta.b": "Lataa Daedalus ja tee ensimmäinen täysin dokumentoitu, juridisesti suojattu retkesi minuuteissa.",
+      "foot.tag": "Turvallisuus- ja toiminnanohjausjärjestelmä luonnossa työskenteleville ammattilaisille.",
+      "foot.features": "Ominaisuudet",
+      "foot.privacy": "Tietosuoja",
+      "foot.terms": "Ehdot",
+      "foot.line": "© 2026 Daedalus. Eurooppa. GDPR-yhteensopiva."
+    },
+    is: {
+      "skip": "Fara í efni",
+      "nav.features": "Eiginleikar",
+      "nav.map": "Rauntími",
+      "nav.pricing": "Verð",
+      "nav.login": "Innskráning",
+      "cue": "SKRUNA",
+      "hero.eyebrow": "ÖRYGGI & AÐGERÐIR — iOS & ANDROID",
+      "hero.sub": "Öryggis- og aðgerðakerfi fyrir fagfólk sem leiðir ferðir í náttúrunni",
+      "hero.body": "Síðasta varnarlína leiðsögumannsins. Daedalus er lögfræðilegur og rekstrarlegur skjölunarvettvangur fyrir fagfólk sem fer með fólk út í náttúruna. Öryggisskoðun, atvikaskrá, SOS-viðvaranir og sjálfvirkar skýrslur — byggt til að vernda þig áður en eitthvað fer úrskeiðis.",
+      "hero.note": "Fyrir sjálfstæða leiðsögumenn · fyrirtæki frá €25/sæti án vsk. · engin binding",
+      "badge.as": "Sækja í",
+      "badge.gp": "Fáðu það á",
+      "ph.status": "VIRK FERÐ",
+      "ph.pre": "FYRIR FERÐ",
+      "ph.trip": "Romsdalseggen · 8 þátttakendur",
+      "ph.check": "Öryggisskoðun",
+      "ph.confirmed": "STAÐFEST",
+      "ph.c1": "Veður · YR",
+      "ph.c2": "Snjóflóðaspá · Varsom",
+      "ph.c3": "Búnaður staðfestur",
+      "ph.c4": "Neyðartengiliðir",
+      "ph.sos": "Haltu inni fyrir neyðarboð",
+      "ph.ready": "TILBÚIÐ TIL VIRKJUNAR",
+      "ph.go": "Virkja ferð",
+      "ph2.h": "Atvikaskrá",
+      "ph2.i1": "Næstum-slys · laus steinn",
+      "ph2.i1s": "14:32 · miðlungs · aðgerð skráð",
+      "ph2.i2": "Leiðarbreyting · vindur",
+      "ph2.i2s": "12:18 · lág · varaleið valin",
+      "ph2.i3": "Búnaðarbilun · mannbroddar",
+      "ph2.i3s": "10:05 · há · varabúnaður afhentur",
+      "ph2.note": "ÓBREYTANLEGT · TÍMASTIMPLAÐ",
+      "ph3.live": "HÆTTUKORT",
+      "ph3.a": "HÆTTA MERKT",
+      "ph3.b": "DEILT MEÐ FYRIRTÆKI",
+      "ph4.live": "SKÝRSLA",
+      "ph4.t": "Ferðaskýrsla — Romsdalseggen",
+      "ph4.s1": "ÖRYGGISSKOÐUN",
+      "ph4.s2": "ÞÁTTTAKENDUR · 8",
+      "ph4.s3": "ATVIK · 3",
+      "ph4.s4": "KORT & RÉTTINDI",
+      "ph4.stamp": "UNDIRRITAÐ",
+      "ph5.live": "NEYÐARSTILLING",
+      "ph5.s1": "SENDIR GPS-STAÐSETNINGU",
+      "ph5.s2": "LÆTUR NEYÐARTENGILIÐI VITA MEÐ SMS",
+      "ph6.live": "YFIRLIT FYRIRTÆKIS",
+      "ph6.h": "Virkar aðgerðir",
+      "ph6.r1": "Romsdalseggen · 8 þátttakendur",
+      "ph6.r2": "Tamokdalen · fjallaskíðaferð",
+      "ph6.r3": "Kvaløya · sjókajak",
+      "ph6.r4": "Réttindi · jöklanámskeið",
+      "ph6.on": "Í FERÐ",
+      "ph6.on2": "Í FERÐ",
+      "ph6.on3": "Í FERÐ",
+      "ph6.off": "BÆKISTÖÐ",
+      "ph6.note": "FULL ENDURSKOÐUNARSKRÁ",
+      "chip1.t": "Lögfræðileg skýrsla búin til",
+      "chip1.s": "PDF · undirrituð",
+      "chip2.t": "Atvik skráð",
+      "chip2.s": "GPS fest · 14:32",
+      "mq1": "YR VEÐURGÖGN",
+      "mq2": "VARSOM SNJÓFLÓÐASPÁ",
+      "mq3": "KARTVERKET KORT",
+      "mq4": "GPS-RAKNING Í RAUNTÍMA",
+      "mq5": "SOS MEÐ SMS",
+      "mq6": "LÖGFRÆÐILEGT PDF",
+      "mq7": "GDPR-SAMHÆFT",
+      "mq8": "19 TEGUNDIR FERÐA",
+      "feat.kicker": "Svona verndar Daedalus þig",
+      "feat.h": "Skjalfestu hverja ákvörðun. Áður en eitthvað fer úrskeiðis.",
+      "feat.intro": "Daedalus er ekki ferðabók. Það er lögfræðilegur og rekstrarlegur skjöldur — byggður fyrir fagfólk sem ber ábyrgð á lífi annarra á vettvangi.",
+      "f1.t": "Öryggisskoðun sniðin að hverri ferð",
+      "f1.b": "Tímastimplud öryggisskoðun aðlöguð að ferðinni — 19 ferðategundir með eigin skoðunaratriðum, frá snjóflóðaspá og línu/beisli til ísaðstæðna, hlutverka í röð og hundasleða. Staðfest, vistað og sýnilegt fyrirtækinu í rauntíma. Sjálfvirk samþætting við YR og Varsom.",
+      "f2.t": "Skipulögð atvikaskrá",
+      "f2.b": "Skráðu næstum-slys, meiðsli og búnaðarbilanir í rauntíma — með GPS, tímastimpli, alvarleikastigi og aðgerðum. Óbreytanlegar færslur tilbúnar fyrir tryggingar og rannsókn.",
+      "f3.t": "Hættumerkingar og leiðarskipulag",
+      "f3.b": "Teiknaðu fyrirhugaðar leiðir, merktu hættusvæði og neyðarútganga. Deildu hættukortum í rauntíma með fyrirtækinu — skjölun á að áhætta hafi verið metin.",
+      "f4.t": "Lögfræðileg PDF-skýrsla",
+      "f4.b": "Fullbúin, undirrituð ferðaskýrsla verður til sjálfkrafa við lok ferðar. Inniheldur öryggisskoðun, þátttakendalista, atvikaskrá, kort og réttindi. Byggt fyrir tryggingafélög og vottunaraðila.",
+      "f5.t": "SOS-neyðarhnappur",
+      "f5.b": "Ein staðfest snerting sendir GPS-staðsetningu, ferðanúmer og upplýsingar um leiðsögumann til allra neyðartengiliða með SMS — og skráir atvikið sjálfkrafa sem alvarlegt. Um leið fer rauntímaviðvörun í gang í stjórnstöð fyrirtækisins með staðsetningu í beinni.",
+      "f6.t": "Öryggisyfirlit fyrirtækisins",
+      "f6.b": "Umsjónarmenn sjá allar virkar ferðir með GPS-staðsetningu í beinni, stöðu öryggisskoðana og deild hættukort í rauntíma — með niðurtalningu að áætlaðri heimkomu og viðvörun þegar tíminn rennur út. Full endurskoðunarskrá fyrir alla leiðsögumenn og aðgerðir — alltaf tilbúin fyrir eftirlit.",
+      "map.kicker": "Rauntími",
+      "map.h": "Öll starfsemin. Eitt kort.",
+      "map.intro": "Umsjónarmenn sjá allar virkar ferðir, leiðsögumenn og deild hættukort í rauntíma — frá firði upp á tind.",
+      "map.demo": "SÝNIGÖGN",
+      "hud.a": "3 LEIÐSÖGUMENN ÚTI",
+      "hud.as": "Staðsetning í beinni · GPS",
+      "built.kicker": "Byggt fyrir",
+      "built.h": "Fagfólk sem ber ábyrgð.",
+      "p1": "Fjallaleiðsögumenn",
+      "p2": "Kajakleiðbeinendur",
+      "p3": "Klifurleiðbeinendur",
+      "p4": "Skíðaleiðsögumenn",
+      "p5": "Útivistarkennarar",
+      "p6": "Björgunarsveitir",
+      "p7": "Hundasleða- og vélsleðafyrirtæki",
+      "p8": "Svalbarða-fyrirtæki",
+      "seg.kicker": "Veldu þinn heim",
+      "seg.h": "Þín ferð. Þín skoðunaratriði.",
+      "seg.intro": "Daedalus þekkir starfsemina þína. Veldu tegund ferðar — og sjáðu raunveruleg skoðunaratriði sem appið krefst staðfestingar á áður en hægt er að virkja ferðina. Engin almenn eyðublöð.",
+      "seg.c1": "Hundasleði",
+      "seg.c2": "Vélsleði",
+      "seg.c3": "Norðurljós",
+      "seg.c4": "Fjallaskíði",
+      "seg.c5": "Jökull & klifur",
+      "seg.c6": "Kajak & sjór",
+      "seg.c7": "Svalbarði",
+      "seg.s1.n": "Úr öryggisskoðun appsins fyrir hundasleða — ekki er hægt að virkja ferðina fyrr en allt er staðfest:",
+      "seg.s1.p1": "Heilsa hundanna skoðuð",
+      "seg.s1.p2": "Beisli og dráttarlínur skoðuð",
+      "seg.s1.p3": "Sleðabremsur og snjóakkeri",
+      "seg.s1.p4": "Öryggiskynning fyrir gesti kláruð",
+      "seg.s1.p5": "Hlífðarfatnaður afhentur",
+      "seg.s1.p6": "Aðstæður á slóð kannaðar",
+      "seg.s2.n": "Úr öryggisskoðun appsins fyrir vélsleðaferð:",
+      "seg.s2.p1": "Hjálmar og hlífðargallar",
+      "seg.s2.p2": "Neyðarstöðvunarband",
+      "seg.s2.p3": "Eldsneyti kannað",
+      "seg.s2.p4": "Ökuréttindi staðfest",
+      "seg.s2.p5": "Hlutverk í röð úthlutað (fremstur/aftastur)",
+      "seg.s2.p6": "Ísaðstæður staðfestar",
+      "seg.s2.p7": "Björgunaráætlun tilbúin",
+      "seg.s3.n": "Úr öryggisskoðun appsins fyrir norðurljósaferð:",
+      "seg.s3.p1": "Fjöldi staðfestur",
+      "seg.s3.p2": "Allir gestir taldir við hvert stopp",
+      "seg.s3.p3": "Hlífðargallar afhentir",
+      "seg.s3.p4": "Heitir drykkir í boði",
+      "seg.s3.p5": "Sjúkrakassi til staðar",
+      "seg.s3.p6": "Bílstjóri og ökutæki vetrarbúin",
+      "seg.s3.p7": "Aðstæður á vegum kannaðar",
+      "seg.s4.n": "Úr öryggisskoðun appsins fyrir fjallaskíðaferð:",
+      "seg.s4.p1": "Snjóflóðaspárstig — sótt sjálfkrafa frá Varsom fyrir staðsetningu ferðar",
+      "seg.s4.p2": "Lína og beisli skoðuð",
+      "seg.s5.n": "Úr öryggisskoðun appsins fyrir jökla, klifur og via ferrata:",
+      "seg.s5.p1": "Lína og beisli skoðuð",
+      "seg.s5.p2": "Snjóflóðaspárstig — sjálfkrafa frá Varsom",
+      "seg.s6.n": "Úr öryggisskoðun appsins fyrir kajak og sjókajak:",
+      "seg.s6.p1": "Sjávarfallagögn könnuð",
+      "seg.s6.p2": "Ölduhæð metin",
+      "seg.s6.p3": "Flotbúnaður kannaður",
+      "seg.s7.n": "Byggt fyrir nýju öryggisreglugerðina á Svalbarða:",
+      "seg.s7.p1": "Skjalfestir leiðsögutímar á hvern leiðsögumann — sjálfkrafa fyrir hverja ferð",
+      "seg.s7.p2": "Útflutningur innra eftirlits fyrir ferðaskipuleggjendur",
+      "seg.s7.p3": "Undirrituð PDF-skjölun — tilbúin sem fylgiskjal til Sysselmesteren",
+      "seg.s7.p4": "Öryggisskoðun fyrir vélsleða, hundasleða og norðurljós — innbyggð",
+      "seg.s7.p5": "Full endurskoðunarskrá fyrir allt fyrirtækið",
+      "seg.base": "+ Veður staðfest (YR) · Búnaður kannaður · Neyðartengiliður látinn vita — skylda í öllum ferðum",
+      "prod.kick": "Þetta færðu",
+      "prod.title": "Sjáðu appið og stjórnstöðina — alvöru skjámyndir, skref fyrir skref",
+      "prod.s1.t": "Búðu til ferðina",
+      "prod.s1.b": "Veldu úr 19 tegundum ferða — frá skíðaferð og jöklagöngu til vélsleða og hundasleða. Dagsetning, staður og veður fyllast inn með rauntímagögnum frá MET.",
+      "prod.s2.t": "Staðfestu öryggisskoðunina",
+      "prod.s2.b": "Gátlistinn lagar sig að ferðinni. Ekki er hægt að virkja ferðina fyrr en allt er staðfest — það er allur tilgangurinn.",
+      "prod.s3.t": "Virkjaðu — og vertu á vettvangi",
+      "prod.s3.b": "Veður í beinni, hnit og áætluð heimkoma fylgja ferðinni. GPS-staðsetningu þinni er deilt með stjórnstöðinni á meðan ferðin er virk.",
+      "prod.s4.t": "Ljúktu ferðinni — skýrslan skrifar sig sjálf",
+      "prod.s4.b": "Öryggisskoðun, þátttakendur, atvik, kort og réttindi safnast í undirritað PDF um leið og ferðinni lýkur. Tilbúið fyrir tryggingar, eftirlit eða viðskiptavin.",
+      "prod.cmd.kick": "Stjórnstöðin",
+      "prod.cmd.h": "Heima sjá þau allt. Á meðan það gerist.",
+      "prod.cmd.s1t": "Fylgstu með leiðsögumönnum í beinni.",
+      "prod.cmd.s1b": "Hver virk ferð birtist á kortinu með GPS-staðsetningu, leið og deildum hættumerkingum.",
+      "prod.cmd.s2t": "Niðurtalning að heimkomu fyrir hverja ferð.",
+      "prod.cmd.s2b": "Þegar áætluð heimkoma líður án þess að ferðinni sé lokið gefur skjárinn viðvörun — rautt og skýrt.",
+      "prod.cmd.s3t": "SOS berst beint hingað.",
+      "prod.cmd.s3b": "Ýti leiðsögumaður á SOS á vettvangi fer viðvörun í gang með staðsetningu í rauntíma. Kvittaðu þegar staðan er leyst — allt er skráð.",
+      "prod.cmd.s4t": "Samþykktu og skjalfestu.",
+      "prod.cmd.s4b": "Samþykktu fyrirhugaðar ferðir, fylgstu með atvikum og sæktu undirritaðar PDF-skýrslur — fyrir hverja ferð eða allt fyrirtækið.",
+      "prod.note": "Fylgir með fyrirtækjaáskrift. Engin uppsetning — opnaðu daedalus-app.no/admin og skráðu þig inn.",
+      "prod.shotnote": "Upptaka úr stjórnstöðinni (sýnigögn)",
+      "org.kicker": "Búið til í Tamokdalen",
+      "org.h": "Byggt af manneskju sem þekkir landslagið. Í boði á öllum Norðurlöndunum.",
+      "org.b1": "Daedalus er þróað í Tamokdalen í Troms — ekki á skrifstofu langt frá fjöllunum. Gátlistarnir, hættustigin og neyðarkeðjan eru mótuð af fólki sem hefur sjálft borið ábyrgð á öðrum á vettvangi, í skammdegi og í veðri sem snýst.",
+      "org.b2": "Appið er á norsku og ensku, samþætt við YR, Varsom, MET og Kartverket, og í boði fyrir leiðsögumenn og fyrirtæki á öllum Norðurlöndunum.",
+      "org.m1": "Norskt fyrirtæki",
+      "org.m2": "Gögn geymd í ESB",
+      "org.m3": "GDPR-samhæft",
+      "price.kicker": "Verð",
+      "price.h": "Byggt fyrir faglegan rekstur.",
+      "price.sub": "Fullur aðgangur fyrir allt fyrirtækið, innheimt fyrir hvert virkt sæti. Sjálfstæðir leiðsögumenn gerast áskrifendur í appinu.",
+      "price.plan": "FYRIRTÆKI",
+      "price.per": "á sæti / mán. · án vsk.",
+      "seats.l": "YKKAR TEYMI",
+      "seats.u": "sæti",
+      "seats.t": "Áætlað á mánuði · án vsk.",
+      "pf1": "Skyldubundin öryggisskoðun fyrir ferð",
+      "pf2": "Lögfræðileg PDF-skýrsla",
+      "pf3": "Atvikaskrá í rauntíma með GPS",
+      "pf4": "Hættukort + veðursamþætting",
+      "pf5": "SOS neyðar-SMS",
+      "pf6": "Borgaðu aðeins fyrir virk sæti",
+      "pf7": "Hættukort fyrir allt fyrirtækið",
+      "pf8": "Öryggisyfirlit í rauntíma",
+      "pf9": "Full endurskoðunarskrá",
+      "pf10": "Leiðsögutímar og útflutningur innra eftirlits (tilbúið fyrir Svalbarða)",
+      "price.cta": "Byrjaðu",
+      "price.note": "€25 á virkt sæti / mán. · án vsk. · innheimt mánaðarlega",
+      "cta.h": "Vertu varinn áður en þú þarft á því að halda.",
+      "cta.b": "Sæktu Daedalus og farðu þína fyrstu fullskjalfestu, lögvernduðu ferð á nokkrum mínútum.",
+      "foot.tag": "Öryggis- og aðgerðakerfi fyrir fagfólk sem leiðir ferðir í náttúrunni.",
+      "foot.features": "Eiginleikar",
+      "foot.privacy": "Persónuvernd",
+      "foot.terms": "Skilmálar",
+      "foot.line": "© 2026 Daedalus. Evrópa. GDPR-samhæft."
     }
   };
   var TITLES = {
     no: "Daedalus — Sikkerhet og operasjonssystem for profesjonelle ledere i naturen",
-    en: "Daedalus — Safety & Operations System for Professional Outdoor Leaders"
+    en: "Daedalus — Safety & Operations System for Professional Outdoor Leaders",
+    sv: "Daedalus — Säkerhets- och driftsystem för professionella ledare i naturen",
+    da: "Daedalus — Sikkerheds- og driftssystem til professionelle ledere i naturen",
+    fi: "Daedalus — Turvallisuus- ja toiminnanohjausjärjestelmä luonnossa työskenteleville ammattilaisille",
+    is: "Daedalus — Öryggis- og aðgerðakerfi fyrir fagfólk sem leiðir ferðir í náttúrunni"
   };
 
   var lang = "no"; /* persisted in memory only — no storage APIs */
   var i18nNodes = document.querySelectorAll("[data-i18n]");
   var langWrap = document.getElementById("langToggle");
+  var langCur = document.getElementById("langCur");
+  var langMenu = document.getElementById("langMenu");
+  var LANGCODE = { no: "NO", en: "EN", sv: "SV", da: "DA", fi: "FI", is: "IS" };
 
   function setLang(next) {
+    if (!I18N[next]) next = "no";
     lang = next;
     var dict = I18N[next];
-    document.documentElement.setAttribute("lang", next === "no" ? "nb" : "en");
-    document.title = TITLES[next];
+    document.documentElement.setAttribute("lang", next === "no" ? "nb" : next);
+    document.title = TITLES[next] || TITLES.no;
     for (var i = 0; i < i18nNodes.length; i++) {
       var key = i18nNodes[i].getAttribute("data-i18n");
       if (dict[key] != null) i18nNodes[i].textContent = dict[key];
     }
-    if (langWrap) {
-      langWrap.classList.toggle("en", next === "en");
-      var btns = langWrap.querySelectorAll(".lang-btn");
-      for (var j = 0; j < btns.length; j++) {
-        var on = btns[j].getAttribute("data-lang") === next;
-        btns[j].classList.toggle("is-on", on);
-        btns[j].setAttribute("aria-pressed", on ? "true" : "false");
+    if (langCur) {
+      var use = langCur.querySelector("use");
+      if (use) use.setAttribute("href", "#fl-" + next);
+      var code = document.getElementById("langCurCode");
+      if (code) code.textContent = LANGCODE[next] || next.toUpperCase();
+    }
+    if (langMenu) {
+      var opts = langMenu.querySelectorAll(".lang-opt");
+      for (var j = 0; j < opts.length; j++) {
+        var on = opts[j].getAttribute("data-lang") === next;
+        opts[j].classList.toggle("is-on", on);
+        opts[j].setAttribute("aria-selected", on ? "true" : "false");
       }
     }
     syncSeats();
   }
-  if (langWrap) {
-    langWrap.addEventListener("click", function (e) {
-      var btn = e.target.closest ? e.target.closest(".lang-btn") : null;
-      if (btn && btn.getAttribute("data-lang") !== lang) setLang(btn.getAttribute("data-lang"));
+  function closeLangMenu() {
+    if (!langWrap) return;
+    langWrap.classList.remove("open");
+    if (langCur) langCur.setAttribute("aria-expanded", "false");
+  }
+  if (langWrap && langCur && langMenu) {
+    langCur.addEventListener("click", function () {
+      var open = langWrap.classList.toggle("open");
+      langCur.setAttribute("aria-expanded", open ? "true" : "false");
     });
+    langMenu.addEventListener("click", function (e) {
+      var btn = e.target.closest ? e.target.closest(".lang-opt") : null;
+      if (!btn) return;
+      var next = btn.getAttribute("data-lang");
+      closeLangMenu();
+      if (next && next !== lang) setLang(next);
+    });
+    document.addEventListener("click", function (e) {
+      if (langWrap.classList.contains("open") && !langWrap.contains(e.target)) closeLangMenu();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeLangMenu();
+    });
+  }
+
+  /* ================= command-center video ================= */
+  var cmdVideo = document.querySelector(".cmd-video");
+  if (cmdVideo) {
+    var playCmd = function () { var p = cmdVideo.play(); if (p && p.catch) p.catch(function () {}); };
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (en) {
+        if (en[0].isIntersecting) playCmd(); else cmdVideo.pause();
+      }, { threshold: 0.2 }).observe(cmdVideo);
+    } else { playCmd(); }
   }
 
   /* ================= segments ================= */
@@ -2030,7 +2914,7 @@ html{scrollbar-color:#2c4468 #0a1322}
       mx = e.clientX; my = e.clientY;
     }, { passive: true });
     document.addEventListener("pointerover", function (e) {
-      var t = e.target.closest ? e.target.closest("a,button,input[type=range],.lang-btn") : null;
+      var t = e.target.closest ? e.target.closest("a,button,input[type=range]") : null;
       if (ring) ring.classList.toggle("big", !!t);
     });
     if (hero && tilt) {
@@ -2484,7 +3368,7 @@ html{scrollbar-color:#2c4468 #0a1322}
     }
   };
 
-  function lang(){ return document.documentElement.getAttribute("lang")==="en" ? "en" : "no"; }
+  function lang(){ return document.documentElement.getAttribute("lang")==="nb" ? "no" : "en"; }
   function t(k){ var d=I[lang()]; return d[k]!=null ? d[k] : k; }
   function $(id){ return document.getElementById(id); }
   function val(id){ var e=$(id); return e ? e.value.trim() : ""; }
