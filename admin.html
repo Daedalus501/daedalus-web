@@ -2177,6 +2177,22 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
   function showLoginForm(){ var f=$('#admForm'); if(f) f.style.display=''; if(_ldEl&&_ldEl.parentNode){ _ldEl.parentNode.removeChild(_ldEl); _ldEl=null; } }
   function hideGate(){ ov.style.display='none'; }
   function showErr(m){ var e=$('#admErr'); if(e)e.textContent=m||''; }
+  function showSubGate(st){
+    ov.style.display='flex';
+    var f=$('#admForm');
+    if(f){
+      f.innerHTML =
+        '<div class="brand"><img src="icon.png" onerror="this.style.display=\'none\'"><span>DAEDALUS \u00b7 KOMMANDOSENTER</span></div>'+
+        '<h2>Abonnementet er utl\u00f8pt</h2>'+
+        '<p>Organisasjonens abonnement er ikke lenger aktivt'+(st?' (status: '+st+')':'')+'. Forny for \u00e5 \u00e5pne kommandosenteret igjen \u2014 alle data ligger trygt og ur\u00f8rt.</p>'+
+        '<button type="button" id="subRenew">Forny abonnementet</button>'+
+        '<button type="button" id="subLogout" style="margin-top:10px;background:#1d3050">Logg ut</button>'+
+        '<div class="err" style="min-height:0;margin-top:14px;color:#8b98ab">Sp\u00f8rsm\u00e5l? hello@daedalus-app.no</div>';
+      var r=$('#subRenew'); if(r) r.onclick=function(){ window.open('https://billing.stripe.com/p/login/7sY28s1DD8kb2w92f40Fi00','_blank'); };
+      var lo=$('#subLogout'); if(lo) lo.onclick=function(){ sb.auth.signOut().then(function(){ location.reload(); },function(){ location.reload(); }); };
+    }
+    if(_ldEl&&_ldEl.parentNode){ _ldEl.parentNode.removeChild(_ldEl); _ldEl=null; }
+  }
 
   if(!sb){ showErr('Kunne ikke laste innloggingsmodul. Sjekk nett og last på nytt.'); return; }
 
@@ -2216,6 +2232,10 @@ if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { 
         return Promise.all([gq, tq, iq, sq]).then(function(rr){
           var guideRows=(rr[0]&&rr[0].data)||[]; var tripRows=(rr[1]&&rr[1].data)||[];
           var invRows=(rr[2]&&rr[2].data)||[]; var subRow=((rr[3]&&rr[3].data)||[])[0]||null;
+          /* TRULLE-GATE: utlopt/kansellert abonnement stenger kommandosenteret.
+             subRow===null slippes gjennom (fakturakunder uten Stripe-rad). */
+          var __subSt = subRow ? String(subRow.status||'').toLowerCase() : null;
+          if(__subSt && __subSt!=='trialing' && __subSt!=='active'){ showSubGate(__subSt); return; }
           invRows.forEach(function(iv){ guideRows.push({ id:'inv-'+iv.id, name:iv.name||iv.email, email:iv.email, role:'Invitert', __invite:true }); });
           var guideIds=guideRows.filter(function(u){return !u.__invite;}).map(function(u){return u.id;});
           var xQ = Promise.all([
