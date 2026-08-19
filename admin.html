@@ -2215,7 +2215,11 @@ window.__sevNo=function(s){ s=String(s||'').toLowerCase(); return s==='critical'
   // ---------- datahenting ----------
   function tripParticipants(t){ return (t.participants && t.participants[0] && t.participants[0].count) || 0; }
   function tripDate(t){ var d=new Date(t.date||t.created_at); return isNaN(d)?null:d; }
-  function deriveOK(t){ if(t.safety_completed_at) return true; if(t.weather_verified==null&&t.equipment_checked==null&&t.emergency_contact_notified==null) return t.status==='completed'; return !!(t.weather_verified&&t.equipment_checked&&t.emergency_contact_notified); }
+  /* HULL 3 2026-08-19: etter app-endring 6.4 er activity_check_completed_at en gyldig
+     klareringskilde pa linje med grunnsjekken. Malt for endring: alle 6 turer med
+     aktivitetssjekk hadde ogsa grunnsjekk, sa tallene endres ikke i dag — kilden er
+     riktig fremover. */
+  function deriveOK(t){ if(t.safety_completed_at) return true; if(t.activity_check_completed_at) return true; if(t.weather_verified==null&&t.equipment_checked==null&&t.emergency_contact_notified==null) return t.status==='completed'; return !!(t.weather_verified&&t.equipment_checked&&t.emergency_contact_notified); }
 
   function load(){
     return sb.auth.getUser().then(function(u){
@@ -2921,6 +2925,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
      +'<tr><th>Utstyr kontrollert</th><td>'+jn(t.equipment_checked)+'</td></tr>'
      +'<tr><th>Nødkontakt varslet</th><td>'+jn(t.emergency_contact_notified)+'</td></tr>'
      +'<tr><th>Grunnsjekk fullført (vær, utstyr, nødkontakt)</th><td>'+(t.safety_completed_at?E(__syTid(t.safety_completed_at)):tom('Ikke fullført'))+'</td></tr>'
+     +'<tr><th>Aktivitetsspesifikk sjekk fullført</th><td>'+(t.activity_check_completed_at?E(__syTid(t.activity_check_completed_at)):(t.activation_override?'<span class="nei">Nei — turen ble aktivert med overstyring</span>':tom('Ikke registrert')))+'</td></tr>'
      +'<tr><th>Skredvarsel</th><td>'+v(t.avalanche_level,'Ikke registrert')+'</td></tr>'
      +(xtra.length?('<tr><th>Aktivitetsspesifikk sjekk</th><td>'+xtra.join(' · ')+'</td></tr>'):'')
      +'</table>';
@@ -3399,7 +3404,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       +'<div class="row"><div><label>Dato</label><input id="taDate" type="date" value="'+esc(t.date||'')+'"></div><div><label>Returtid</label><input id="taRet" type="time" value="'+esc((t.return_time||'').slice(0,5))+'"></div><div><label>Returdato</label><input id="taRetD" type="date" value="'+esc(t.return_date||'')+'"></div></div>'
       +'<div class="row"><div><label>Guide</label><select id="taGuide">'+gopt+'</select></div><div><label>Status</label><select id="taStatus">'+sopt+'</select></div></div>'
       +'<label>Notater</label><textarea id="taNotes" rows="2" maxlength="500">'+esc(t.notes||'')+'</textarea>'
-      +'<h4>HMS / sikkerhetssjekk</h4><div style="font-size:12.5px;line-height:1.9">Vær verifisert: '+chk(t.weather_verified)+' · Utstyr sjekket: '+chk(t.equipment_checked)+' · Nødkontakt varslet: '+chk(t.emergency_contact_notified)+'<br>Skredfaregrad: <b style="color:#eaf2fb">'+esc(t.avalanche_level||'ikke satt')+'</b> · Delt kart: '+chk(t.shared_map)+'<br>Admin-godkjenning: '+(t.approved_at? '<b style="color:#5fb97a">✓ godkjent '+new Date(t.approved_at).toLocaleDateString('nb-NO')+'</b>' : '<button type="button" id="taApprove" style="border:1px solid rgba(95,185,122,.45);background:rgba(95,185,122,.1);color:#5fb97a;border-radius:7px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer">Godkjenn tur</button>')+'</div>'
+      +'<h4>HMS / sikkerhetssjekk</h4><div style="font-size:12.5px;line-height:1.9">Vær verifisert: '+chk(t.weather_verified)+' · Utstyr sjekket: '+chk(t.equipment_checked)+' · Nødkontakt varslet: '+chk(t.emergency_contact_notified)+'<br>Aktivitetssjekk: '+(t.activity_check_completed_at? ('<b style="color:#5fb97a">✓ fullført '+new Date(t.activity_check_completed_at).toLocaleString('nb-NO',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})+'</b>') : '<b style="color:#8aa0bd">—</b>')+(t.activation_override? ' · <b style="color:#e0a458">Aktivert med overstyring</b>' : '')+'<br>Skredfaregrad: <b style="color:#eaf2fb">'+esc(t.avalanche_level||'ikke satt')+'</b> · Delt kart: '+chk(t.shared_map)+'<br>Admin-godkjenning: '+(t.approved_at? '<b style="color:#5fb97a">✓ godkjent '+new Date(t.approved_at).toLocaleDateString('nb-NO')+'</b>' : '<button type="button" id="taApprove" style="border:1px solid rgba(95,185,122,.45);background:rgba(95,185,122,.1);color:#5fb97a;border-radius:7px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer">Godkjenn tur</button>')+'</div>'
       +'<h4>Deltakere</h4><div id="taParts" style="min-height:20px;font-size:12.5px">Laster …</div>'
       +'<div class="row" style="margin-top:6px"><div><input id="taPN" placeholder="Navn" maxlength="80"></div><div><input id="taPP" placeholder="Telefon" maxlength="30"></div><div><input id="taPE" placeholder="Nødkontakt" maxlength="60"></div></div>'
       +'<button type="button" id="taPAdd" style="margin-top:8px;width:100%;padding:8px;border:1px solid rgba(74,159,224,.35);border-radius:8px;background:rgba(74,159,224,.08);color:#cfe2f5;font-size:12px;cursor:pointer">+ Legg til deltaker</button>'
@@ -3804,8 +3809,10 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
           });
           if(_navn.length) _certVarsel='<b>'+_navn.length+' guide'+(_navn.length>1?'r':'')+'</b> med sertifikatutløp innen 30 dager — '+esc(_navn.slice(0,2).join(', '));
         }catch(e4){}
+        var _ovN=_rel.filter(function(t){return t.activation_override===true;}).length;
         var _rader=[
           _ik(_rel.length>0&&_okS===_rel.length)+'<span><b>'+_okS+' av '+_rel.length+'</b> turer med fullført grunnsjekk</span>',
+          (_ovN? (_ik(false)+'<span><b>'+_ovN+(_ovN===1?' tur':' turer')+'</b> aktivert med overstyring — aktivitetssjekken ble hoppet over</span>') : (_ik(true)+'<span>Ingen turer aktivert med overstyring</span>')),
           _ik(_rel.length>0&&_okG===_rel.length)+'<span><b>'+_okG+' av '+_rel.length+'</b> turer admin-godkjent</span>',
           _certVarsel? (_ik(false)+'<span>'+_certVarsel+'</span>') : (_harCert? (_ik(true)+'<span>Ingen sertifikatutløp neste 30 dager</span>') : '<svg class="ic"><use href="#i-users"/></svg><span>Sertifikater: ikke registrert på guidene ennå</span>')
         ];
