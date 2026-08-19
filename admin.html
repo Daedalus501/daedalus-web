@@ -769,7 +769,7 @@ body.lock{overflow:hidden}
 <!-- ======= TOPBAR ======= -->
 <header class="topbar rv" style="--d:0s">
   <div class="tb-in">
-    <div class="brand">
+    <div class="brand" onclick="location.reload()" style="cursor:pointer" title="Last siden på nytt" role="button" tabindex="0" onkeydown="if(event.key==='Enter')location.reload()">
       <img class="brand-ic" src="icon.png" alt="Daedalus-emblem" width="40" height="40">
       <div class="brand-tx">
         <span class="brand-name">DAEDALUS</span>
@@ -1527,7 +1527,7 @@ function initChartHover(svg){
     var idx=clamp(Math.round((relX-34)/(592/6)),0,6);
     var px=chartX[idx]/640*r.width, py=chartY[idx]/240*r.height;
     xh.style.left=px.toFixed(1)+'px'; xh.style.opacity='1';
-    tip.innerHTML='<b>'+['Mandag','Tirsdag','Onsdag','Torsdag','Fredag','Lørdag','Søndag'][idx]+'</b>'+
+    tip.innerHTML='<b>'+((window.__CHARTDL||['Mandag','Tirsdag','Onsdag','Torsdag','Fredag','Lørdag','Søndag'])[idx])+'</b>'+
       '<div class="row"><span><i style="background:var(--accent-soft)"></i>Gjester</span><b>'+chartG[idx]+'</b></div>'+
       '<div class="row"><span><i style="background:rgba(201,162,75,.8)"></i>Turer</span><b>'+chartT[idx]+'</b></div>';
     tip.style.left=clamp(px,70,r.width-70).toFixed(1)+'px';
@@ -2094,7 +2094,7 @@ function afterBoot(){
   startEta();
 }
 function init(){
-  try{ var R=window.__REAL; if(R){ if(R.chartG)chartG=R.chartG; if(R.chartT)chartT=R.chartT; try{ var _cm=Math.max.apply(null,chartG.concat([1])); var _step=Math.max(10,Math.ceil(_cm/30)*10); window.__CHARTMAX=_step*3; window.__CHARTTICKS=[0,_step,_step*2,_step*3]; window.__BARMAX=Math.max(5,Math.ceil(Math.max.apply(null,chartT.concat([1]))/5)*5); }catch(e2){} if(R.guides)GUIDES=R.guides; if(R.feed)FEED0=R.feed; if(R.pool)POOL=R.pool; } }catch(e){}
+  try{ var R=window.__REAL; if(R){ if(R.chartG)chartG=R.chartG; if(R.chartT)chartT=R.chartT; if(R.chartDS)chartDays=R.chartDS; if(R.chartDL)window.__CHARTDL=R.chartDL; try{ var _cm=Math.max.apply(null,chartG.concat([1])); var _step=Math.max(10,Math.ceil(_cm/30)*10); window.__CHARTMAX=_step*3; window.__CHARTTICKS=[0,_step,_step*2,_step*3]; window.__BARMAX=Math.max(5,Math.ceil(Math.max.apply(null,chartT.concat([1]))/5)*5); }catch(e2){} if(R.guides)GUIDES=R.guides; if(R.feed)FEED0=R.feed; if(R.pool)POOL=R.pool; } }catch(e){}
   buildTopo();
   sizeBG();
   startBG();
@@ -2261,6 +2261,10 @@ window.__sevNo=function(s){ s=String(s||'').toLowerCase(); return s==='critical'
     var days=[]; for(var i=6;i>=0;i--){ var d=new Date(now); d.setHours(0,0,0,0); d.setDate(d.getDate()-i); days.push(d); }
     var chartT=days.map(function(d){ return tripRows.filter(function(t){ var td=tripDate(t); return td && dstr(td)===dstr(d); }).length; });
     var chartG=days.map(function(d){ return tripRows.filter(function(t){ var td=tripDate(t); return td && dstr(td)===dstr(d); }).reduce(function(a,t){return a+tripParticipants(t);},0); });
+    /* D6 W2 2026-08-19: grafen dekker de siste 7 dagene, men etikettene var hardkodet man-son
+       og stemte kun nar dagens dato er sondag. Ekte dagnavn genereres fra days-vinduet. */
+    var chartDS=days.map(function(d,i){ var n=d.toLocaleDateString('nb-NO',{weekday:'short'}).replace('.',''); return i===6?'i dag':n; });
+    var chartDL=days.map(function(d,i){ var n=d.toLocaleDateString('nb-NO',{weekday:'long',day:'numeric',month:'numeric'}); n=n.charAt(0).toUpperCase()+n.slice(1); return i===6?(n+' (i dag)'):n; });
 
     var guides=guideRows.map(function(u,idx){
       var onTrip=activeByLeader[u.name];
@@ -2300,7 +2304,7 @@ window.__sevNo=function(s){ s=String(s||'').toLowerCase(); return s==='critical'
     var _done=tripRows.filter(function(t){ return t.status==='completed' || (t.report_summary&&String(t.report_summary).trim()); }).sort(function(a,b){ return Date.parse(b.date||b.created_at||0)-Date.parse(a.date||a.created_at||0); }).slice(0,8);
     var _reports=_done.map(function(t){ return { trip:t, events:eventRows.filter(function(e){ return e.trip_id===t.id; }) }; });
     window.__REAL = {
-      chartG:chartG, chartT:chartT, safety:safety, guides:guides, feed:feed, pool:[],
+      chartG:chartG, chartT:chartT, chartDS:chartDS, chartDL:chartDL, safety:safety, guides:guides, feed:feed, pool:[],
       kpis:{ trips:activeTrips.length, guests:guestsField, guides:guidesOnDuty, guidesTotal:guidesTotal, reports:reportsToday },
       sos:sos, mapMarkers:mapMarkers, orgName:'', tripById:tripById, reports:_reports, guidesRaw:guideRows.map(function(u){ return {id:u.id, name:u.name||u.email}; }), certsRaw:guideRows.map(function(u){ return {n:u.name||u.email, c:u.certifications}; })
     };
