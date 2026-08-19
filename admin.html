@@ -2276,9 +2276,9 @@ window.__sevNo=function(s){ s=String(s||'').toLowerCase(); return s==='critical'
       var myTrips=tripRows.filter(function(t){return t.guide_name===u.name;}).slice(0,3).map(function(t){ var td=tripDate(t); return [t.name||'(uten navn)', td?td.toLocaleDateString('nb-NO'):'—']; });
       var certs=null; try{ var cj=JSON.parse(String(u.certifications||'')); if(Object.prototype.toString.call(cj)==='[object Array]'){ certs=cj.map(function(c){ var nm=String((c&&(c.name||c.n))||'Sertifisering'); var ex=(c&&(c.expires||c.exp))||null; var lbl='registrert', pct=66, cls=''; if(ex){ var d=new Date(String(ex)+'T00:00:00'); if(!isNaN(d.getTime())){ var dd=('0'+d.getDate()).slice(-2)+'.'+('0'+(d.getMonth()+1)).slice(-2)+'.'+d.getFullYear(); var left=(d.getTime()-Date.now())/864e5; if(left<0){ lbl='UTLØPT '+dd; pct=10; cls='crit'; } else if(left<30){ lbl='utløper '+dd+' ('+Math.max(1,Math.round(left))+' d)'; pct=30; cls='warn'; } else { lbl='utløper '+dd; pct=80; } } else { lbl='utløper '+String(ex); } } return [nm,lbl,pct,cls]; }); } }catch(e){} if(!certs){ certs=String(u.certifications||'').split(/\n|;/).map(function(x){return x.trim();}).filter(Boolean).map(function(c){ return [c,'registrert',66,'']; });
       } if(!certs.length) certs=[['Ingen sertifiseringer registrert','—',0,'warn']];
-      var roleLabel = String(u.role||'').toLowerCase().indexOf('admin')>-1? 'Administrator' : 'Guide';
+      var roleLabel = String(u.role||'').toLowerCase().indexOf('admin')>-1? 'Administrator' : (u.is_guest===true? 'Guide · gjest' : 'Guide');
       var pos = onTrip? [ (onTrip.gps_coordinates||'—'), 'På tur: '+(onTrip.name||'') ] : [ 'Ingen aktiv tur', 'Sist aktiv i appen: '+relTime(u.last_seen_at||u.updated_at||u.created_at) ];
-      return { id:u.id, ini:initials(u.name||u.email), name:u.name||u.email||'—', role:roleLabel, st:st, av:PAL[idx%PAL.length], phone:u.phone||'—', email:u.email||'', avatar:u.avatar_url||'', certs:certs, trips:myTrips.length?myTrips:[['Ingen turer registrert','—']], pos:pos };
+      return { id:u.id, ini:initials(u.name||u.email), name:u.name||u.email||'—', role:roleLabel, st:st, av:PAL[idx%PAL.length], phone:u.phone||'—', email:u.email||'', avatar:u.avatar_url||'', certs:certs, trips:myTrips.length?myTrips:[['Ingen turer registrert','—']], pos:pos, is_guest:u.is_guest===true };
     });
 
     var TMAP={sos:['sos','SOS'],weather:['sys','Vær'],'weather change':['sys','Vær'],equipment:['warn','Utstyr'],'equipment failure':['warn','Utstyr'],'route change':['warn','Ruteendring'],injury:['warn','Skade'],hazard:['warn','Fare'],'near-accident':['warn','Nestenulykke'],checkpoint:['ok','Sjekkpunkt'],report:['rep','Rapport']};
@@ -3544,6 +3544,13 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       inner='<h3>Administrer guide</h3><p class="s">'+esc(g.email||'')+'</p>'
         +'<label>Visningsnavn</label><input id="gaName" maxlength="80" value="'+esc((g.name&&g.name.indexOf('@')<0)?g.name:'')+'">'
         +'<label>Telefon</label><input id="gaPhone" maxlength="30" value="'+esc((g.phone&&g.phone!=='—')?g.phone:'')+'">'
+        /* E2 2026-08-19: gjestemerking. Skriver kun users.is_guest. Effekt i dag: guiden
+           utelates fra organisasjonens GPS-visning (eksisterende policy pa guide_positions).
+           Solo-kravet handheves i appen fra 1.4.1. */
+        +((g.id!==me.id)?('<label style="margin-top:14px">Gjesteguide</label>'
+          +'<div style="display:flex;align-items:center;gap:10px;border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:9px 11px">'
+          +'<span style="flex:1;font-size:12px;line-height:1.5;color:#8aa0bd">'+(g.is_guest?'Merket som gjest: ser kun egne turer og deles ikke i organisasjonens GPS-visning. Skal ha eget Solo-abonnement.':'Frilanser/innleid? En gjest ser kun egne turer og deles ikke i organisasjonens GPS-visning. Skal ha eget Solo-abonnement.')+'</span>'
+          +'<button type="button" id="gaGuest" style="flex:none;border:1px solid '+(g.is_guest?'rgba(224,164,88,.5);background:rgba(224,164,88,.12);color:#e0a458':'rgba(74,159,224,.4);background:rgba(74,159,224,.08);color:#8fb8de')+';border-radius:8px;padding:7px 11px;font:600 11.5px Inter,system-ui,sans-serif;cursor:pointer">'+(g.is_guest?'Fjern gjest-merke':'Merk som gjest')+'</button></div>'):'')
         +'<div class="btns"><button id="gaSave" style="background:linear-gradient(135deg,#4a9fe0,#3b82c4);color:#fff;flex:1">Lagre</button>'
         +((g.id!==me.id)?'<button id="gaRemove" style="background:rgba(232,133,124,.12);color:#e8857c;border:1px solid rgba(232,133,124,.4)">Fjern fra organisasjonen</button>':'')
         +'<button id="gaClose" style="background:#22364f;color:#cfe2f5">Lukk</button></div><div id="gaErr"></div>';
@@ -3578,6 +3585,15 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
           logAdmin('guide_endret', g.email, (upd.name||'')+' '+(upd.phone||'')); try{ toast('Guide oppdatert',''); }catch(e){} close(); setTimeout(function(){ location.reload(); },500);
         });
       };
+      var gg=document.getElementById('gaGuest');
+      if(gg){ gg.onclick=function(){
+        var til=!g.is_guest;
+        if(!window.confirm(til? ('Merke '+(g.name||g.email)+' som gjesteguide? Hen ser da kun egne turer og deles ikke i org-GPS. Solo-krav håndheves i appen fra 1.4.1.') : ('Fjerne gjest-merket til '+(g.name||g.email)+'?'))) return;
+        sb.from('users').update({is_guest:til}).eq('id',g.id).then(function(r2){
+          if(r2&&r2.error){ document.getElementById('gaErr').textContent=r2.error.message; return; }
+          logAdmin(til?'gjest_merket':'gjest_fjernet', g.email, ''); try{ toast(til?'Merket som gjest':'Gjest-merke fjernet',''); }catch(e){} close(); setTimeout(function(){ location.reload(); },500);
+        });
+      }; }
       var rm=document.getElementById('gaRemove');
       if(rm){ rm.onclick=function(){
         if(!window.confirm('Fjerne '+(g.name||g.email)+' fra organisasjonen? App-tilgangen (org-comp) trekkes automatisk.')) return;
