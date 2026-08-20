@@ -244,6 +244,10 @@ a{color:var(--accent-soft)}
   background:radial-gradient(circle at 38% 30%, #1d3050, #101e36 72%);
   border:1px solid var(--line); box-shadow:inset 0 2px 8px rgba(0,0,0,.5), 0 0 22px rgba(74,159,224,.12)}
 .bezel-core .ic{color:var(--gold); width:21px; height:21px}
+/* V2.2: ekte maane (NASA Galileo PIA00405, public domain) i stedet for tegnet planet */
+#moonImg{width:100%;height:100%;display:block;border-radius:50%;object-fit:cover;filter:brightness(1.02) saturate(.9);box-shadow:0 0 14px rgba(191,224,250,.18), inset 0 0 0 1px rgba(255,255,255,.05)}
+@media (prefers-reduced-motion: no-preference){#moonImg{animation:moonSpin 240s linear infinite}}
+@keyframes moonSpin{to{transform:rotate(360deg)}}
 .bigclock{display:flex; flex-direction:column; line-height:1}
 .bigclock .t{font:300 40px/1 var(--serif); letter-spacing:.02em; display:flex; align-items:baseline}
 .bigclock .t .sec{font-size:19px; color:var(--accent-soft); margin-left:7px; min-width:34px}
@@ -461,6 +465,24 @@ a{color:var(--accent-soft)}
   font:300 26px/1.3 var(--serif);letter-spacing:.06em;text-shadow:0 2px 24px rgba(0,0,0,.6);opacity:0;transition:opacity 2.2s ease 1s}
 #auOv.on .au-brand{opacity:1}
 #auOv .au-brand small{display:block;font:600 10px var(--sans);letter-spacing:.34em;color:var(--gold-soft);margin-top:6px}
+#auPanel{position:absolute;left:50%;bottom:64px;transform:translateX(-50%);width:min(92vw,640px);
+  background:rgba(8,15,28,.72);border:1px solid rgba(255,255,255,.13);border-radius:16px;
+  backdrop-filter:blur(14px);padding:16px 20px 14px;color:#e7ecf3;cursor:default;
+  opacity:0;transition:opacity 1.4s ease .8s}
+#auOv.on #auPanel{opacity:1}
+#auPanel .tabs{display:flex;gap:4px;margin-bottom:11px}
+#auPanel .tab{border:1px solid transparent;background:none;color:#8b98ab;border-radius:8px;
+  padding:6px 12px;font:600 11.5px var(--sans);letter-spacing:.05em;cursor:pointer;text-transform:uppercase}
+#auPanel .tab.on{color:#e7ecf3;background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12)}
+#auPanel .kort{min-height:88px}
+#auPanel .kort h4{font:700 14.5px var(--sans);margin:0 0 6px;color:var(--gold-soft)}
+#auPanel .kort p{margin:0;font:400 13.5px/1.65 var(--sans);color:#cfd9e6}
+#auPanel .nav{display:flex;align-items:center;gap:10px;margin-top:12px;border-top:1px solid rgba(255,255,255,.09);padding-top:10px}
+#auPanel .nav .cnt{font:600 11px var(--sans);color:#8b98ab;letter-spacing:.06em}
+#auPanel .nav .src{font:400 10.5px var(--sans);color:#5f6f85;margin-left:auto}
+#auPanel .nav button{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);color:#e7ecf3;
+  border-radius:8px;width:30px;height:30px;font:600 14px var(--sans);cursor:pointer}
+#auPanel .nav button:hover{background:rgba(74,159,224,.15)}
 .mk-gps{position:relative;display:flex;align-items:center;gap:7px}.mk-gps::before{content:'';position:absolute;left:-6px;top:50%;transform:translateY(-50%);width:25px;height:25px;border-radius:50%;background:rgba(8,15,28,.78);z-index:-1}.mk-cnt{position:absolute;right:-7px;top:-7px;min-width:19px;height:19px;padding:0 5px;display:grid;place-items:center;border-radius:999px;background:linear-gradient(180deg,#d3ae5c,#a8842f);color:#180f02;font:800 10.5px/1 var(--sans);letter-spacing:.01em;border:1.5px solid rgba(10,18,33,.92);box-shadow:0 3px 10px rgba(2,6,14,.6)}.mk.akt .mk-cnt{background:linear-gradient(180deg,#79d194,#3f8f5c);color:#03170b}.leaflet-popup.cl-pop .leaflet-popup-content-wrapper{background:rgba(12,22,38,.97);border:1px solid rgba(255,255,255,.12);border-radius:13px;box-shadow:0 18px 44px rgba(2,6,14,.65);color:var(--text);padding:5px}.leaflet-popup.cl-pop .leaflet-popup-content{margin:7px 9px;font:400 12px/1.5 var(--sans)}.leaflet-popup.cl-pop .leaflet-popup-tip{background:rgba(12,22,38,.97);border:1px solid rgba(255,255,255,.12);box-shadow:none}.leaflet-popup.cl-pop a.leaflet-popup-close-button{color:#8aa0bd;font-weight:400;padding:6px 7px 0 0}.leaflet-popup.cl-pop a.leaflet-popup-close-button:hover{color:var(--text);background:none}.cl-h{font:700 10px/1 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:#8aa0bd;margin:2px 2px 9px}.cl-r{display:flex;align-items:center;gap:9px;width:100%;text-align:left;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.022);border-radius:9px;padding:7px 9px;margin:0 0 5px;cursor:pointer;transition:background .16s ease,border-color .16s ease,transform .16s ease}.cl-r:last-child{margin-bottom:1px}.cl-r:hover{background:rgba(74,159,224,.11);border-color:rgba(74,159,224,.38);transform:translateX(1px)}.cl-r i{flex:none;width:8px;height:8px;border-radius:50%;box-shadow:0 0 0 3px rgba(255,255,255,.05)}.cl-n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:600 12.5px/1.25 var(--sans);color:var(--text)}.cl-s{flex:none;font:500 10.5px/1 var(--sans);color:#8aa0bd;letter-spacing:.02em}.eq-wrap{display:flex;flex-wrap:wrap;gap:6px}.eq-chip{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);border-radius:999px;padding:5px 12px 5px 9px;font:600 12px/1 var(--sans);color:var(--text);white-space:nowrap}.eq-chip i{flex:none;width:7px;height:7px;border-radius:50%;box-shadow:0 0 0 3px rgba(255,255,255,.05)}.eq-chip .eq-m{font-weight:500;font-size:11px;color:#8aa0bd;letter-spacing:.02em}.eq-chip.veh i{background:#4a9fe0}.eq-chip.dog i{background:#c9a24b}.eq-chip.miss{border-style:dashed;color:#8aa0bd;font-weight:500}.eq-chip.miss i{background:#e8857c}.mk-gps .dot{flex:none;width:13px;height:13px;border-radius:50%;background:#7fb1bd;border:2px solid #eaf6fa;box-shadow:0 0 0 0 rgba(127,177,189,.55);animation:gpsPulse 2.2s ease-out infinite}.mk-gps .glab{font-size:10.5px;font-weight:700;color:#eaf6fa;background:rgba(10,19,34,.82);border:1px solid rgba(127,177,189,.5);border-radius:6px;padding:2px 7px;white-space:nowrap}.mk-gps.stale .dot{background:#5a6b82;border-color:#9aa7b8;animation:none}.mk-gps.stale .glab{color:#9aa7b8;border-color:rgba(90,107,130,.6)}@keyframes gpsPulse{0%{box-shadow:0 0 0 0 rgba(127,177,189,.55)}70%{box-shadow:0 0 0 12px rgba(127,177,189,0)}100%{box-shadow:0 0 0 0 rgba(127,177,189,0)}}.mk-sos{position:absolute; transform:translate(-50%,-50%); pointer-events:auto; width:46px; height:46px}
 .mk-sos .core{position:absolute; inset:13px; border-radius:50%; background:var(--red);
   box-shadow:0 0 0 3px rgba(217,104,95,.35), 0 0 22px rgba(217,104,95,.9); animation:sosCore 1.4s ease-in-out infinite}
@@ -878,7 +900,7 @@ body.lock{overflow:hidden}
         <div class="clockwrap">
           <div class="bezel" aria-hidden="true">
             <svg viewBox="0 0 92 92" id="bezelSvg"></svg>
-            <div class="bezel-core"><svg id="planetSvg" viewBox="0 0 56 56" style="width:86%;height:86%;overflow:visible"></svg></div>
+            <div class="bezel-core"><img id="moonImg" src="moon.png" alt="" width="56" height="56" draggable="false"></div>
           </div>
           <div class="bigclock num" aria-live="off">
             <div class="t"><span id="clkHM">--:--</span><span class="sec" id="clkS">--</span></div>
@@ -1367,7 +1389,8 @@ window.__AURORA=function(){
   var ov=document.createElement('div'); ov.id='auOv';
   ov.innerHTML='<canvas id="auC"></canvas>'
     +'<div class="au-brand">Stille natt over Tamokdalen<small>DAEDALUS · GUIDE &amp; SAFETY</small></div>'
-    +'<div class="au-hint">Klikk eller Esc for å gå tilbake</div>';
+    +'<div id="auPanel"></div>'
+    +'<div class="au-hint">Piltaster: bla · Esc: tilbake</div>';
   document.body.appendChild(ov);
   requestAnimationFrame(function(){ ov.classList.add('on'); });
   var cv=document.getElementById('auC'), ctx=cv.getContext('2d');
@@ -1443,8 +1466,61 @@ window.__AURORA=function(){
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
+  /* ---------- innhold: fjellvett, felttips, nattehimmel ---------- */
+  var FV=[['1 · Planlegg turen','Planlegg turen og meld fra hvor du går. Noen skal vite ruta di — og når de skal reagere.'],
+    ['2 · Evne og forhold','Tilpass turen etter evne og forhold. Gruppa er aldri sterkere enn den svakeste deltakeren.'],
+    ['3 · Vær- og skredvarsel','Ta hensyn til vær- og skredvarsel. Sjekk varsom.no og yr — og vurder på nytt underveis.'],
+    ['4 · Uvær og kulde','Vær forberedt på uvær og kulde, selv på korte turer. Fjellvær snur fortere enn planer.'],
+    ['5 · Nødvendig utstyr','Ta med utstyr til å hjelpe deg selv og andre. Utstyret du lot ligge hjemme hjelper ingen.'],
+    ['6 · Trygge veivalg','Ta trygge veivalg. Gjenkjenn skredfarlig terreng og usikker is — bratthet over 30° er nøkkelen.'],
+    ['7 · Kart og kompass','Bruk kart og kompass. Vit alltid hvor du er — GPS-en er et tillegg, ikke en erstatning.'],
+    ['8 · Vend i tide','Vend i tide — det er ingen skam å snu. Toppen står der i morgen også.'],
+    ['9 · Spar på kreftene','Spar på kreftene og søk ly om nødvendig. Trøtthet tar avgjørelser for deg.']];
+  var TIPS=[['Flasken opp-ned','I kulde fryser vann ovenfra: bær flasken opp-ned, så legger isen seg ved bunnen og korken fryser aldri fast.'],
+    ['Kald mobil lyver','Litium tåler ikke kulde: en «død» mobil våkner i innerlomma. Flymodus i dårlig dekning flerdobler batteritiden.'],
+    ['Start kald','Ta av et lag FØR motbakken, ikke etter. Svette klær er kalde klær — tørr og kjølig slår varm og våt.'],
+    ['Løsne hoftebeltet','Før bekke- og elvekryssing: løsne hoftebelte og brystrem. Faller du, må sekken kunne kastes på sekundet.'],
+    ['Skavlene lyver','Skavler henger på le-siden og brekker lenger inne enn de ser ut til. Hold minst skavlens egen bredde fra kanten.'],
+    ['Drønn er alltid alvor','Drønn i snødekket eller sprekker som skyter ut fra skiene er snøens siste advarsel: snu, og velg terreng slakere enn 30°.'],
+    ['UV går gjennom skodde','Snøblindhet kommer også i overskyet vær og merkes først timer etterpå. Briller på snø — alltid.'],
+    ['Det hellige settet','Ett sett tørr ull i vanntett pose nederst i sekken er nødutstyr, ikke skiftetøy. Det åpnes først når noe er galt.'],
+    ['Tørk på kroppen','Våte votter og sokker tørker mens du går: legg dem flatt på brystet innenfor skalljakka. Kroppsvarme er tørketrommelen din.'],
+    ['112 uten dekning','Nødanrop rutes via alle tilgjengelige nett, ikke bare ditt eget. Og SMS trenger mindre signal enn tale — 141 tegn kan nå frem der stemmen ikke gjør det.'],
+    ['Rødt lys, natt-syn','Øynene bruker 20–30 minutter på mørket, og ett hvitt blink nullstiller alt. Rød lykt bevarer nattsynet.'],
+    ['Polaris er kompasset','Karlsvognas to bakerste stjerner peker rett på Polaris — der er nord. Stjernens høyde over horisonten er breddegraden din.'],
+    ['Vind er kulde','−5 °C i 10 m/s kjennes som rundt −12. Legg pausene i le, aldri på toppen av ryggen.'],
+    ['Bivuakk med fall','Graver du nødbivuakk: legg inngangen lavere enn liggeflaten, så renner kaldlufta ut selv. Kryss ski over inngangen — synlighet redder.'],
+    ['Varmt vann i sokken','Fyll flasken med varmt vann om morgenen og pakk den i en sokk midt i sekken: isfritt drikkevann hele dagen, varmeflaske på pausen.'],
+    ['Lighteren i lomma','En kald lighter er en død lighter — bær den på kroppen. Stormfyrstikker i vanntett boks er reserven som alltid virker.'],
+    ['Aldri rett på snøen','Sitt på sekken eller liggeunderlaget ved rast. Ledning trekker varme ti ganger raskere enn lufta rundt deg.'],
+    ['Merk basen først','Lagre bil, hytte eller leir som veipunkt FØR du går ut. «Tilbake»-pila i GPS-en er verdiløs uten et punkt å peke på.']];
+  var NATT=[['Hva nordlyset er','Solvind som treffer oksygen 100–300 km oppe: grønt lavt, rødt høyt. I Tromsø holder det med KP-indeks 3–4 — sjekk varslene på en klar kveld.'],
+    ['Fotografer det','Manuell fokus mot en fjern lyskilde, 1–8 sekunder lukker, høy ISO — og batteriet i lomma til du skyter. Stativ eller sekk som støtte.'],
+    ['Når det danser','Rolige buer betyr stabilt vær i magnetosfæren. Begynner det å flakke og få lilla kanter, ser du et substorm-utbrudd — de sterkeste minuttene på himmelen.'],
+    ['Melkeveien','Tettest mot sør i august–september. Månefri natt, 30 minutter mørketilvenning — og du ser den med det blotte øyet over Tamokdalen.'],
+    ['Stjerneskudd med rute','Perseidene topper rundt 12. august, Geminidene rundt 13. desember. Legg deg med beina mot nordøst og se opp — ingen kikkert, bare tålmodighet.'],
+    ['Månen som lykt','Fullmåne på snø gir nok lys til å gå uten lykt — og dreper nordlyset. Planlegg nordlysjakt i nymånevinduet, skiturer i fullmånevinduet.']];
+  var TABS=[['Fjellvett',FV,'Fjellvettreglene — DNT og Røde Kors'],['Felttips',TIPS,'Daedalus feltbok'],['Natthimmel',NATT,'Daedalus feltbok']];
+  var ti=0, ci=0;
+  var panel=document.getElementById('auPanel');
+  function draw(){
+    var t=TABS[ti], liste=t[1], k=liste[ci];
+    panel.innerHTML='<div class="tabs">'+TABS.map(function(x,i){ return '<button type="button" class="tab'+(i===ti?' on':'')+'" data-t="'+i+'">'+x[0]+'</button>'; }).join('')+'</div>'
+      +'<div class="kort"><h4>'+k[0]+'</h4><p>'+k[1]+'</p></div>'
+      +'<div class="nav"><button type="button" id="auPrev" aria-label="Forrige">‹</button><button type="button" id="auNext" aria-label="Neste">›</button><span class="cnt">'+(ci+1)+' / '+liste.length+'</span><span class="src">'+t[2]+'</span></div>';
+    panel.querySelectorAll('.tab').forEach(function(b){ b.onclick=function(ev){ ev.stopPropagation(); ti=+b.getAttribute('data-t'); ci=0; draw(); }; });
+    document.getElementById('auPrev').onclick=function(ev){ ev.stopPropagation(); ci=(ci-1+liste.length)%liste.length; draw(); };
+    document.getElementById('auNext').onclick=function(ev){ ev.stopPropagation(); ci=(ci+1)%liste.length; draw(); };
+  }
+  draw();
+  panel.addEventListener('click',function(e){ e.stopPropagation(); });
   function close(){ run=false; ov.classList.remove('on'); setTimeout(function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); },650); removeEventListener('keydown',onk); removeEventListener('resize',size); }
-  function onk(e){ if(e.key==='Escape') close(); }
+  function onk(e){
+    if(e.key==='Escape'){ close(); return; }
+    if(e.key==='ArrowRight'){ ci=(ci+1)%TABS[ti][1].length; draw(); }
+    else if(e.key==='ArrowLeft'){ ci=(ci-1+TABS[ti][1].length)%TABS[ti][1].length; draw(); }
+    else if(e.key==='ArrowUp'||e.key==='ArrowDown'){ ti=(ti+(e.key==='ArrowDown'?1:TABS.length-1))%TABS.length; ci=0; draw(); }
+  }
   ov.addEventListener('click',close); addEventListener('keydown',onk);
 };
 function buildTopo(){
@@ -3410,70 +3486,9 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
   }
 
   function initPlanet(){
-    var svg=document.getElementById('planetSvg'); if(!svg||svg.__init) return; svg.__init=1;
-    var mnd=new Date().getMonth();
-    var ses=(mnd===11||mnd<=1)?'vinter':(mnd<=4?'vaar':(mnd<=7?'sommer':'host'));
-    var P={
-      vinter:{seaHi:'#3a729e',seaMid:'#17456e',seaDeep:'#071e38',land:'#e2ebf3',landDk:'#4b6f5e',peak:'#ffffff',atmo:'#d3e8ff',isS:1.5},
-      vaar:{seaHi:'#3f8ec4',seaMid:'#1c5a8c',seaDeep:'#0a2848',land:'#57a457',landDk:'#377954',peak:'#eef7f0',atmo:'#a5dcff',isS:1.15},
-      sommer:{seaHi:'#4a9bd4',seaMid:'#1f6398',seaDeep:'#0b2b50',land:'#43975a',landDk:'#2c6c41',peak:'#ecf6ef',atmo:'#8fd0ff',isS:.85},
-      host:{seaHi:'#3a83b4',seaMid:'#1a5180',seaDeep:'#092440',land:'#b5823f',landDk:'#7d5c2e',peak:'#f2ede2',atmo:'#ffd9a0',isS:1}
-    }[ses];
-    var A='M5 16 Q7 12.5 11 12.8 Q15 12 18.5 13.5 Q21.5 15 21 18 Q22 20 20.5 22.5 Q21 25.5 18.5 27 Q18 29.5 15.5 30 Q13.5 32.5 11 31.5 Q8.5 33 7 31 Q4.5 30.5 4.8 28 Q3 26.5 4.2 24.5 Q3.2 22.5 4.5 20.5 Q3.8 18 5 16 Z';
-    var B='M29.5 31 Q31.5 28.5 35 29.5 Q38 28 41 29.8 Q44.5 29.5 44.9 32.2 Q45.5 34.5 43.5 36 Q43.8 38.5 41 38.5 Q39.5 40.5 36.8 39.4 Q34.5 41 32.5 39.2 Q29.8 39.7 29 37.3 Q26.8 36.3 28.2 34 Q27 32 29.5 31 Z';
-    var C='M35 13.6 L37.8 12 L40.4 13 L43 12.2 L44.9 14 L43.8 15.7 L44.6 17.3 L42.2 17.9 L40.6 16.6 L38.2 17.2 L36.4 15.7 L35.2 16.4 L34.3 14.6 Z';
-    var D='M10 38 L12.6 36.8 L14.8 38 L14 40 L11.4 40.6 L9.4 39.4 Z';
-    var fjA='M7.5 17.5 L10.5 15.8 L13.5 17.2 L15.5 19.5 L13.8 21.8 L10.8 20.6 L8.8 22 L6.8 19.8 Z';
-    var fjB='M33.5 33 L36 31.8 L38.5 33 L40 34.5 L38.5 36 L35.5 35.4 L33.8 36.2 L32.5 34.6 Z';
-    var ST=' stroke="'+P.seaMid+'" stroke-width=".4" stroke-linejoin="round" stroke-opacity=".55"';
-    var land='<path d="'+A+'"'+ST+' fill="'+P.land+'"/><path d="'+B+'"'+ST+' fill="'+P.land+'"/><path d="'+C+'"'+ST+' fill="'+P.land+'"/><path d="'+D+'"'+ST+' fill="'+P.land+'"/>'
-      +'<path d="M3.9 19.2 L8.2 19.9 L4.3 21.1 Z" fill="'+P.seaMid+'" opacity=".95"/><path d="M3.6 24.7 L7.8 24.9 L4.6 26.6 Z" fill="'+P.seaMid+'" opacity=".95"/><path d="M4.4 28.4 L8 27.6 L5.9 30.2 Z" fill="'+P.seaMid+'" opacity=".95"/><path d="M44.6 33 L40.8 33.4 L43.9 35.2 Z" fill="'+P.seaMid+'" opacity=".95"/>'
-      +'<path d="'+fjA+'" fill="'+P.landDk+'" opacity=".75"/><path d="'+fjB+'" fill="'+P.landDk+'" opacity=".7"/>'
-      +'<path d="M10.2 16.4 l1.4 -1 1.5 1.1 -1.4 1 Z" fill="'+P.peak+'" opacity=".95"/><path d="M13 18.6 l1.2 -.8 1.2 .9 -1.2 .8 Z" fill="'+P.peak+'" opacity=".85"/>'
-      +'<ellipse cx="9.5" cy="25.5" rx="1.6" ry="1.1" fill="'+P.seaMid+'" opacity=".9"/><ellipse cx="37.5" cy="33.6" rx="1.2" ry=".8" fill="'+P.seaMid+'" opacity=".9"/>'
-      +'<circle cx="24.5" cy="23.5" r="1.1"'+ST+' fill="'+P.land+'"/><circle cx="26.8" cy="21.4" r=".7"'+ST+' fill="'+P.land+'"/><circle cx="33.2" cy="20.2" r=".9"'+ST+' fill="'+P.land+'"/><circle cx="21.8" cy="42.5" r="1.2"'+ST+' fill="'+P.land+'"/><circle cx="46.5" cy="41" r="1"'+ST+' fill="'+P.land+'"/><path d="M46.8 21.8 l2.2 -.9 1.8 1.2 -2 1.3 Z"'+ST+' fill="'+P.land+'"/><circle cx="0" cy="24" r="1.4"'+ST+' fill="'+P.land+'"/><circle cx="0" cy="40" r=".9"'+ST+' fill="'+P.land+'"/>';
-    var sky='<path d="M1 18.5 Q7 15.8 13 18.2 Q18 20.2 25 18.8 Q29 18.2 31.5 19.8 Q26 22.4 18 21.6 Q8 21.6 1 20.4 Z" fill="#fff" opacity=".72"/>'
-      +'<path d="M19 36.2 Q25 34 32 35.8 Q38 37.6 45 36 Q40.5 39.4 32.5 38.9 Q24.5 38.7 19 37.4 Z" fill="#fff" opacity=".61"/>'
-      +'<ellipse cx="9.5" cy="44.5" rx="5.5" ry="1.7" fill="#fff" opacity=".44"/><ellipse cx="43" cy="15.5" rx="5" ry="1.5" fill="#fff" opacity=".52"/><ellipse cx="0" cy="30" rx="4" ry="1.3" fill="#fff" opacity=".41"/>';
-    svg.innerHTML='<defs>'
-      +'<clipPath id="pClip"><circle cx="28" cy="28" r="25.5"/></clipPath>'
-      +'<radialGradient id="pSea" cx="38%" cy="32%" r="85%"><stop offset="0" stop-color="'+P.seaHi+'"/><stop offset=".55" stop-color="'+P.seaMid+'"/><stop offset="1" stop-color="'+P.seaDeep+'"/></radialGradient>'
-      +'<radialGradient id="pShade" cx="36%" cy="30%" r="78%"><stop offset="0" stop-color="#fff" stop-opacity=".26"/><stop offset=".34" stop-color="#fff" stop-opacity=".06"/><stop offset=".62" stop-color="#000" stop-opacity="0"/><stop offset=".88" stop-color="#000" stop-opacity=".38"/><stop offset="1" stop-color="#000" stop-opacity=".62"/></radialGradient>'
-      +'<linearGradient id="pIceN" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6fbff" stop-opacity=".95"/><stop offset="1" stop-color="#dcefff" stop-opacity="0"/></linearGradient>'
-      +'<linearGradient id="pIceS" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#f6fbff" stop-opacity=".92"/><stop offset="1" stop-color="#dcefff" stop-opacity="0"/></linearGradient>'
-      +'<linearGradient id="pNightG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#050d1c" stop-opacity="0"/><stop offset=".45" stop-color="#050d1c" stop-opacity=".2"/><stop offset="1" stop-color="#050d1c" stop-opacity=".97"/></linearGradient>'
-      +'<radialGradient id="pAtmo" cx="50%" cy="50%" r="50%"><stop offset=".78" stop-color="'+P.atmo+'" stop-opacity="0"/><stop offset=".9" stop-color="'+P.atmo+'" stop-opacity=".26"/><stop offset=".985" stop-color="'+P.atmo+'" stop-opacity=".7"/><stop offset="1" stop-color="'+P.atmo+'" stop-opacity=".4"/></radialGradient>'
-      +'<filter id="pB7" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation=".7"/></filter>'
-      +'<filter id="pB5" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation=".5"/></filter>'
-      +'</defs>'
-      +'<g transform="rotate(-14 28 28)">'
-      +'<circle cx="28" cy="28" r="25.5" fill="url(#pSea)"/>'
-      +'<g clip-path="url(#pClip)">'
-      +'<g class="pLand" opacity=".96"><g>'+land+'</g><g transform="translate(56 0)">'+land+'</g></g>'
-      +'<ellipse cx="28" cy="4.6" rx="20" ry="'+(6.9*P.isS)+'" fill="url(#pIceN)" filter="url(#pB5)"/>'
-      +'<ellipse cx="28" cy="51.4" rx="20" ry="'+(6.9*P.isS)+'" fill="url(#pIceS)" filter="url(#pB5)"/>'
-      +'<g class="pCloud" filter="url(#pB7)"><g>'+sky+'</g><g transform="translate(56 0)">'+sky+'</g></g>'
-      +'</g>'
-      +'<circle cx="28" cy="28" r="25.5" fill="url(#pShade)"/>'
-      +'<circle id="pNight" cx="28" cy="28" r="25.5" fill="url(#pNightG)" clip-path="url(#pClip)" style="transition:opacity 1.2s" opacity="0"/>'
-      +'<circle cx="28" cy="28" r="25.9" fill="url(#pAtmo)"/>'
-      +'</g>';
-    window.__updPlanet=function(){
-      try{
-        var n=document.getElementById('pNight'); if(!n) return;
-        var s=window.__SUN||{mode:'ukjent'};
-        if(s.mode==='midnight'){ n.setAttribute('opacity','0'); svg.style.filter='drop-shadow(0 0 9px rgba(201,162,75,.55))'; }
-        else if(s.mode==='polar'){ n.setAttribute('opacity','.82'); svg.style.filter='drop-shadow(0 0 8px rgba(74,159,224,.4))'; }
-        else {
-          var now=Date.now(); var natt;
-          if(s.rise&&s.set){ natt=(now<Date.parse(s.rise)||now>Date.parse(s.set)); }
-          else { var h=new Date().getHours(); natt=(h<6||h>=22); }
-          n.setAttribute('opacity', natt? '.68':'0');
-          svg.style.filter=natt? 'drop-shadow(0 0 8px rgba(74,159,224,.3))' : '';
-        }
-      }catch(e){}
-    };
-    window.__updPlanet();
+    /* V2.2: planet-SVG erstattet av ekte maanebilde (#moonImg). */
+    window.__updPlanet=function(){};
+
     setInterval(function(){ try{ window.__updPlanet(); }catch(e){} }, 60000);
   }
 
