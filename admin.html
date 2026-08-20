@@ -2659,7 +2659,8 @@ window.__sevNo=function(s){ s=String(s||'').toLowerCase(); return s==='critical'
       try{
         var u=__utm33(c[0],c[1]); var dt=new Date(Date.now()-864e5);
         var ds=dt.toISOString().slice(0,10), de=new Date().toISOString().slice(0,10);
-        fetch('https://gts.nve.no/api/GridTimeSeries/'+u[0]+'/'+u[1]+'/'+ds+'/'+de+'/sd.json')
+        /* gts.nve.no har ikke CORS — gaar via Vercel-rewrite /api/nve/* (vercel.json) */
+        fetch('/api/nve/GridTimeSeries/'+u[0]+'/'+u[1]+'/'+ds+'/'+de+'/sd.json')
         .then(function(r){ return r.ok? r.json(): null; })
         .then(function(j){ if(!j||!j.Data) return; var v=null;
           for(var i=j.Data.length-1;i>=0;i--){ if(j.Data[i]!=null && j.Data[i]<60000){ v=j.Data[i]; break; } }

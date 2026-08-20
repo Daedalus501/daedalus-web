@@ -1,4 +1,10 @@
 {
-    "cleanUrls": true,
-    "trailingSlash": false
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/api/nve/:path*",
+      "destination": "https://gts.nve.no/api/:path*"
+    }
+  ]
 }
