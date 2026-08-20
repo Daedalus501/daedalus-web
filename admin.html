@@ -2470,7 +2470,7 @@ window.__sevNo=function(s){ s=String(s||'').toLowerCase(); return s==='critical'
              subRow===null slippes gjennom (fakturakunder uten Stripe-rad). */
           var __subSt = subRow ? String(subRow.status||'').toLowerCase() : null;
           if(__subSt && __subSt!=='trialing' && __subSt!=='active'){ showSubGate(__subSt); return; }
-          invRows.forEach(function(iv){ guideRows.push({ id:'inv-'+iv.id, name:iv.name||iv.email, email:iv.email, role:'Invitert', __invite:true }); });
+          invRows.forEach(function(iv){ guideRows.push({ id:'inv-'+iv.id, name:iv.name||iv.email, email:iv.email, role:(iv.as_guest===true?'Invitert · gjest':'Invitert'), __invite:true, __asGuest:(iv.as_guest===true) }); });
           var guideIds=guideRows.filter(function(u){return !u.__invite;}).map(function(u){return u.id;});
           var xQ = Promise.all([
             guideIds.length? sb.from('trip_templates').select('*').in('guide_id',guideIds).order('created_at',{ascending:false}) : Promise.resolve({data:[]}),
@@ -2525,7 +2525,8 @@ window.__sevNo=function(s){ s=String(s||'').toLowerCase(); return s==='critical'
     var safety = tripRows.length? Math.round(okN/tripRows.length*100) : 100;
     var sos=eventRows.filter(function(e){ return !e.acknowledged_at && (String(e.type||'').toLowerCase()==='sos'||(String(e.severity||'').toLowerCase()==='critical'&&String(e.action_taken||'').toLowerCase().indexOf('emergency sos activated')>=0)) && (Date.now()-Date.parse(e.created_at))<864e5; });
 
-    var guidesTotal=guideRows.filter(function(u){ return !u.__invite; }).length;
+    /* V2.4: gjesteguider har eget Solo-abonnement og teller ikke mot org-seter */
+    var guidesTotal=guideRows.filter(function(u){ return !u.__invite && u.is_guest!==true; }).length;
     var guidesOnDuty=guideRows.filter(function(u){ return String(u.role||'').toLowerCase().indexOf('invit')===-1; }).length;
     var guestsField=activeTrips.reduce(function(a,t){return a+tripParticipants(t);},0);
     var todayStr=dstr(now);
@@ -3829,7 +3830,8 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       };
       document.getElementById('gaResend').onclick=function(){
         sb.from('invitations').update({status:'revoked'}).eq('id',invId).then(function(){
-          sb.from('invitations').insert({ organization_id:me.organization_id, email:g.email, name:(g.name&&g.name.indexOf('@')<0)?g.name:null, invited_by:me.id }).then(function(r2){
+          sb.from('invitations').insert({ organization_id:me.organization_id, email:g.email, name:(g.name&&g.name.indexOf('@')<0)?g.name:null, invited_by:me.id, as_guest:(g.__asGuest===true) }).then(function(r2){
+            if(r2&&r2.error&&String(r2.error.message||'').indexOf('as_guest')>=0&&g.__asGuest!==true){ return sb.from('invitations').insert({ organization_id:me.organization_id, email:g.email, name:(g.name&&g.name.indexOf('@')<0)?g.name:null, invited_by:me.id }); } return r2; }).then(function(r2){
             if(r2&&r2.error){ document.getElementById('gaErr').textContent=r2.error.message; return; }
             logAdmin('invitasjon_resendt', g.email, ''); try{ toast('Invitasjon sendt på nytt','Ny e-post er på vei.'); }catch(e){} close(); setTimeout(function(){ location.reload(); },600);
           });
@@ -3940,6 +3942,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       '<form id="igC"><h3>Inviter guide</h3><p class="s">Guiden får en e-post med App Store-lenke og kobles automatisk til '+_escR(orgName)+' ved registrering.</p>'+
       '<label>Navn (valgfritt)</label><input id="igName" maxlength="80" autocomplete="off">'+
       '<label>E-post *</label><input id="igEmail" type="email" required maxlength="120" autocomplete="off" placeholder="guide@firma.no">'+
+      '<label style="display:flex;align-items:center;gap:9px;margin-top:12px;cursor:pointer;text-transform:none;letter-spacing:0;font:400 12.5px var(--sans);color:#c8d6e8"><input type="checkbox" id="igGuest" style="width:auto;accent-color:#e0a458"> Gjesteguide — innleid/frilans med eget Solo-abonnement. Ser kun egne turer og deles ikke i organisasjonens GPS-visning. Teller ikke som sete.</label>'+
       '<div id="igErr"></div>'+
       '<div class="btns"><button type="button" id="igCancel">Avbryt</button><button type="submit" id="igSend">Send invitasjon</button></div>'+
       '<p class="f">NB: har personen allerede en Daedalus-konto på denne e-posten, kobles den ikke automatisk (v1) — guiden må da kontakte dere.</p></form>';
@@ -3954,7 +3957,19 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       var err=document.getElementById('igErr');
       if(!email || email.indexOf('@')<1){ err.textContent='Oppgi en gyldig e-postadresse.'; return; }
       var btn=document.getElementById('igSend'); btn.disabled=true; btn.textContent='Sender…';
-      sb.from('invitations').insert({ organization_id:(me&&me.organization_id)||null, email:email, name:name||null, invited_by:(me&&me.id)||null }).then(function(res){
+      var asGuest=!!(document.getElementById('igGuest')&&document.getElementById('igGuest').checked);
+      var payload={ organization_id:(me&&me.organization_id)||null, email:email, name:name||null, invited_by:(me&&me.id)||null, as_guest:asGuest };
+      var send=function(pl){ return sb.from('invitations').insert(pl); };
+      send(payload).then(function(res){
+        /* DB uten as_guest-kolonnen ennaa (R4-SQL ikke kjort): vanlig invitasjon gaar fortsatt,
+           men en GJESTE-invitasjon nektes aerlig i stedet for aa sendes som fast guide. */
+        if(res&&res.error&&String(res.error.message||'').indexOf('as_guest')>=0){
+          if(asGuest){ err.textContent='Gjestestøtte krever databaseoppdatering (R4-SQL). Send som vanlig guide, eller kjør SQL-en først.'; btn.disabled=false; btn.textContent='Send invitasjon'; return null; }
+          delete payload.as_guest; return send(payload);
+        }
+        return res;
+      }).then(function(res){
+        if(res===null) return;
         if(res&&res.error){
           var msg=String(res.error.message||'');
           err.textContent = (String(res.error.code)==='23505'||/duplicate/i.test(msg))? 'Denne e-posten er allerede invitert.' : ('Kunne ikke lagre: '+msg);
