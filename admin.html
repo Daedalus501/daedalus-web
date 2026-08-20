@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Daedalus · Kommandosenter — Fjellguide AS</title>
+<title>Daedalus · Kommandosenter</title>
 <meta name="description" content="Daedalus — Guide &amp; Safety. Webadmin for daglig leder. Tromsø / Tamokdalen.">
 <link rel="icon" type="image/png" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -409,7 +409,37 @@ a{color:var(--accent-soft)}
 .js .mk{opacity:0; transform:translate(-50%,-180%)}
 .js .in .mk, .js .leaflet-marker-icon .mk{transition:opacity .6s ease, transform .8s var(--spring); transition-delay:var(--d,1.2s)}
 .js .in .mk{opacity:1; transform:translate(-50%,-100%)}
-.cert-bar.crit i{background:linear-gradient(90deg,#8c3f38,var(--red))}.mk-gps{position:relative;display:flex;align-items:center;gap:7px}.mk-gps::before{content:'';position:absolute;left:-6px;top:50%;transform:translateY(-50%);width:25px;height:25px;border-radius:50%;background:rgba(8,15,28,.78);z-index:-1}.mk-cnt{position:absolute;right:-7px;top:-7px;min-width:19px;height:19px;padding:0 5px;display:grid;place-items:center;border-radius:999px;background:linear-gradient(180deg,#d3ae5c,#a8842f);color:#180f02;font:800 10.5px/1 var(--sans);letter-spacing:.01em;border:1.5px solid rgba(10,18,33,.92);box-shadow:0 3px 10px rgba(2,6,14,.6)}.mk.akt .mk-cnt{background:linear-gradient(180deg,#79d194,#3f8f5c);color:#03170b}.leaflet-popup.cl-pop .leaflet-popup-content-wrapper{background:rgba(12,22,38,.97);border:1px solid rgba(255,255,255,.12);border-radius:13px;box-shadow:0 18px 44px rgba(2,6,14,.65);color:var(--text);padding:5px}.leaflet-popup.cl-pop .leaflet-popup-content{margin:7px 9px;font:400 12px/1.5 var(--sans)}.leaflet-popup.cl-pop .leaflet-popup-tip{background:rgba(12,22,38,.97);border:1px solid rgba(255,255,255,.12);box-shadow:none}.leaflet-popup.cl-pop a.leaflet-popup-close-button{color:#8aa0bd;font-weight:400;padding:6px 7px 0 0}.leaflet-popup.cl-pop a.leaflet-popup-close-button:hover{color:var(--text);background:none}.cl-h{font:700 10px/1 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:#8aa0bd;margin:2px 2px 9px}.cl-r{display:flex;align-items:center;gap:9px;width:100%;text-align:left;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.022);border-radius:9px;padding:7px 9px;margin:0 0 5px;cursor:pointer;transition:background .16s ease,border-color .16s ease,transform .16s ease}.cl-r:last-child{margin-bottom:1px}.cl-r:hover{background:rgba(74,159,224,.11);border-color:rgba(74,159,224,.38);transform:translateX(1px)}.cl-r i{flex:none;width:8px;height:8px;border-radius:50%;box-shadow:0 0 0 3px rgba(255,255,255,.05)}.cl-n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:600 12.5px/1.25 var(--sans);color:var(--text)}.cl-s{flex:none;font:500 10.5px/1 var(--sans);color:#8aa0bd;letter-spacing:.02em}.eq-wrap{display:flex;flex-wrap:wrap;gap:6px}.eq-chip{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);border-radius:999px;padding:5px 12px 5px 9px;font:600 12px/1 var(--sans);color:var(--text);white-space:nowrap}.eq-chip i{flex:none;width:7px;height:7px;border-radius:50%;box-shadow:0 0 0 3px rgba(255,255,255,.05)}.eq-chip .eq-m{font-weight:500;font-size:11px;color:#8aa0bd;letter-spacing:.02em}.eq-chip.veh i{background:#4a9fe0}.eq-chip.dog i{background:#c9a24b}.eq-chip.miss{border-style:dashed;color:#8aa0bd;font-weight:500}.eq-chip.miss i{background:#e8857c}.mk-gps .dot{flex:none;width:13px;height:13px;border-radius:50%;background:#7fb1bd;border:2px solid #eaf6fa;box-shadow:0 0 0 0 rgba(127,177,189,.55);animation:gpsPulse 2.2s ease-out infinite}.mk-gps .glab{font-size:10.5px;font-weight:700;color:#eaf6fa;background:rgba(10,19,34,.82);border:1px solid rgba(127,177,189,.5);border-radius:6px;padding:2px 7px;white-space:nowrap}.mk-gps.stale .dot{background:#5a6b82;border-color:#9aa7b8;animation:none}.mk-gps.stale .glab{color:#9aa7b8;border-color:rgba(90,107,130,.6)}@keyframes gpsPulse{0%{box-shadow:0 0 0 0 rgba(127,177,189,.55)}70%{box-shadow:0 0 0 12px rgba(127,177,189,0)}100%{box-shadow:0 0 0 0 rgba(127,177,189,0)}}.mk-sos{position:absolute; transform:translate(-50%,-50%); pointer-events:auto; width:46px; height:46px}
+.cert-bar.crit i{background:linear-gradient(90deg,#8c3f38,var(--red))}
+/* ===== V2: HMS-verktoy, promo, feedback ===== */
+.v2tools{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:6px 0 22px}
+.v2t{border:1px solid var(--line,rgba(255,255,255,.08));border-radius:12px;background:rgba(255,255,255,.02);padding:13px 15px;cursor:pointer;text-align:left;transition:border-color .15s,background .15s;font-family:var(--sans)}
+.v2t:hover{border-color:rgba(74,159,224,.45);background:rgba(74,159,224,.06)}
+.v2t b{display:flex;align-items:center;gap:8px;font:600 12.5px var(--sans);color:var(--text)}
+.v2t b .ic{width:14px;height:14px;color:var(--gold-soft)}
+.v2t span{display:block;font:400 11.5px/1.5 var(--sans);color:var(--muted);margin-top:5px}
+.v2promo{margin:26px 0 0;border:1px solid var(--line,rgba(255,255,255,.08));border-radius:14px;background:linear-gradient(100deg,rgba(201,162,75,.08),rgba(74,159,224,.06));display:flex;align-items:center;gap:16px;padding:16px 20px}
+.v2promo img{width:42px;height:42px;border-radius:10px}
+.v2promo b{font:700 13.5px var(--sans)}
+.v2promo span{display:block;color:var(--muted);font:400 12px var(--sans)}
+.v2promo .stores{margin-left:auto;display:flex;gap:8px}
+.v2store{border:1px solid var(--line-bright,rgba(255,255,255,.14));border-radius:9px;padding:8px 13px;font:600 11.5px var(--sans);color:var(--text);text-decoration:none;background:rgba(0,0,0,.25);white-space:nowrap}
+.tb-fb{border:1px solid rgba(74,159,224,.4);background:rgba(74,159,224,.09);color:#bfe0fa;border-radius:9px;padding:7px 12px;font:600 11.5px var(--sans);cursor:pointer;white-space:nowrap}
+.v2ov{position:fixed;inset:0;z-index:99997;display:flex;align-items:center;justify-content:center;background:rgba(8,14,26,.86);backdrop-filter:blur(8px);font-family:var(--sans)}
+.v2c{width:min(94vw,480px);max-height:90vh;overflow:auto;background:#16273f;border:1px solid #284063;border-radius:16px;padding:22px;color:#c8d6e8}
+.v2c h3{margin:0 0 4px;font-size:16px;color:#eaf2fb}
+.v2c p.s{margin:0 0 14px;color:#8aa0bd;font-size:12.5px}
+.v2c label{display:block;font:600 10.5px var(--sans);letter-spacing:.07em;text-transform:uppercase;color:#8aa0bd;margin:12px 0 4px}
+.v2c input,.v2c textarea,.v2c select{width:100%;box-sizing:border-box;background:#0e1a2c;border:1px solid #284063;color:#eaf2fb;border-radius:9px;padding:9px 11px;font:500 13px var(--sans)}
+.v2c textarea{resize:vertical}
+.v2c .btns{display:flex;gap:8px;margin-top:16px}
+.v2c .btns button{flex:1;border:none;border-radius:9px;padding:10px;font:600 12.5px var(--sans);cursor:pointer}
+.v2c .b-p{background:linear-gradient(135deg,#4a9fe0,#3b82c4);color:#fff}
+.v2c .b-g{background:#22364f;color:#cfe2f5}
+.v2c .err{color:#e8857c;font-size:12px;min-height:14px;margin-top:8px}
+.v2c .ok2{color:#5fb97a;font-size:12px;min-height:14px;margin-top:8px}
+.v2c .row2{display:flex;justify-content:space-between;gap:10px;border-top:1px solid rgba(255,255,255,.07);padding:8px 0;font-size:12.5px}
+.v2c .row2 span:first-child{color:#8aa0bd}
+.mk-gps{position:relative;display:flex;align-items:center;gap:7px}.mk-gps::before{content:'';position:absolute;left:-6px;top:50%;transform:translateY(-50%);width:25px;height:25px;border-radius:50%;background:rgba(8,15,28,.78);z-index:-1}.mk-cnt{position:absolute;right:-7px;top:-7px;min-width:19px;height:19px;padding:0 5px;display:grid;place-items:center;border-radius:999px;background:linear-gradient(180deg,#d3ae5c,#a8842f);color:#180f02;font:800 10.5px/1 var(--sans);letter-spacing:.01em;border:1.5px solid rgba(10,18,33,.92);box-shadow:0 3px 10px rgba(2,6,14,.6)}.mk.akt .mk-cnt{background:linear-gradient(180deg,#79d194,#3f8f5c);color:#03170b}.leaflet-popup.cl-pop .leaflet-popup-content-wrapper{background:rgba(12,22,38,.97);border:1px solid rgba(255,255,255,.12);border-radius:13px;box-shadow:0 18px 44px rgba(2,6,14,.65);color:var(--text);padding:5px}.leaflet-popup.cl-pop .leaflet-popup-content{margin:7px 9px;font:400 12px/1.5 var(--sans)}.leaflet-popup.cl-pop .leaflet-popup-tip{background:rgba(12,22,38,.97);border:1px solid rgba(255,255,255,.12);box-shadow:none}.leaflet-popup.cl-pop a.leaflet-popup-close-button{color:#8aa0bd;font-weight:400;padding:6px 7px 0 0}.leaflet-popup.cl-pop a.leaflet-popup-close-button:hover{color:var(--text);background:none}.cl-h{font:700 10px/1 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:#8aa0bd;margin:2px 2px 9px}.cl-r{display:flex;align-items:center;gap:9px;width:100%;text-align:left;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.022);border-radius:9px;padding:7px 9px;margin:0 0 5px;cursor:pointer;transition:background .16s ease,border-color .16s ease,transform .16s ease}.cl-r:last-child{margin-bottom:1px}.cl-r:hover{background:rgba(74,159,224,.11);border-color:rgba(74,159,224,.38);transform:translateX(1px)}.cl-r i{flex:none;width:8px;height:8px;border-radius:50%;box-shadow:0 0 0 3px rgba(255,255,255,.05)}.cl-n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:600 12.5px/1.25 var(--sans);color:var(--text)}.cl-s{flex:none;font:500 10.5px/1 var(--sans);color:#8aa0bd;letter-spacing:.02em}.eq-wrap{display:flex;flex-wrap:wrap;gap:6px}.eq-chip{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);border-radius:999px;padding:5px 12px 5px 9px;font:600 12px/1 var(--sans);color:var(--text);white-space:nowrap}.eq-chip i{flex:none;width:7px;height:7px;border-radius:50%;box-shadow:0 0 0 3px rgba(255,255,255,.05)}.eq-chip .eq-m{font-weight:500;font-size:11px;color:#8aa0bd;letter-spacing:.02em}.eq-chip.veh i{background:#4a9fe0}.eq-chip.dog i{background:#c9a24b}.eq-chip.miss{border-style:dashed;color:#8aa0bd;font-weight:500}.eq-chip.miss i{background:#e8857c}.mk-gps .dot{flex:none;width:13px;height:13px;border-radius:50%;background:#7fb1bd;border:2px solid #eaf6fa;box-shadow:0 0 0 0 rgba(127,177,189,.55);animation:gpsPulse 2.2s ease-out infinite}.mk-gps .glab{font-size:10.5px;font-weight:700;color:#eaf6fa;background:rgba(10,19,34,.82);border:1px solid rgba(127,177,189,.5);border-radius:6px;padding:2px 7px;white-space:nowrap}.mk-gps.stale .dot{background:#5a6b82;border-color:#9aa7b8;animation:none}.mk-gps.stale .glab{color:#9aa7b8;border-color:rgba(90,107,130,.6)}@keyframes gpsPulse{0%{box-shadow:0 0 0 0 rgba(127,177,189,.55)}70%{box-shadow:0 0 0 12px rgba(127,177,189,0)}100%{box-shadow:0 0 0 0 rgba(127,177,189,0)}}.mk-sos{position:absolute; transform:translate(-50%,-50%); pointer-events:auto; width:46px; height:46px}
 .mk-sos .core{position:absolute; inset:13px; border-radius:50%; background:var(--red);
   box-shadow:0 0 0 3px rgba(217,104,95,.35), 0 0 22px rgba(217,104,95,.9); animation:sosCore 1.4s ease-in-out infinite}
 @keyframes sosCore{50%{box-shadow:0 0 0 6px rgba(217,104,95,.18), 0 0 34px rgba(217,104,95,1)}}
@@ -778,8 +808,8 @@ body.lock{overflow:hidden}
     </div>
     <span class="tb-sep" aria-hidden="true"></span>
     <div class="org">
-      <span class="org-name">Fjellguide AS</span>
-      <span class="org-sub">Org. 923 456 789 · Tromsø</span>
+      <span class="org-name">&nbsp;</span>
+      <span class="org-sub">&nbsp;</span>
     </div>
     <div class="tb-spacer"></div>
     <div class="tb-clock num" aria-label="Klokke"><b id="tbTime">--:--</b><span id="tbDate">&nbsp;</span></div>
@@ -788,6 +818,7 @@ body.lock{overflow:hidden}
       <span class="ph">Søk eller kommando&hellip;</span>
       <kbd>⌘K</kbd>
     </button>
+    <button class="tb-fb" id="fbBtn" type="button">Tilbakemelding</button>
     <button class="tb-bell" id="bell" type="button" aria-label="Varsler">
       <svg class="ic"><use href="#i-bell"/></svg>
       <span class="bell-n on" id="bellN">1</span>
@@ -796,9 +827,9 @@ body.lock{overflow:hidden}
       <svg class="ic ic-s"><use href="#i-file"/></svg>
       <span>Abonnement</span>
     </a>
-    <button class="me" type="button" aria-label="Profil — Mikael Berg, daglig leder">
+    <button class="me" type="button" aria-label="Profil">
       <span class="me-av">MB<span class="me-dot"></span></span>
-      <span class="me-tx"><b>Mikael Berg</b><span>Daglig leder</span></span>
+      <span class="me-tx"><b id="meName">&nbsp;</b><span id="meRole">&nbsp;</span></span>
     </button>
   </div>
 </header>
@@ -807,10 +838,9 @@ body.lock{overflow:hidden}
   <!-- ======= HERO ======= -->
   <section class="hero">
     <div class="hero-l rv" style="--d:.08s">
-      <div class="kicker">Operativ kommando · Tromsø / Tamokdalen</div>
-      <h1><span id="greet">God dag</span>, <span id="heroName">Mikael</span> —<br>fjellet er under <em>oppsyn</em>.</h1>
-      <p class="hero-sub"><b>7 aktive turer</b> i Tamokdalen og Lyngen. 9 guider på vakt og alle sporingsenheter
-        rapporterer normalt. Skredvarsel for regionen: <b>faregrad 2 — moderat</b>, våt løssnø i soleksponerte heng.</p>
+      <div class="kicker" id="kicker">Kommandosenter</div>
+      <h1><span id="greet">God dag</span>, <span id="heroName">&hellip;</span> —<br><em id="heroOps">henter driftsbildet</em>.</h1>
+      <p class="hero-sub">Turer, hendelser, skredvarsel og sertifikater hentes direkte fra organisasjonens egne data.</p>
       <div class="hero-cta">
         <button class="btn btn-pri btn-mag rip-host" type="button" data-toast="Ny tur · Veiviser åpnes|Turoppsett med rute, guider og gjesteliste (demo)."><svg class="ic ic-s"><use href="#i-plus"/></svg>Ny tur</button>
         <button class="btn btn-gold btn-mag rip-host" type="button" data-toast="Dagsrapport genereres|PDF med drift, vær og hendelser sendes til styret (demo)."><svg class="ic ic-s"><use href="#i-file"/></svg>Dagsrapport</button>
@@ -848,7 +878,7 @@ body.lock{overflow:hidden}
       <div class="sos-tx">
         <div class="l1"><span class="sos-tag">SOS</span><b>Fallalarm utløst — Tamokdalen vest</b></div>
         <p class="l2">Gruppe 4 · 8 gjester · Utløst <b class="num" id="sosTime">11:42</b> fra deltakerenhet D-117.
-          <b>Ingrid Solheim</b> er nærmeste guide og rykker ut. Posisjon låst: <b class="num">69.142°&nbsp;N, 19.755°&nbsp;Ø</b>.</p>
+          Nærmeste guide varsles. Posisjon: <b class="num">69.142°&nbsp;N, 19.755°&nbsp;Ø</b>.</p>
       </div>
       <div class="sos-eta"><b class="num" id="sosEta">9</b><span>min ETA</span></div>
       <div class="sos-act">
@@ -866,29 +896,29 @@ body.lock{overflow:hidden}
     <article class="card kpi sp3 rv" data-tilt style="--d:.06s">
       <div class="sheen"></div>
       <div class="kpi-top"><span class="kpi-icb"><svg class="ic"><use href="#i-mtn"/></svg></span><span class="kpi-lab">Aktive turer</span></div>
-      <div class="kpi-mid"><span class="kpi-num num" data-count="7">0</span><span class="delta up"><svg class="ic"><use href="#i-trend"/></svg>+2</span></div>
-      <div class="kpi-foot"><span class="kpi-note">5 i Tamokdalen · 2 i Lyngen</span>
+      <div class="kpi-mid"><span class="kpi-num num" data-count="0">0</span></div>
+      <div class="kpi-foot"><span class="kpi-note">&nbsp;</span>
         <svg class="spark" viewBox="0 0 104 34" data-vals="3,4,4,6,5,7,6,7" aria-hidden="true"></svg></div>
     </article>
     <article class="card kpi green sp3 rv" data-tilt style="--d:.12s">
       <div class="sheen"></div>
-      <div class="kpi-top"><span class="kpi-icb"><svg class="ic"><use href="#i-users"/></svg></span><span class="kpi-lab">Gjester i fjellet</span></div>
-      <div class="kpi-mid"><span class="kpi-num num" data-count="64">0</span><span class="delta up"><svg class="ic"><use href="#i-trend"/></svg>+12&thinsp;%</span></div>
-      <div class="kpi-foot"><span class="kpi-note">Største gruppe: 12 — brevandring</span>
+      <div class="kpi-top"><span class="kpi-icb"><svg class="ic"><use href="#i-users"/></svg></span><span class="kpi-lab">Gjester på tur</span></div>
+      <div class="kpi-mid"><span class="kpi-num num" data-count="0">0</span></div>
+      <div class="kpi-foot"><span class="kpi-note">&nbsp;</span>
         <svg class="spark" viewBox="0 0 104 34" data-vals="38,42,51,47,55,60,58,64" aria-hidden="true"></svg></div>
     </article>
     <article class="card kpi gold sp3 rv" data-tilt style="--d:.18s">
       <div class="sheen"></div>
       <div class="kpi-top"><span class="kpi-icb"><svg class="ic"><use href="#i-shield"/></svg></span><span class="kpi-lab">Guider på vakt</span></div>
-      <div class="kpi-mid"><span class="kpi-num num" data-count="9">0<small>&thinsp;/&thinsp;12</small></span><span class="delta up"><svg class="ic"><use href="#i-trend"/></svg>+1</span></div>
-      <div class="kpi-foot"><span class="kpi-note">3 ledige · 2 hviler · full dekning</span>
+      <div class="kpi-mid"><span class="kpi-num num" data-count="0">0<small>&thinsp;/&thinsp;0</small></span></div>
+      <div class="kpi-foot"><span class="kpi-note">&nbsp;</span>
         <svg class="spark" viewBox="0 0 104 34" data-vals="8,7,9,9,8,10,9,9" aria-hidden="true"></svg></div>
     </article>
     <article class="card kpi ice sp3 rv" data-tilt style="--d:.24s">
       <div class="sheen"></div>
       <div class="kpi-top"><span class="kpi-icb"><svg class="ic"><use href="#i-file"/></svg></span><span class="kpi-lab">Rapporter i dag</span></div>
-      <div class="kpi-mid"><span class="kpi-num num" data-count="12">0</span><span class="delta dn"><svg class="ic"><use href="#i-trend-d"/></svg>3 venter</span></div>
-      <div class="kpi-foot"><span class="kpi-note">Siste: 11:21 — turrapport Blåtind</span>
+      <div class="kpi-mid"><span class="kpi-num num" data-count="0">0</span></div>
+      <div class="kpi-foot"><span class="kpi-note">&nbsp;</span>
         <svg class="spark" viewBox="0 0 104 34" data-vals="5,8,6,9,7,11,9,12" aria-hidden="true"></svg></div>
     </article>
   </section>
@@ -1047,27 +1077,27 @@ body.lock{overflow:hidden}
       <div class="glist" id="glist">
         <button class="g-row" type="button" data-g="0" style="--av1:#e9cf9b;--av2:#c9a24b">
           <span class="g-av">IS<span class="st st-tur"></span></span>
-          <span class="g-tx"><b>Ingrid Solheim</b><span>Tindevegleder NORTIND · Tamokdalen vest</span></span>
+          <span class="g-tx"><b>&nbsp;</b><span>&nbsp;</span></span>
           <span class="g-st tur">På tur</span><svg class="ic ic-s chev"><use href="#i-chev"/></svg>
         </button>
         <button class="g-row" type="button" data-g="1" style="--av1:#9cc7ee;--av2:#5d93c9">
           <span class="g-av">LE<span class="st st-tur"></span></span>
-          <span class="g-tx"><b>Lars Eriksen</b><span>Skiguide · Blåtind, 12 gjester</span></span>
+          <span class="g-tx"><b>&nbsp;</b><span>&nbsp;</span></span>
           <span class="g-st tur">På tur</span><svg class="ic ic-s chev"><use href="#i-chev"/></svg>
         </button>
         <button class="g-row" type="button" data-g="2" style="--av1:#a8e0c3;--av2:#5fb97a">
           <span class="g-av">AN<span class="st st-ledig"></span></span>
-          <span class="g-tx"><b>Astrid Nygård</b><span>Breguide · Tromsø base</span></span>
+          <span class="g-tx"><b>&nbsp;</b><span>&nbsp;</span></span>
           <span class="g-st ledig">Ledig</span><svg class="ic ic-s chev"><use href="#i-chev"/></svg>
         </button>
         <button class="g-row" type="button" data-g="3" style="--av1:#f0c79a;--av2:#e0a458">
           <span class="g-av">JV<span class="st st-hvile"></span></span>
-          <span class="g-tx"><b>Jonas Vik</b><span>Turleder DNT · av vakt siden 06:00</span></span>
+          <span class="g-tx"><b>&nbsp;</b><span>&nbsp;</span></span>
           <span class="g-st hvile">Hvile</span><svg class="ic ic-s chev"><use href="#i-chev"/></svg>
         </button>
         <button class="g-row" type="button" data-g="4" style="--av1:#b9d8ef;--av2:#7fb1bd">
           <span class="g-av">ES<span class="st st-tur"></span></span>
-          <span class="g-tx"><b>Emma Strand</b><span>Skiguide · Lyngen, Jiehkkevárri-platået</span></span>
+          <span class="g-tx"><b>&nbsp;</b><span>&nbsp;</span></span>
           <span class="g-st tur">På tur</span><svg class="ic ic-s chev"><use href="#i-chev"/></svg>
         </button>
         <button class="g-row" type="button" data-g="5" style="--av1:#9aa9c0;--av2:#46566e">
@@ -1084,34 +1114,25 @@ body.lock{overflow:hidden}
     <article class="card sp4 rep-col rv" style="--d:.19s">
       <div class="card-h"><svg class="ic" style="color:var(--gold-soft)"><use href="#i-file"/></svg><h3>Siste rapporter</h3><span class="hint">Arkiv &rarr;</span></div>
       <div class="replist">
-        <div class="rep">
-          <span class="rep-ic"><svg class="ic"><use href="#i-file"/></svg></span>
-          <span class="rep-tx"><b>Turrapport — Topptur Tamokdalen</b><span>Ingrid Solheim · i dag 11:21 · 1,2 MB</span></span>
-          <span class="rep-bdg sig">Signert</span>
-          <button class="rep-dl" type="button" aria-label="Last ned PDF" data-toast="Laster ned PDF|Turrapport — Topptur Tamokdalen (demo)."><svg class="ic ic-s"><use href="#i-dl"/></svg></button>
-        </div>
-        <div class="rep">
-          <span class="rep-ic"><svg class="ic"><use href="#i-file"/></svg></span>
-          <span class="rep-tx"><b>Avviksrapport — Bindingsfeil leieutstyr</b><span>Lars Eriksen · i går 17:40 · 0,4 MB</span></span>
-          <span class="rep-bdg wait">Venter sign.</span>
-          <button class="rep-dl" type="button" aria-label="Last ned PDF" data-toast="Laster ned PDF|Avviksrapport — bindingsfeil (demo)."><svg class="ic ic-s"><use href="#i-dl"/></svg></button>
-        </div>
-        <div class="rep">
-          <span class="rep-ic"><svg class="ic"><use href="#i-file"/></svg></span>
-          <span class="rep-tx"><b>HMS-inspeksjon — Utstyrslager Tromsø</b><span>Jonas Vik · 8. juni · 2,1 MB</span></span>
-          <span class="rep-bdg sig">Signert</span>
-          <button class="rep-dl" type="button" aria-label="Last ned PDF" data-toast="Laster ned PDF|HMS-inspeksjon — utstyrslager (demo)."><svg class="ic ic-s"><use href="#i-dl"/></svg></button>
-        </div>
-        <div class="rep">
-          <span class="rep-ic"><svg class="ic"><use href="#i-file"/></svg></span>
-          <span class="rep-tx"><b>Skredobservasjon — Tamokdalen øst</b><span>Emma Strand · 7. juni · 0,8 MB</span></span>
-          <span class="rep-bdg ark">Arkivert</span>
-          <button class="rep-dl" type="button" aria-label="Last ned PDF" data-toast="Laster ned PDF|Skredobservasjon — Tamokdalen øst (demo)."><svg class="ic ic-s"><use href="#i-dl"/></svg></button>
-        </div>
+        <div class="rep" style="display:none"><span class="rep-ic"><svg class="ic"><use href="#i-file"/></svg></span><span class="rep-tx"><b></b><span></span></span><span class="rep-bdg"></span><button class="rep-dl" type="button" aria-label="Last ned PDF"><svg class="ic ic-s"><use href="#i-dl"/></svg></button></div>
+        <div class="rep" style="display:none"><span class="rep-ic"><svg class="ic"><use href="#i-file"/></svg></span><span class="rep-tx"><b></b><span></span></span><span class="rep-bdg"></span><button class="rep-dl" type="button" aria-label="Last ned PDF"><svg class="ic ic-s"><use href="#i-dl"/></svg></button></div>
+        <div class="rep" style="display:none"><span class="rep-ic"><svg class="ic"><use href="#i-file"/></svg></span><span class="rep-tx"><b></b><span></span></span><span class="rep-bdg"></span><button class="rep-dl" type="button" aria-label="Last ned PDF"><svg class="ic ic-s"><use href="#i-dl"/></svg></button></div>
+        <div class="rep" style="display:none"><span class="rep-ic"><svg class="ic"><use href="#i-file"/></svg></span><span class="rep-tx"><b></b><span></span></span><span class="rep-bdg"></span><button class="rep-dl" type="button" aria-label="Last ned PDF"><svg class="ic ic-s"><use href="#i-dl"/></svg></button></div>
+                </div>
       </div>
     </article>
   </section>
 
+  <div class="sec-head rv" style="--d:0s">
+    <span class="sec-no plx" data-speed=".05">HMS</span><h2 class="sec-title" style="margin:0">HMS-verktøy</h2>
+    <div class="rule"></div><span class="sec-sub">rapporter · revisjonslogg · beredskap · sertifikater</span>
+  </div>
+  <div class="v2tools">
+    <button class="v2t" type="button" id="v2NewRep"><b><svg class="ic"><use href="#i-file"/></svg>Ny HMS-rapport (PDF)</b><span>Skriv egen rapport i samme stil som appens turrapporter. Egen WEB-nummerserie.</span></button>
+    <button class="v2t" type="button" id="v2Audit"><b><svg class="ic"><use href="#i-search"/></svg>Revisjonslogg</b><span>Alle admin-handlinger med tid og ansvarlig. Klar for tilsyn.</span></button>
+    <button class="v2t" type="button" id="v2Emg"><b><svg class="ic"><use href="#i-shield"/></svg>Beredskapsplan</b><span>Gjeldende plan og vaktleder-telefon for organisasjonen.</span></button>
+    <button class="v2t" type="button" id="v2Cert"><b><svg class="ic"><use href="#i-users"/></svg>Sertifikatoversikt</b><span>Utløpsdatoer per guide. Varsel 30 dager før utløp.</span></button>
+  </div>
   <div class="sec-head rv" style="--d:0s">
     <span class="sec-no plx" data-speed=".05">05</span><h2 class="sec-title" style="margin:0">Planlegging og ressurser</h2>
     <div class="rule"></div><span class="sec-sub">Maler · kjøretøy · hundespann</span>
@@ -1157,13 +1178,21 @@ body.lock{overflow:hidden}
     </article>
   </section>
 
+  <section class="v2promo rv">
+    <img src="icon.png" alt="" width="42" height="42">
+    <div><b>Guidene dine bruker Daedalus-appen</b><span>Sikkerhetssjekk, telling, SOS og rapporter — fra felt til dette panelet.</span></div>
+    <div class="stores">
+      <a class="v2store" href="https://apps.apple.com/no/app/id6761403819" target="_blank" rel="noopener">App Store</a>
+      <a class="v2store" href="https://play.google.com/store/apps/details?id=com.hoiseth.daedalus" target="_blank" rel="noopener">Google Play</a>
+    </div>
+  </section>
   <footer class="rv" style="--d:0s">
     <span class="beat"><i></i>Alle systemer operative</span>
     <span>Daedalus · Guide &amp; Safety — webadmin <b>v2.0</b></span>
     <span class="sp"></span>
-    <a class="lnk" data-toast="Beredskapsplan|Åpner gjeldende beredskapsplan, revisjon 2026-B (demo).">Beredskapsplan</a>
-    <a class="lnk" data-toast="Personvern|Behandlingsprotokoll og databehandleravtaler (demo).">Personvern</a>
-    <span class="crd num">Fjellguide AS · 69.6489° N, 18.9551° Ø</span>
+    <a class="lnk" id="fPlan" style="cursor:pointer">Beredskapsplan</a>
+    <a class="lnk" href="/privacy" target="_blank" rel="noopener">Personvern</a>
+    <span class="crd num" id="fOrg"></span>
     <span style="flex-basis:100%;font-size:11px;color:var(--muted2);line-height:1.5;margin-top:8px;border-top:1px solid var(--line,rgba(255,255,255,.08));padding-top:8px">Daedalus er et hjelpemiddel for dokumentasjon og oversikt — ikke en erstatning for guidens vurdering, opplæring eller sertifisering. Varsler samt vær- og skreddata kan være forsinket eller unøyaktig og må verifiseres uavhengig. Guiden og selskapet har til enhver tid det fulle ansvaret for alle sikkerhetsbeslutninger. <a class="lnk" href="/terms" target="_blank">Fullstendige vilkår</a>.</span>
   </footer>
 </main>
@@ -1881,7 +1910,7 @@ function ackSOS(){
     if(inner){ inner.classList.add('acked'); var lb2=inner.querySelector('.lab'); if(lb2)lb2.textContent='KVITTERT · GR. 4' }
   }
   addFeed('ok','SOS','SOS <b>kvittert av daglig leder</b> — Ingrid S. fortsetter til posisjon',true);
-  toast('SOS kvittert '+fmtHM(new Date()),'Hendelsen er logget i beredskapsjournalen. Ingrid Solheim fortsetter utrykningen.');
+  toast('SOS kvittert '+fmtHM(new Date()),'Hendelsen er logget i beredskapsjournalen. Fortsetter utrykningen.');
 }
 on($('#sosAck'),'click',ackSOS);
 
@@ -1903,8 +1932,6 @@ var ACTIONS=window.ACTIONS=[
   }},
   {l:'Ny tur',h:'Handling',i:'i-plus',f:function(){toast('Ny tur','Veiviser for turoppsett åpnes (demo).')}},
   {l:'Generer dagsrapport',h:'Handling',i:'i-file',f:function(){toast('Dagsrapport','PDF genereres og sendes til styret (demo).')}},
-  {l:'Guideprofil — Ingrid Solheim',h:'Guider',i:'i-users',f:function(){openGuide(0)}},
-  {l:'Guideprofil — Lars Eriksen',h:'Guider',i:'i-users',f:function(){openGuide(1)}},
   {l:'Guideprofil — Astrid Nygård',h:'Guider',i:'i-users',f:function(){openGuide(2)}}
 ];
 function palSetAct(i){
@@ -2320,7 +2347,7 @@ window.__sevNo=function(s){ s=String(s||'').toLowerCase(); return s==='critical'
     return Promise.all([pAva.catch(function(){}),pOrg.catch(function(){})]).then(function(){
       try{ updateStatic(window.__REAL, me); }catch(e){}
       hideGate();
-      if(window.__BOOT) window.__BOOT(); if(!window.__KPI_TICK){ window.__KPI_TICK=setInterval(function(){ try{ load().catch(function(){}); }catch(e){} }, 120000); }
+      if(window.__BOOT) window.__BOOT(); if(!window.__KPI_TICK){ window.__KPI_TICK=setInterval(function(){ if(document.hidden) return; try{ load().catch(function(){}); }catch(e){} }, 120000); }
       startRealtime(orgId);
     });
   }
@@ -2354,7 +2381,7 @@ window.__sevNo=function(s){ s=String(s||'').toLowerCase(); return s==='critical'
       (t.report_summary?('<h2>Sammendrag</h2><p>'+_escR(t.report_summary)+'</p>'):'')+
       '<h2>Hendelser ('+(evs?evs.length:0)+')</h2>'+(rows?('<table><tr><th>Tid</th><th>Type</th><th>Alvor</th><th>Beskrivelse</th><th>Tiltak</th></tr>'+rows+'</table>'):'<p class="k">Ingen hendelser registrert.</p>')+
       '<p class="k" style="margin-top:26px">Generert '+new Date().toLocaleString('nb-NO')+' · Daedalus · Guide &amp; Safety</p>'+
-      '<p style="font-size:10px;color:#7a8699;border-top:1px solid #e3e7ee;padding-top:8px;margin-top:6px;line-height:1.45">Ansvarsfraskrivelse: Daedalus er et hjelpemiddel for dokumentasjon, ikke en erstatning for profesjonell vurdering, opplæring eller sertifisering. Vær- og skreddata kan være forsinket eller unøyaktig og må verifiseres uavhengig. Guiden og selskapet har det fulle ansvaret for sikkerhetsbeslutninger. Vilkår: daedalus-app.no/terms</p>'+
+      ((window.__REP_NOTES&&window.__REP_NOTES.length)?('<h2 style="font-size:13px;letter-spacing:.05em;color:#666;border-bottom:1px solid #ccc;padding-bottom:3px;margin:18px 0 6px">ADMIN-MERKNADER</h2>'+window.__REP_NOTES.map(function(nn){ var tt=''; try{ tt=new Date(nn.created_at).toLocaleString('nb-NO'); }catch(e){} return '<p style="white-space:pre-wrap;border-left:3px solid #c9a24b;padding:6px 10px;background:#faf7ef;margin:6px 0">'+String(nn.details||'').replace(/[&<>]/g,function(c){return c==='&'?'&amp;':c==='<'?'&lt;':'&gt;';})+'<br><span style="color:#8a8270;font-size:10px">Admin · '+tt+' · guidens original uendret</span></p>'; }).join('')):'')+'<p style="font-size:10px;color:#7a8699;border-top:1px solid #e3e7ee;padding-top:8px;margin-top:6px;line-height:1.45">Ansvarsfraskrivelse: Daedalus er et hjelpemiddel for dokumentasjon, ikke en erstatning for profesjonell vurdering, opplæring eller sertifisering. Vær- og skreddata kan være forsinket eller unøyaktig og må verifiseres uavhengig. Guiden og selskapet har det fulle ansvaret for sikkerhetsbeslutninger. Vilkår: daedalus-app.no/terms</p>'+
       '<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print()},350)}<\/scr'+'ipt></body></html>';
     w.document.write(h); w.document.close();
     });
@@ -3417,6 +3444,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       +'<button id="taCancelTrip" style="background:rgba(232,133,124,.12);color:#e8857c;border:1px solid rgba(232,133,124,.4)">Avlys tur</button>'
       +'<button id="taDelete" style="background:rgba(232,133,124,.12);color:#e8857c;border:1px solid rgba(232,133,124,.4)">Slett</button>'
       +'<button id="taPrint" style="background:#22364f;color:#cfe2f5">Skriv ut rapport</button>'
+      +'<button id="taNote" style="background:rgba(201,162,75,.1);color:#e9cf9b;border:1px solid rgba(201,162,75,.4)">Admin-merknad</button>'
       +'<button id="taSy" style="background:#22364f;color:#cfe2f5">Sysselmesteren (vedlegg)</button>'
       +'<button id="taClose" style="background:#22364f;color:#cfe2f5">Lukk</button>'
       +'</div></div>';
@@ -3492,7 +3520,23 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       evCache=(er&&er.data)||[]; var el=$('#taEvents'); if(!el) return;
       el.innerHTML=evCache.length? evCache.map(function(e){ var sev=String(e.severity||'').toLowerCase(); var col=(sev==='high'||sev==='critical')?'#e8857c':(sev==='medium'?'#c9a24b':'#8aa0bd'); return '<div class="ev-row"><span class="num">'+new Date(e.created_at).toLocaleString('nb-NO')+'</span> · <b style="color:'+col+'">'+esc(e.type||'')+' / '+esc(window.__sevNo(e.severity))+'</b> · '+esc(e.description||'')+'</div>'; }).join('') : '<span style="color:#8aa0bd">Ingen hendelser.</span>';
     });
-    $('#taPrint').onclick=function(){ sb.from('events').select('*').eq('trip_id',t.id).order('created_at',{ascending:false}).then(function(er){ printTripReport(t,(er&&er.data)||[]); }); };
+    $('#taNote').onclick=function(){
+      var tx=window.prompt('Admin-merknad til rapporten for «'+(t.name||'')+'».\nGuidens rapport endres aldri — merknaden legges til som egen, signert seksjon:');
+      if(tx==null) return; tx=tx.trim(); if(!tx){ return; }
+      logAdmin('rapport_merknad', t.id, tx);
+      try{ toast('Merknad lagret','Vises som egen seksjon i rapportutskriften.'); }catch(e){}
+    };
+    $('#taPrint').onclick=function(){
+      Promise.all([
+        sb.from('events').select('*').eq('trip_id',t.id).order('created_at',{ascending:false}),
+        sb.from('admin_audit').select('details,created_at').eq('action','rapport_merknad').eq('target',t.id).order('created_at',{ascending:true}).limit(50)
+      ]).then(function(z){
+        var er=z[0], nr=z[1];
+        window.__REP_NOTES=(nr&&!nr.error&&nr.data)||[];
+        printTripReport(t,(er&&er.data)||[]);
+        window.__REP_NOTES=null;
+      });
+    };
     try{ var _sy=document.getElementById('taSy'); if(_sy) _sy.onclick=function(){ __sySkriv(R,t); }; }catch(e){}
     var apB=$('#taApprove');
     if(apB){ apB.onclick=function(){
@@ -3799,8 +3843,119 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
     });
   }
 
+
+  /* ===== V2 2026-08-20: HMS-verktoy (web-only, ingen appendring) ===== */
+  function v2Close(){ var o=document.getElementById('v2Ov'); if(o&&o.parentNode) o.parentNode.removeChild(o); }
+  function v2Modal(html){ v2Close(); var ov=document.createElement('div'); ov.id='v2Ov'; ov.className='v2ov';
+    ov.innerHTML='<div class="v2c">'+html+'</div>';
+    ov.addEventListener('click',function(e){ if(e.target===ov) v2Close(); });
+    document.body.appendChild(ov); return ov; }
+  function v2Esc(x){ return String(x==null?'':x).replace(/[&<>"]/g,function(c){return c==='&'?'&amp;':c==='<'?'&lt;':c==='>'?'&gt;':'&quot;';}); }
+  function v2RepNo(){ var d=new Date(); var p=function(n){return (n<10?'0':'')+n;};
+    return 'WEB-'+d.getFullYear()+'-'+p(d.getMonth()+1)+p(d.getDate())+'-'+p(d.getHours())+p(d.getMinutes()); }
+
+  window.__V2WIRE = function(R, me){
+    var byId=function(id){ return document.getElementById(id); };
+
+    /* Tilbakemelding -> feedback-tabellen */
+    var fb=byId('fbBtn'); if(fb && !fb.__w){ fb.__w=1; fb.onclick=function(){
+      var ov=v2Modal('<h3>Tilbakemelding</h3><p class="s">Går direkte til Daedalus. Takk — alt leses.</p>'
+        +'<label>Hva fungerer, hva mangler?</label><textarea id="v2FbTx" rows="5" maxlength="2000"></textarea>'
+        +'<div class="btns"><button class="b-p" id="v2FbSend">Send</button><button class="b-g" id="v2FbX">Avbryt</button></div><div class="err" id="v2FbErr"></div>');
+      byId('v2FbX').onclick=v2Close;
+      byId('v2FbSend').onclick=function(){
+        var tx=(byId('v2FbTx').value||'').trim(); if(!tx){ byId('v2FbErr').textContent='Skriv noen ord først.'; return; }
+        var btn=byId('v2FbSend'); btn.disabled=true; btn.textContent='Sender …';
+        sb.from('feedback').insert({user_id:(me&&me.id)||null, message:'[web-admin] '+tx}).then(function(r){
+          if(r&&r.error){ byId('v2FbErr').textContent='Kunne ikke sende: '+r.error.message; btn.disabled=false; btn.textContent='Send'; return; }
+          try{ toast('Takk for tilbakemeldingen',''); }catch(e){} v2Close();
+        });
+      };
+    }; }
+
+    /* Beredskapsplan */
+    var pl=function(){ var m=(R&&R.orgMeta)||{};
+      v2Modal('<h3>Beredskapsplan</h3><p class="s">'+v2Esc(R.orgName||'Organisasjonen')+'</p>'
+        +'<div class="row2"><span>Vaktleder-telefon</span><b>'+(m.duty_phone?('<a href="tel:'+v2Esc(String(m.duty_phone).replace(/\s+/g,''))+'">'+v2Esc(m.duty_phone)+'</a>'):'Ikke satt')+'</b></div>'
+        +'<label>Gjeldende plan</label><div style="white-space:pre-wrap;font-size:13px;line-height:1.6;background:#0e1a2c;border:1px solid #284063;border-radius:9px;padding:12px">'+(m.emergency_plan?v2Esc(m.emergency_plan):'<span style="color:#8aa0bd">Ingen beredskapsplan er lagt inn. Planen redigeres i Admin-fanen (organisasjonsfeltene).</span>')+'</div>'
+        +'<div class="btns"><button class="b-g" id="v2EmgX">Lukk</button></div>');
+      byId('v2EmgX').onclick=v2Close; };
+    var e1=byId('v2Emg'); if(e1 && !e1.__w){ e1.__w=1; e1.onclick=pl; }
+    var e2=byId('fPlan'); if(e2 && !e2.__w){ e2.__w=1; e2.onclick=pl; }
+
+    /* Revisjonslogg */
+    var au=byId('v2Audit'); if(au && !au.__w){ au.__w=1; au.onclick=function(){
+      var ov=v2Modal('<h3>Revisjonslogg</h3><p class="s">Admin-handlinger, nyeste først.</p><div id="v2AuL" style="font-size:12.5px;color:#8aa0bd">Laster …</div><div class="btns"><button class="b-g" id="v2AuX">Lukk</button></div>');
+      byId('v2AuX').onclick=v2Close;
+      sb.from('admin_audit').select('action,target,details,created_at').order('created_at',{ascending:false}).limit(100).then(function(r){
+        var el=byId('v2AuL'); if(!el) return;
+        if(r&&r.error){ el.innerHTML='<span style="color:#e8857c">'+v2Esc(r.error.message)+'</span>'; return; }
+        var rows=(r&&r.data)||[];
+        el.innerHTML = rows.length? rows.map(function(a){
+          var t=''; try{ t=new Date(a.created_at).toLocaleString('nb-NO',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}); }catch(e){}
+          return '<div class="row2"><span>'+v2Esc(t)+'</span><span style="flex:1;margin-left:10px;color:#c8d6e8"><b>'+v2Esc(a.action||'')+'</b>'+(a.target?(' · '+v2Esc(a.target)):'')+(a.details?('<br><span style="color:#8aa0bd">'+v2Esc(String(a.details).slice(0,140))+'</span>'):'')+'</span></div>';
+        }).join('') : 'Ingen handlinger logget ennå.';
+      });
+    }; }
+
+    /* Sertifikatoversikt */
+    var ce=byId('v2Cert'); if(ce && !ce.__w){ ce.__w=1; ce.onclick=function(){
+      var rows=[]; var n30=Date.now()+30*864e5;
+      ((R&&R.certsRaw)||[]).forEach(function(g){ var c=g.c; if(!c) return;
+        if(typeof c==='string'){ try{ c=JSON.parse(c); }catch(e){ return; } }
+        if(!Array.isArray(c)) return;
+        c.forEach(function(x){ var nm=String((x&&(x.name||x.n))||'Sertifisering');
+          var d=x&&(x.expiry||x.expires||x.valid_to||x.expiry_date||x.date); var pms=d?Date.parse(d):NaN;
+          rows.push({g:g.n,nm:nm,d:d||null,warn:(!isNaN(pms)&&pms<n30)}); }); });
+      rows.sort(function(a,b){ return (a.d||'9999') < (b.d||'9999') ? -1 : 1; });
+      v2Modal('<h3>Sertifikatoversikt</h3><p class="s">Alle registrerte sertifiseringer. Rødt = utløper innen 30 dager.</p>'
+        +(rows.length? rows.map(function(x){ return '<div class="row2"><span>'+v2Esc(x.g)+'</span><span style="flex:1;margin-left:10px;color:#c8d6e8">'+v2Esc(x.nm)+'</span><b style="color:'+(x.warn?'#e8857c':'#c8d6e8')+'">'+(x.d?v2Esc(x.d):'uten dato')+'</b></div>'; }).join('') : '<p class="s">Ingen sertifiseringer registrert på guidene ennå — de legges inn i appen (Profil).</p>')
+        +'<div class="btns"><button class="b-g" id="v2CeX">Lukk</button></div>');
+      byId('v2CeX').onclick=v2Close;
+    }; }
+
+    /* Ny HMS-rapport (PDF i appens rapportstil, egen WEB-serie) */
+    var nr=byId('v2NewRep'); if(nr && !nr.__w){ nr.__w=1; nr.onclick=function(){
+      var trips=(window.__TRIPS||[]); var opts='<option value="">(ikke knyttet til tur)</option>'+trips.map(function(t){ return '<option value="'+v2Esc(t.id)+'">'+v2Esc(t.name||t.trip_id||'')+' · '+v2Esc(t.date||'')+'</option>'; }).join('');
+      var no=v2RepNo();
+      v2Modal('<h3>Ny HMS-rapport</h3><p class="s">Genereres som PDF i samme stil som appens turrapporter. Nummer: <b class="num">'+no+'</b></p>'
+        +'<label>Tittel</label><input id="v2RTit" maxlength="120" placeholder="F.eks. HMS-inspeksjon utstyrslager">'
+        +'<label>Gjelder tur (valgfritt)</label><select id="v2RTrip">'+opts+'</select>'
+        +'<label>Beskrivelse / funn</label><textarea id="v2RBody" rows="5" maxlength="4000"></textarea>'
+        +'<label>Tiltak</label><textarea id="v2RAct" rows="3" maxlength="2000"></textarea>'
+        +'<div class="btns"><button class="b-p" id="v2RGen">Generer PDF</button><button class="b-g" id="v2RX">Avbryt</button></div><div class="err" id="v2RErr"></div>');
+      byId('v2RX').onclick=v2Close;
+      byId('v2RGen').onclick=function(){
+        var tit=(byId('v2RTit').value||'').trim(); if(!tit){ byId('v2RErr').textContent='Rapporten trenger en tittel.'; return; }
+        var tid=byId('v2RTrip').value||null; var body=(byId('v2RBody').value||'').trim(); var act=(byId('v2RAct').value||'').trim();
+        var t=null; if(tid){ trips.forEach(function(x){ if(x.id===tid) t=x; }); }
+        var E=v2Esc; var org=(R&&R.orgName)||''; var forf=(me&&(me.name||me.email))||'';
+        var w=window.open('','_blank'); if(!w){ byId('v2RErr').textContent='Nettleseren blokkerte utskriftsvinduet.'; return; }
+        var h='<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>'+E(no)+'</title><style>'
+          +'body{font:13px/1.6 system-ui,Segoe UI,sans-serif;color:#111;margin:34px;max-width:820px}'
+          +'h1{font-size:19px;margin:0} .no{color:#666;font-weight:700} .sub{color:#555;font-size:12px;margin-bottom:18px}'
+          +'h2{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:#666;border-bottom:1px solid #ccc;padding-bottom:3px;margin:20px 0 6px}'
+          +'.box{white-space:pre-wrap;border:1px solid #ddd;border-radius:6px;padding:10px 12px;background:#fafafa}'
+          +'.sign{margin-top:30px;border-top:1px solid #ccc;padding-top:8px;color:#555;font-size:11px;display:flex;justify-content:space-between}'
+          +'@media print{body{margin:14mm}}</style></head><body>'
+          +'<div style="display:flex;justify-content:space-between;align-items:baseline"><h1>DAEDALUS · HMS-RAPPORT</h1><span class="no">'+E(no)+'</span></div>'
+          +'<div class="sub">'+E(org)+' · skrevet av '+E(forf)+' · '+E(new Date().toLocaleString('nb-NO'))+'</div>'
+          +'<h2>Tittel</h2><p>'+E(tit)+'</p>'
+          +(t?('<h2>Gjelder tur</h2><p>'+E(t.name||'')+' · '+E(t.date||'')+' · guide '+E(t.guide_name||'—')+' · status '+E(t.status||'')+'</p>'):'')
+          +'<h2>Beskrivelse / funn</h2><div class="box">'+(body?E(body):'—')+'</div>'
+          +'<h2>Tiltak</h2><div class="box">'+(act?E(act):'—')+'</div>'
+          +'<div class="sign"><span>Signert digitalt: '+E(forf)+'</span><span>Generert i Daedalus kommandosenter</span></div>'
+          +'<script>window.onload=function(){window.print();}<\/script></body></html>';
+        w.document.write(h); w.document.close();
+        try{ logAdmin('hms_rapport_generert', tid||'', no+' · '+tit); }catch(e){}
+        v2Close();
+      };
+    }; }
+  };
+
   // ---------- statisk DOM ----------
   function updateStatic(R, me){
+    try{ if(window.__V2WIRE) window.__V2WIRE(R, me); }catch(e){}
     try{
       var _gl=document.getElementById('gaugeList');
       if(_gl){
@@ -3942,9 +4097,13 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       var hs=$('.hero-sub');
       if(hs){
         var avL=R.ava, avT=String(R.avaText||'').toLowerCase();
-        var _tT=(R.kpis.trips===1?' aktiv tur':' aktive turer'), _gT=(R.kpis.guides===1?' guide':' guider');
-        var avHtml=(avL>=1)?('Skredvarsel for regionen: <b>faregrad '+avL+' — '+esc(avT)+'</b>.'):'Skredvarsel: <b>utenfor varslingssesong</b> (Varsom).';
-        hs.innerHTML='<b>'+R.kpis.trips+_tT+'</b> nå. '+R.kpis.guides+_gT+' på vakt og alle sporingsenheter rapporterer normalt. '+avHtml;
+        var _tT=(R.kpis.trips===1?' aktiv tur':' aktive turer');
+        var avHtml=(avL>=1)?('Skredvarsel for regionen: <b>faregrad '+avL+' — '+esc(avT)+'</b> (Varsom).'):'Skredvarsel: <b>utenfor varslingssesong</b> (Varsom).';
+        /* V2: paastanden om sporingsenheter er fjernet — web maaler ikke sporingshelse. */
+        hs.innerHTML='<b>'+R.kpis.trips+_tT+'</b> nå · '+R.kpis.guides+' av '+R.kpis.guidesTotal+' guider tilgjengelig · '+avHtml;
+        var _ki=document.getElementById('kicker'); if(_ki && R.orgName) _ki.textContent='Kommandosenter · '+R.orgName;
+        var _ho=document.getElementById('heroOps'); if(_ho) _ho.textContent=(R.kpis.trips>0? (R.kpis.trips+_tT+' i felt') : 'ingen aktive turer nå');
+        var _fo=document.getElementById('fOrg'); if(_fo && R.orgName) _fo.textContent=R.orgName;
       }
       var chip=$('#opChip'), chipTx=$('#opChipTx');
       if(chip){
