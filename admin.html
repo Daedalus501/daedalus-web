@@ -100,6 +100,7 @@ a{color:var(--accent-soft)}
 @keyframes pupilIn{from{transform:scale(0)} to{transform:scale(1)}}
 .boot-em .halo{transform-box:fill-box; transform-origin:center; opacity:0; animation:haloPing 1.6s ease-out 1.9s forwards}
 @keyframes haloPing{0%{opacity:.65; transform:scale(.32)} 100%{opacity:0; transform:scale(1.5)}}
+.boot-org{margin-top:10px;font:600 10px var(--sans);letter-spacing:.4em;text-transform:uppercase;color:rgba(201,162,75,.8);min-height:12px}
 .boot-word{font:300 clamp(26px,4.4vw,40px)/1 var(--serif); letter-spacing:.85em; padding-left:.85em; color:var(--text);
   opacity:0; animation:wordIn 1.6s var(--ease) .9s forwards}
 @keyframes wordIn{from{opacity:0; letter-spacing:.85em; filter:blur(6px)} to{opacity:1; letter-spacing:.4em; filter:blur(0)}}
@@ -833,6 +834,7 @@ body.lock{overflow:hidden}
       <circle class="pupil" cx="120" cy="70" r="6.5" fill="#e3c884" stroke="#c9a24b" stroke-width="1.4"/>
     </svg>
     <div class="boot-word">DAEDALUS</div>
+    <div class="boot-org" id="bootOrg"></div>
     <div class="boot-sub">Guide &amp; Safety · Kommandosenter</div>
     <div class="boot-bar"><i></i></div>
     <div class="boot-status" id="bootStatus">Initialiserer samband&hellip;</div>
@@ -2344,6 +2346,7 @@ function init(){
     var _el=document.getElementById('bgPhoto');
     if(_el){ var _im=new Image(); _im.onload=function(){ _el.style.backgroundImage='url('+_bg+')'; _el.classList.add('on'); }; _im.src=_bg; }
   }catch(e){}
+  try{ var _bo=document.getElementById('bootOrg'); var _on=localStorage.getItem('dae_last_org'); if(_bo&&_on) _bo.textContent=_on; }catch(e){}
 window.__BOOT=function(){ if(window.__BOOTED)return; window.__BOOTED=1; init(); };
 if(new URLSearchParams(location.search).has('demo')){ window.__BOOT(); } else { setTimeout(function(){ if(!window.__BOOTED&&!window.__ADMIN_ACTIVE){ window.__BOOT(); } },6000); }
 })();
@@ -2392,7 +2395,12 @@ window.__sevNo=function(s){ s=String(s||'').toLowerCase(); return s==='critical'
     '#admGate .brand{display:flex;align-items:center;gap:9px;margin-bottom:16px}'+
     '#admGate .brand img{width:30px;height:30px;border-radius:7px}'+
     '#admGate .brand span{color:#c9a24b;font-size:12px;letter-spacing:.6px;font-weight:600}'+
+    '#admGate .gorg{position:absolute;left:50%;top:11vh;transform:translateX(-50%);text-align:center;pointer-events:none;width:94vw}'+
+    '#admGate .gorg small{display:block;font:600 10px Inter,system-ui,sans-serif;letter-spacing:.42em;color:rgba(201,162,75,.75);text-transform:uppercase;margin-bottom:10px}'+
+    '#admGate .gorg b{display:block;font:300 clamp(30px,4.6vw,54px)/1.15 var(--serif,Georgia,serif);color:rgba(231,236,243,.34);letter-spacing:.04em;text-shadow:0 2px 30px rgba(0,0,0,.5)}'+
+    '#admGate .gorg i{display:block;width:54px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,162,75,.6),transparent);margin:14px auto 0;font-style:normal}'+
     '</style>'+
+    ((function(){ try{ var n=localStorage.getItem('dae_last_org'); if(n){ var e=function(x){return String(x).replace(/[&<>"]/g,function(c){return c==='&'?'&amp;':c==='<'?'&lt;':c==='>'?'&gt;':'&quot;';});}; return '<div class="gorg"><small>Kommandosenter for</small><b>'+e(n)+'</b><i></i></div>'; } }catch(e){} return ''; })())+
     '<form class="gc" id="admForm">'+
       '<div class="brand"><img src="icon.png" onerror="this.style.display=\'none\'"><span>DAEDALUS · KOMMANDOSENTER</span></div>'+
       '<h2>Logg inn</h2><p>Org-admin-tilgang. Solo-kontoer har ikke web-tilgang.</p>'+
@@ -4489,6 +4497,8 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
         var _ki=document.getElementById('kicker'); if(_ki && R.orgName) _ki.textContent='Kommandosenter · '+R.orgName;
         var _ho=document.getElementById('heroOps'); if(_ho) _ho.textContent=(R.kpis.trips>0? (R.kpis.trips+_tT+' i felt') : 'ingen aktive turer nå');
         var _fo=document.getElementById('fOrg'); if(_fo && R.orgName) _fo.textContent=R.orgName;
+        /* V2.5: husk org-navnet til velkomst- og boot-skjermen ved neste besøk */
+        try{ if(R.orgName) localStorage.setItem('dae_last_org', R.orgName); }catch(e){}
       }
       var chip=$('#opChip'), chipTx=$('#opChipTx');
       if(chip){
