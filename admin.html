@@ -1177,6 +1177,10 @@ body.lock{overflow:hidden}
     <button class="v2t" type="button" id="v2Audit"><b><svg class="ic"><use href="#i-search"/></svg>Revisjonslogg</b><span>Alle admin-handlinger med tid og ansvarlig. Klar for tilsyn.</span></button>
     <button class="v2t" type="button" id="v2Emg"><b><svg class="ic"><use href="#i-shield"/></svg>Beredskapsplan</b><span>Gjeldende plan og vaktleder-telefon for organisasjonen.</span></button>
     <button class="v2t" type="button" id="v2Cert"><b><svg class="ic"><use href="#i-users"/></svg>Sertifikatoversikt</b><span>Utløpsdatoer per guide. Varsel 30 dager før utløp.</span></button>
+    <button class="v2t" type="button" id="v2Stat"><b><svg class="ic"><use href="#i-activity"/></svg>Hendelsesstatistikk</b><span>Nesten-ulykker og hendelser: hvor, hva og hvor ofte. Grunnlaget for tiltak.</span></button>
+    <button class="v2t" type="button" id="v2Tilsyn"><b><svg class="ic"><use href="#i-shield"/></svg>Tilsynsmappe (PDF)</b><span>Internkontroll, avvik, sertifikater og revisjonslogg — samlet for tilsyn.</span></button>
+    <button class="v2t" type="button" id="v2Sesong"><b><svg class="ic"><use href="#i-file"/></svg>Sesongrapport (PDF)</b><span>Nøkkeltall for styre og bank: turer, gjester, sikkerhet og drift.</span></button>
+    <button class="v2t" type="button" id="v2Faktura"><b><svg class="ic"><use href="#i-file"/></svg>Fakturagrunnlag</b><span>Turer per guide i perioden — grunnlag for innleide guiders fakturering. CSV og utskrift.</span></button>
   </div>
   <div class="sec-head rv" style="--d:0s">
     <span class="sec-no plx" data-speed=".05">05</span><h2 class="sec-title" style="margin:0">Planlegging og ressurser</h2>
@@ -2677,8 +2681,10 @@ window.__sevNo=function(s){ s=String(s||'').toLowerCase(); return s==='critical'
         var iso=sp.getAttribute('data-ret'); var due=Date.parse(iso); if(isNaN(due)) return;
         var diff=due-Date.now(); var abs=Math.abs(diff);
         var h=Math.floor(abs/3600000), m=Math.floor((abs%3600000)/60000);
-        if(diff>=0){ sp.textContent='Retur om '+(h? h+'t ':'')+m+'m'; sp.style.color='#5fb97a'; sp.style.fontWeight='600'; }
-        else { sp.textContent='OVERSKREDET '+(h? h+'t ':'')+m+'m'; sp.style.color='#e8857c'; sp.style.fontWeight='700'; }
+        var d2=Math.floor(h/24), hr=h%24;
+        var lbl=(d2>=2)? (d2+' d '+(hr? hr+'t':'')) : ((h? h+'t ':'')+m+'m');
+        if(diff>=0){ sp.textContent='Retur om '+lbl; sp.style.color='#5fb97a'; sp.style.fontWeight='600'; }
+        else { sp.textContent='OVERSKREDET '+lbl; sp.style.color='#e8857c'; sp.style.fontWeight='700'; }
       });
     }
     tick(); setInterval(tick, 30000);
@@ -4062,8 +4068,164 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
   function v2RepNo(){ var d=new Date(); var p=function(n){return (n<10?'0':'')+n;};
     return 'WEB-'+d.getFullYear()+'-'+p(d.getMonth()+1)+p(d.getDate())+'-'+p(d.getHours())+p(d.getMinutes()); }
 
+
+    /* ===== V2.3: lederpakker — periodehenting, statistikk, tilsyn, sesong, faktura ===== */
+    function v2Chunk(arr,n){ var ut=[]; for(var i=0;i<arr.length;i+=n) ut.push(arr.slice(i,i+n)); return ut; }
+    function v2HentPeriode(fra, til){
+      var tQ=sb.from('trips').select('id,trip_id,name,date,return_date,status,guide_id,guide_name,activity_type,start_location,safety_completed_at,activity_check_completed_at,activation_override,weather_verified,equipment_checked,emergency_contact_notified,approved_at').gte('date',fra).lte('date',til).order('date',{ascending:true}).limit(1000);
+      var eQ=sb.from('events').select('id,trip_id,type,severity,description,created_at,acknowledged_at').gte('created_at',fra+'T00:00:00Z').lte('created_at',til+'T23:59:59Z').order('created_at',{ascending:true}).limit(1000);
+      var aQ=sb.from('admin_audit').select('action,target,details,created_at').gte('created_at',fra+'T00:00:00Z').lte('created_at',til+'T23:59:59Z').order('created_at',{ascending:true}).limit(500);
+      return Promise.all([tQ,eQ,aQ]).then(function(z){
+        var trips=(z[0]&&z[0].data)||[], events=(z[1]&&z[1].data)||[], audit=(z[2]&&z[2].data)||[];
+        var ids=trips.map(function(t){return t.id;});
+        var parts={};
+        var jobs=v2Chunk(ids,80).map(function(ch){ return sb.from('participants').select('trip_id').in('trip_id',ch).limit(2000); });
+        return Promise.all(jobs).then(function(rs){
+          rs.forEach(function(r){ ((r&&r.data)||[]).forEach(function(p2){ parts[p2.trip_id]=(parts[p2.trip_id]||0)+1; }); });
+          return {trips:trips, events:events, audit:audit, parts:parts,
+                  feil:(z[0]&&z[0].error&&z[0].error.message)||(z[1]&&z[1].error&&z[1].error.message)||null};
+        });
+      });
+    }
+    function v2TypeNo(t){ var m={'sos':'SOS','near-accident':'Nestenulykke','nestenulykke':'Nestenulykke','equipment':'Utstyr','equipment failure':'Utstyr','injury':'Skade','hazard':'Fare','weather':'Vær','weather change':'Vær','route change':'Ruteendring','checkpoint':'Sjekkpunkt','report':'Rapport','comment':'Kommentar'};
+      var k=String(t||'').toLowerCase(); return m[k]|| (k? k.charAt(0).toUpperCase()+k.slice(1) : 'Hendelse'); }
+    function v2Dato(d){ try{ return new Date(d).toLocaleDateString('nb-NO',{day:'2-digit',month:'2-digit',year:'2-digit'}); }catch(e){ return String(d||''); } }
+    function v2Periode(tittel, def, kjørLabel, cb){
+      v2Modal('<h3>'+v2Esc(tittel)+'</h3><p class="s">Velg periode.</p>'
+        +'<div style="display:flex;gap:10px"><div style="flex:1"><label>Fra</label><input type="date" id="v2PFra" value="'+def[0]+'"></div>'
+        +'<div style="flex:1"><label>Til</label><input type="date" id="v2PTil" value="'+def[1]+'"></div></div>'
+        +'<div class="btns"><button class="b-p" id="v2POk">'+v2Esc(kjørLabel)+'</button><button class="b-g" id="v2PX">Avbryt</button></div><div class="err" id="v2PErr"></div>');
+      document.getElementById('v2PX').onclick=v2Close;
+      document.getElementById('v2POk').onclick=function(){
+        var f=document.getElementById('v2PFra').value, t=document.getElementById('v2PTil').value;
+        if(!f||!t||f>t){ document.getElementById('v2PErr').textContent='Ugyldig periode.'; return; }
+        var b=document.getElementById('v2POk'); b.disabled=true; b.textContent='Henter …';
+        v2HentPeriode(f,t).then(function(D){ cb(f,t,D); });
+      };
+    }
+    function v2PrintDoc(no, tittel, meta, kropp){
+      var w=window.open('','_blank'); if(!w){ try{ toast('Popup blokkert','Tillat popup-vinduer for å skrive ut.'); }catch(e){} return; }
+      var E=v2Esc;
+      w.document.write('<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>'+E(no)+'</title><style>'
+        +'body{font:12.5px/1.55 system-ui,Segoe UI,sans-serif;color:#111;margin:30px;max-width:960px}'
+        +'h1{font-size:19px;margin:0} .no{color:#666;font-weight:700} .sub{color:#555;font-size:11.5px;margin-bottom:16px}'
+        +'h2{font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:#666;border-bottom:1px solid #ccc;padding-bottom:3px;margin:20px 0 6px}'
+        +'table{width:100%;border-collapse:collapse;font-size:11px;margin-top:4px}'
+        +'th,td{border:1px solid #ccc;padding:4px 6px;text-align:left;vertical-align:top}th{background:#f0f3f7}'
+        +'.ja{color:#1d7a44}.nei{color:#a8322a}.mut{color:#777}.kpi{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}'
+        +'.kpi div{border:1px solid #d4dae3;border-radius:8px;padding:7px 11px;font-size:11.5px}.kpi b{font-size:15px;display:block}'
+        +'.sign{margin-top:26px;border-top:1px solid #ccc;padding-top:8px;color:#555;font-size:10.5px;display:flex;justify-content:space-between}'
+        +'@media print{body{margin:12mm}h2{page-break-after:avoid}tr{page-break-inside:avoid}}'
+        +'</style></head><body>'
+        +'<div style="display:flex;justify-content:space-between;align-items:baseline"><h1>'+E(tittel)+'</h1><span class="no">'+E(no)+'</span></div>'
+        +'<div class="sub">'+meta+'</div>'+kropp
+        +'<div class="sign"><span>Generert i Daedalus kommandosenter · '+E(new Date().toLocaleString('nb-NO'))+'</span><span>daedalus-app.no</span></div>'
+        +'<script>window.onload=function(){setTimeout(function(){window.print()},400)}<\/script></body></html>');
+      w.document.close();
+    }
+    window.__V2PKG=function(R, me){
+      var E=v2Esc; var org=function(){ return (R&&R.orgName)||''; };
+      var iso=function(d){ return d.toISOString().slice(0,10); };
+      var idag=new Date(); var aar0=idag.getFullYear()+'-01-01';
+      var d90=iso(new Date(Date.now()-90*864e5)), d365=iso(new Date(Date.now()-365*864e5)), dnu=iso(idag);
+      var gname=function(t){ return t.guide_name||'(uten guide)'; };
+
+      var st=document.getElementById('v2Stat'); if(st&&!st.__w){ st.__w=1; st.onclick=function(){
+        v2Periode('Hendelsesstatistikk',[d90,dnu],'Vis',function(f,t,D){
+          var ev=D.events; var per={}; ev.forEach(function(e){ var k=v2TypeNo(e.type); per[k]=(per[k]||0)+1; });
+          var typer=Object.keys(per).sort(function(a,b){return per[b]-per[a];});
+          var alvor=ev.filter(function(e){ var sv=String(e.severity||'').toLowerCase(); return sv==='high'||sv==='critical'; });
+          var ukvit=alvor.filter(function(e){ return !e.acknowledged_at; });
+          var byTrip={}; ev.forEach(function(e){ if(e.trip_id) byTrip[e.trip_id]=(byTrip[e.trip_id]||0)+1; });
+          var tById={}; D.trips.forEach(function(x){ tById[x.id]=x; });
+          var topp=Object.keys(byTrip).sort(function(a,b){return byTrip[b]-byTrip[a];}).slice(0,5);
+          var ovN=D.trips.filter(function(x){ return x.activation_override===true; }).length;
+          v2Modal('<h3>Hendelsesstatistikk</h3><p class="s">'+E(org())+' · '+v2Dato(f)+' – '+v2Dato(t)+' · '+ev.length+' hendelser i '+D.trips.length+' turer</p>'
+            +'<label>Per type</label>'+(typer.length? typer.map(function(k){ return '<div class="row2"><span>'+E(k)+'</span><b>'+per[k]+'</b></div>'; }).join(''):'<p class="s">Ingen hendelser i perioden.</p>')
+            +'<label>Alvorlige</label><div class="row2"><span>Alvorlige/kritiske</span><b>'+alvor.length+'</b></div><div class="row2"><span>Uten kvittering</span><b style="color:'+(ukvit.length?'#e8857c':'#5fb97a')+'">'+ukvit.length+'</b></div><div class="row2"><span>Turer aktivert med overstyring</span><b>'+ovN+'</b></div>'
+            +'<label>Turer med flest hendelser</label>'+(topp.length? topp.map(function(id){ var tt=tById[id]; return '<div class="row2"><span>'+E(tt?(tt.name||''):'(utenfor perioden)')+'</span><b>'+byTrip[id]+'</b></div>'; }).join(''):'<p class="s">—</p>')
+            +'<p class="s" style="margin-top:10px">Mønster å se etter: samme sted, samme type, samme tidspunkt. Ett tiltak på det vanligste mønsteret fjerner mest risiko.</p>'
+            +'<div class="btns"><button class="b-g" id="v2StX">Lukk</button></div>');
+          document.getElementById('v2StX').onclick=v2Close;
+        });
+      }; }
+
+      var ti=document.getElementById('v2Tilsyn'); if(ti&&!ti.__w){ ti.__w=1; ti.onclick=function(){
+        v2Periode('Tilsynsmappe',[d365,dnu],'Generer PDF',function(f,t,D){
+          v2Close();
+          var no='TILSYN-'+f.replace(/-/g,'')+'-'+t.replace(/-/g,'');
+          var jn=function(v){ return v? '<span class="ja">Ja</span>':'<span class="nei">Nei</span>'; };
+          var kropp='<h2>Innhold</h2><p class="mut">A. Turer og sikkerhetsstatus · B. Hendelser og kvittering · C. Aktivert med overstyring · D. Sertifiseringer · E. Revisjonslogg</p>';
+          kropp+='<h2>A. Turer og sikkerhetsstatus ('+D.trips.length+')</h2><table><tr><th>Dato</th><th>Tur</th><th>Guide</th><th>Status</th><th>Grunnsjekk</th><th>Aktivitetssjekk</th><th>Adm.godkjent</th></tr>'
+            +D.trips.map(function(x){ return '<tr><td>'+E(v2Dato(x.date))+'</td><td>'+E(x.name||'')+'</td><td>'+E(gname(x))+'</td><td>'+E(x.status||'')+'</td><td>'+jn(!!x.safety_completed_at||(x.weather_verified&&x.equipment_checked&&x.emergency_contact_notified))+'</td><td>'+(x.activity_check_completed_at?'<span class="ja">Ja</span>':(x.activation_override?'<span class="nei">Overstyrt</span>':'<span class="mut">—</span>'))+'</td><td>'+jn(!!x.approved_at)+'</td></tr>'; }).join('')+'</table>';
+          kropp+='<h2>B. Hendelser ('+D.events.length+')</h2>'+(D.events.length? '<table><tr><th>Tid</th><th>Type</th><th>Alvor</th><th>Beskrivelse</th><th>Kvittert</th></tr>'
+            +D.events.map(function(e){ return '<tr><td>'+E(new Date(e.created_at).toLocaleString('nb-NO'))+'</td><td>'+E(v2TypeNo(e.type))+'</td><td>'+E(window.__sevNo? window.__sevNo(e.severity):String(e.severity||''))+'</td><td>'+E(String(e.description||'').slice(0,160))+'</td><td>'+(e.acknowledged_at?'<span class="ja">Ja</span>':'<span class="mut">—</span>')+'</td></tr>'; }).join('')+'</table>' : '<p class="mut">Ingen hendelser i perioden.</p>');
+          var ov=D.trips.filter(function(x){ return x.activation_override===true; });
+          kropp+='<h2>C. Aktivert med overstyring ('+ov.length+')</h2>'+(ov.length? '<table><tr><th>Dato</th><th>Tur</th><th>Guide</th></tr>'+ov.map(function(x){ return '<tr><td>'+E(v2Dato(x.date))+'</td><td>'+E(x.name||'')+'</td><td>'+E(gname(x))+'</td></tr>'; }).join('')+'</table><p class="mut">Overstyring betyr at turen ble aktivert uten fullført aktivitetssjekk. Rutine: begrunnelse innhentes og dokumenteres som admin-merknad på turrapporten.</p>' : '<p class="mut">Ingen.</p>');
+          var certs=[]; ((R&&R.certsRaw)||[]).forEach(function(g){ var c=g.c; if(typeof c==='string'){ try{ c=JSON.parse(c); }catch(e){ c=null; } } if(Array.isArray(c)) c.forEach(function(x){ certs.push([g.n, String((x&&(x.name||x.n))||''), (x&&(x.expiry||x.expires||x.valid_to||x.expiry_date||x.date))||'']); }); });
+          kropp+='<h2>D. Sertifiseringer ('+certs.length+')</h2>'+(certs.length? '<table><tr><th>Guide</th><th>Sertifisering</th><th>Gyldig til</th></tr>'+certs.map(function(c){ return '<tr><td>'+E(c[0])+'</td><td>'+E(c[1])+'</td><td>'+E(c[2]||'ikke datert')+'</td></tr>'; }).join('')+'</table>' : '<p class="mut">Ingen registrert.</p>');
+          kropp+='<h2>E. Revisjonslogg ('+D.audit.length+')</h2>'+(D.audit.length? '<table><tr><th>Tid</th><th>Handling</th><th>Detaljer</th></tr>'+D.audit.map(function(a){ return '<tr><td>'+E(new Date(a.created_at).toLocaleString('nb-NO'))+'</td><td>'+E(a.action||'')+'</td><td>'+E(String((a.target||'')+' '+(a.details||'')).slice(0,140))+'</td></tr>'; }).join('')+'</table>' : '<p class="mut">Ingen.</p>');
+          v2PrintDoc(no,'DAEDALUS · TILSYNSMAPPE — INTERNKONTROLL',E(org())+' · periode '+v2Dato(f)+' – '+v2Dato(t),kropp);
+          try{ logAdmin('tilsynsmappe_generert','',no); }catch(e){}
+        });
+      }; }
+
+      var se=document.getElementById('v2Sesong'); if(se&&!se.__w){ se.__w=1; se.onclick=function(){
+        v2Periode('Sesongrapport',[aar0,dnu],'Generer PDF',function(f,t,D){
+          v2Close();
+          var no='SESONG-'+f.slice(0,4);
+          var full=D.trips.filter(function(x){return x.status==='completed';}).length;
+          var avl=D.trips.filter(function(x){return x.status==='cancelled';}).length;
+          var gj=0; D.trips.forEach(function(x){ gj+=(D.parts[x.id]||0); });
+          var guider={}; D.trips.forEach(function(x){ if(x.guide_name) guider[x.guide_name]=1; });
+          var ok=D.trips.filter(function(x){ return !!x.safety_completed_at||!!x.activity_check_completed_at||(x.weather_verified&&x.equipment_checked&&x.emergency_contact_notified); }).length;
+          var alvor=D.events.filter(function(e){ var sv=String(e.severity||'').toLowerCase(); return sv==='high'||sv==='critical'; }).length;
+          var mnd={}; D.trips.forEach(function(x){ var k=String(x.date||'').slice(0,7); if(k) mnd[k]=(mnd[k]||0)+1; });
+          var akt={}; D.trips.forEach(function(x){ var k=x.activity_type||'annet'; akt[k]=(akt[k]||0)+1; });
+          var kropp='<div class="kpi">'
+            +'<div><b>'+D.trips.length+'</b>turer</div><div><b>'+full+'</b>fullført</div><div><b>'+avl+'</b>avlyst</div>'
+            +'<div><b>'+gj+'</b>gjester</div><div><b>'+Object.keys(guider).length+'</b>guider</div>'
+            +'<div><b>'+(D.trips.length? Math.round(ok/D.trips.length*100):0)+' %</b>sikkerhetsklarert</div>'
+            +'<div><b>'+D.events.length+'</b>hendelser</div><div><b>'+alvor+'</b>alvorlige</div></div>';
+          kropp+='<h2>Turer per måned</h2><table><tr><th>Måned</th><th>Turer</th></tr>'+Object.keys(mnd).sort().map(function(k){ return '<tr><td>'+E(k)+'</td><td>'+mnd[k]+'</td></tr>'; }).join('')+'</table>';
+          kropp+='<h2>Aktivitetstyper</h2><table><tr><th>Aktivitet</th><th>Turer</th></tr>'+Object.keys(akt).sort(function(a,b){return akt[b]-akt[a];}).map(function(k){ return '<tr><td>'+E(k)+'</td><td>'+akt[k]+'</td></tr>'; }).join('')+'</table>';
+          kropp+='<p class="mut" style="margin-top:10px">Gjestetall = registrerte deltakere i Daedalus. Sikkerhetsklarert = fullført grunnsjekk eller aktivitetssjekk.</p>';
+          v2PrintDoc(no,'DAEDALUS · SESONGRAPPORT',E(org())+' · '+v2Dato(f)+' – '+v2Dato(t),kropp);
+          try{ logAdmin('sesongrapport_generert','',no); }catch(e){}
+        });
+      }; }
+
+      var fa=document.getElementById('v2Faktura'); if(fa&&!fa.__w){ fa.__w=1; fa.onclick=function(){
+        var fm=new Date(idag.getFullYear(), idag.getMonth()-1, 1), tm=new Date(idag.getFullYear(), idag.getMonth(), 0);
+        v2Periode('Fakturagrunnlag',[iso(fm),iso(tm)],'Vis',function(f,t,D){
+          var per={}; D.trips.forEach(function(x){ if(x.status==='cancelled') return; var k=gname(x); (per[k]=per[k]||[]).push(x); });
+          var navn=Object.keys(per).sort();
+          var rader=navn.map(function(n){ var L=per[n]; var gj=0; L.forEach(function(x){ gj+=(D.parts[x.id]||0); });
+            return {n:n, ant:L.length, gj:gj, datoer:L.map(function(x){return v2Dato(x.date);}).join(' · '), L:L}; });
+          v2Modal('<h3>Fakturagrunnlag</h3><p class="s">'+E(org())+' · '+v2Dato(f)+' – '+v2Dato(t)+' · avlyste turer er holdt utenfor</p>'
+            +(rader.length? rader.map(function(r){ return '<div class="row2"><span><b style="color:#e7ecf3">'+E(r.n)+'</b><br><span style="font-size:11px;color:#8aa0bd">'+E(r.datoer)+'</span></span><b>'+r.ant+(r.ant===1?' tur':' turer')+' · '+r.gj+' gj.</b></div>'; }).join(''):'<p class="s">Ingen turer i perioden.</p>')
+            +'<div class="btns"><button class="b-p" id="v2FaCsv">Last ned CSV</button><button class="b-p" id="v2FaPrn">Skriv ut</button><button class="b-g" id="v2FaX">Lukk</button></div>'
+            +'<p class="s" style="margin-top:8px">Grunnlag for fakturering — satser og avtaler ligger utenfor Daedalus.</p>');
+          document.getElementById('v2FaX').onclick=v2Close;
+          document.getElementById('v2FaCsv').onclick=function(){
+            var csv='guide;dato;tur;status;gjester\n';
+            navn.forEach(function(n){ per[n].forEach(function(x){ csv+='"'+n.replace(/"/g,'""')+'";'+(x.date||'')+';"'+String(x.name||'').replace(/"/g,'""')+'";'+(x.status||'')+';'+(D.parts[x.id]||0)+'\n'; }); });
+            var bl=new Blob(["﻿"+csv],{type:'text/csv;charset=utf-8'});
+            var a=document.createElement('a'); a.href=URL.createObjectURL(bl); a.download='daedalus-fakturagrunnlag-'+f+'-'+t+'.csv'; a.click();
+            try{ logAdmin('fakturagrunnlag_eksportert','',f+' – '+t); }catch(e){}
+          };
+          document.getElementById('v2FaPrn').onclick=function(){
+            var kropp='<table><tr><th>Guide</th><th>Dato</th><th>Tur</th><th>Status</th><th>Gjester</th></tr>'
+              +navn.map(function(n){ return per[n].map(function(x){ return '<tr><td>'+E(n)+'</td><td>'+E(v2Dato(x.date))+'</td><td>'+E(x.name||'')+'</td><td>'+E(x.status||'')+'</td><td>'+(D.parts[x.id]||0)+'</td></tr>'; }).join(''); }).join('')+'</table>'
+              +'<p class="mut">Avlyste turer er holdt utenfor. Grunnlag for fakturering — satser og avtaler ligger utenfor Daedalus.</p>';
+            v2PrintDoc('FAKT-'+f.replace(/-/g,''),'DAEDALUS · FAKTURAGRUNNLAG',E(org())+' · '+v2Dato(f)+' – '+v2Dato(t),kropp);
+          };
+        });
+      }; }
+    };
   window.__V2WIRE = function(R, me){
     var byId=function(id){ return document.getElementById(id); };
+    try{ if(window.__V2PKG) window.__V2PKG(R, me); }catch(e){}
 
     /* Tilbakemelding -> feedback-tabellen */
     var fb=byId('fbBtn'); if(fb && !fb.__w){ fb.__w=1; fb.onclick=function(){
