@@ -11,7 +11,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-html,body{overflow-x:hidden;overflow-x:clip}
+
+
 /* ==========================================================================
    DAEDALUS — GUIDE & SAFETY · WEB ADMIN · PREMIUM SHOWCASE V2
    "Alpine command center" — cinematic dark navy, aurora, gold like a jewel.
@@ -418,6 +419,7 @@ a{color:var(--accent-soft)}
 .cert-bar.crit i{background:linear-gradient(90deg,#8c3f38,var(--red))}
 /* ===== V2: HMS-verktoy, promo, feedback ===== */
 .v2tools{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:6px 0 22px}
+@media(max-width:760px){.tb-in{overflow-x:auto;scrollbar-width:none}.tb-in::-webkit-scrollbar{display:none}}@media(max-width:900px){.v2tools{grid-template-columns:repeat(2,1fr)}}@media(max-width:480px){.v2tools{grid-template-columns:1fr}}.map-stage{overflow:hidden}@media(max-width:480px){.stores{flex-wrap:wrap}}.sec-sub{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .v2t{border:1px solid var(--line,rgba(255,255,255,.08));border-radius:12px;background:rgba(255,255,255,.02);padding:13px 15px;cursor:pointer;text-align:left;transition:border-color .15s,background .15s;font-family:var(--sans)}
 .v2t:hover{border-color:rgba(74,159,224,.45);background:rgba(74,159,224,.06)}
 .v2t b{display:flex;align-items:center;gap:8px;font:600 12.5px var(--sans);color:var(--text)}
@@ -1709,10 +1711,15 @@ function runCounter(card){
   var numEl=card.querySelector('[data-count]');
   if(!numEl||numEl.getAttribute('data-done'))return;
   numEl.setAttribute('data-done','1');
-  var target=parseInt(numEl.getAttribute('data-count'),10)||0;
-  var small=numEl.querySelector('small'), suffix=small?small.outerHTML:'';
-  tween(1550,function(p){ numEl.innerHTML=Math.round(target*p)+suffix },null,easeOutExpo);
+  /* FEIL1/2 2026-08-21: maal og suffiks leses PER FRAME, ikke ved start —
+     ellers stomper en paagaaende tween ekte verdier satt av updateStatic. */
+  tween(1550,function(p){
+    var t=parseInt(numEl.getAttribute('data-count'),10)||0;
+    var sm=numEl.querySelector('small');
+    numEl.innerHTML=Math.round(t*p)+(sm?sm.outerHTML:'');
+  },null,easeOutExpo);
 }
+window.__runCounter=runCounter;
 
 /* ================= activity chart ================= */
 var chartDays=['man','tir','ons','tor','fre','lør','søn'];
@@ -4422,7 +4429,9 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
     kpiNums.forEach(function(el,i){
       var small=el.querySelector('small');
       el.setAttribute('data-count', String(vals[i]!=null?vals[i]:0));
-      if(i===2 && small){ small.innerHTML='&thinsp;/&thinsp;'+R.kpis.guidesTotal; } if(el.getAttribute('data-done')){ el.innerHTML=(vals[i]!=null?vals[i]:0)+(small?small.outerHTML:''); } else { el.removeAttribute('data-done'); }
+      if(i===2 && small){ small.innerHTML='&thinsp;/&thinsp;'+R.kpis.guidesTotal; }
+      if(el.getAttribute('data-done')){ el.innerHTML=(vals[i]!=null?vals[i]:0)+(small?small.outerHTML:''); }
+      else if(window.__runCounter){ try{ window.__runCounter(el.closest('.kpi')||el.parentNode.parentNode); }catch(e9){} }
       });
     $$('.kpi .delta').forEach(function(d){ d.style.display='none'; });
     var notes=$$('.kpi .kpi-note');
