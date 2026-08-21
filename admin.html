@@ -9,7 +9,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
 /* ==========================================================================
    DAEDALUS — GUIDE & SAFETY · WEB ADMIN · PREMIUM SHOWCASE V2
@@ -767,7 +766,7 @@ body.lock{overflow:hidden}
 .plx{will-change:transform}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>@keyframes pDrift{to{transform:translateX(-56px)}}#planetSvg .pLand{animation:pDrift 44s linear infinite}#planetSvg .pCloud{animation:pDrift 26s linear infinite}.map-legend .chip{cursor:pointer;user-select:none;transition:opacity .2s}.map-legend .chip.off{opacity:.32;filter:grayscale(.7)}.kpi{transition:transform .18s}.kpi:hover{transform:translateY(-2px)}#tripAdmList [data-tadm]:hover,.ar-row:hover{border-color:rgba(74,159,224,.45)!important}.rep:hover{background:rgba(74,159,224,.05)}.wx-it:hover b{color:#7fc0f5}</style>
+<style>.map-legend .chip{cursor:pointer;user-select:none;transition:opacity .2s}.map-legend .chip.off{opacity:.32;filter:grayscale(.7)}.kpi{transition:transform .18s}.kpi:hover{transform:translateY(-2px)}#tripAdmList [data-tadm]:hover,.ar-row:hover{border-color:rgba(74,159,224,.45)!important}.rep:hover{background:rgba(74,159,224,.05)}.wx-it:hover b{color:#7fc0f5}</style>
 </head>
 <body>
 <a class="skip" href="#main">Hopp til innhold</a>
@@ -1183,6 +1182,7 @@ body.lock{overflow:hidden}
     <button class="v2t" type="button" id="v2Tilsyn"><b><svg class="ic"><use href="#i-shield"/></svg>Tilsynsmappe (PDF)</b><span>Internkontroll, avvik, sertifikater og revisjonslogg — samlet for tilsyn.</span></button>
     <button class="v2t" type="button" id="v2Sesong"><b><svg class="ic"><use href="#i-file"/></svg>Sesongrapport (PDF)</b><span>Nøkkeltall for styre og bank: turer, gjester, sikkerhet og drift.</span></button>
     <button class="v2t" type="button" id="v2Faktura"><b><svg class="ic"><use href="#i-file"/></svg>Fakturagrunnlag</b><span>Turer per guide i perioden — grunnlag for innleide guiders fakturering. CSV og utskrift.</span></button>
+    <button class="v2t" type="button" id="v2Arkiv"><b><svg class="ic"><use href="#i-search"/></svg>Rapportarkiv</b><span>Alle genererte dokumenter og eksporter: nummer, tid og ansvarlig.</span></button>
   </div>
   <div class="sec-head rv" style="--d:0s">
     <span class="sec-no plx" data-speed=".05">05</span><h2 class="sec-title" style="margin:0">Planlegging og ressurser</h2>
@@ -1239,7 +1239,7 @@ body.lock{overflow:hidden}
   </section>
   <footer class="rv" style="--d:0s">
     <span class="beat"><i></i>Alle systemer operative</span>
-    <span>Daedalus · Guide &amp; Safety — webadmin <b>v2.0</b></span>
+    <span>Daedalus · Guide &amp; Safety — webadmin <b id="fVer">v2</b></span>
     <span class="sp"></span>
     <a class="lnk" id="fPlan" style="cursor:pointer">Beredskapsplan</a>
     <a class="lnk" href="/privacy" target="_blank" rel="noopener">Personvern</a>
@@ -1304,11 +1304,27 @@ body.lock{overflow:hidden}
 </div>
 
 <div class="toasts" id="toasts" aria-live="polite"></div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" crossorigin=""></script>
 <script>
 (function(){
 'use strict';
 /* ================= utils ================= */
+/* D1 2026-08-20: Leaflet lastes forst nar kartet faktisk trengs (etter innlogging
+   eller nar vaerpunkt-kartet apnes) — ikke ved boot. Gate/innlogging: null Leaflet. */
+var __lfQ=[], __lfBusy=false;
+window.__ensureLeaflet=function(cb){
+  if(window.L&&window.L.map){ if(cb){try{cb()}catch(e){}} return; }
+  if(cb)__lfQ.push(cb);
+  if(__lfBusy)return; __lfBusy=true;
+  var l=document.createElement('link'); l.rel='stylesheet';
+  l.href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css';
+  document.head.appendChild(l);
+  var sc=document.createElement('script');
+  sc.src='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';
+  sc.crossOrigin='';
+  sc.onload=function(){ var q=__lfQ.slice(); __lfQ.length=0; q.forEach(function(f){ try{f()}catch(e){} }); };
+  sc.onerror=function(){ __lfBusy=false; };
+  document.head.appendChild(sc);
+};
 var SVGNS='http://www.w3.org/2000/svg';
 function $(s,c){return (c||document).querySelector(s)}
 function $$(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))}
@@ -1798,44 +1814,9 @@ var lmap=null, sosLeafEl=null, tilesOn=false, sosAcked=false;
 var FB={latN:69.24, latS:69.06, lngW:19.25, lngE:19.95};
 var coordsEl=$('#mapCoords'), stageEl=$('#mapStage');
 function fmtCoord(lat,lng){ return lat.toFixed(3)+'° N · '+lng.toFixed(3)+'° Ø' }
-function addRealOverlays(){
-  var R=window.__REAL||{}; var mk=R.mapMarkers||[];
-  function pinIcon(cls,ic,label,delay){ return L.divIcon({className:'lf-wrap', html:'<div class="mk '+cls+' lf" style="--d:'+delay+'"><span class="mk-pin"><svg class="ic"><use href="#'+ic+'"/></svg></span><span class="mk-lab">'+label+'</span></div>', iconSize:[30,30], iconAnchor:[15,30]}); }
-  mk.forEach(function(m,i){
-    if(m.sos){
-      var sosIc=L.divIcon({className:'lf-wrap', html:'<div class="mk-sos lf"><i class="ring"></i><i class="ring"></i><i class="ring"></i><i class="core"></i><span class="lab">'+(m.label||'SOS')+'</span></div>', iconSize:[46,46], iconAnchor:[23,23]});
-      var sm=L.marker([m.lat,m.lng],{icon:sosIc}).addTo(lmap); sosLeafEl=(sm.getElement&&sm.getElement())||null;
-    } else {
-      var _mm=L.marker([m.lat,m.lng],{icon:pinIcon(m.cls||'trip', m.ic||'i-mtn', m.label||'', (i*0.15)+'s')}).addTo(lmap);
-      if(m.tripId){ _mm.on('click',function(){ if(window.__openTrip) window.__openTrip(m.tripId); }); }
-    }
-  });
-  try{ if(mk.length){ lmap.fitBounds(L.latLngBounds(mk.map(function(m){return [m.lat,m.lng];})).pad(0.4)); } }catch(e){}
-}
-function addOverlays(){
-  if(window.__LIVE_MAP) return;
-  if(!lmap||!window.L)return;
-  if(window.__REAL && window.__REAL.mapMarkers){ addRealOverlays(); return; }
-  var route=[[69.130,19.700],[69.133,19.716],[69.130,19.733],[69.124,19.741],[69.121,19.757],[69.117,19.768],[69.115,19.780],[69.110,19.792],[69.108,19.806]];
-  L.polyline(route,{color:'rgba(127,192,245,.16)',weight:7,interactive:false}).addTo(lmap);
-  var pl=L.polyline(route,{color:'#7fc0f5',weight:2.6,className:'route',interactive:false}).addTo(lmap);
-  var pe=(pl.getElement&&pl.getElement())||pl._path;
-  if(pe){ pe.setAttribute('pathLength','1') }
-  function pinIcon(cls,ic,label,delay){
-    return L.divIcon({className:'lf-wrap',
-      html:'<div class="mk '+cls+' lf" style="--d:'+delay+'"><span class="mk-pin"><svg class="ic"><use href="#'+ic+'"/></svg></span><span class="mk-lab">'+label+'</span></div>',
-      iconSize:[30,30], iconAnchor:[15,30]});
-  }
-  L.marker([69.17,19.34],{icon:pinIcon('trip','i-mtn','Blåtind — skitur · 12 gj.','.15s')}).addTo(lmap);
-  L.marker([69.115,19.78],{icon:pinIcon('trip','i-mtn','Tamokdalen — topptur · 8 gj.','.3s')}).addTo(lmap);
-  L.marker([69.13,19.70],{icon:pinIcon('meet','i-pin','Oppmøte — Tamok bru','.45s')}).addTo(lmap);
-  L.marker([69.10,19.84],{icon:pinIcon('haz','i-alert','Skredobservasjon — øst','.6s')}).addTo(lmap);
-  var sosIc=L.divIcon({className:'lf-wrap',
-    html:'<div class="mk-sos lf'+(sosAcked?' acked':'')+'"><i class="ring"></i><i class="ring"></i><i class="ring"></i><i class="core"></i><span class="lab">'+(sosAcked?'KVITTERT · GR. 4':'SOS · GRUPPE 4')+'</span></div>',
-    iconSize:[46,46], iconAnchor:[23,23]});
-  var sm=L.marker([69.142,19.755],{icon:sosIc}).addTo(lmap);
-  sosLeafEl=(sm.getElement&&sm.getElement())||null;
-}
+/* D1 2026-08-20: demo-overlegg (Blaatind/Tamokdalen-pins, demorute, demo-SOS) fjernet.
+   Kartet lastes naa forst etter innlogging, der initOpsMap bygger ekte lag; det
+   statiske .map-ui-fallbacket dekker for-innlogging. */
 function tryLeaflet(){
   if(lmap||tilesOn)return;
   if(!(window.L&&window.L.map))return;
@@ -1851,7 +1832,6 @@ function tryLeaflet(){
       window.__TILESON=true;
       stageEl.classList.add('tiles-on');
       var at=$('#mapAttr'); if(at)at.textContent='© OpenStreetMap-bidragsytere · © CARTO';
-      addOverlays();
       setTimeout(function(){ if(lmap)lmap.invalidateSize() },420);
     });
     tl.on('tileerror',function(){
@@ -1863,6 +1843,7 @@ function tryLeaflet(){
     lmap.on('mousemove',function(e){ if(coordsEl&&tilesOn)coordsEl.textContent=fmtCoord(e.latlng.lat,e.latlng.lng) });
   }catch(e){ lmap=null }
 }
+window.__tryLeaflet=tryLeaflet; /* D1: toppnivaa — initOpsMap kaller via __ensureLeaflet uansett rekkefolge */
 function zoomMsg(){ toast('Frakoblet kartmodus','Zoom krever kartlag fra nett — den topografiske skissen viser likevel alle enheter og ruter.','warn') }
 on($('#zin'),'click',function(){ if(lmap&&tilesOn){lmap.zoomIn()} else zoomMsg() });
 on($('#zout'),'click',function(){ if(lmap&&tilesOn){lmap.zoomOut()} else zoomMsg() });
@@ -2086,6 +2067,7 @@ function startEta(){
   },45000);
 }
 function ackSOS(){
+  if(window.__LIVE_MAP||window.__REAL)return; /* D1: demoflyt skal aldri kjore i innlogget drift */
   if(sosAcked)return; sosAcked=true;
   if(etaTimer)clearInterval(etaTimer);
   var b=$('#sosBanner');
@@ -2101,7 +2083,7 @@ function ackSOS(){
     var inner=sosLeafEl.querySelector('.mk-sos');
     if(inner){ inner.classList.add('acked'); var lb2=inner.querySelector('.lab'); if(lb2)lb2.textContent='KVITTERT · GR. 4' }
   }
-  addFeed('ok','SOS','SOS <b>kvittert av daglig leder</b> — Ingrid S. fortsetter til posisjon',true);
+  addFeed('ok','SOS','SOS <b>kvittert av daglig leder</b> — gruppen fortsetter til posisjon',true);
   toast('SOS kvittert '+fmtHM(new Date()),'Hendelsen er logget i beredskapsjournalen. Fortsetter utrykningen.');
 }
 on($('#sosAck'),'click',ackSOS);
@@ -2326,9 +2308,24 @@ function init(){
   initMagnet();
   initGlow();
   initPlx();
-  tryLeaflet();
-  on(window,'load',function(){ setTimeout(tryLeaflet,90) });
-  setTimeout(tryLeaflet,2600);
+  /* E4 2026-08-20: versjonslinje i footer — siste commit fra GitHub API (public repo).
+     sessionStorage-cache saa API-et treffes en gang per fane. Stille fallback = statisk v2. */
+  (function(){
+    var el=document.getElementById('fVer'); if(!el) return;
+    function vis(v){ try{ el.textContent='v2 · '+v; }catch(e){} }
+    try{
+      var c=sessionStorage.getItem('dae_ver'); if(c){ vis(c); return; }
+      fetch('https://api.github.com/repos/Daedalus501/daedalus-web/commits/main',{headers:{'Accept':'application/vnd.github+json'}})
+        .then(function(r){ return r.ok? r.json():null; })
+        .then(function(j){
+          if(!j||!j.sha) return;
+          var d=''; try{ var dt=new Date(j.commit.committer.date); var p=function(n){return (n<10?'0':'')+n;}; d=p(dt.getDate())+'.'+p(dt.getMonth()+1)+'.'+String(dt.getFullYear()).slice(2); }catch(e){}
+          var v=j.sha.slice(0,7)+(d?(' · '+d):'');
+          try{ sessionStorage.setItem('dae_ver',v); }catch(e){}
+          vis(v);
+        }).catch(function(){});
+    }catch(e){}
+  })();
   var rsz=null;
   on(window,'resize',function(){
     clearTimeout(rsz);
@@ -2663,12 +2660,14 @@ window.__sevNo=function(s){ s=String(s||'').toLowerCase(); return s==='critical'
     var sel={lat:cur.lat,lng:cur.lng};
     try{
       var start=(cur.lat!=null)?[cur.lat,cur.lng]:[(wxPoint().lat),(wxPoint().lng)];
-      var wm=L.map('wxMap').setView(start,8);
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(wm);
-      L.tileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png',{maxZoom:19,maxNativeZoom:18,bounds:[[57.7,3.9],[81.5,32.5]]}).addTo(wm);
-      var mk=(cur.lat!=null)? L.marker([cur.lat,cur.lng]).addTo(wm) : null;
-      wm.on('click',function(ev){ sel={lat:ev.latlng.lat,lng:ev.latlng.lng}; if(mk){ mk.setLatLng(ev.latlng); } else { mk=L.marker(ev.latlng).addTo(wm); } document.getElementById('wxCoord').textContent='Valgt: '+ev.latlng.lat.toFixed(4)+', '+ev.latlng.lng.toFixed(4); });
-      setTimeout(function(){ wm.invalidateSize(); },200);
+window.__ensureLeaflet(function(){
+            var wm=L.map('wxMap').setView(start,8);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(wm);
+        L.tileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png',{maxZoom:19,maxNativeZoom:18,bounds:[[57.7,3.9],[81.5,32.5]]}).addTo(wm);
+        var mk=(cur.lat!=null)? L.marker([cur.lat,cur.lng]).addTo(wm) : null;
+        wm.on('click',function(ev){ sel={lat:ev.latlng.lat,lng:ev.latlng.lng}; if(mk){ mk.setLatLng(ev.latlng); } else { mk=L.marker(ev.latlng).addTo(wm); } document.getElementById('wxCoord').textContent='Valgt: '+ev.latlng.lat.toFixed(4)+', '+ev.latlng.lng.toFixed(4); });
+      setTimeout(function(){ try{ wm.invalidateSize(); }catch(e2){} },200);
+      });
     }catch(e){}
     document.getElementById('wxSave').onclick=function(){
       var cfg={ lat:(sel.lat!=null)?sel.lat:null, lng:(sel.lng!=null)?sel.lng:null, name:document.getElementById('wxName').value.trim()||null, region:document.getElementById('wxReg').value };
@@ -3501,15 +3500,14 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
   }
 
   function initPlanet(){
-    /* V2.2: planet-SVG erstattet av ekte maanebilde (#moonImg). */
+    /* V2.2: planet-SVG erstattet av ekte maanebilde (#moonImg). D1: dodt oppdateringsintervall fjernet. */
     window.__updPlanet=function(){};
-
-    setInterval(function(){ try{ window.__updPlanet(); }catch(e){} }, 60000);
   }
 
   function initOpsMap(R, me){
     if(window.__OPS_INIT) return; window.__OPS_INIT=1;
     window.__LIVE_MAP=1;
+    try{ window.__ensureLeaflet(function(){ if(window.__tryLeaflet) window.__tryLeaflet(); }); }catch(e){}
     var tries=0;
     var wait=setInterval(function(){
       tries++;
@@ -4288,6 +4286,24 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
           var t=''; try{ t=new Date(a.created_at).toLocaleString('nb-NO',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}); }catch(e){}
           return '<div class="row2"><span>'+v2Esc(t)+'</span><span style="flex:1;margin-left:10px;color:#c8d6e8"><b>'+v2Esc(a.action||'')+'</b>'+(a.target?(' · '+v2Esc(a.target)):'')+(a.details?('<br><span style="color:#8aa0bd">'+v2Esc(String(a.details).slice(0,140))+'</span>'):'')+'</span></div>';
         }).join('') : 'Ingen handlinger logget ennå.';
+      });
+    }; }
+
+    /* ===== C3 2026-08-20: rapportarkiv — genererings-sporet fra admin_audit ===== */
+    var ark=byId('v2Arkiv'); if(ark && !ark.__w){ ark.__w=1; ark.onclick=function(){
+      var TYPER={ hms_rapport_generert:'HMS-rapport', tilsynsmappe_generert:'Tilsynsmappe', sesongrapport_generert:'Sesongrapport', fakturagrunnlag_eksportert:'Fakturagrunnlag (CSV)', rapport_merknad:'Admin-merknad på turrapport', csv_eksport:'CSV-eksport', brief_generert:'Morgenbrief' };
+      var ov=v2Modal('<h3>Rapportarkiv</h3><p class="s">Genererte dokumenter og eksporter, nyeste først. Selve PDF-ene lagres ikke — dette er genererings-sporet fra revisjonsloggen, med nummer, tid og ansvarlig.</p><div id="v2ArL" style="font-size:12.5px;color:#8aa0bd;max-height:52vh;overflow:auto">Laster …</div><div class="btns"><button class="b-g" id="v2ArX">Lukk</button></div>');
+      byId('v2ArX').onclick=v2Close;
+      var navnAv={}; try{ ((R&&R.guidesRaw)||[]).forEach(function(g){ navnAv[g.id]=g.name; }); }catch(e){}
+      sb.from('admin_audit').select('action,actor_id,target,details,created_at').in('action',Object.keys(TYPER)).order('created_at',{ascending:false}).limit(200).then(function(r){
+        var el=byId('v2ArL'); if(!el) return;
+        if(r&&r.error){ el.innerHTML='<span style="color:#e8857c">'+v2Esc(r.error.message)+'</span>'; return; }
+        var rows=(r&&r.data)||[];
+        el.innerHTML = rows.length? rows.map(function(a){
+          var t=''; try{ t=new Date(a.created_at).toLocaleString('nb-NO',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}); }catch(e){}
+          var hvem=navnAv[a.actor_id]||'';
+          return '<div class="row2"><span style="white-space:nowrap">'+v2Esc(t)+'</span><span style="flex:1;margin-left:10px;color:#c8d6e8"><b>'+v2Esc(TYPER[a.action]||a.action)+'</b>'+(a.details?(' · '+v2Esc(a.details)):'')+(a.target?('<br><span style="color:#8aa0bd">ref: '+v2Esc(a.target)+'</span>'):'')+(hvem?('<br><span style="color:#8aa0bd">av '+v2Esc(hvem)+'</span>'):'')+'</span></div>';
+        }).join('') : 'Ingen dokumenter generert ennå. Rapporter du lager herfra dukker opp her.';
       });
     }; }
 
