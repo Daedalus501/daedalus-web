@@ -2540,7 +2540,10 @@ window.__sevNo=function(s){ s=String(s||'').toLowerCase(); return s==='critical'
 
     /* V2.4: gjesteguider har eget Solo-abonnement og teller ikke mot org-seter */
     var guidesTotal=guideRows.filter(function(u){ return !u.__invite && u.is_guest!==true; }).length;
-    var guidesOnDuty=guideRows.filter(function(u){ return String(u.role||'').toLowerCase().indexOf('invit')===-1; }).length;
+    /* 2026-08-21: «paa vakt» = guide med aktiv tur akkurat naa (app-chattens validerte lesing) */
+    var _dutyIds={}; activeTrips.forEach(function(t){ if(t.guide_id) _dutyIds[t.guide_id]=1; else if(t.guide_name) _dutyIds['n:'+t.guide_name]=1; });
+    var guidesOnDuty=guideRows.filter(function(u){ return !u.__invite && (_dutyIds[u.id] || _dutyIds['n:'+u.name]); }).length;
+    var seatsPendInv=guideRows.filter(function(u){ return u.__invite && u.__asGuest!==true; }).length;
     var guestsField=activeTrips.reduce(function(a,t){return a+tripParticipants(t);},0);
     var todayStr=dstr(now);
     var reportsToday=eventRows.filter(function(e){ var d=new Date(e.created_at); return !isNaN(d)&&dstr(d)===todayStr; }).length;
@@ -2556,6 +2559,7 @@ window.__sevNo=function(s){ s=String(s||'').toLowerCase(); return s==='critical'
       sos:sos, mapMarkers:mapMarkers, orgName:'', tripById:tripById, reports:_reports, guidesRaw:guideRows.map(function(u){ return {id:u.id, name:u.name||u.email}; }), certsRaw:guideRows.map(function(u){ return {n:u.name||u.email, c:u.certifications}; })
     };
     window.__REAL.seats = (subRow && subRow.seats!=null)? Number(subRow.seats) : null;
+    window.__REAL.seatsPendInv = seatsPendInv;
     window.__REAL.seatsUsed = guidesTotal;
 
     var pAva = fetchAva().then(function(a){ window.__REAL.ava=a.lvl; window.__REAL.avaText=a.txt; window.__REAL.avaProbs=a.probs||[]; window.__REAL.avaValidTo=a.validTo||null; });
@@ -3862,6 +3866,9 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       var gg=document.getElementById('gaGuest');
       if(gg){ gg.onclick=function(){
         var til=!g.is_guest;
+        if(til===false){ var _R3=window.__REAL||{}; if(_R3.seats!=null && ((_R3.seatsUsed||0)+(_R3.seatsPendInv||0))>=_R3.seats){
+          var _ge=document.getElementById('gaErr'); if(_ge) _ge.textContent='Alle '+_R3.seats+' seter er i bruk — fjerning av gjest-merket ville tatt et sete. Oppgrader seter først.';
+          return; } }
         if(!window.confirm(til? ('Merke '+(g.name||g.email)+' som gjesteguide? Hen ser da kun egne turer og deles ikke i org-GPS. Solo-krav håndheves i appen fra 1.4.1.') : ('Fjerne gjest-merket til '+(g.name||g.email)+'?'))) return;
         sb.from('users').update({is_guest:til}).eq('id',g.id).then(function(r2){
           if(r2&&r2.error){ document.getElementById('gaErr').textContent=r2.error.message; return; }
@@ -3972,6 +3979,11 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       if(!email || email.indexOf('@')<1){ err.textContent='Oppgi en gyldig e-postadresse.'; return; }
       var btn=document.getElementById('igSend'); btn.disabled=true; btn.textContent='Sender…';
       var asGuest=!!(document.getElementById('igGuest')&&document.getElementById('igGuest').checked);
+      /* 2026-08-21: setegrense haandheves ved NY fast-guide-invitasjon. Gjester teller ikke sete;
+         fakturakunder (seats=null) slippes gjennom; eksisterende medlemmer roeres aldri. */
+      if(!asGuest){ var _R2=window.__REAL||{}; if(_R2.seats!=null && ((_R2.seatsUsed||0)+(_R2.seatsPendInv||0))>=_R2.seats){
+        err.textContent='Alle '+_R2.seats+' seter er i bruk ('+(_R2.seatsUsed||0)+' guider'+((_R2.seatsPendInv||0)?(' + '+_R2.seatsPendInv+' invitasjoner underveis'):'')+'). Marker som gjesteguide — gjester har eget Solo-abonnement og teller ikke sete — eller oppgrader seter.';
+        btn.disabled=false; btn.textContent='Send invitasjon'; return; } }
       var payload={ organization_id:(me&&me.organization_id)||null, email:email, name:name||null, invited_by:(me&&me.id)||null, is_guest:asGuest };
       var send=function(pl){ return sb.from('invitations').insert(pl); };
       send(payload).then(function(res){
@@ -4437,7 +4449,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
     var notes=$$('.kpi .kpi-note');
     if(notes[0])notes[0].textContent=R.kpis.trips+(R.kpis.trips===1?' aktiv tur nå':' aktive turer nå');
     if(notes[1])notes[1].textContent=R.kpis.guests+(R.kpis.guests===1?' gjest i felt':' gjester i felt');
-    if(notes[2])notes[2].textContent=R.kpis.guides+' av '+R.kpis.guidesTotal+' tilgjengelig';
+    if(notes[2])notes[2].textContent=R.kpis.guides+' på tur · '+Math.max(0,R.kpis.guidesTotal-R.kpis.guides)+' ledige';
     if(notes[3])notes[3].textContent=R.kpis.reports+(R.kpis.reports===1?' hendelse i dag':' hendelser i dag');
 
     var rows=$$('#glist .g-row');
@@ -4519,7 +4531,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
         var _tT=(R.kpis.trips===1?' aktiv tur':' aktive turer');
         var avHtml=(avL>=1)?('Skredvarsel for regionen: <b>faregrad '+avL+' — '+esc(avT)+'</b> (Varsom).'):'Skredvarsel: <b>utenfor varslingssesong</b> (Varsom).';
         /* V2: paastanden om sporingsenheter er fjernet — web maaler ikke sporingshelse. */
-        hs.innerHTML='<b>'+R.kpis.trips+_tT+'</b> nå · '+R.kpis.guides+' av '+R.kpis.guidesTotal+' guider tilgjengelig · '+avHtml;
+        hs.innerHTML='<b>'+R.kpis.trips+_tT+'</b> nå · '+Math.max(0,R.kpis.guidesTotal-R.kpis.guides)+' av '+R.kpis.guidesTotal+' guider ledige · '+avHtml;
         var _ki=document.getElementById('kicker'); if(_ki && R.orgName) _ki.textContent='Kommandosenter · '+R.orgName;
         var _ho=document.getElementById('heroOps'); if(_ho) _ho.textContent=(R.kpis.trips>0? (R.kpis.trips+_tT+' i felt') : 'ingen aktive turer nå');
         var _fo=document.getElementById('fOrg'); if(_fo && R.orgName) _fo.textContent=R.orgName;
