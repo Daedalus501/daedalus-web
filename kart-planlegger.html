@@ -247,6 +247,11 @@
     sb.from('users').select('id,name,email').then(function(r){ ((r&&r.data)||[]).forEach(function(u2){ nameById[u2.id]=u2.name||u2.email||'Guide'; }); renderGpsLayer(); });
     loadGpsPos(); loadOpsLayer();
     if(!window.__livePoll){ window.__livePoll=1; setInterval(loadGpsPos,25000); setInterval(loadOpsLayer,60000); document.addEventListener('visibilitychange',function(){ if(!document.hidden){ loadGpsPos(); loadOpsLayer(); } }); }
+    /* realtime-push: oppdaterer prikken i sekundet appen sender (krever at tabellen er i supabase_realtime-publikasjonen; polling er uansett fallback) */
+    if(!window.__rtLive){ window.__rtLive=1; try{
+      var _join=function(){ try{ sb.channel('planner-live').on('postgres_changes',{event:'INSERT',schema:'public',table:'guide_positions'},function(pp){ try{ var r=pp&&pp.new; if(r&&r.lat!=null&&r.user_id){ var cur=gpsFix[r.user_id]; if(!cur||!cur.recorded_at||Date.parse(r.recorded_at)>=Date.parse(cur.recorded_at)){ gpsFix[r.user_id]={lat:r.lat,lng:r.lng,recorded_at:r.recorded_at}; renderGpsLayer(); } } }catch(e){} }).subscribe(); }catch(e){} };
+      sb.auth.getSession().then(function(rr){ try{ var tk=rr&&rr.data&&rr.data.session&&rr.data.session.access_token; if(tk&&sb.realtime&&sb.realtime.setAuth) sb.realtime.setAuth(tk); }catch(e){} _join(); }, function(){ _join(); });
+    }catch(e){} }
     loadTrips();
   }
 

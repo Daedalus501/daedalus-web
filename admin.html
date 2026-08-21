@@ -3610,7 +3610,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       if(cr) cr.addEventListener('click',function(){ var pts=[]; lag.tur.eachLayer(function(ly){ if(ly.getLatLngs){ ly.getLatLngs().forEach(function(p){ pts.push([p.lat,p.lng]); }); } }); if(pts.length){ try{ lm.fitBounds(pts,{padding:[36,36],maxZoom:13}); }catch(e){} } else { try{ toast('Ingen ruter','Tegn en rute i kart-planleggeren, så vises den her.'); }catch(e){} } });
       loadOps();
       setInterval(loadOps, 60000);
-      window.__OPS_RELOAD=loadOps; loadGps(); setInterval(renderGps, 60000);
+      window.__OPS_RELOAD=loadOps; loadGps(); setInterval(function(){ if(!document.hidden) loadGps(); }, 60000); document.addEventListener('visibilitychange',function(){ if(!document.hidden) loadGps(); }); setInterval(renderGps, 60000);
     }
   }
 
