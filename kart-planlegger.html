@@ -378,11 +378,17 @@
   }
   function loadOpsLayer(){
     if(!loggedIn||document.hidden) return;
-    sb.from('trips').select('id,trip_id,name,status,gps_lat,gps_lng,guide_name').eq('status','active').limit(50).then(function(r){
+    sb.from('trips').select('id,trip_id,name,status,gps_lat,gps_lng,guide_name,map_data').eq('status','active').limit(50).then(function(r){
       if(r&&r.error) return;
       opsLayer.clearLayers();
       var act=(r&&r.data)||[]; var n=0;
       act.forEach(function(t){
+        /* fallback: turer uten gps_lat/lng plasseres paa foerste punkt i egen rute/markoer */
+        if(t.gps_lat==null||t.gps_lng==null){
+          var md=parseMapData(t.map_data);
+          var p0=md.routePoints[0]||(md.markers[0]&&md.markers[0].coordinate);
+          if(p0){ t.gps_lat=p0.latitude; t.gps_lng=p0.longitude; }
+        }
         if(t.gps_lat==null||t.gps_lng==null) return;
         var cm=L.circleMarker([+t.gps_lat,+t.gps_lng],{radius:8,color:'#0c1626',weight:2,fillColor:'#c9a24b',fillOpacity:.95}).addTo(opsLayer);
         cm.bindTooltip('Aktiv: '+esc(t.name||'Tur')+' · '+esc(t.guide_name||''),{direction:'top',className:'mk-label'});
