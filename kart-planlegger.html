@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Daedalus · Kart-planlegger (tilkoblet)</title>
+<link rel="icon" type="image/png" href="icon.png">
+<meta name="robots" content="noindex">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
   :root{ --bg:#0e1a2c; --panel:#16273f; --line:#284063; --ink:#eaf2fb; --muted:#8aa0bd; --blue:#4a9fe0; --gold:#c9a24b;
@@ -132,6 +134,10 @@
 (function(){
   var SUPABASE_URL='https://kyqjrlpsarbdwfbyjufa.supabase.co';
   var SUPABASE_KEY='sb_publishable_EZq43amTJsWJWS8QeqZz3Q_xs8qg-DP';
+  if(!window.supabase||!window.supabase.createClient){
+    document.body.innerHTML='<div style="font:15px system-ui;color:#e7ecf3;background:#0b1626;min-height:100vh;display:grid;place-items:center;padding:24px;text-align:center"><div><b>Kartplanleggeren fikk ikke lastet en nødvendig komponent.</b><br>Sjekk netttilkoblingen og last siden på nytt.</div></div>';
+    throw new Error('supabase-js ikke lastet');
+  }
   var sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
   var COLORS={hazard:'#FF4444',meeting:'#4488FF',emergency:'#44CC66'};

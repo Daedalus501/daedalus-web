@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
 <title>Daedalus · Kommandosenter</title>
 <meta name="description" content="Daedalus — Guide &amp; Safety. Webadmin for daglig leder. Tromsø / Tamokdalen.">
 <link rel="icon" type="image/png" href="icon.png">
@@ -10,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+html,body{overflow-x:hidden;overflow-x:clip}
 /* ==========================================================================
    DAEDALUS — GUIDE & SAFETY · WEB ADMIN · PREMIUM SHOWCASE V2
    "Alpine command center" — cinematic dark navy, aurora, gold like a jewel.
@@ -983,7 +985,7 @@ body.lock{overflow:hidden}
         <div class="tip" id="chartTip"></div>
         <div class="chart-hit" id="chartHit"></div>
       </div>
-      <div class="legend"><span><i style="background:var(--accent-soft)"></i>Gjester</span><span><i style="background:rgba(201,162,75,.7)"></i>Turer</span><span style="margin-left:auto;color:var(--muted2)">Topp: lørdag — 88 gjester</span></div>
+      <div class="legend"><span><i style="background:var(--accent-soft)"></i>Gjester</span><span><i style="background:rgba(201,162,75,.7)"></i>Turer</span><span style="margin-left:auto;color:var(--muted2)" id="chartTop">—</span></div>
     </article>
     <article class="card gauge-card sp4 rv" style="--d:.12s">
       <div class="card-h"><svg class="ic" style="color:var(--gold-soft)"><use href="#i-shield"/></svg><h3>Sikkerhetsetterlevelse</h3><span class="hint">Daglig revisjon</span></div>
@@ -1238,7 +1240,7 @@ body.lock{overflow:hidden}
     </div>
   </section>
   <footer class="rv" style="--d:0s">
-    <span class="beat"><i></i>Alle systemer operative</span>
+    <span class="beat"><i></i><span id="fBeat">Kommandosenter</span></span>
     <span>Daedalus · Guide &amp; Safety — webadmin <b id="fVer">v2</b></span>
     <span class="sp"></span>
     <a class="lnk" id="fPlan" style="cursor:pointer">Beredskapsplan</a>
@@ -2105,8 +2107,7 @@ var ACTIONS=window.ACTIONS=[
     else toast('Ingen aktive alarmer','Siste SOS er allerede kvittert og logget.');
   }},
   {l:'Ny tur',h:'Handling',i:'i-plus',f:function(){toast('Ny tur','Veiviser for turoppsett åpnes (demo).')}},
-  {l:'Generer dagsrapport',h:'Handling',i:'i-file',f:function(){toast('Dagsrapport','PDF genereres og sendes til styret (demo).')}},
-  {l:'Guideprofil — Astrid Nygård',h:'Guider',i:'i-users',f:function(){openGuide(2)}}
+  {l:'Generer dagsrapport',h:'Handling',i:'i-file',f:function(){toast('Dagsrapport','PDF genereres og sendes til styret (demo).')}}
 ];
 function palSetAct(i){
   palAct=i;
@@ -2295,7 +2296,7 @@ function afterBoot(){
   startEta();
 }
 function init(){
-  try{ var R=window.__REAL; if(R){ if(R.chartG)chartG=R.chartG; if(R.chartT)chartT=R.chartT; if(R.chartDS)chartDays=R.chartDS; if(R.chartDL)window.__CHARTDL=R.chartDL; try{ var _cm=Math.max.apply(null,chartG.concat([1])); var _step=Math.max(10,Math.ceil(_cm/30)*10); window.__CHARTMAX=_step*3; window.__CHARTTICKS=[0,_step,_step*2,_step*3]; window.__BARMAX=Math.max(5,Math.ceil(Math.max.apply(null,chartT.concat([1]))/5)*5); }catch(e2){} if(R.guides)GUIDES=R.guides; if(R.feed)FEED0=R.feed; if(R.pool)POOL=R.pool; } }catch(e){}
+  try{ var R=window.__REAL; if(R){ if(R.chartG)chartG=R.chartG; if(R.chartT)chartT=R.chartT; if(R.chartDS)chartDays=R.chartDS; if(R.chartDL)window.__CHARTDL=R.chartDL; try{ var _cm=Math.max.apply(null,chartG.concat([1])); var _step=Math.max(10,Math.ceil(_cm/30)*10); window.__CHARTMAX=_step*3; window.__CHARTTICKS=[0,_step,_step*2,_step*3]; window.__BARMAX=Math.max(5,Math.ceil(Math.max.apply(null,chartT.concat([1]))/5)*5); }catch(e2){} if(R.guides)GUIDES=R.guides; if(R.feed)FEED0=R.feed; if(R.pool)POOL=R.pool; try{ var _fb=document.getElementById('fBeat'); if(_fb){ var _n=new Date(); var _p=function(x){return (x<10?'0':'')+x;}; _fb.textContent='Data lastet '+_p(_n.getHours())+':'+_p(_n.getMinutes()); } }catch(e4){} try{ var _ct=document.getElementById('chartTop'); if(_ct&&R.chartG&&R.chartG.length){ var _mi=0; for(var _i=1;_i<R.chartG.length;_i++){ if(R.chartG[_i]>R.chartG[_mi])_mi=_i; } var _mv=R.chartG[_mi]; var _dn=(R.chartDL&&R.chartDL[_mi])||(R.chartDS&&R.chartDS[_mi])||''; _ct.textContent=_mv>0? ('Topp: '+String(_dn).replace(/ \(i dag\)$/,'')+' — '+_mv+' gjester') : 'Ingen gjester siste 7 dager'; } }catch(e3){} } }catch(e){}
 
   buildTopo();
   try{ var _bz=document.querySelector('.bezel'); if(_bz){ _bz.style.cursor='pointer'; _bz.title='—'; _bz.addEventListener('click',function(){ if(window.__AURORA) window.__AURORA(); }); } }catch(e){}
