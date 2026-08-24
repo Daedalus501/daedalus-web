@@ -1188,6 +1188,7 @@ body.lock{overflow:hidden}
     <button class="v2t" type="button" id="v2Faktura"><b><svg class="ic"><use href="#i-file"/></svg>Fakturagrunnlag</b><span>Turer per guide i perioden — grunnlag for innleide guiders fakturering. CSV og utskrift.</span></button>
     <button class="v2t" type="button" id="v2Arkiv"><b><svg class="ic"><use href="#i-search"/></svg>Rapportarkiv</b><span>Alle genererte dokumenter og eksporter: nummer, tid og ansvarlig.</span></button>
     <button class="v2t" type="button" id="v2Vakt"><b><svg class="ic"><use href="#i-users"/></svg>Vaktplan</b><span>Hvem har vakta, dag for dag. Guidene ser planen; kun admin endrer.</span></button>
+    <button class="v2t" type="button" id="v2Avvik"><b><svg class="ic"><use href="#i-alert"/></svg>Avviksregister</b><span>Avvik med ansvarlig, frist og lukking. Hendelser med høy eller kritisk alvorsgrad foreslås automatisk.</span></button>
   </div>
   <div class="sec-head rv" style="--d:0s">
     <span class="sec-no plx" data-speed=".05">05</span><h2 class="sec-title" style="margin:0">Planlegging og ressurser</h2>
@@ -4442,6 +4443,181 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
         byId('vkNext').onclick=function(){ vkCur.setDate(vkCur.getDate()+7); last(); };
         byId('vkIdag').onclick=function(){ vkCur=vkMan(new Date()); last(); };
         last();
+      };
+    }
+
+    /* ===== B2 FASE 2 2026-08-24: AVVIKSREGISTER (deviations, egen tabell fra B2-AVVIK-SQL).
+       Tilsynsmappa lister hendelser med hoey/kritisk alvor — en LESELISTE. Dette registeret
+       foelger dem opp: ansvarlig, frist, lukking med notat. Hendelser uten avvik foreslaas
+       nederst i panelet. PGRST-vern: aerlig melding hvis SQL-en ikke er kjoert. ===== */
+    var av=byId('v2Avvik'); if(av && !av.__w){ av.__w=1;
+      var avSevNo={low:'Lav',medium:'Middels',high:'Høy',critical:'Kritisk'};
+      var avSevF ={low:'#8aa0bd',medium:'#c9a24b',high:'#e0a45c',critical:'#e8857c'};
+      var avFilter='apen', avData=[], avForslag=[], avNavn={}, avTur={};
+      var avIso=function(d){ var p=function(n){return (n<10?'0':'')+n;}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); };
+      var avDato=function(x){ if(!x) return ''; try{ return new Date(x).toLocaleDateString('nb-NO',{day:'2-digit',month:'2-digit',year:'2-digit'}); }catch(e){ return String(x); } };
+      var avFeil=function(el,m){
+        el.innerHTML='<span style="color:#e8857c">'+(/relation|schema|not exist|PGRST/i.test(String(m))
+          ? 'Avviksregisteret krever databaseoppdatering — kjør B2-AVVIK-SQL-2026-08-24 (blokk A og B) først.'
+          : v2Esc(String(m)))+'</span>';
+      };
+      var avSkjemaVis=function(forh){
+        var sk=byId('avSkjema'); if(!sk) return;
+        var gValg='<option value="">Ingen ansvarlig</option>'+((R&&R.guidesRaw)||[]).map(function(g){ return '<option value="'+g.id+'">'+v2Esc(g.name)+'</option>'; }).join('');
+        var sValg=['low','medium','high','critical'].map(function(x){ return '<option value="'+x+'"'+((forh&&forh.severity===x)?' selected':'')+'>'+avSevNo[x]+'</option>'; }).join('');
+        var inp='padding:6px 8px;border-radius:8px;border:1px solid #284063;background:#0e1a2c;color:#eaf2fb;font-size:12px;width:100%';
+        sk.style.display='block';
+        sk.innerHTML='<div style="border:1px solid rgba(201,162,75,.35);border-radius:10px;padding:10px 12px;margin:0 0 10px">'
+          +'<input id="avTit" placeholder="Hva er avviket?" value="'+v2Esc((forh&&forh.title)||'')+'" style="'+inp+'">'
+          +'<textarea id="avBesk" rows="2" placeholder="Beskrivelse (valgfritt)" style="'+inp+';margin-top:6px;resize:vertical">'+v2Esc((forh&&forh.description)||'')+'</textarea>'
+          +'<div style="display:flex;gap:6px;margin-top:6px">'
+            +'<select id="avSev" style="'+inp+';flex:1">'+sValg+'</select>'
+            +'<select id="avAns" style="'+inp+';flex:1.4">'+gValg+'</select>'
+            +'<input id="avFrist" type="date" style="'+inp+';flex:1">'
+          +'</div>'
+          +'<div style="display:flex;gap:6px;margin-top:8px"><button class="b-p" id="avLagre" style="padding:5px 12px">Lagre avvik</button>'
+          +'<button class="b-g" id="avAvbryt" style="padding:5px 12px">Avbryt</button>'
+          +'<span id="avErr" style="color:#e8857c;font-size:11.5px;align-self:center"></span></div></div>';
+        byId('avAvbryt').onclick=function(){ sk.style.display='none'; sk.innerHTML=''; };
+        byId('avLagre').onclick=function(){
+          var tit=(byId('avTit').value||'').trim();
+          if(!tit){ byId('avErr').textContent='Tittel må fylles ut.'; return; }
+          var rad={ organization_id:(me&&me.organization_id)||null, title:tit,
+                    description:(byId('avBesk').value||'').trim()||null,
+                    severity:byId('avSev').value||'medium',
+                    assigned_to:byId('avAns').value||null,
+                    due_date:byId('avFrist').value||null,
+                    created_by:(me&&me.id)||null,
+                    event_id:(forh&&forh.event_id)||null,
+                    trip_id:(forh&&forh.trip_id)||null };
+          byId('avLagre').disabled=true;
+          sb.from('deviations').insert(rad).then(function(r2){
+            byId('avLagre').disabled=false;
+            if(r2&&r2.error){ byId('avErr').textContent = String(r2.error.code)==='23505' ? 'Det finnes allerede et avvik på denne hendelsen.' : String(r2.error.message||''); return; }
+            try{ logAdmin('avvik_opprettet','',tit+' · '+avSevNo[rad.severity]); }catch(e){}
+            sk.style.display='none'; sk.innerHTML=''; avLast();
+          });
+        };
+      };
+      var avTegn=function(){
+        var el=byId('avL'); if(!el) return;
+        var idag=avIso(new Date());
+        var vis=avData.filter(function(d){ return avFilter==='alle' ? true : d.status===avFilter; });
+        var h='';
+        if(!vis.length){
+          h+='<p style="color:#8aa0bd">'+(avFilter==='lukket'?'Ingen lukkede avvik.':(avFilter==='apen'?'Ingen åpne avvik. ':'Ingen avvik registrert. '))+'</p>';
+        }
+        vis.forEach(function(d){
+          var forfalt = d.status==='apen' && d.due_date && d.due_date < idag;
+          h+='<div style="border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:9px 11px;margin:0 0 8px'+(forfalt?';border-color:rgba(232,133,124,.5)':'')+'">'
+            +'<div style="display:flex;gap:8px;align-items:baseline">'
+              +'<b style="color:#eaf2fb;flex:1">'+v2Esc(d.title)+'</b>'
+              +'<span style="color:'+(avSevF[d.severity]||'#8aa0bd')+';font-weight:700;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase">'+v2Esc(avSevNo[d.severity]||d.severity)+'</span>'
+              +'<span style="font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:'+(d.status==='lukket'?'#5fb97a':'#c9a24b')+'">'+(d.status==='lukket'?'Lukket':'Åpen')+'</span>'
+            +'</div>'
+            +(d.description?('<div style="margin-top:4px;color:#c8d6e8">'+v2Esc(d.description)+'</div>'):'')
+            +'<div style="margin-top:5px;color:#8aa0bd;font-size:11.5px">'
+              +'Ansvarlig: '+v2Esc(d.assigned_to? (avNavn[d.assigned_to]||'Guide') : 'ikke tildelt')
+              +(d.due_date?(' · Frist: <span'+(forfalt?' style="color:#e8857c;font-weight:700"':'')+'>'+v2Esc(avDato(d.due_date))+(forfalt?' — OVERSKREDET':'')+'</span>'):' · uten frist')
+              +(d.event_id?(' · fra hendelse'+(d.trip_id&&avTur[d.trip_id]?(' på '+v2Esc(avTur[d.trip_id])):'')):'')
+              +' · opprettet '+v2Esc(avDato(d.created_at))
+            +'</div>'
+            +(d.status==='lukket'
+              ? ('<div style="margin-top:5px;color:#5fb97a;font-size:11.5px">Lukket '+v2Esc(avDato(d.closed_at))+(d.closed_by?(' av '+v2Esc(avNavn[d.closed_by]||'admin')):'')+(d.closing_note?(' — <span style="color:#8aa0bd">'+v2Esc(d.closing_note)+'</span>'):'')+'</div>')
+              : ('<div style="margin-top:7px" data-avrad="'+d.id+'"><button class="b-g" data-avlukk="'+d.id+'" style="padding:4px 10px">Lukk avvik</button></div>'))
+          +'</div>';
+        });
+        if(avForslag.length){
+          h+='<div style="margin:14px 0 6px;color:#c9a24b;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:700">Hendelser uten avvik</div>';
+          avForslag.forEach(function(e){
+            h+='<div class="row2" style="align-items:center"><span style="flex:1;color:#c8d6e8">'
+              +'<b>'+v2Esc(e.type||'Hendelse')+'</b> · '+v2Esc(avSevNo[e.severity]||e.severity)+' · '+v2Esc(avDato(e.created_at))+(e.trip_id&&avTur[e.trip_id]?(' · '+v2Esc(avTur[e.trip_id])):'')
+              +(e.description?('<br><span style="color:#8aa0bd">'+v2Esc(String(e.description).slice(0,120))+'</span>'):'')
+              +'</span><button class="b-g" data-avfra="'+e.id+'" style="padding:4px 10px">Opprett avvik</button></div>';
+          });
+        }
+        el.innerHTML=h;
+        el.querySelectorAll('[data-avlukk]').forEach(function(b){
+          b.onclick=function(){
+            var id=b.getAttribute('data-avlukk');
+            var rad=el.querySelector('[data-avrad="'+id+'"]'); if(!rad) return;
+            rad.innerHTML='<div style="display:flex;gap:6px"><input data-avnotat="'+id+'" placeholder="Hva ble gjort? (valgfritt)" style="flex:1;padding:5px 8px;border-radius:8px;border:1px solid #284063;background:#0e1a2c;color:#eaf2fb;font-size:12px">'
+              +'<button class="b-p" data-avbekreft="'+id+'" style="padding:4px 10px">Bekreft</button>'
+              +'<button class="b-g" data-avnei="'+id+'" style="padding:4px 10px">Avbryt</button></div>';
+            rad.querySelector('[data-avnei]').onclick=function(){ avTegn(); };
+            rad.querySelector('[data-avbekreft]').onclick=function(){
+              var notat=(rad.querySelector('[data-avnotat]').value||'').trim();
+              var tittel=''; avData.forEach(function(x){ if(x.id===id) tittel=x.title; });
+              sb.from('deviations').update({ status:'lukket', closed_at:new Date().toISOString(), closed_by:(me&&me.id)||null, closing_note:notat||null }).eq('id',id).then(function(r2){
+                if(r2&&r2.error){ avFeil(byId('avL'), r2.error.message); return; }
+                try{ logAdmin('avvik_lukket','',tittel+(notat?(' · '+notat.slice(0,120)):'')); }catch(e){}
+                avLast();
+              });
+            };
+          };
+        });
+        el.querySelectorAll('[data-avfra]').forEach(function(b){
+          b.onclick=function(){
+            var id=b.getAttribute('data-avfra'), e=null;
+            avForslag.forEach(function(x){ if(x.id===id) e=x; });
+            if(!e) return;
+            avSkjemaVis({ event_id:e.id, trip_id:e.trip_id||null, severity:e.severity||'medium',
+                          title:(e.type||'Hendelse')+' '+avDato(e.created_at), description:e.description||'' });
+            try{ byId('avTit').focus(); }catch(x2){}
+          };
+        });
+      };
+      var avLast=function(){
+        var el=byId('avL'); if(!el) return;
+        avNavn={}; ((R&&R.guidesRaw)||[]).forEach(function(g){ avNavn[g.id]=g.name; });
+        avTur={};  /* R har kun guidesRaw og certsRaw — maalt. Turnavn hentes under. */
+        sb.from('deviations').select('*').order('status',{ascending:true}).order('created_at',{ascending:false}).limit(300).then(function(r){
+          if(r&&r.error){ avFeil(el, r.error.message); return; }
+          avData=(r&&r.data)||[];
+          var brukt={}; avData.forEach(function(d){ if(d.event_id) brukt[d.event_id]=1; });
+          var siden=new Date(Date.now()-90*864e5).toISOString();
+          sb.from('events').select('id,trip_id,type,severity,description,created_at').in('severity',['high','critical']).gte('created_at',siden).order('created_at',{ascending:false}).limit(50).then(function(r2){
+            avForslag=((r2&&!r2.error&&r2.data)||[]).filter(function(e){ return !brukt[e.id]; });
+            var ids={}; avData.forEach(function(d){ if(d.trip_id) ids[d.trip_id]=1; });
+            avForslag.forEach(function(e){ if(e.trip_id) ids[e.trip_id]=1; });
+            var liste=Object.keys(ids);
+            if(!liste.length){ avTegn(); return; }
+            sb.from('trips').select('id,name').in('id',liste).then(function(r3){
+              ((r3&&!r3.error&&r3.data)||[]).forEach(function(t){ avTur[t.id]=t.name; });
+              avTegn();
+            }, function(){ avTegn(); });
+          }, function(){ avForslag=[]; avTegn(); });
+        });
+      };
+      av.onclick=function(){
+        v2Modal('<h3>Avviksregister</h3>'
+          +'<p class="s">Avvik med ansvarlig, frist og lukking — oppfølgingen Tilsynsmappa ikke gir. Hendelser med alvorsgrad høy eller kritisk siste 90 dager foreslås nederst.</p>'
+          +'<p class="s" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><button class="b-g" id="avFA" style="padding:4px 10px">Åpne</button><button class="b-g" id="avFL" style="padding:4px 10px">Lukkede</button><button class="b-g" id="avFAll" style="padding:4px 10px">Alle</button><button class="b-p" id="avNy" style="padding:4px 10px;margin-left:auto">Nytt avvik</button></p>'
+          +'<div id="avSkjema" style="display:none"></div>'
+          +'<div id="avL" style="font-size:12.5px;color:#8aa0bd;max-height:50vh;overflow:auto">Laster …</div>'
+          +'<div class="btns"><button class="b-p" id="avCsv">Last ned CSV</button><button class="b-g" id="avX">Lukk</button></div>');
+        byId('avX').onclick=v2Close;
+        var merk=function(){
+          [['avFA','apen'],['avFL','lukket'],['avFAll','alle']].forEach(function(p){
+            var b=byId(p[0]); if(b) b.style.borderColor = (avFilter===p[1])? 'rgba(201,162,75,.6)' : '';
+          });
+        };
+        byId('avFA').onclick=function(){ avFilter='apen'; merk(); avTegn(); };
+        byId('avFL').onclick=function(){ avFilter='lukket'; merk(); avTegn(); };
+        byId('avFAll').onclick=function(){ avFilter='alle'; merk(); avTegn(); };
+        byId('avNy').onclick=function(){ avSkjemaVis(null); try{ byId('avTit').focus(); }catch(e){} };
+        byId('avCsv').onclick=function(){
+          var q=function(v){ return '"'+String(v==null?'':v).replace(/"/g,'""')+'"'; };
+          var csv='opprettet;tittel;alvor;status;ansvarlig;frist;lukket;lukkenotat\n';
+          avData.forEach(function(d){
+            csv+=String(d.created_at||'').slice(0,10)+';'+q(d.title)+';'+q(avSevNo[d.severity]||d.severity)+';'+q(d.status==='lukket'?'Lukket':'Åpen')
+               +';'+q(d.assigned_to?(avNavn[d.assigned_to]||'Guide'):'')+';'+q(d.due_date||'')+';'+q(String(d.closed_at||'').slice(0,10))+';'+q(d.closing_note||'')+'\n';
+          });
+          var bl=new Blob(["﻿"+csv],{type:'text/csv;charset=utf-8'});
+          var a=document.createElement('a'); a.href=URL.createObjectURL(bl); a.download='daedalus-avvik-'+avIso(new Date())+'.csv'; a.click();
+          try{ logAdmin('avvik_eksportert','','CSV · '+avData.length+' avvik'); }catch(e){}
+        };
+        avFilter='apen'; merk(); avLast();
       };
     }
 
