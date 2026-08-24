@@ -4328,7 +4328,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
 
     /* ===== C3 2026-08-20: rapportarkiv — genererings-sporet fra admin_audit ===== */
     var ark=byId('v2Arkiv'); if(ark && !ark.__w){ ark.__w=1; ark.onclick=function(){
-      var TYPER={ hms_rapport_generert:'HMS-rapport', tilsynsmappe_generert:'Tilsynsmappe', sesongrapport_generert:'Sesongrapport', fakturagrunnlag_eksportert:'Fakturagrunnlag (CSV)', rapport_merknad:'Admin-merknad på turrapport', csv_eksport:'CSV-eksport', brief_generert:'Morgenbrief' };
+      var TYPER={ hms_rapport_generert:'HMS-rapport', tilsynsmappe_generert:'Tilsynsmappe', sesongrapport_generert:'Sesongrapport', fakturagrunnlag_eksportert:'Fakturagrunnlag (CSV)', avvik_eksportert:'Avviksregister (CSV)', vaktplan_eksportert:'Vaktplan (CSV/utskrift)', rapport_merknad:'Admin-merknad på turrapport', csv_eksport:'CSV-eksport', brief_generert:'Morgenbrief' };
       var ov=v2Modal('<h3>Rapportarkiv</h3><p class="s">Genererte dokumenter og eksporter, nyeste først. Selve PDF-ene lagres ikke — dette er genererings-sporet fra revisjonsloggen, med nummer, tid og ansvarlig.</p><div id="v2ArL" style="font-size:12.5px;color:#8aa0bd;max-height:52vh;overflow:auto">Laster …</div><div class="btns"><button class="b-g" id="v2ArX">Lukk</button></div>');
       byId('v2ArX').onclick=v2Close;
       var navnAv={}; try{ ((R&&R.guidesRaw)||[]).forEach(function(g){ navnAv[g.id]=g.name; }); }catch(e){}
@@ -4461,9 +4461,11 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
           ? 'Avviksregisteret krever databaseoppdatering — kjør B2-AVVIK-SQL-2026-08-24 (blokk A og B) først.'
           : v2Esc(String(m)))+'</span>';
       };
+      /* forh.id satt => REDIGERING av eksisterende avvik, ellers nytt. */
       var avSkjemaVis=function(forh){
         var sk=byId('avSkjema'); if(!sk) return;
-        var gValg='<option value="">Ingen ansvarlig</option>'+((R&&R.guidesRaw)||[]).map(function(g){ return '<option value="'+g.id+'">'+v2Esc(g.name)+'</option>'; }).join('');
+        var red=!!(forh&&forh.id);
+        var gValg='<option value="">Ingen ansvarlig</option>'+((R&&R.guidesRaw)||[]).map(function(g){ return '<option value="'+g.id+'"'+((forh&&forh.assigned_to===g.id)?' selected':'')+'>'+v2Esc(g.name)+'</option>'; }).join('');
         var sValg=['low','medium','high','critical'].map(function(x){ return '<option value="'+x+'"'+((forh&&forh.severity===x)?' selected':'')+'>'+avSevNo[x]+'</option>'; }).join('');
         var inp='padding:6px 8px;border-radius:8px;border:1px solid #284063;background:#0e1a2c;color:#eaf2fb;font-size:12px;width:100%';
         sk.style.display='block';
@@ -4473,9 +4475,9 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
           +'<div style="display:flex;gap:6px;margin-top:6px">'
             +'<select id="avSev" style="'+inp+';flex:1">'+sValg+'</select>'
             +'<select id="avAns" style="'+inp+';flex:1.4">'+gValg+'</select>'
-            +'<input id="avFrist" type="date" style="'+inp+';flex:1">'
+            +'<input id="avFrist" type="date" value="'+v2Esc((forh&&forh.due_date)||'')+'" style="'+inp+';flex:1">'
           +'</div>'
-          +'<div style="display:flex;gap:6px;margin-top:8px"><button class="b-p" id="avLagre" style="padding:5px 12px">Lagre avvik</button>'
+          +'<div style="display:flex;gap:6px;margin-top:8px"><button class="b-p" id="avLagre" style="padding:5px 12px">'+(red?'Lagre endring':'Lagre avvik')+'</button>'
           +'<button class="b-g" id="avAvbryt" style="padding:5px 12px">Avbryt</button>'
           +'<span id="avErr" style="color:#e8857c;font-size:11.5px;align-self:center"></span></div></div>';
         byId('avAvbryt').onclick=function(){ sk.style.display='none'; sk.innerHTML=''; };
@@ -4491,12 +4493,20 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
                     event_id:(forh&&forh.event_id)||null,
                     trip_id:(forh&&forh.trip_id)||null };
           byId('avLagre').disabled=true;
-          sb.from('deviations').insert(rad).then(function(r2){
+          var ferdig=function(r2){
             byId('avLagre').disabled=false;
             if(r2&&r2.error){ byId('avErr').textContent = String(r2.error.code)==='23505' ? 'Det finnes allerede et avvik på denne hendelsen.' : String(r2.error.message||''); return; }
-            try{ logAdmin('avvik_opprettet','',tit+' · '+avSevNo[rad.severity]); }catch(e){}
+            try{ logAdmin(red?'avvik_endret':'avvik_opprettet','',tit+' · '+avSevNo[rad.severity]); }catch(e){}
             sk.style.display='none'; sk.innerHTML=''; avLast();
-          });
+          };
+          if(red){
+            /* org, kilde og opprettet-av roeres aldri ved redigering — kun feltene i skjemaet. */
+            sb.from('deviations').update({ title:rad.title, description:rad.description, severity:rad.severity,
+                                           assigned_to:rad.assigned_to, due_date:rad.due_date })
+              .eq('id',forh.id).then(ferdig);
+          } else {
+            sb.from('deviations').insert(rad).then(ferdig);
+          }
         };
       };
       var avTegn=function(){
@@ -4523,8 +4533,12 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
               +' · opprettet '+v2Esc(avDato(d.created_at))
             +'</div>'
             +(d.status==='lukket'
-              ? ('<div style="margin-top:5px;color:#5fb97a;font-size:11.5px">Lukket '+v2Esc(avDato(d.closed_at))+(d.closed_by?(' av '+v2Esc(avNavn[d.closed_by]||'admin')):'')+(d.closing_note?(' — <span style="color:#8aa0bd">'+v2Esc(d.closing_note)+'</span>'):'')+'</div>')
-              : ('<div style="margin-top:7px" data-avrad="'+d.id+'"><button class="b-g" data-avlukk="'+d.id+'" style="padding:4px 10px">Lukk avvik</button></div>'))
+              ? ('<div style="margin-top:5px;color:#5fb97a;font-size:11.5px">Lukket '+v2Esc(avDato(d.closed_at))+(d.closed_by?(' av '+v2Esc(avNavn[d.closed_by]||'admin')):'')+(d.closing_note?(' — <span style="color:#8aa0bd">'+v2Esc(d.closing_note)+'</span>'):'')+'</div>'
+                 +'<div style="margin-top:7px"><button class="b-g" data-avgjen="'+d.id+'" style="padding:4px 10px">Gjenåpne</button></div>')
+              : (/* gjenaapnet avvik beholder forrige lukking som historikk — ingenting nulles ved gjenaapning */
+                 (d.closed_at?('<div style="margin-top:5px;color:#8aa0bd;font-size:11.5px">Gjenåpnet — tidligere lukket '+v2Esc(avDato(d.closed_at))+(d.closed_by?(' av '+v2Esc(avNavn[d.closed_by]||'admin')):'')+(d.closing_note?(' — '+v2Esc(d.closing_note)):'')+'</div>'):'')
+                 +'<div style="margin-top:7px;display:flex;gap:6px" data-avrad="'+d.id+'"><button class="b-g" data-avlukk="'+d.id+'" style="padding:4px 10px">Lukk avvik</button>'
+                 +'<button class="b-g" data-avendre="'+d.id+'" style="padding:4px 10px">Endre</button></div>'))
           +'</div>';
         });
         if(avForslag.length){
@@ -4554,6 +4568,29 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
                 avLast();
               });
             };
+          };
+        });
+        el.querySelectorAll('[data-avendre]').forEach(function(b){
+          b.onclick=function(){
+            var id=b.getAttribute('data-avendre'), d=null;
+            avData.forEach(function(x){ if(x.id===id) d=x; });
+            if(!d) return;
+            avSkjemaVis({ id:d.id, title:d.title, description:d.description||'', severity:d.severity,
+                          assigned_to:d.assigned_to||'', due_date:d.due_date||'' });
+            try{ byId('avTit').focus(); }catch(e){}
+          };
+        });
+        el.querySelectorAll('[data-avgjen]').forEach(function(b){
+          b.onclick=function(){
+            var id=b.getAttribute('data-avgjen'), tittel='';
+            avData.forEach(function(x){ if(x.id===id) tittel=x.title; });
+            /* KUN status settes tilbake. closed_at/closed_by/closing_note staar som spor
+               av forrige lukking, og overskrives foerst naar avviket lukkes paa nytt. */
+            sb.from('deviations').update({ status:'apen' }).eq('id',id).then(function(r2){
+              if(r2&&r2.error){ avFeil(byId('avL'), r2.error.message); return; }
+              try{ logAdmin('avvik_gjenaapnet','',tittel); }catch(e){}
+              avLast();
+            });
           };
         });
         el.querySelectorAll('[data-avfra]').forEach(function(b){
