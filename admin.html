@@ -1187,6 +1187,7 @@ body.lock{overflow:hidden}
     <button class="v2t" type="button" id="v2Sesong"><b><svg class="ic"><use href="#i-file"/></svg>Sesongrapport (PDF)</b><span>Nøkkeltall for styre og bank: turer, gjester, sikkerhet og drift.</span></button>
     <button class="v2t" type="button" id="v2Faktura"><b><svg class="ic"><use href="#i-file"/></svg>Fakturagrunnlag</b><span>Turer per guide i perioden — grunnlag for innleide guiders fakturering. CSV og utskrift.</span></button>
     <button class="v2t" type="button" id="v2Arkiv"><b><svg class="ic"><use href="#i-search"/></svg>Rapportarkiv</b><span>Alle genererte dokumenter og eksporter: nummer, tid og ansvarlig.</span></button>
+    <button class="v2t" type="button" id="v2Vakt"><b><svg class="ic"><use href="#i-users"/></svg>Vaktplan</b><span>Hvem har vakta, dag for dag. Guidene ser planen; kun admin endrer.</span></button>
   </div>
   <div class="sec-head rv" style="--d:0s">
     <span class="sec-no plx" data-speed=".05">05</span><h2 class="sec-title" style="margin:0">Planlegging og ressurser</h2>
@@ -4326,6 +4327,74 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
         }).join('') : 'Ingen dokumenter generert ennå. Rapporter du lager herfra dukker opp her.';
       });
     }; }
+
+    /* ===== VAKTPLAN 2026-08-21: duty_roster (tabell fra VAKTPLAN-SQL). PGRST-vern: aerlig melding til SQL-en er kjoert. ===== */
+    var vk=byId('v2Vakt'); if(vk && !vk.__w){ vk.__w=1;
+      var vkMan=function(d){ var x=new Date(d); var day=(x.getDay()+6)%7; x.setDate(x.getDate()-day); x.setHours(0,0,0,0); return x; };
+      var vkIso=function(d){ var p=function(n){return (n<10?'0':'')+n;}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); };
+      var vkUke=function(d){ var t=new Date(d); t.setHours(0,0,0,0); t.setDate(t.getDate()+3-((t.getDay()+6)%7)); var f=new Date(t.getFullYear(),0,4); return 1+Math.round(((t-f)/864e5-3+((f.getDay()+6)%7))/7); };
+      var vkDagN=['Mandag','Tirsdag','Onsdag','Torsdag','Fredag','Lørdag','Søndag'];
+      var vkRoller=['vakt','vaktleder','beredskap'];
+      var vkRolleNo={vakt:'Vakt',vaktleder:'Vaktleder',beredskap:'Beredskap'};
+      var vkCur=vkMan(new Date());
+      vk.onclick=function(){
+        var ov=v2Modal('<h3>Vaktplan</h3><p class="s" style="display:flex;align-items:center;gap:10px"><button class="b-g" id="vkPrev" style="padding:4px 10px">‹</button><b id="vkTit" style="color:#eaf2fb"></b><button class="b-g" id="vkNext" style="padding:4px 10px">›</button><button class="b-g" id="vkIdag" style="padding:4px 10px;margin-left:auto">I dag</button></p><div id="vkL" style="font-size:12.5px;color:#8aa0bd;max-height:56vh;overflow:auto">Laster …</div><div class="btns"><button class="b-g" id="vkX">Lukk</button></div>');
+        byId('vkX').onclick=v2Close;
+        var last=function(){
+          var man=vkCur, sonU=new Date(man); sonU.setDate(sonU.getDate()+6);
+          byId('vkTit').textContent='Uke '+vkUke(man)+' · '+man.toLocaleDateString('nb-NO',{day:'numeric',month:'short'})+' – '+sonU.toLocaleDateString('nb-NO',{day:'numeric',month:'short'});
+          sb.from('duty_roster').select('id,user_id,duty_date,role,note').gte('duty_date',vkIso(man)).lte('duty_date',vkIso(sonU)).order('duty_date').then(function(r){
+            var el=byId('vkL'); if(!el) return;
+            if(r&&r.error){
+              el.innerHTML='<span style="color:#e8857c">'+(/relation|schema|not exist|PGRST/i.test(String(r.error.message))?'Vaktplanen krever databaseoppdatering — kjør VAKTPLAN-SQL-2026-08-21 (blokk A og B) først.':v2Esc(r.error.message))+'</span>';
+              return;
+            }
+            var rows=(r&&r.data)||[];
+            var navnAv={}; ((R&&R.guidesRaw)||[]).forEach(function(g){ navnAv[g.id]=g.name; });
+            var gValg=((R&&R.guidesRaw)||[]).map(function(g){ return '<option value="'+g.id+'">'+v2Esc(g.name)+'</option>'; }).join('');
+            var rValg=vkRoller.map(function(x){ return '<option value="'+x+'">'+vkRolleNo[x]+'</option>'; }).join('');
+            var idagIso=vkIso(new Date());
+            var h='';
+            for(var i=0;i<7;i++){
+              var d=new Date(man); d.setDate(d.getDate()+i); var iso=vkIso(d);
+              var dagens=rows.filter(function(x){ return x.duty_date===iso; });
+              h+='<div style="border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:9px 11px;margin:0 0 8px'+(iso===idagIso?';border-color:rgba(201,162,75,.5)':'')+'">'
+                +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b style="color:#eaf2fb">'+vkDagN[i]+'</b><span>'+d.toLocaleDateString('nb-NO',{day:'numeric',month:'short'})+'</span>'+(iso===idagIso?'<span style="color:#c9a24b;font-weight:700;font-size:10.5px;letter-spacing:.08em">I DAG</span>':'')+'</div>'
+                +(dagens.length? dagens.map(function(x){ return '<div class="row2" style="align-items:center"><span style="flex:1;color:#c8d6e8"><b>'+v2Esc(navnAv[x.user_id]||'Guide')+'</b> · '+v2Esc(vkRolleNo[x.role]||x.role)+(x.note?(' · <span style="color:#8aa0bd">'+v2Esc(x.note)+'</span>'):'')+'</span><button class="b-g" data-vkdel="'+x.id+'" style="padding:2px 9px">✕</button></div>'; }).join('') : '<div style="color:#5f7089">Ingen på vakt.</div>')
+                +'<div style="display:flex;gap:6px;margin-top:7px"><select data-vkg="'+iso+'" style="flex:2;padding:6px 8px;border-radius:8px;border:1px solid #284063;background:#0e1a2c;color:#eaf2fb;font-size:12px">'+gValg+'</select><select data-vkr="'+iso+'" style="flex:1;padding:6px 8px;border-radius:8px;border:1px solid #284063;background:#0e1a2c;color:#eaf2fb;font-size:12px">'+rValg+'</select><button class="b-p" data-vkadd="'+iso+'" style="padding:6px 12px">+</button></div>'
+                +'</div>';
+            }
+            el.innerHTML=h;
+            el.querySelectorAll('[data-vkadd]').forEach(function(b){
+              b.onclick=function(){
+                var iso2=b.getAttribute('data-vkadd');
+                var uid=(el.querySelector('[data-vkg="'+iso2+'"]')||{}).value;
+                var rolle=(el.querySelector('[data-vkr="'+iso2+'"]')||{}).value||'vakt';
+                if(!uid) return;
+                sb.from('duty_roster').insert({organization_id:(me&&me.organization_id)||null,user_id:uid,duty_date:iso2,role:rolle,created_by:(me&&me.id)||null}).then(function(r2){
+                  if(r2&&r2.error){ var m=String(r2.error.message||''); alert(String(r2.error.code)==='23505'?'Guiden står alt på vakt den dagen.':('Kunne ikke lagre: '+m)); return; }
+                  try{ logAdmin('vaktplan_endret', iso2, (navnAv[uid]||'')+' · '+rolle); }catch(e){}
+                  last();
+                });
+              };
+            });
+            el.querySelectorAll('[data-vkdel]').forEach(function(b){
+              b.onclick=function(){
+                sb.from('duty_roster').delete().eq('id',b.getAttribute('data-vkdel')).then(function(r2){
+                  if(r2&&r2.error){ alert('Kunne ikke fjerne: '+r2.error.message); return; }
+                  try{ logAdmin('vaktplan_fjernet', '', ''); }catch(e){}
+                  last();
+                });
+              };
+            });
+          });
+        };
+        byId('vkPrev').onclick=function(){ vkCur.setDate(vkCur.getDate()-7); last(); };
+        byId('vkNext').onclick=function(){ vkCur.setDate(vkCur.getDate()+7); last(); };
+        byId('vkIdag').onclick=function(){ vkCur=vkMan(new Date()); last(); };
+        last();
+      };
+    }
 
     /* Sertifikatoversikt */
     var ce=byId('v2Cert'); if(ce && !ce.__w){ ce.__w=1; ce.onclick=function(){
