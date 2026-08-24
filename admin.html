@@ -3614,7 +3614,12 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       var cr=document.getElementById('chRoute');
       if(cr) cr.addEventListener('click',function(){ var pts=[]; lag.tur.eachLayer(function(ly){ if(ly.getLatLngs){ ly.getLatLngs().forEach(function(p){ pts.push([p.lat,p.lng]); }); } }); if(pts.length){ try{ lm.fitBounds(pts,{padding:[36,36],maxZoom:13}); }catch(e){} } else { try{ toast('Ingen ruter','Tegn en rute i kart-planleggeren, så vises den her.'); }catch(e){} } });
       loadOps();
-      setInterval(loadOps, 60000);
+      /* D3/D4 2026-08-24: loadOps hentet inntil 60 turer med map_data hvert minutt
+         ogsaa i skjulte faner. Maalt live: 7 KB i dag (stoerste rute 12 punkter,
+         ~102 B/punkt), saa payloaden er ikke problemet - men polling i skjult fane er.
+         Samme vern som loadGps og KPI-ticken paa linja under. */
+      setInterval(function(){ if(!document.hidden) loadOps(); }, 60000);
+      document.addEventListener('visibilitychange',function(){ if(!document.hidden) loadOps(); });
       window.__OPS_RELOAD=loadOps; loadGps(); setInterval(function(){ if(!document.hidden) loadGps(); }, 60000); document.addEventListener('visibilitychange',function(){ if(!document.hidden) loadGps(); }); setInterval(renderGps, 60000);
     }
   }
@@ -4348,8 +4353,11 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       var vkRolleNo={vakt:'Vakt',vaktleder:'Vaktleder',beredskap:'Beredskap'};
       var vkCur=vkMan(new Date());
       vk.onclick=function(){
-        var ov=v2Modal('<h3>Vaktplan</h3><p class="s" style="display:flex;align-items:center;gap:10px"><button class="b-g" id="vkPrev" style="padding:4px 10px">‹</button><b id="vkTit" style="color:#eaf2fb"></b><button class="b-g" id="vkNext" style="padding:4px 10px">›</button><button class="b-g" id="vkIdag" style="padding:4px 10px;margin-left:auto">I dag</button></p><div id="vkL" style="font-size:12.5px;color:#8aa0bd;max-height:56vh;overflow:auto">Laster …</div><div class="btns"><button class="b-g" id="vkX">Lukk</button></div>');
+        var ov=v2Modal('<h3>Vaktplan</h3><p class="s" style="display:flex;align-items:center;gap:10px"><button class="b-g" id="vkPrev" style="padding:4px 10px">‹</button><b id="vkTit" style="color:#eaf2fb"></b><button class="b-g" id="vkNext" style="padding:4px 10px">›</button><button class="b-g" id="vkIdag" style="padding:4px 10px;margin-left:auto">I dag</button></p><div id="vkL" style="font-size:12.5px;color:#8aa0bd;max-height:56vh;overflow:auto">Laster …</div><div class="btns"><button class="b-p" id="vkCsv">Last ned CSV</button><button class="b-p" id="vkPrn">Skriv ut uka</button><button class="b-g" id="vkX">Lukk</button></div>');
         byId('vkX').onclick=v2Close;
+        /* 2026-08-24: eksport av vaktplanen. Uken som vises fanges her saa
+           CSV/utskrift alltid foelger navigasjonen, ikke bare foerste last. */
+        var vkUt=null;
         var last=function(){
           var man=vkCur, sonU=new Date(man); sonU.setDate(sonU.getDate()+6);
           byId('vkTit').textContent='Uke '+vkUke(man)+' · '+man.toLocaleDateString('nb-NO',{day:'numeric',month:'short'})+' – '+sonU.toLocaleDateString('nb-NO',{day:'numeric',month:'short'});
@@ -4364,6 +4372,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
             var gValg=((R&&R.guidesRaw)||[]).map(function(g){ return '<option value="'+g.id+'">'+v2Esc(g.name)+'</option>'; }).join('');
             var rValg=vkRoller.map(function(x){ return '<option value="'+x+'">'+vkRolleNo[x]+'</option>'; }).join('');
             var idagIso=vkIso(new Date());
+            vkUt={man:new Date(man), son:new Date(sonU), rows:rows, navn:navnAv};
             var h='';
             for(var i=0;i<7;i++){
               var d=new Date(man); d.setDate(d.getDate()+i); var iso=vkIso(d);
@@ -4398,6 +4407,36 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
               };
             });
           });
+        };
+        var vkRader=function(){ if(!vkUt) return [];
+          var ut=[];
+          for(var i=0;i<7;i++){ var d=new Date(vkUt.man); d.setDate(d.getDate()+i); var iso=vkIso(d);
+            vkUt.rows.filter(function(x){ return x.duty_date===iso; }).forEach(function(x){
+              ut.push({iso:iso, dag:vkDagN[i], navn:(vkUt.navn[x.user_id]||'Guide'),
+                       rolle:(vkRolleNo[x.role]||x.role||''), notat:(x.note||'')});
+            });
+          }
+          return ut; };
+        var vkNr=function(){ return 'VAKT-'+vkUt.man.getFullYear()+'-'+(vkUke(vkUt.man)<10?'0':'')+vkUke(vkUt.man); };
+        byId('vkCsv').onclick=function(){
+          if(!vkUt) return; var r=vkRader();
+          var q=function(v){ return '"'+String(v==null?'':v).replace(/"/g,'""')+'"'; };
+          var csv='dato;dag;guide;rolle;notat\n';
+          r.forEach(function(x){ csv+=x.iso+';'+q(x.dag)+';'+q(x.navn)+';'+q(x.rolle)+';'+q(x.notat)+'\n'; });
+          var bl=new Blob(["\ufeff"+csv],{type:'text/csv;charset=utf-8'});
+          var a=document.createElement('a'); a.href=URL.createObjectURL(bl);
+          a.download='daedalus-vaktplan-'+vkIso(vkUt.man)+'.csv'; a.click();
+          try{ logAdmin('vaktplan_eksportert', vkIso(vkUt.man), 'CSV · '+r.length+' vakter'); }catch(e){}
+        };
+        byId('vkPrn').onclick=function(){
+          if(!vkUt) return; var r=vkRader(); var E=v2Esc;
+          var kropp='<table><tr><th>Dato</th><th>Dag</th><th>Guide</th><th>Rolle</th><th>Notat</th></tr>'
+            +(r.length? r.map(function(x){ return '<tr><td>'+E(x.iso)+'</td><td>'+E(x.dag)+'</td><td>'+E(x.navn)+'</td><td>'+E(x.rolle)+'</td><td>'+E(x.notat)+'</td></tr>'; }).join('')
+               : '<tr><td colspan="5" class="mut">Ingen vakter satt opp denne uka.</td></tr>')
+            +'</table><p class="mut">Vaktplanen er intern arbeidsfordeling. Beredskapsnummer og n\u00f8dprosedyre ligger i Beredskap-oppslaget.</p>';
+          v2PrintDoc(vkNr(), 'DAEDALUS \u00b7 VAKTPLAN',
+            E((R&&R.orgName)||'')+' \u00b7 '+E(byId('vkTit')?byId('vkTit').textContent:''), kropp);
+          try{ logAdmin('vaktplan_eksportert', vkIso(vkUt.man), 'Utskrift \u00b7 '+r.length+' vakter'); }catch(e){}
         };
         byId('vkPrev').onclick=function(){ vkCur.setDate(vkCur.getDate()-7); last(); };
         byId('vkNext').onclick=function(){ vkCur.setDate(vkCur.getDate()+7); last(); };
