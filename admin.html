@@ -3879,8 +3879,20 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       var rm=document.getElementById('gaRemove');
       if(rm){ rm.onclick=function(){
         if(!window.confirm('Fjerne '+(g.name||g.email)+' fra organisasjonen? App-tilgangen (org-comp) trekkes automatisk.')) return;
-        sb.from('users').update({organization_id:null, role:'Guide'}).eq('id',g.id).then(function(r2){
-          if(r2&&r2.error){ document.getElementById('gaErr').textContent=r2.error.message; return; }
+        sb.from('users').update({organization_id:null, role:'Guide'}).eq('id',g.id).select().then(function(r2){
+          if(r2&&r2.error){
+            var _m=String(r2.error.message||'');
+            /* 2026-08-24: RLS pa users har WITH CHECK som krever at raden blir vaerende i egen org.
+               Da avvises organization_id=null. Aerlig melding + handlingsvei i stedet for raa Postgres-tekst. */
+            document.getElementById('gaErr').innerHTML = /row-level security|policy/i.test(_m)
+              ? 'Databasen tillater ikke at en guide fjernes fra organisasjonen herfra ennå (RLS-regel på users). Midlertidig vei: «Merk som gjest» — da frigjøres setet og guiden ser kun egne turer. Permanent fiks krever én SQL-runde (R5-FJERN-GUIDE-RLS).'
+              : _m;
+            return;
+          }
+          if(r2&&r2.data&&!r2.data.length){
+            document.getElementById('gaErr').textContent='Ingen rader ble endret — databasen avviste fjerningen stille. Kontakt admin.';
+            return;
+          }
           logAdmin('guide_fjernet', g.email, ''); try{ toast('Guide fjernet fra organisasjonen','Tilgang trekkes automatisk.'); }catch(e){} close(); setTimeout(function(){ location.reload(); },600);
         });
       }; }
