@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Svalbard 2027: erfarne guider må søke før 1. januar — Daedalus</title>
+<meta name="description" content="Fra 1. juli 2027 må guider på Svalbard være godkjent av Sysselmesteren. Har du 1500 dokumenterte guidetimer siste tre år, kan du søke unntak — men bare fram til 1. januar 2027. Kravene, fristene og forsikringssummene, samlet.">
+<link rel="canonical" href="https://daedalus-app.no/svalbard">
+<link rel="icon" type="image/png" href="icon.png">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Svalbard 2027: erfarne guider må søke før 1. januar">
+<meta property="og:description" content="1500 guidetimer på tre år gir unntak fra den nye godkjenningsordningen — hvis du søker i tide. Kravene og fristene, samlet på ett sted.">
+<meta property="og:url" content="https://daedalus-app.no/svalbard">
+<meta property="og:image" content="https://daedalus-app.no/icon.png">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..700&family=Inter:wght@400..700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Når må guider på Svalbard være godkjent?","acceptedAnswer":{"@type":"Answer","text":"Fra 1. juli 2027 må virksomheter bruke godkjente svalbardguider ved ferdsel, aktivitet og opphold utenfor bebygd område. Ordningen følger av forskrift om sikkerhet i felt mv. på Svalbard (FOR-2025-06-06-940)."}},
+{"@type":"Question","name":"Kan erfarne guider slippe kursene?","acceptedAnswer":{"@type":"Answer","text":"Ja. Guider som over de tre siste årene har guidet minimum 1500 timer, og som oppfyller kompetansekravene i forskriftens § 11, kan søke om unntak. Søknadsfristen er 1. januar 2027."}},
+{"@type":"Question","name":"Hva består godkjenningen av?","acceptedAnswer":{"@type":"Answer","text":"En digital modul, praktiske kurs og et feltkurs med sluttvurdering. Det finnes to nivåer: sommerguide og vinterguide. Vinterguide er det høyeste nivået og gir automatisk godkjenning som sommerguide."}},
+{"@type":"Question","name":"Hvilke krav gjelder allerede i dag?","acceptedAnswer":{"@type":"Answer","text":"Feltsikkerhetsforskriften trådte i kraft 1. januar 2026. Den krever tillatelse fra Sysselmesteren, meldeplikt til Svalbard skattekontor, internkontroll for turist- og feltvirksomhet, og obligatorisk forsikring på 120 000, 350 000 eller 650 000 kroner avhengig av sone."}}
+]}
+</script>
+<style>
+:root{
+  --bg0:#0a1322; --bg1:#0e1a30; --bg2:#13233f;
+  --panel:#16273f; --panel2:#1d3050; --line:#284063; --line-soft:#1f3352;
+  --sky:#4a9fe0; --sky2:#7fc0f5; --gold:#c9a24b; --gold2:#e3c071;
+  --text:#e7ecf3; --muted:#8b98ab; --ice:#7fb1bd;
+  --green:#5fb97a; --amber:#e0a458; --red:#d9685f;
+  --serif:'Fraunces',Georgia,'Times New Roman',serif;
+  --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg0);color:var(--text);font:16px/1.65 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--sky2);text-decoration:none}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- atmosphere ---------- */
+.sky{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(1200px 600px at 15% -10%, rgba(74,159,224,.16), transparent 60%),
+    radial-gradient(900px 500px at 85% 0%, rgba(127,177,189,.13), transparent 60%),
+    radial-gradient(700px 500px at 60% 110%, rgba(201,162,75,.08), transparent 60%),
+    linear-gradient(180deg,var(--bg1) 0%,var(--bg0) 45%,var(--bg0) 100%)}
+.aurora{position:absolute;left:-10%;right:-10%;top:-120px;height:420px;filter:blur(60px);opacity:.55;
+  background:linear-gradient(100deg,transparent 0%,rgba(95,185,122,.18) 25%,rgba(74,159,224,.22) 50%,rgba(127,192,245,.12) 70%,transparent 100%);
+  transform:skewY(-4deg);animation:drift 22s var(--ease) infinite alternate}
+@keyframes drift{from{transform:skewY(-4deg) translateX(-2%)}to{transform:skewY(-3deg) translateX(3%)}}
+.topo{position:absolute;inset:0;opacity:.07;
+  background-image:repeating-radial-gradient(ellipse 60% 40% at 70% 30%, transparent 0 38px, #7fb1bd 38px 39px)}
+@media (prefers-reduced-motion:reduce){.aurora{animation:none}}
+
+/* ---------- header ---------- */
+.top{position:relative;z-index:2;display:flex;align-items:center;gap:12px;max-width:1040px;margin:0 auto;padding:22px 24px}
+.top img{width:38px;height:38px;border-radius:10px;box-shadow:0 0 0 1px var(--line),0 8px 24px rgba(0,0,0,.35)}
+.top b{font:600 14px/1 var(--sans);letter-spacing:.16em}
+.top small{color:var(--muted);font-size:12px}
+.sp{flex:1}
+.lng{background:transparent;color:var(--text);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font:600 12px var(--sans);letter-spacing:.08em;cursor:pointer;transition:border-color .2s}
+.lng:hover{border-color:var(--sky)}
+.back{color:var(--muted);font-size:13px;margin-left:8px}
+
+/* ---------- layout ---------- */
+main{position:relative;z-index:1;max-width:1040px;margin:0 auto;padding:0 24px 80px}
+.kicker{display:inline-flex;align-items:center;gap:10px;color:var(--gold2);font:600 11px/1 var(--sans);letter-spacing:.22em;text-transform:uppercase}
+.kicker::before{content:"";width:22px;height:1px;background:var(--gold)}
+h1{font:300 clamp(36px,6vw,64px)/1.04 var(--serif);letter-spacing:-.015em;margin:18px 0 20px;max-width:16ch;font-variation-settings:"opsz" 144}
+h1 em{font-style:italic;color:var(--sky2)}
+.lead{font-size:clamp(17px,2vw,20px);line-height:1.6;color:#c9d3e0;max-width:58ch;margin:0 0 30px}
+.hero{padding:56px 0 40px}
+
+.count{display:inline-grid;grid-template-columns:auto 1fr;gap:0 18px;align-items:center;padding:16px 22px;border:1px solid var(--line);border-radius:16px;
+  background:linear-gradient(160deg,rgba(29,48,80,.75),rgba(22,39,63,.55));box-shadow:0 20px 50px rgba(0,0,0,.35);backdrop-filter:blur(6px)}
+.count .n{font:300 54px/1 var(--serif);color:var(--gold2);font-variation-settings:"opsz" 144;letter-spacing:-.02em;grid-row:span 2}
+.count .l1{font:600 12px/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.count .l2{font-size:15px;color:var(--text)}
+
+.ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:12px;font:600 14px var(--sans);border:1px solid var(--line);color:var(--text);transition:transform .25s var(--ease),border-color .2s,background .2s}
+.btn:hover{text-decoration:none;transform:translateY(-1px);border-color:var(--sky)}
+.btn.pri{background:linear-gradient(135deg,var(--sky),#3b8fd0);border-color:transparent;color:#061223}
+.btn.pri:hover{background:linear-gradient(135deg,var(--sky2),var(--sky))}
+
+section{padding:34px 0}
+h2{font:400 clamp(26px,3.4vw,36px)/1.15 var(--serif);letter-spacing:-.01em;margin:0 0 8px;font-variation-settings:"opsz" 96}
+.sub{color:var(--muted);margin:0 0 22px;max-width:62ch}
+.rule{height:1px;background:linear-gradient(90deg,var(--gold),transparent 70%);opacity:.6;margin:6px 0 24px;max-width:220px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.card{position:relative;padding:22px 22px 20px;border:1px solid var(--line-soft);border-radius:16px;background:linear-gradient(165deg,var(--panel2),var(--panel));box-shadow:0 10px 30px rgba(0,0,0,.25);transition:transform .3s var(--ease),border-color .2s}
+.card:hover{transform:translateY(-2px);border-color:var(--line)}
+.card .big{font:300 44px/1 var(--serif);color:var(--gold2);font-variation-settings:"opsz" 144;letter-spacing:-.02em;margin-bottom:8px}
+.card .t{font:600 14px var(--sans);margin-bottom:6px}
+.card p{margin:0;color:#c9d3e0;font-size:14.5px}
+
+.steps{counter-reset:s;display:grid;gap:12px}
+.step{display:grid;grid-template-columns:44px 1fr;gap:16px;align-items:start;padding:18px 20px;border:1px solid var(--line-soft);border-radius:14px;background:rgba(22,39,63,.55)}
+.step::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:44px;height:44px;border-radius:12px;border:1px solid var(--line);color:var(--gold2);font:400 20px var(--serif)}
+.step b{display:block;font:600 15px var(--sans);margin-bottom:4px}
+.step p{margin:0;color:#c9d3e0;font-size:14.5px}
+
+table{width:100%;border-collapse:collapse;margin-top:8px;font-size:15px}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line-soft)}
+th{font:600 11px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+td.num{font:400 22px var(--serif);color:var(--gold2);white-space:nowrap}
+.tblwrap{overflow-x:auto;border:1px solid var(--line-soft);border-radius:14px;background:rgba(22,39,63,.45)}
+
+.honest{border-left:3px solid var(--gold);padding:16px 20px;background:rgba(201,162,75,.06);border-radius:0 12px 12px 0;color:#d6dde8}
+.honest b{color:var(--gold2)}
+
+.note{font-size:13px;color:var(--muted)}
+.src{display:grid;gap:8px;font-size:14px}
+.src a{display:inline-flex;gap:8px;align-items:center}
+.src a::before{content:"↗";color:var(--muted);font-size:12px}
+
+.foot{position:relative;z-index:1;max-width:1040px;margin:0 auto;padding:26px 24px 40px;border-top:1px solid var(--line-soft);display:flex;flex-wrap:wrap;gap:16px;align-items:center;color:var(--muted);font-size:13px}
+.foot a{color:var(--muted)}
+.foot .sp{flex:1}
+
+@media (max-width:640px){
+  .top{padding:16px}
+  .back{display:none}
+  .kicker{letter-spacing:.14em}
+  main{padding:0 16px 60px}
+  .hero{padding:36px 0 28px}
+  .count .n{font-size:42px}
+  th,td{padding:10px 10px}
+}
+</style>
+</head>
+<body>
+<div class="sky"><div class="aurora"></div><div class="topo"></div></div>
+
+<header class="top">
+<img src="icon.png" alt="">
+<div><b>DAEDALUS</b><br><small data-i18n="head.sub">Krav og frister for guider</small></div>
+<span class="sp"></span>
+<button class="lng" type="button" id="lngBtn" aria-label="Switch language">EN</button>
+<a class="back" href="/">&larr; daedalus-app.no</a>
+</header>
+
+<main>
+<section class="hero">
+  <span class="kicker" data-i18n="k">Svalbard · feltsikkerhetsforskriften</span>
+  <h1 data-i18n-html="h1">Svalbard 2027: erfarne guider må søke <em>før 1. januar</em></h1>
+  <p class="lead" data-i18n="lead">Fra 1. juli 2027 må guider på Svalbard være godkjent av Sysselmesteren. Har du guidet minst 1500 timer de siste tre årene, kan du søke om unntak fra hele kursordningen. Men søknaden må inn innen nyttår.</p>
+
+  <div class="count" role="status" aria-live="polite">
+    <div class="n" id="days">—</div>
+    <div class="l1" data-i18n="c1">dager igjen</div>
+    <div class="l2" data-i18n="c2">til søknadsfristen 1. januar 2027</div>
+  </div>
+
+  <div class="ctas">
+    <a class="btn pri" href="#unntak" data-i18n="cta1">Se hva unntaket krever</a>
+    <a class="btn" href="https://www.sysselmesteren.no/nb/godkjenning-av-svalbardguider" target="_blank" rel="noopener" data-i18n="cta2">Sysselmesterens side om ordningen</a>
+  </div>
+</section>
+
+<section id="unntak">
+  <span class="kicker" data-i18n="k1">Unntaket</span>
+  <h2 data-i18n="h2a">Tre tall avgjør om du slipper kursene</h2>
+  <div class="rule"></div>
+  <p class="sub" data-i18n="s2a">Forskriften åpner for at guider med lang erfaring kan godkjennes uten å gå den nye kursveien. Kravene er få, men absolutte.</p>
+  <div class="grid">
+    <div class="card"><div class="big">1500</div><div class="t" data-i18n="ca1t">guidetimer</div><p data-i18n="ca1p">Dokumenterte timer med guiding. Ikke feltdøgn, ikke turer — timer.</p></div>
+    <div class="card"><div class="big">3 <span style="font-size:.55em">år</span></div><div class="t" data-i18n="ca2t">tidsvindu</div><p data-i18n="ca2p">Timene må ligge innenfor de tre siste årene før søknaden.</p></div>
+    <div class="card"><div class="big">1. jan</div><div class="t" data-i18n="ca3t">2027 — søknadsfrist</div><p data-i18n="ca3p">Søknader etter denne datoen behandles ikke under unntaket. Da gjelder full kursvei.</p></div>
+  </div>
+  <p class="note" style="margin-top:14px" data-i18n="n2a">I tillegg må kompetansen samsvare med kravene i forskriftens § 11. Kilde: Sysselmesteren, «Godkjenning av Svalbardguider».</p>
+</section>
+
+<section id="kurs">
+  <span class="kicker" data-i18n="k2">Hvis du bommer på fristen</span>
+  <h2 data-i18n="h2b">Slik ser den nye godkjenningen ut</h2>
+  <div class="rule"></div>
+  <p class="sub" data-i18n="s2b">Fra 1. juli 2027 må virksomheter bruke godkjente svalbardguider. Godkjenningen bygges opp i tre ledd.</p>
+  <div class="steps">
+    <div class="step"><div><b data-i18n="st1b">Digital modul</b><p data-i18n="st1p">Teoretisk grunnlag som dekker læringsmålene i ordningen.</p></div></div>
+    <div class="step"><div><b data-i18n="st2b">Praktiske kurs</b><p data-i18n="st2p">Ferdigheter og fordypning, gjennom godkjente tilbydere eller dokumenterte alternativer.</p></div></div>
+    <div class="step"><div><b data-i18n="st3b">Feltkurs med sluttvurdering</b><p data-i18n="st3p">Bygger på modulen og de praktiske kursene, og avsluttes med vurdering.</p></div></div>
+  </div>
+  <p class="note" style="margin-top:14px" data-i18n="n2b">To nivåer: sommerguide og vinterguide. Vinterguide er det høyeste nivået og gir automatisk godkjenning som sommerguide. Endelige kurs- og timekrav fastsettes av Sysselmesteren — vi gjengir ikke tall som ennå ikke er vedtatt.</p>
+</section>
+
+<section id="gjelder">
+  <span class="kicker" data-i18n="k3">Gjelder allerede</span>
+  <h2 data-i18n="h2c">Det du må ha på plass i dag</h2>
+  <div class="rule"></div>
+  <p class="sub" data-i18n="s2c">Forskrift om sikkerhet i felt mv. på Svalbard (FOR-2025-06-06-940) trådte i kraft 1. januar 2026. Guidegodkjenningen er bare én del av den.</p>
+  <div class="grid">
+    <div class="card"><div class="t" data-i18n="g1t">Tillatelse</div><p data-i18n="g1p">Turist-, felt-, forsknings- og utdanningsvirksomhet krever tillatelse fra Sysselmesteren for aktivitet utenfor bebygd område.</p></div>
+    <div class="card"><div class="t" data-i18n="g2t">Meldeplikt</div><p data-i18n="g2p">Turist- og feltvirksomhet har meldeplikt til Svalbard skattekontor.</p></div>
+    <div class="card"><div class="t" data-i18n="g3t">Internkontroll</div><p data-i18n="g3p">Forskriften stiller krav om internkontroll for turist-, felt-, forsknings- og utdanningsvirksomhet. Det betyr dokumenterte rutiner, risikovurdering og oppfølging av avvik.</p></div>
+    <div class="card"><div class="t" data-i18n="g4t">Overgangsregel</div><p data-i18n="g4p">Nye søknadsskjemaer kommer i 2026. Fram til da godtas dagens skjemaer for aktivitet i 2026.</p></div>
+  </div>
+
+  <h2 style="margin-top:34px;font-size:clamp(22px,2.6vw,28px)" data-i18n="h2d">Forsikring per sone</h2>
+  <p class="sub" data-i18n="s2d">Obligatorisk. Beløpet gjelder per søk, redning og transport, og avhenger av hvilken sone du ferdes i.</p>
+  <div class="tblwrap">
+  <table>
+    <thead><tr><th data-i18n="th1">Sone</th><th data-i18n="th2">Minste dekning</th></tr></thead>
+    <tbody>
+      <tr><td>A</td><td class="num">120 000 kr</td></tr>
+      <tr><td>B</td><td class="num">350 000 kr</td></tr>
+      <tr><td>C</td><td class="num">650 000 kr</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section id="daedalus">
+  <span class="kicker" data-i18n="k4">Og så det praktiske</span>
+  <h2 data-i18n="h2e">Hva Daedalus gjør med dette</h2>
+  <div class="rule"></div>
+  <p class="sub" data-i18n="s2e">Daedalus er et dokumentasjonssystem for profesjonelle guider. Tre av kravene over treffer akkurat det appen fører.</p>
+  <div class="grid">
+    <div class="card"><div class="t" data-i18n="d1t">Guidetimer, fra nå</div><p data-i18n="d1p">Hver tur får start- og sluttstempel når den aktiveres og fullføres. Timene per guide bygger seg selv, og kan eksporteres per periode.</p></div>
+    <div class="card"><div class="t" data-i18n="d2t">Internkontroll</div><p data-i18n="d2p">Sikkerhetssjekk før aktivering, hendelses- og avviksregister, og turrapport som PDF. Det er rutine, risiko og avvik — dokumentert.</p></div>
+    <div class="card"><div class="t" data-i18n="d3t">Sertifikater med utløp</div><p data-i18n="d3p">Godkjenninger og kurs ligger på guiden, med utløpsdato, synlig for den som setter opp bemanningen.</p></div>
+  </div>
+  <p class="honest" style="margin-top:18px" data-i18n-html="honest"><b>Ærlig sagt:</b> Daedalus kan dokumentere timene dine fra i dag. Den kan ikke lage historikk for 2024 og 2025 som ikke finnes. Har du timene fra før, er det dine egne logger som gjelder for søknaden i år — og fra nå av bygger dokumentasjonen seg selv.</p>
+  <div class="ctas">
+    <a class="btn pri" href="/" data-i18n="cta3">Se hva Daedalus er</a>
+    <a class="btn" href="mailto:hello@daedalus-app.no" data-i18n="cta4">Skriv til oss</a>
+  </div>
+</section>
+
+<section id="kilder">
+  <span class="kicker" data-i18n="k5">Kilder</span>
+  <h2 style="font-size:clamp(22px,2.6vw,28px)" data-i18n="h2f">Alt over er hentet herfra</h2>
+  <div class="rule"></div>
+  <div class="src">
+    <a href="https://www.sysselmesteren.no/nb/godkjenning-av-svalbardguider" target="_blank" rel="noopener">Sysselmesteren — Godkjenning av Svalbardguider</a>
+    <a href="https://www.sysselmesteren.no/nyheter/2025/11/ny-forskrift-om-sikkerhet-i-felt-pa-svalbard-fra-1.-januar/" target="_blank" rel="noopener">Sysselmesteren — Ny forskrift om sikkerhet i felt på Svalbard fra 1. januar</a>
+    <a href="https://lovdata.no/dokument/SF/forskrift/2025-06-06-940" target="_blank" rel="noopener">Lovdata — Forskrift om sikkerhet i felt mv. på Svalbard (FOR-2025-06-06-940)</a>
+  </div>
+  <p class="note" style="margin-top:16px" data-i18n="disc">Denne siden er en sammenstilling, ikke juridisk rådgivning. Forskriften og Sysselmesterens veiledning gjelder foran alt som står her. Sist kontrollert mot kildene 2. september 2026.</p>
+</section>
+</main>
+
+<footer class="foot">
+<span>© 2026 Daedalus · Guide &amp; Safety</span>
+<span class="sp"></span>
+<a href="/privacy.html" data-i18n="f.priv">Personvern</a>
+<a href="/terms.html" data-i18n="f.terms">Vilkår</a>
+<a href="/nyheter.html" data-i18n="f.news">Nyheter</a>
+</footer>
+
+<script>
+(function(){
+  /* countdown to 1 January 2027, Europe/Oslo */
+  function days(){
+    var now=new Date();
+    var deadline=new Date(Date.UTC(2026,11,31,23,0,0)); /* 00:00 Oslo (CET) = 23:00 UTC 31 Dec */
+    var d=Math.ceil((deadline-now)/86400000);
+    return d;
+  }
+  var el=document.getElementById('days');
+  function paint(){
+    var d=days();
+    if(d>0){ el.textContent=String(d); }
+    else { el.textContent='0'; }
+  }
+  paint(); setInterval(paint,60000);
+
+  /* i18n */
+  var EN={
+    'head.sub':'Requirements and deadlines for guides',
+    'k':'Svalbard · field safety regulation',
+    'h1':'Svalbard 2027: experienced guides must apply <em>before 1 January</em>',
+    'lead':'From 1 July 2027, guides on Svalbard must be approved by the Governor. If you have guided at least 1,500 hours over the past three years, you can apply for an exemption from the entire course scheme. But the application must be in by New Year.',
+    'c1':'days left','c2':'until the application deadline, 1 January 2027',
+    'cta1':'See what the exemption requires','cta2':'The Governor’s page on the scheme',
+    'k1':'The exemption','h2a':'Three numbers decide whether you skip the courses',
+    's2a':'The regulation lets guides with long experience be approved without the new course route. The requirements are few, but absolute.',
+    'ca1t':'guide hours','ca1p':'Documented hours of guiding. Not field days, not trips — hours.',
+    'ca2t':'time window','ca2p':'The hours must fall within the three years before the application.',
+    'ca3t':'2027 — application deadline','ca3p':'Applications after this date are not handled under the exemption. The full course route applies instead.',
+    'n2a':'Competence must also match the requirements in § 11 of the regulation. Source: the Governor of Svalbard, “Approval of Svalbard guides”.',
+    'k2':'If you miss the deadline','h2b':'What the new approval looks like',
+    's2b':'From 1 July 2027, operators must use approved Svalbard guides. Approval is built in three stages.',
+    'st1b':'Digital module','st1p':'Theoretical foundation covering the learning objectives of the scheme.',
+    'st2b':'Practical courses','st2p':'Skills and depth, through approved providers or documented alternatives.',
+    'st3b':'Field course with final assessment','st3p':'Builds on the module and the practical courses, and ends with an assessment.',
+    'n2b':'Two levels: summer guide and winter guide. Winter guide is the highest level and automatically qualifies you as a summer guide. Final course and hour requirements are set by the Governor — we do not repeat figures that have not yet been adopted.',
+    'k3':'Already in force','h2c':'What you must have in place today',
+    's2c':'The Regulation on safety in the field etc. on Svalbard (FOR-2025-06-06-940) entered into force on 1 January 2026. Guide approval is only one part of it.',
+    'g1t':'Permit','g1p':'Tourism, field, research and educational activities require a permit from the Governor for activity outside the settlements.',
+    'g2t':'Reporting duty','g2p':'Tourism and field operators must report to the Svalbard Tax Office.',
+    'g3t':'Internal control','g3p':'The regulation requires internal control for tourism, field, research and educational activities. That means documented routines, risk assessment and follow-up of deviations.',
+    'g4t':'Transitional rule','g4p':'New application forms arrive in 2026. Until then, the current forms are accepted for activity in 2026.',
+    'h2d':'Insurance by zone','s2d':'Mandatory. The amount applies per search, rescue and transport, and depends on the zone you travel in.',
+    'th1':'Zone','th2':'Minimum cover',
+    'k4':'And then the practical part','h2e':'What Daedalus does with this',
+    's2e':'Daedalus is a documentation system for professional guides. Three of the requirements above land exactly on what the app records.',
+    'd1t':'Guide hours, from now','d1p':'Every trip is time-stamped when it is activated and completed. Hours per guide build themselves, and can be exported per period.',
+    'd2t':'Internal control','d2p':'Safety check before activation, incident and deviation register, and a trip report as PDF. That is routine, risk and deviations — documented.',
+    'd3t':'Certificates with expiry','d3p':'Approvals and courses sit on the guide, with expiry dates, visible to whoever sets the staffing.',
+    'honest':'<b>Honestly:</b> Daedalus can document your hours from today. It cannot create a history for 2024 and 2025 that does not exist. If you already have the hours, your own logs are what count for this year’s application — and from now on the documentation builds itself.',
+    'cta3':'See what Daedalus is','cta4':'Write to us',
+    'k5':'Sources','h2f':'Everything above comes from here',
+    'disc':'This page is a summary, not legal advice. The regulation and the Governor’s guidance take precedence over anything written here. Last checked against the sources on 2 September 2026.',
+    'f.priv':'Privacy','f.terms':'Terms','f.news':'News'
+  };
+  var NO={};
+  document.querySelectorAll('[data-i18n],[data-i18n-html]').forEach(function(e){
+    var k=e.getAttribute('data-i18n')||e.getAttribute('data-i18n-html');
+    NO[k]=e.hasAttribute('data-i18n-html')?e.innerHTML:e.textContent;
+  });
+  var cur='no';
+  var btn=document.getElementById('lngBtn');
+  function setLang(l){
+    cur=l; var D=(l==='en')?EN:NO;
+    document.querySelectorAll('[data-i18n]').forEach(function(e){var k=e.getAttribute('data-i18n'); if(D[k]!=null) e.textContent=D[k];});
+    document.querySelectorAll('[data-i18n-html]').forEach(function(e){var k=e.getAttribute('data-i18n-html'); if(D[k]!=null) e.innerHTML=D[k];});
+    document.documentElement.lang=l;
+    document.title=(l==='en')?'Svalbard 2027: experienced guides must apply before 1 January — Daedalus':'Svalbard 2027: erfarne guider må søke før 1. januar — Daedalus';
+    btn.textContent=(l==='en')?'NO':'EN';
+    try{localStorage.setItem('dae_lang',l);}catch(e){}
+  }
+  btn.addEventListener('click',function(){ setLang(cur==='en'?'no':'en'); });
+  try{ var saved=localStorage.getItem('dae_lang'); if(saved==='en') setLang('en'); }catch(e){}
+})();
+</script>
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
