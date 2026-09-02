@@ -914,9 +914,9 @@ body.lock{overflow:hidden}
         </div>
       </div>
       <div class="hero-wx rv" style="--d:.24s">
-        <div class="wx-it"><svg class="ic"><use href="#i-snow"/></svg><b class="num">9,2&thinsp;°C</b><span>Tamokdalen</span></div>
-        <div class="wx-it"><svg class="ic"><use href="#i-wind"/></svg><b class="num">6 (12) m/s</b><span>Nordvest</span></div>
-        <div class="wx-it"><svg class="ic"><use href="#i-sun"/></svg><b>Midnattssol</b><span>Sol hele døgnet</span></div>
+        <div class="wx-it"><svg class="ic"><use href="#i-snow"/></svg><b class="num">—</b><span>Ingen data</span></div>
+        <div class="wx-it"><svg class="ic"><use href="#i-wind"/></svg><b class="num">—</b><span>Ingen data</span></div>
+        <div class="wx-it"><svg class="ic"><use href="#i-sun"/></svg><b>—</b><span>Ingen data</span></div>
       </div>
     </div>
   </section>
@@ -3368,11 +3368,12 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
     var trips=window.__TRIPS||[];
     var iDag=new Date().toISOString().slice(0,10);
     var dagens=trips.filter(function(t){ return t.date===iDag && t.status!=='cancelled'; });
+    var wxHar=$$('.wx-it').some(function(w){ var b=w.querySelector('b'); var t=(b?b.textContent:'').replace(/\s+/g,' ').trim(); return t&&t!=='—'&&t!=='-'; });
     var wx=$$('.wx-it').map(function(w){ var b=w.querySelector('b'),s=w.querySelector('span'); return (b?b.textContent:'')+' ('+(s?s.textContent:'')+')'; });
     var linjer=[];
     linjer.push('DAGENS BRIEF — '+(R.orgName||'Daedalus')+' · '+new Date().toLocaleDateString('nb-NO',{weekday:'long',day:'numeric',month:'long'}));
     linjer.push('');
-    linjer.push('VÆR: '+(wx[0]||'—')+' · vind '+(wx[1]||'—')+' · '+(wx[2]||'—'));
+    linjer.push(wxHar ? ('VÆR: '+(wx[0]||'—')+' · vind '+(wx[1]||'—')+' · '+(wx[2]||'—')) : 'VÆR: ikke tilgjengelig — ingen måling hentet');
     linjer.push(R.ava>=1? ('SKRED: faregrad '+R.ava+' — '+(R.avaText||'')+' (Varsom)') : 'SKRED: utenfor varslingssesong (Varsom)');
     linjer.push('');
     linjer.push('DAGENS TURER ('+dagens.length+'):');
