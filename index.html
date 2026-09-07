@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Daedalus — Sikkerhet og operasjonssystem for profesjonelle ledere i naturen</title>
-<meta name="description" content="Daedalus er den juridiske og operative dokumentasjonsplattformen for profesjonelle som tar folk ut i naturen. Sikkerhetssjekk, hendelseslogg, SOS-varsler og automatiske rapporter.">
+<title>Daedalus | Sikkerhets- og operasjonssystem for guider og turledere</title>
+<meta name="description" content="Sikkerhets- og operasjonssystem for folk som tar med andre ut i terrenget. Sikkerhetssjekk før avreise, hendelseslogg med GPS, SOS til basen og ferdig rapport når turen er over.">
 <meta name="theme-color" content="#0a1322">
 <link rel="icon" type="image/png" href="icon.png">
 <link rel="apple-touch-icon" href="icon.png">
-<meta property="og:title" content="Daedalus — Safety &amp; Operations System for Professional Outdoor Leaders">
-<meta property="og:description" content="Every guide's last line of defence. Safety checks, incident logging, SOS alerts and automatic legal-grade reports.">
+<meta property="og:title" content="Daedalus | Sikkerhets- og operasjonssystem for guider og turledere">
+<meta property="og:description" content="Sikkerhets- og operasjonssystem for folk som tar med andre ut i terrenget. Sikkerhetssjekk før avreise, hendelseslogg med GPS, SOS til basen og ferdig rapport når turen er over.">
 <meta property="og:image" content="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -337,6 +337,9 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
   .fphone .phone{transform:none;width:248px;border-radius:42px;padding:10px}
   .fphone .phone-screen{height:500px;border-radius:33px}
 }
+
+.chip-a,.chip-b{display:none !important}
+.org-sign{font-family:"Fraunces",Georgia,serif;font-style:italic;color:var(--gold2);margin-top:.6rem}
 </style>
 <style>
 /* ---------- live ops map ---------- */
@@ -722,12 +725,12 @@ html{scrollbar-color:#2c4468 #0a1322}
 
     <div class="hero-in container">
       <div class="hero-copy">
-        <p class="eyebrow hi" data-i18n="hero.eyebrow">SIKKERHET &amp; OPERASJONER — iOS &amp; ANDROID</p>
+        <p class="eyebrow hi" data-i18n="hero.eyebrow">iOS · ANDROID · WEB-KOMMANDOSENTER</p>
         <h1 class="hero-title" aria-label="Daedalus">
           <span class="hero-mask"><span class="lt" style="--d:.05s">D</span></span><span class="hero-mask"><span class="lt" style="--d:.11s">a</span></span><span class="hero-mask"><span class="lt" style="--d:.17s">e</span></span><span class="hero-mask"><span class="lt" style="--d:.23s">d</span></span><span class="hero-mask"><span class="lt" style="--d:.29s">a</span></span><span class="hero-mask"><span class="lt" style="--d:.35s">l</span></span><span class="hero-mask"><span class="lt" style="--d:.41s">u</span></span><span class="hero-mask"><span class="lt" style="--d:.47s">s</span></span>
         </h1>
-        <p class="hero-sub hi" style="--d:.5s" data-i18n="hero.sub">Sikkerhet og operasjonssystem for profesjonelle ledere i naturen</p>
-        <p class="hero-body hi" style="--d:.6s" data-i18n="hero.body">Guidens siste forsvarslinje. Daedalus er den juridiske og operative dokumentasjonsplattformen for profesjonelle som tar folk ut i naturen. Sikkerhetssjekk, hendelseslogg, SOS-varsler og automatiske rapporter — bygget for å beskytte deg før noe går galt.</p>
+        <p class="hero-sub hi" style="--d:.5s" data-i18n="hero.sub">Sikkerhets- og operasjonssystem for folk som tar med andre ut i terrenget</p>
+        <p class="hero-body hi" style="--d:.6s" data-i18n="hero.body">Sikkerhetssjekk før avreise, hendelseslogg med GPS underveis, SOS rett til den som sitter igjen på basen. Når turen er over ligger rapporten ferdig i arkivet, med tid og posisjon på alt. Så du kan vise hva du gjorde. Og når.</p>
         <div class="cta-row hi" style="--d:.7s">
           <a class="store store-primary magnet" href="https://apps.apple.com/no/app/daedalus-guide-safety/id6761403819" target="_blank" rel="noopener">
             <svg class="store-ic" aria-hidden="true"><use href="#i-apple"/></svg>
@@ -837,40 +840,40 @@ html{scrollbar-color:#2c4468 #0a1322}
   <!-- ============ SCROLLYTELLING FEATURES ============ -->
   <section class="sec" id="features">
     <div class="container">
-      <p class="kicker reveal" data-i18n="feat.kicker">Slik beskytter Daedalus deg</p>
-      <h2 class="sec-h reveal" style="--d:.06s" data-i18n="feat.h">Dokumenter hver avgjørelse. Før noe går galt.</h2>
-      <p class="sec-intro reveal" style="--d:.12s" data-i18n="feat.intro">Daedalus er ikke en turbok. Det er et juridisk og operativt skjold — bygget for profesjonelle som bærer ansvar for andres liv i felt.</p>
+      <p class="kicker reveal" data-i18n="feat.kicker">Slik virker det</p>
+      <h2 class="sec-h reveal" style="--d:.06s" data-i18n="feat.h">Skrevet ned der og da, ikke fra hukommelsen dagen etter.</h2>
+      <p class="sec-intro reveal" style="--d:.12s" data-i18n="feat.intro">En hendelse blir sjelden et problem samme dag. Den blir et problem seks måneder senere, når et forsikringsselskap eller et tilsyn spør hva dere gjorde før dere dro ut. Da ligger det der, på den turen, med dato.</p>
 
       <div class="fshow" id="fshow">
         <div class="ftabs">
           <button class="ftab on" type="button" data-tab="1" aria-pressed="true">
             <span class="ftab-num">01</span>
-            <span class="ftab-tx"><b data-i18n="f1.t">Aktivitetsspesifikk sikkerhetssjekk</b><span class="ftab-body" data-i18n="f1.b">Tidsstemplet sikkerhetssjekk tilpasset aktiviteten — 19 turtyper med egne kontrollpunkter, fra skredvarsel og tau/sele til isforhold, kolonneroller og hundespann. Verifisert, lagret og synlig for organisasjonen i sanntid. Automatisk integrasjon med YR og Varsom.</span></span>
+            <span class="ftab-tx"><b data-i18n="f1.t">Aktivitetsspesifikk sikkerhetssjekk</b><span class="ftab-body" data-i18n="f1.b">19 turtyper med egne kontrollpunkter, fra skredvarsel og tau/sele til isforhold, kolonneroller og hundespann. Sjekken er tidsstemplet, lagret og synlig for organisasjonen med en gang. Vær fra YR, skredvarsel fra Varsom.</span></span>
             <span class="ftab-bar"><i></i></span>
           </button>
           <button class="ftab" type="button" data-tab="2" aria-pressed="false">
             <span class="ftab-num">02</span>
-            <span class="ftab-tx"><b data-i18n="f2.t">Strukturert hendelseslogg</b><span class="ftab-body" data-i18n="f2.b">Logg nær-ulykker, skader og utstyrssvikt i sanntid — med GPS, tidsstempel, alvorlighetsgrad og tiltak. Uforanderlige poster klare for forsikring og granskning.</span></span>
+            <span class="ftab-tx"><b data-i18n="f2.t">Strukturert hendelseslogg</b><span class="ftab-body" data-i18n="f2.b">Nær-ulykker, skader og utstyrssvikt logges der du står, med GPS, klokkeslett, alvorlighetsgrad og hva du gjorde. Posten ligger klar for forsikring og gransking.</span></span>
             <span class="ftab-bar"><i></i></span>
           </button>
           <button class="ftab" type="button" data-tab="3" aria-pressed="false">
             <span class="ftab-num">03</span>
-            <span class="ftab-tx"><b data-i18n="f3.t">Faremarkering og ruteplanlegging</b><span class="ftab-body" data-i18n="f3.b">Tegn planlagte ruter, merk fareområder og nødutganger. Del live farekart med organisasjonen — dokumentasjon på at risiko ble vurdert.</span></span>
+            <span class="ftab-tx"><b data-i18n="f3.t">Faremarkering og ruteplanlegging</b><span class="ftab-body" data-i18n="f3.b">Tegn ruta, merk fareområder og nødutganger, og del kartet med organisasjonen. Det er også dokumentasjon på at risikoen ble vurdert før dere gikk.</span></span>
             <span class="ftab-bar"><i></i></span>
           </button>
           <button class="ftab" type="button" data-tab="4" aria-pressed="false">
             <span class="ftab-num">04</span>
-            <span class="ftab-tx"><b data-i18n="f4.t">Juridisk PDF-rapport</b><span class="ftab-body" data-i18n="f4.b">En komplett, signert turrapport genereres automatisk ved avslutning. Inkluderer sikkerhetssjekk, deltakerliste, hendelseslogg, kart og sertifiseringer. Bygget for forsikring og sertifiseringsorganer.</span></span>
+            <span class="ftab-tx"><b data-i18n="f4.t">Juridisk PDF-rapport</b><span class="ftab-body" data-i18n="f4.b">Når turen avsluttes lages en signert PDF med sikkerhetssjekk, deltakerliste, hendelseslogg, kart og sertifiseringer. Den ligger i arkivet til noen spør.</span></span>
             <span class="ftab-bar"><i></i></span>
           </button>
           <button class="ftab" type="button" data-tab="5" aria-pressed="false">
             <span class="ftab-num">05</span>
-            <span class="ftab-tx"><b data-i18n="f5.t">SOS nødknapp</b><span class="ftab-body" data-i18n="f5.b">Ett bekreftet trykk sender GPS-posisjon, tur-ID og guideinformasjon til alle nødkontakter via SMS — og logger hendelsen automatisk som kritisk. Samtidig utløses sanntidsalarm i organisasjonens kommandosenter med live posisjon.</span></span>
+            <span class="ftab-tx"><b data-i18n="f5.t">SOS nødknapp</b><span class="ftab-body" data-i18n="f5.b">Ett bekreftet trykk sender posisjon, tur-ID og hvem guiden er til nødkontaktene på SMS, og logger hendelsen som kritisk. Alarmen går samtidig i kommandosenteret, med posisjonen på kartet.</span></span>
             <span class="ftab-bar"><i></i></span>
           </button>
           <button class="ftab" type="button" data-tab="6" aria-pressed="false">
             <span class="ftab-num">06</span>
-            <span class="ftab-tx"><b data-i18n="f6.t">Organisasjonens sikkerhetsoversikt</b><span class="ftab-body" data-i18n="f6.b">Koordinatorer ser alle aktive turer med live GPS-posisjon, sikkerhetssjekk-statuser og delte farekart i sanntid — med nedtelling til forventet retur og varsel når tiden løper ut. Full revisjonslogg for alle guider og operasjoner — alltid klar for inspeksjon.</span></span>
+            <span class="ftab-tx"><b data-i18n="f6.t">Organisasjonens sikkerhetsoversikt</b><span class="ftab-body" data-i18n="f6.b">Den som sitter igjen på basen ser alle aktive turer på kartet, med posisjon, sikkerhetssjekk og delte farekart. Nedtelling til avtalt retur, som blir rød når tiden passeres. Alt logges, for hver guide og hver tur.</span></span>
             <span class="ftab-bar"><i></i></span>
           </button>
         </div>
@@ -957,7 +960,7 @@ html{scrollbar-color:#2c4468 #0a1322}
                   <span class="ph-live" data-i18n="ph4.live">RAPPORT</span>
                 </div>
                 <div class="pdf-sheet">
-                  <div class="pdf-h" data-i18n="ph4.t">Turrapport — Romsdalseggen</div>
+                  <div class="pdf-h" data-i18n="ph4.t">Turrapport · Romsdalseggen</div>
                   <div class="pdf-sub">DAEDALUS · 2026-06-12</div>
                   <div class="pdf-sec" data-i18n="ph4.s1">SIKKERHETSSJEKK</div>
                   <div class="pdf-l w1"></div><div class="pdf-l w2"></div>
@@ -1014,9 +1017,9 @@ html{scrollbar-color:#2c4468 #0a1322}
       <canvas id="ops" aria-hidden="true"></canvas>
       <div class="map-vig" aria-hidden="true"></div>
       <div class="map-cap">
-        <p class="kicker" data-i18n="map.kicker">Sanntid</p>
+        <p class="kicker" data-i18n="map.kicker">Kartet på basen</p>
         <h2 class="sec-h" data-i18n="map.h">Hele operasjonen. Ett kart.</h2>
-        <p class="sec-intro" data-i18n="map.intro">Koordinatorer ser alle aktive turer, guider og delte farekart i sanntid — fra fjorden til toppen.</p>
+        <p class="sec-intro" data-i18n="map.intro">Den som er igjen på kontoret ser hvem som er ute, hvor de er, og hvilke farekart de har delt.</p>
       </div>
       <div class="hud hud-a" aria-hidden="true"><span class="dot g"></span><span><b data-i18n="hud.a">3 GUIDER UTE</b><small data-i18n="hud.as">Live posisjon · GPS</small></span></div>
       <div class="hud hud-c" aria-hidden="true"><span class="dot b"></span><span><b>TROMSØ · TAMOKDALEN</b><small>69.2° N · 19.6° Ø</small></span></div>
@@ -1027,8 +1030,8 @@ html{scrollbar-color:#2c4468 #0a1322}
   <!-- ============ BUILT FOR ============ -->
   <section class="sec-alt sec-built" id="built">
     <div class="container">
-      <p class="kicker center reveal" data-i18n="built.kicker">Bygget for</p>
-      <h2 class="sec-h reveal" style="--d:.06s" data-i18n="built.h">Profesjonelle som bærer ansvar.</h2>
+      <p class="kicker center reveal" data-i18n="built.kicker">Hvem det er for</p>
+      <h2 class="sec-h reveal" style="--d:.06s" data-i18n="built.h">Alle som har ansvar for andre ute.</h2>
       <div class="built-strip">
         <div class="bp reveal">
           <span class="bp-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 19.5h18"/><path d="m5 19.5 5.2-9 3.2 5.2 2.4-3.7 3.8 7.5"/></svg></span>
@@ -1056,7 +1059,7 @@ html{scrollbar-color:#2c4468 #0a1322}
         </div>
         <div class="bp reveal" style="--d:.3s">
           <span class="bp-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="15.2" r="3.1"/><circle cx="7.4" cy="10.2" r="1.6"/><circle cx="12" cy="8.4" r="1.6"/><circle cx="16.6" cy="10.2" r="1.6"/></svg></span>
-          <span class="bp-label" data-i18n="p7">Hundekjøring- og scooteroperatører</span>
+          <span class="bp-label" data-i18n="p7">Hundekjørings- og scooteroperatører</span>
         </div>
         <div class="bp reveal" style="--d:.35s">
           <span class="bp-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18"/><path d="m4.5 7.6 15 8.8"/><path d="m19.5 7.6-15 8.8"/><path d="M12 3l-2 2.4M12 3l2 2.4M12 21l-2-2.4M12 21l2-2.4"/></svg></span>
@@ -1069,9 +1072,9 @@ html{scrollbar-color:#2c4468 #0a1322}
   <!-- ============ SEGMENTS ============ -->
   <section class="sec sec-seg" id="segments">
     <div class="container">
-      <p class="kicker center reveal" data-i18n="seg.kicker">Velg din verden</p>
-      <h2 class="sec-h reveal" style="--d:.06s" data-i18n="seg.h">Din aktivitet. Dine kontrollpunkter.</h2>
-      <p class="sec-intro reveal" style="--d:.12s" data-i18n="seg.intro">Daedalus kjenner operasjonen din. Velg aktivitet — og se de faktiske kontrollpunktene appen krever bekreftet før turen kan aktiveres. Ingen generiske skjemaer.</p>
+      <p class="kicker center reveal" data-i18n="seg.kicker">Velg aktivitet</p>
+      <h2 class="sec-h reveal" style="--d:.06s" data-i18n="seg.h">Sjekklisten følger aktiviteten.</h2>
+      <p class="sec-intro reveal" style="--d:.12s" data-i18n="seg.intro">Velg en aktivitet og se hva appen krever bekreftet før turen kan aktiveres. Det er de samme punktene guiden får på telefonen.</p>
 
       <div class="seg-chips reveal" style="--d:.16s" id="segChips" role="tablist" aria-label="Aktiviteter">
         <button class="seg-chip on" type="button" data-seg="1" aria-pressed="true" data-i18n="seg.c1">Hundekjøring</button>
@@ -1085,7 +1088,7 @@ html{scrollbar-color:#2c4468 #0a1322}
 
       <div class="seg-stage reveal" style="--d:.2s">
         <div class="seg-panel on" data-seg="1">
-          <p class="seg-note" data-i18n="seg.s1.n">Fra appens sikkerhetssjekk for hundekjøring — turen kan ikke aktiveres før alt er bekreftet:</p>
+          <p class="seg-note" data-i18n="seg.s1.n">Fra appens sikkerhetssjekk for hundekjøring: turen kan ikke aktiveres før alt er bekreftet:</p>
           <ul class="seg-list">
             <li data-i18n="seg.s1.p1">Hundespannets helse sjekket</li>
             <li data-i18n="seg.s1.p2">Seler og trekkliner inspisert</li>
@@ -1094,7 +1097,7 @@ html{scrollbar-color:#2c4468 #0a1322}
             <li data-i18n="seg.s1.p5">Termalutstyr utdelt</li>
             <li data-i18n="seg.s1.p6">Løypeforhold sjekket</li>
           </ul>
-          <p class="seg-base" data-i18n="seg.base">+ Vær verifisert (YR) · Utstyr sjekket · Nødkontakt varslet — obligatorisk på alle turer</p>
+          <p class="seg-base" data-i18n="seg.base">+ Vær verifisert (YR) · Utstyr sjekket · Nødkontakt varslet. Obligatorisk på alle turer</p>
         </div>
         <div class="seg-panel" data-seg="2">
           <p class="seg-note" data-i18n="seg.s2.n">Fra appens sikkerhetssjekk for snøscootersafari:</p>
@@ -1107,7 +1110,7 @@ html{scrollbar-color:#2c4468 #0a1322}
             <li data-i18n="seg.s2.p6">Isforhold verifisert</li>
             <li data-i18n="seg.s2.p7">Redningsplan klar</li>
           </ul>
-          <p class="seg-base" data-i18n="seg.base">+ Vær verifisert (YR) · Utstyr sjekket · Nødkontakt varslet — obligatorisk på alle turer</p>
+          <p class="seg-base" data-i18n="seg.base">+ Vær verifisert (YR) · Utstyr sjekket · Nødkontakt varslet. Obligatorisk på alle turer</p>
         </div>
         <div class="seg-panel" data-seg="3">
           <p class="seg-note" data-i18n="seg.s3.n">Fra appens sikkerhetssjekk for nordlystur:</p>
@@ -1120,23 +1123,23 @@ html{scrollbar-color:#2c4468 #0a1322}
             <li data-i18n="seg.s3.p6">Sjåfør og kjøretøy vinterklart</li>
             <li data-i18n="seg.s3.p7">Veiforhold sjekket</li>
           </ul>
-          <p class="seg-base" data-i18n="seg.base">+ Vær verifisert (YR) · Utstyr sjekket · Nødkontakt varslet — obligatorisk på alle turer</p>
+          <p class="seg-base" data-i18n="seg.base">+ Vær verifisert (YR) · Utstyr sjekket · Nødkontakt varslet. Obligatorisk på alle turer</p>
         </div>
         <div class="seg-panel" data-seg="4">
           <p class="seg-note" data-i18n="seg.s4.n">Fra appens sikkerhetssjekk for topptur og ski:</p>
           <ul class="seg-list">
-            <li data-i18n="seg.s4.p1">Snøskredvarselsnivå — hentes automatisk fra Varsom for turens posisjon</li>
+            <li data-i18n="seg.s4.p1">Snøskredvarselsnivå, hentes automatisk fra Varsom for turens posisjon</li>
             <li data-i18n="seg.s4.p2">Tau og sele inspisert</li>
           </ul>
-          <p class="seg-base" data-i18n="seg.base">+ Vær verifisert (YR) · Utstyr sjekket · Nødkontakt varslet — obligatorisk på alle turer</p>
+          <p class="seg-base" data-i18n="seg.base">+ Vær verifisert (YR) · Utstyr sjekket · Nødkontakt varslet. Obligatorisk på alle turer</p>
         </div>
         <div class="seg-panel" data-seg="5">
           <p class="seg-note" data-i18n="seg.s5.n">Fra appens sikkerhetssjekk for bre, klatring og via ferrata:</p>
           <ul class="seg-list">
             <li data-i18n="seg.s5.p1">Tau og sele inspisert</li>
-            <li data-i18n="seg.s5.p2">Snøskredvarselsnivå — automatisk fra Varsom</li>
+            <li data-i18n="seg.s5.p2">Snøskredvarselsnivå, automatisk fra Varsom</li>
           </ul>
-          <p class="seg-base" data-i18n="seg.base">+ Vær verifisert (YR) · Utstyr sjekket · Nødkontakt varslet — obligatorisk på alle turer</p>
+          <p class="seg-base" data-i18n="seg.base">+ Vær verifisert (YR) · Utstyr sjekket · Nødkontakt varslet. Obligatorisk på alle turer</p>
         </div>
         <div class="seg-panel" data-seg="6">
           <p class="seg-note" data-i18n="seg.s6.n">Fra appens sikkerhetssjekk for kajakk og havpadling:</p>
@@ -1145,15 +1148,15 @@ html{scrollbar-color:#2c4468 #0a1322}
             <li data-i18n="seg.s6.p2">Bølgehøyde vurdert</li>
             <li data-i18n="seg.s6.p3">Flyteutstyr sjekket</li>
           </ul>
-          <p class="seg-base" data-i18n="seg.base">+ Vær verifisert (YR) · Utstyr sjekket · Nødkontakt varslet — obligatorisk på alle turer</p>
+          <p class="seg-base" data-i18n="seg.base">+ Vær verifisert (YR) · Utstyr sjekket · Nødkontakt varslet. Obligatorisk på alle turer</p>
         </div>
         <div class="seg-panel seg-panel-sv" data-seg="7">
           <p class="seg-note" data-i18n="seg.s7.n">Bygget for den nye feltsikkerhetsforskriften på Svalbard:</p>
           <ul class="seg-list">
-            <li data-i18n="seg.s7.p1">Dokumenterte guidetimer per guide — automatisk per tur</li>
+            <li data-i18n="seg.s7.p1">Dokumenterte guidetimer per guide, automatisk per tur</li>
             <li data-i18n="seg.s7.p2">Internkontroll-eksport for turoperatører</li>
-            <li data-i18n="seg.s7.p3">Signert PDF-dokumentasjon — klar som vedlegg til Sysselmesteren</li>
-            <li data-i18n="seg.s7.p4">Sikkerhetssjekk for scooter, hundespann og nordlys — bygget inn</li>
+            <li data-i18n="seg.s7.p3">Signert PDF-dokumentasjon, klar som vedlegg til Sysselmesteren</li>
+            <li data-i18n="seg.s7.p4">Sikkerhetssjekk for scooter, hundespann og nordlys, bygget inn</li>
             <li data-i18n="seg.s7.p5">Full revisjonslogg for hele organisasjonen</li>
           </ul>
         </div>
@@ -1172,7 +1175,7 @@ html{scrollbar-color:#2c4468 #0a1322}
         </span>
         <span class="prod-toggle-tx">
           <span class="prod-kick" data-i18n="prod.kick">Dette får du</span>
-          <span class="prod-title" data-i18n="prod.title">Se appen og kommandosenteret — ekte skjermbilder, steg for steg</span>
+          <span class="prod-title" data-i18n="prod.title">Ekte skjermbilder fra appen og kommandosenteret, steg for steg.</span>
         </span>
         <span class="prod-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
       </button>
@@ -1184,7 +1187,7 @@ html{scrollbar-color:#2c4468 #0a1322}
               <div class="prod-frame"><img src="app-steg-1.jpg" alt="Opprett tur — velg blant 19 aktivitetstyper" loading="lazy"></div>
               <figcaption>
                 <b data-i18n="prod.s1.t">Opprett turen</b>
-                <span data-i18n="prod.s1.b">Velg blant 19 aktivitetstyper — fra skitur og brevandring til snøscooter og hundekjøring. Dato, sted og vær fylles inn med live data fra MET.</span>
+                <span data-i18n="prod.s1.b">Velg blant 19 aktivitetstyper, fra skitur og brevandring til snøscooter og hundekjøring. Dato, sted og vær fylles inn fra MET.</span>
               </figcaption>
             </figure>
             <figure class="prod-card">
@@ -1192,14 +1195,14 @@ html{scrollbar-color:#2c4468 #0a1322}
               <div class="prod-frame"><img src="app-steg-2.jpg" alt="Sikkerhetssjekk — grunnsjekker og arktisk sikkerhet" loading="lazy"></div>
               <figcaption>
                 <b data-i18n="prod.s2.t">Bekreft sikkerhetssjekken</b>
-                <span data-i18n="prod.s2.b">Sjekklisten tilpasser seg aktiviteten. Turen lar seg ikke aktivere før alt er bekreftet — det er hele poenget.</span>
+                <span data-i18n="prod.s2.b">Sjekklisten følger aktiviteten. Turen lar seg ikke aktivere før alt er bekreftet. Det er hele poenget.</span>
               </figcaption>
             </figure>
             <figure class="prod-card">
               <span class="prod-step">3</span>
               <div class="prod-frame"><img src="app-steg-3.jpg" alt="Aktiv tur — live vær, koordinater og forventet retur" loading="lazy"></div>
               <figcaption>
-                <b data-i18n="prod.s3.t">Aktiver — og vær i felt</b>
+                <b data-i18n="prod.s3.t">Aktiver, og gå</b>
                 <span data-i18n="prod.s3.b">Live vær, koordinater og forventet retur ligger på turen. GPS-posisjonen din deles med kommandosenteret så lenge turen er aktiv.</span>
               </figcaption>
             </figure>
@@ -1207,7 +1210,7 @@ html{scrollbar-color:#2c4468 #0a1322}
               <span class="prod-step">4</span>
               <div class="prod-frame"><img src="app-steg-4.jpg" alt="Turdetaljer — sertifiseringer og PDF-rapport klar" loading="lazy"></div>
               <figcaption>
-                <b data-i18n="prod.s4.t">Avslutt — rapporten skriver seg selv</b>
+                <b data-i18n="prod.s4.t">Avslutt, så skriver rapporten seg selv</b>
                 <span data-i18n="prod.s4.b">Sikkerhetssjekk, deltakere, hendelser, kart og sertifiseringer samles i en signert PDF i det turen avsluttes. Klar for forsikring, tilsyn eller kunde.</span>
               </figcaption>
             </figure>
@@ -1218,11 +1221,11 @@ html{scrollbar-color:#2c4468 #0a1322}
               <h3 class="cmd-h" data-i18n="prod.cmd.h">Hjemme ser de alt. Mens det skjer.</h3>
               <ol class="cmd-steps">
                 <li><b data-i18n="prod.cmd.s1t">Følg guidene live.</b> <span data-i18n="prod.cmd.s1b">Hver aktiv tur vises på kartet med GPS-posisjon, rute og delte faremarkeringer.</span></li>
-                <li><b data-i18n="prod.cmd.s2t">Retur-nedtelling per tur.</b> <span data-i18n="prod.cmd.s2b">Når forventet retur passeres uten at turen er avsluttet, varsler skjermen — rødt og tydelig.</span></li>
-                <li><b data-i18n="prod.cmd.s3t">SOS går rett hit.</b> <span data-i18n="prod.cmd.s3b">Trykker en guide SOS i felt, slår alarmen inn med posisjon i sanntid. Kvitter når situasjonen er håndtert — alt logges.</span></li>
-                <li><b data-i18n="prod.cmd.s4t">Godkjenn og dokumentér.</b> <span data-i18n="prod.cmd.s4b">Godkjenn planlagte turer, følg hendelser og hent signerte PDF-rapporter — per tur eller for hele organisasjonen.</span></li>
+                <li><b data-i18n="prod.cmd.s2t">Retur-nedtelling per tur.</b> <span data-i18n="prod.cmd.s2b">Passeres avtalt retur uten at turen er avsluttet, blir nedtellingen rød.</span></li>
+                <li><b data-i18n="prod.cmd.s3t">SOS går rett hit.</b> <span data-i18n="prod.cmd.s3b">Trykker en guide SOS, slår alarmen inn her med posisjon. Kvitter når det er håndtert. Alt logges.</span></li>
+                <li><b data-i18n="prod.cmd.s4t">Godkjenn og dokumentér.</b> <span data-i18n="prod.cmd.s4b">Godkjenn planlagte turer, følg hendelser og hent signerte PDF-rapporter, per tur eller for hele organisasjonen.</span></li>
               </ol>
-              <p class="cmd-note" data-i18n="prod.note">Følger med i organisasjonsabonnementet. Ingen installasjon — åpne daedalus-app.no/admin og logg inn.</p>
+              <p class="cmd-note" data-i18n="prod.note">Følger med i organisasjonsabonnementet. Ingenting å installere: åpne daedalus-app.no/admin og logg inn.</p>
             </div>
             <div class="cmd-shot">
               <div class="cmd-browser">
@@ -1242,19 +1245,20 @@ html{scrollbar-color:#2c4468 #0a1322}
     <div class="sec-bg" aria-hidden="true"><img src="tamok-sommer.jpg" alt="" loading="lazy" width="1360" height="1582"></div>
     <div class="chip sec-chip org-chip" aria-hidden="true">
       <span class="chip-ic green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s6.5-5.2 6.5-10.2A6.5 6.5 0 0 0 5.5 10.8C5.5 15.8 12 21 12 21Z"/><circle cx="12" cy="10.8" r="2.3"/></svg></span>
-      <span><strong data-i18n="org.c1t">Aktiv tur — Tamokdalen</strong><em data-i18n="org.c1s">GPS delt med kommandosenteret</em></span>
+      <span><strong data-i18n="org.c1t">Aktiv tur · Tamokdalen</strong><em data-i18n="org.c1s">GPS delt med kommandosenteret</em></span>
     </div>
     <div class="container">
       <div class="org-wrap">
         <div class="org-copy reveal">
           <p class="kicker" data-i18n="org.kicker">Laget i Tamokdalen</p>
-          <h2 class="org-h" data-i18n="org.h">Bygget av en som kjenner terrenget. <em>Tilgjengelig i hele Norden.</em></h2>
-          <p class="org-b" data-i18n="org.b1">Daedalus er utviklet i Tamokdalen i Troms — ikke i et kontorlandskap langt unna fjellet. Sjekklistene, faregradene og nødkjeden er formet av folk som selv har hatt ansvar for andre i felt, i mørketid og i vær som snur.</p>
-          <p class="org-b" data-i18n="org.b2">Appen er på norsk og engelsk, integrert med YR, Varsom, MET og Kartverket, og tilgjengelig for guider og operatører i hele Norden.</p>
+          <h2 class="org-h" data-i18n="org.h">Hvem som står bak</h2>
+          <p class="org-b" data-i18n="org.b1">Jeg heter Mikael Høiseth og er født og oppvokst i Tamokdalen, en dal kjent for to ting: snøskred, og folk som reiser fra hele verden for å gå i akkurat det terrenget. Vi har blitt ganske gode på å holde styr på begge deler. Det er omtrent der Daedalus begynte.</p>
+          <p class="org-b" data-i18n="org.b2">Jeg har guideerfaring, men den mest presise beskrivelsen er nok at jeg er ekstremt mye ute. Det er derfra jeg kjenner problemet: sikkerhetssjekken tas i hodet, deltakerlista med nødkontakter ligger i en perm på kontoret, og rapporten skrives fra hukommelsen dagen etter, hvis den skrives. Daedalus er systemet jeg selv savnet. Vær fra MET, skredvarsel fra Varsom, kart fra Kartverket, de samme kildene du bruker fra før. Henger det seg opp midt i sesongen, er det meg du får tak i, ikke en supportkø i en annen tidssone.</p>
+        <p class="org-b org-sign" data-i18n="org.sign">Mikael Høiseth, Tamokdalen</p>
           <div class="org-meta">
-            <span data-i18n="org.m1">Norsk selskap</span>
-            <span data-i18n="org.m2">Data lagret i EU</span>
-            <span data-i18n="org.m3">GDPR-kompatibel</span>
+            <span data-i18n="org.m1">Høi Z ENK, org.nr 924 425 407</span>
+            <span data-i18n="org.m2">Database i Irland (eu-west-1)</span>
+            <span data-i18n="org.m3">På norsk og engelsk, i hele Norden</span>
           </div>
         </div>
         <div class="org-shot reveal" style="--d:.1s">
@@ -1268,8 +1272,8 @@ html{scrollbar-color:#2c4468 #0a1322}
   <!-- ============ PRICING ============ -->
   <section class="sec sec-price" id="pricing">
     <div class="container">
-      <p class="kicker center reveal" data-i18n="price.kicker">Prising</p>
-      <h2 class="sec-h reveal" style="--d:.06s" data-i18n="price.h">Bygget for profesjonelle operasjoner.</h2>
+      <p class="kicker center reveal" data-i18n="price.kicker">Pris</p>
+      <h2 class="sec-h reveal" style="--d:.06s" data-i18n="price.h">25 euro per sete i måneden, og bare for setene som er i bruk.</h2>
       <p class="sec-intro reveal" style="--d:.12s" data-i18n="price.sub">Full tilgang for hele organisasjonen, fakturert per aktive sete. Solo-guider abonnerer i appen.</p>
 
       <div class="price-shell reveal" style="--d:.16s">
@@ -1319,8 +1323,8 @@ html{scrollbar-color:#2c4468 #0a1322}
     </div>
     <div class="container cta-wrap">
       <img class="cta-emblem" src="icon.png" alt="" decoding="async" aria-hidden="true" onerror="this.style.display='none'">
-      <h2 class="sec-h reveal" data-i18n="cta.h">Vær beskyttet før du trenger det.</h2>
-      <p class="sec-intro reveal" style="--d:.08s" data-i18n="cta.b">Last ned Daedalus og kjør din første fullt dokumenterte, juridisk beskyttede tur på minutter.</p>
+      <h2 class="sec-h reveal" data-i18n="cta.h">Last ned, legg inn neste tur, kjør.</h2>
+      <p class="sec-intro reveal" style="--d:.08s" data-i18n="cta.b">Guiden bruker appen. Den som er igjen på kontoret bruker kommandosenteret. Ingen oppsettsuke, ingen konsulenttimer.</p>
       <div class="cta-row center reveal" style="--d:.16s">
         <a class="store store-primary magnet" href="https://apps.apple.com/no/app/daedalus-guide-safety/id6761403819" target="_blank" rel="noopener">
           <svg class="store-ic" aria-hidden="true"><use href="#i-apple"/></svg>
@@ -1399,7 +1403,7 @@ html{scrollbar-color:#2c4468 #0a1322}
           <span class="brand-name">DAEDALUS</span>
         </span>
       </div>
-      <p class="foot-tag" data-i18n="foot.tag">Sikkerhet og operasjonssystem for profesjonelle ledere i naturen.</p>
+      <p class="foot-tag" data-i18n="foot.tag">Sikkerhets- og operasjonssystem for folk som tar med andre ut i terrenget.</p>
     </div>
     <nav class="foot-links" aria-label="Bunnmeny">
       <a href="#features" data-i18n="foot.features">Funksjoner</a>
@@ -1435,9 +1439,9 @@ html{scrollbar-color:#2c4468 #0a1322}
       "nav.pricing": "Prising",
       "nav.login": "Logg inn",
       "cue": "SKROLL",
-      "hero.eyebrow": "SIKKERHET & OPERASJONER — iOS & ANDROID",
-      "hero.sub": "Sikkerhet og operasjonssystem for profesjonelle ledere i naturen",
-      "hero.body": "Guidens siste forsvarslinje. Daedalus er den juridiske og operative dokumentasjonsplattformen for profesjonelle som tar folk ut i naturen. Sikkerhetssjekk, hendelseslogg, SOS-varsler og automatiske rapporter — bygget for å beskytte deg før noe går galt.",
+      "hero.eyebrow": "iOS · ANDROID · WEB-KOMMANDOSENTER",
+      "hero.sub": "Sikkerhets- og operasjonssystem for folk som tar med andre ut i terrenget",
+      "hero.body": "Sikkerhetssjekk før avreise, hendelseslogg med GPS underveis, SOS rett til den som sitter igjen på basen. Når turen er over ligger rapporten ferdig i arkivet, med tid og posisjon på alt. Så du kan vise hva du gjorde. Og når.",
       "hero.note": "For solo-guider · bedrift fra €25/sete eks. mva · ingen binding",
       "badge.as": "Last ned i",
       "badge.gp": "Få den på",
@@ -1465,7 +1469,7 @@ html{scrollbar-color:#2c4468 #0a1322}
       "ph3.a": "FARE MERKET",
       "ph3.b": "DELT MED ORG",
       "ph4.live": "RAPPORT",
-      "ph4.t": "Turrapport — Romsdalseggen",
+      "ph4.t": "Turrapport · Romsdalseggen",
       "ph4.s1": "SIKKERHETSSJEKK",
       "ph4.s2": "DELTAKERE · 8",
       "ph4.s3": "HENDELSER · 3",
@@ -1497,40 +1501,40 @@ html{scrollbar-color:#2c4468 #0a1322}
       "mq6": "JURIDISK PDF",
       "mq7": "GDPR-KOMPATIBEL",
       "mq8": "19 AKTIVITETSTYPER",
-      "feat.kicker": "Slik beskytter Daedalus deg",
-      "feat.h": "Dokumenter hver avgjørelse. Før noe går galt.",
-      "feat.intro": "Daedalus er ikke en turbok. Det er et juridisk og operativt skjold — bygget for profesjonelle som bærer ansvar for andres liv i felt.",
+      "feat.kicker": "Slik virker det",
+      "feat.h": "Skrevet ned der og da, ikke fra hukommelsen dagen etter.",
+      "feat.intro": "En hendelse blir sjelden et problem samme dag. Den blir et problem seks måneder senere, når et forsikringsselskap eller et tilsyn spør hva dere gjorde før dere dro ut. Da ligger det der, på den turen, med dato.",
       "f1.t": "Aktivitetsspesifikk sikkerhetssjekk",
-      "f1.b": "Tidsstemplet sikkerhetssjekk tilpasset aktiviteten — 19 turtyper med egne kontrollpunkter, fra skredvarsel og tau/sele til isforhold, kolonneroller og hundespann. Verifisert, lagret og synlig for organisasjonen i sanntid. Automatisk integrasjon med YR og Varsom.",
+      "f1.b": "19 turtyper med egne kontrollpunkter, fra skredvarsel og tau/sele til isforhold, kolonneroller og hundespann. Sjekken er tidsstemplet, lagret og synlig for organisasjonen med en gang. Vær fra YR, skredvarsel fra Varsom.",
       "f2.t": "Strukturert hendelseslogg",
-      "f2.b": "Logg nær-ulykker, skader og utstyrssvikt i sanntid — med GPS, tidsstempel, alvorlighetsgrad og tiltak. Uforanderlige poster klare for forsikring og granskning.",
+      "f2.b": "Nær-ulykker, skader og utstyrssvikt logges der du står, med GPS, klokkeslett, alvorlighetsgrad og hva du gjorde. Posten ligger klar for forsikring og gransking.",
       "f3.t": "Faremarkering og ruteplanlegging",
-      "f3.b": "Tegn planlagte ruter, merk fareområder og nødutganger. Del live farekart med organisasjonen — dokumentasjon på at risiko ble vurdert.",
+      "f3.b": "Tegn ruta, merk fareområder og nødutganger, og del kartet med organisasjonen. Det er også dokumentasjon på at risikoen ble vurdert før dere gikk.",
       "f4.t": "Juridisk PDF-rapport",
-      "f4.b": "En komplett, signert turrapport genereres automatisk ved avslutning. Inkluderer sikkerhetssjekk, deltakerliste, hendelseslogg, kart og sertifiseringer. Bygget for forsikring og sertifiseringsorganer.",
+      "f4.b": "Når turen avsluttes lages en signert PDF med sikkerhetssjekk, deltakerliste, hendelseslogg, kart og sertifiseringer. Den ligger i arkivet til noen spør.",
       "f5.t": "SOS nødknapp",
-      "f5.b": "Ett bekreftet trykk sender GPS-posisjon, tur-ID og guideinformasjon til alle nødkontakter via SMS — og logger hendelsen automatisk som kritisk. Samtidig utløses sanntidsalarm i organisasjonens kommandosenter med live posisjon.",
+      "f5.b": "Ett bekreftet trykk sender posisjon, tur-ID og hvem guiden er til nødkontaktene på SMS, og logger hendelsen som kritisk. Alarmen går samtidig i kommandosenteret, med posisjonen på kartet.",
       "f6.t": "Organisasjonens sikkerhetsoversikt",
-      "f6.b": "Koordinatorer ser alle aktive turer med live GPS-posisjon, sikkerhetssjekk-statuser og delte farekart i sanntid — med nedtelling til forventet retur og varsel når tiden løper ut. Full revisjonslogg for alle guider og operasjoner — alltid klar for inspeksjon.",
-      "map.kicker": "Sanntid",
+      "f6.b": "Den som sitter igjen på basen ser alle aktive turer på kartet, med posisjon, sikkerhetssjekk og delte farekart. Nedtelling til avtalt retur, som blir rød når tiden passeres. Alt logges, for hver guide og hver tur.",
+      "map.kicker": "Kartet på basen",
       "map.h": "Hele operasjonen. Ett kart.",
-      "map.intro": "Koordinatorer ser alle aktive turer, guider og delte farekart i sanntid — fra fjorden til toppen.",
+      "map.intro": "Den som er igjen på kontoret ser hvem som er ute, hvor de er, og hvilke farekart de har delt.",
       "map.demo": "DEMO-DATA",
       "hud.a": "3 GUIDER UTE",
       "hud.as": "Live posisjon · GPS",
-      "built.kicker": "Bygget for",
-      "built.h": "Profesjonelle som bærer ansvar.",
+      "built.kicker": "Hvem det er for",
+      "built.h": "Alle som har ansvar for andre ute.",
       "p1": "Fjellguider",
       "p2": "Kajakkinstruktører",
       "p3": "Klatreinstruktører",
       "p4": "Skiguider",
       "p5": "Friluftslivslærere",
       "p6": "Redningsgrupper",
-      "p7": "Hundekjøring- og scooteroperatører",
+      "p7": "Hundekjørings- og scooteroperatører",
       "p8": "Svalbard-operatører",
-      "seg.kicker": "Velg din verden",
-      "seg.h": "Din aktivitet. Dine kontrollpunkter.",
-      "seg.intro": "Daedalus kjenner operasjonen din. Velg aktivitet — og se de faktiske kontrollpunktene appen krever bekreftet før turen kan aktiveres. Ingen generiske skjemaer.",
+      "seg.kicker": "Velg aktivitet",
+      "seg.h": "Sjekklisten følger aktiviteten.",
+      "seg.intro": "Velg en aktivitet og se hva appen krever bekreftet før turen kan aktiveres. Det er de samme punktene guiden får på telefonen.",
       "seg.c1": "Hundekjøring",
       "seg.c2": "Snøscooter",
       "seg.c3": "Nordlys",
@@ -1538,7 +1542,7 @@ html{scrollbar-color:#2c4468 #0a1322}
       "seg.c5": "Bre & klatring",
       "seg.c6": "Kajakk & hav",
       "seg.c7": "Svalbard",
-      "seg.s1.n": "Fra appens sikkerhetssjekk for hundekjøring — turen kan ikke aktiveres før alt er bekreftet:",
+      "seg.s1.n": "Fra appens sikkerhetssjekk for hundekjøring: turen kan ikke aktiveres før alt er bekreftet:",
       "seg.s1.p1": "Hundespannets helse sjekket",
       "seg.s1.p2": "Seler og trekkliner inspisert",
       "seg.s1.p3": "Sledebremser og snøkroker",
@@ -1562,55 +1566,55 @@ html{scrollbar-color:#2c4468 #0a1322}
       "seg.s3.p6": "Sjåfør og kjøretøy vinterklart",
       "seg.s3.p7": "Veiforhold sjekket",
       "seg.s4.n": "Fra appens sikkerhetssjekk for topptur og ski:",
-      "seg.s4.p1": "Snøskredvarselsnivå — hentes automatisk fra Varsom for turens posisjon",
+      "seg.s4.p1": "Snøskredvarselsnivå, hentes automatisk fra Varsom for turens posisjon",
       "seg.s4.p2": "Tau og sele inspisert",
       "seg.s5.n": "Fra appens sikkerhetssjekk for bre, klatring og via ferrata:",
       "seg.s5.p1": "Tau og sele inspisert",
-      "seg.s5.p2": "Snøskredvarselsnivå — automatisk fra Varsom",
+      "seg.s5.p2": "Snøskredvarselsnivå, automatisk fra Varsom",
       "seg.s6.n": "Fra appens sikkerhetssjekk for kajakk og havpadling:",
       "seg.s6.p1": "Tidevannsdata sjekket",
       "seg.s6.p2": "Bølgehøyde vurdert",
       "seg.s6.p3": "Flyteutstyr sjekket",
       "seg.s7.n": "Bygget for den nye feltsikkerhetsforskriften på Svalbard:",
-      "seg.s7.p1": "Dokumenterte guidetimer per guide — automatisk per tur",
+      "seg.s7.p1": "Dokumenterte guidetimer per guide, automatisk per tur",
       "seg.s7.p2": "Internkontroll-eksport for turoperatører",
-      "seg.s7.p3": "Signert PDF-dokumentasjon — klar som vedlegg til Sysselmesteren",
-      "seg.s7.p4": "Sikkerhetssjekk for scooter, hundespann og nordlys — bygget inn",
+      "seg.s7.p3": "Signert PDF-dokumentasjon, klar som vedlegg til Sysselmesteren",
+      "seg.s7.p4": "Sikkerhetssjekk for scooter, hundespann og nordlys, bygget inn",
       "seg.s7.p5": "Full revisjonslogg for hele organisasjonen",
-      "seg.base": "+ Vær verifisert (YR) · Utstyr sjekket · Nødkontakt varslet — obligatorisk på alle turer",
+      "seg.base": "+ Vær verifisert (YR) · Utstyr sjekket · Nødkontakt varslet. Obligatorisk på alle turer",
       "prod.kick": "Dette får du",
-      "prod.title": "Se appen og kommandosenteret — ekte skjermbilder, steg for steg",
+      "prod.title": "Ekte skjermbilder fra appen og kommandosenteret, steg for steg.",
       "prod.s1.t": "Opprett turen",
-      "prod.s1.b": "Velg blant 19 aktivitetstyper — fra skitur og brevandring til snøscooter og hundekjøring. Dato, sted og vær fylles inn med live data fra MET.",
+      "prod.s1.b": "Velg blant 19 aktivitetstyper, fra skitur og brevandring til snøscooter og hundekjøring. Dato, sted og vær fylles inn fra MET.",
       "prod.s2.t": "Bekreft sikkerhetssjekken",
-      "prod.s2.b": "Sjekklisten tilpasser seg aktiviteten. Turen lar seg ikke aktivere før alt er bekreftet — det er hele poenget.",
-      "prod.s3.t": "Aktiver — og vær i felt",
+      "prod.s2.b": "Sjekklisten følger aktiviteten. Turen lar seg ikke aktivere før alt er bekreftet. Det er hele poenget.",
+      "prod.s3.t": "Aktiver, og gå",
       "prod.s3.b": "Live vær, koordinater og forventet retur ligger på turen. GPS-posisjonen din deles med kommandosenteret så lenge turen er aktiv.",
-      "prod.s4.t": "Avslutt — rapporten skriver seg selv",
+      "prod.s4.t": "Avslutt, så skriver rapporten seg selv",
       "prod.s4.b": "Sikkerhetssjekk, deltakere, hendelser, kart og sertifiseringer samles i en signert PDF i det turen avsluttes. Klar for forsikring, tilsyn eller kunde.",
       "prod.cmd.kick": "Kommandosenteret",
       "prod.cmd.h": "Hjemme ser de alt. Mens det skjer.",
       "prod.cmd.s1t": "Følg guidene live.",
       "prod.cmd.s1b": "Hver aktiv tur vises på kartet med GPS-posisjon, rute og delte faremarkeringer.",
       "prod.cmd.s2t": "Retur-nedtelling per tur.",
-      "prod.cmd.s2b": "Når forventet retur passeres uten at turen er avsluttet, varsler skjermen — rødt og tydelig.",
+      "prod.cmd.s2b": "Passeres avtalt retur uten at turen er avsluttet, blir nedtellingen rød.",
       "prod.cmd.s3t": "SOS går rett hit.",
-      "prod.cmd.s3b": "Trykker en guide SOS i felt, slår alarmen inn med posisjon i sanntid. Kvitter når situasjonen er håndtert — alt logges.",
+      "prod.cmd.s3b": "Trykker en guide SOS, slår alarmen inn her med posisjon. Kvitter når det er håndtert. Alt logges.",
       "prod.cmd.s4t": "Godkjenn og dokumentér.",
-      "prod.cmd.s4b": "Godkjenn planlagte turer, følg hendelser og hent signerte PDF-rapporter — per tur eller for hele organisasjonen.",
-      "prod.note": "Følger med i organisasjonsabonnementet. Ingen installasjon — åpne daedalus-app.no/admin og logg inn.",
+      "prod.cmd.s4b": "Godkjenn planlagte turer, følg hendelser og hent signerte PDF-rapporter, per tur eller for hele organisasjonen.",
+      "prod.note": "Følger med i organisasjonsabonnementet. Ingenting å installere: åpne daedalus-app.no/admin og logg inn.",
       "prod.shotnote": "Opptak fra kommandosenteret (demodata)",
       "org.kicker": "Laget i Tamokdalen",
-      "org.h": "Bygget av en som kjenner terrenget. Tilgjengelig i hele Norden.",
-      "org.b1": "Daedalus er utviklet i Tamokdalen i Troms — ikke i et kontorlandskap langt unna fjellet. Sjekklistene, faregradene og nødkjeden er formet av folk som selv har hatt ansvar for andre i felt, i mørketid og i vær som snur.",
-      "org.b2": "Appen er på norsk og engelsk, integrert med YR, Varsom, MET og Kartverket, og tilgjengelig for guider og operatører i hele Norden.",
-      "org.m1": "Norsk selskap",
-      "org.m2": "Data lagret i EU",
-      "org.m3": "GDPR-kompatibel",
-      "org.c1t": "Aktiv tur — Tamokdalen",
+      "org.h": "Hvem som står bak",
+      "org.b1": "Jeg heter Mikael Høiseth og er født og oppvokst i Tamokdalen, en dal kjent for to ting: snøskred, og folk som reiser fra hele verden for å gå i akkurat det terrenget. Vi har blitt ganske gode på å holde styr på begge deler. Det er omtrent der Daedalus begynte.",
+      "org.b2": "Jeg har guideerfaring, men den mest presise beskrivelsen er nok at jeg er ekstremt mye ute. Det er derfra jeg kjenner problemet: sikkerhetssjekken tas i hodet, deltakerlista med nødkontakter ligger i en perm på kontoret, og rapporten skrives fra hukommelsen dagen etter, hvis den skrives. Daedalus er systemet jeg selv savnet. Vær fra MET, skredvarsel fra Varsom, kart fra Kartverket, de samme kildene du bruker fra før. Henger det seg opp midt i sesongen, er det meg du får tak i, ikke en supportkø i en annen tidssone.", "org.sign": "Mikael Høiseth, Tamokdalen",
+      "org.m1": "Høi Z ENK, org.nr 924 425 407",
+      "org.m2": "Database i Irland (eu-west-1)",
+      "org.m3": "På norsk og engelsk, i hele Norden",
+      "org.c1t": "Aktiv tur · Tamokdalen",
       "org.c1s": "GPS delt med kommandosenteret",
-      "price.kicker": "Prising",
-      "price.h": "Bygget for profesjonelle operasjoner.",
+      "price.kicker": "Pris",
+      "price.h": "25 euro per sete i måneden, og bare for setene som er i bruk.",
       "price.sub": "Full tilgang for hele organisasjonen, fakturert per aktive sete. Solo-guider abonnerer i appen.",
       "price.plan": "ORGANISASJON",
       "price.per": "per sete / mnd · eks. mva",
@@ -1629,11 +1633,11 @@ html{scrollbar-color:#2c4468 #0a1322}
       "pf10": "Guidetimer og internkontroll-eksport (Svalbard-klar)",
       "price.cta": "Kom i gang",
       "price.note": "€25 per aktive sete / mnd · eks. mva · faktureres månedlig",
-      "cta.h": "Vær beskyttet før du trenger det.",
-      "cta.b": "Last ned Daedalus og kjør din første fullt dokumenterte, juridisk beskyttede tur på minutter.",
+      "cta.h": "Last ned, legg inn neste tur, kjør.",
+      "cta.b": "Guiden bruker appen. Den som er igjen på kontoret bruker kommandosenteret. Ingen oppsettsuke, ingen konsulenttimer.",
       "cta.c1t": "Forventet retur 17:00",
       "cta.c1s": "Varsles automatisk hvis tiden passeres",
-      "foot.tag": "Sikkerhet og operasjonssystem for profesjonelle ledere i naturen.",
+      "foot.tag": "Sikkerhets- og operasjonssystem for folk som tar med andre ut i terrenget.",
       "foot.features": "Funksjoner",
       "foot.privacy": "Personvern",
       "foot.terms": "Vilkår",
@@ -1653,9 +1657,9 @@ html{scrollbar-color:#2c4468 #0a1322}
       "nav.pricing": "Pricing",
       "nav.login": "Log in",
       "cue": "SCROLL",
-      "hero.eyebrow": "SAFETY & OPERATIONS — iOS & ANDROID",
-      "hero.sub": "Safety & Operations System for Professional Outdoor Leaders",
-      "hero.body": "Every guide's last line of defence. Daedalus is the legal and operational documentation platform built for professionals who take people into the field. Safety checks, incident logging, SOS alerts and automatic reports — designed to protect you before something goes wrong.",
+      "hero.eyebrow": "iOS · ANDROID · WEB COMMAND CENTRE",
+      "hero.sub": "Safety and operations system for people who take others out into the terrain",
+      "hero.body": "Safety check before departure, incident log with GPS along the way, SOS straight to whoever is left at base. When the trip is over the report is already in the archive, with time and position on everything. So you can show what you did. And when.",
       "hero.note": "For solo guides · business from €25/seat excl. VAT · cancel anytime",
       "badge.as": "Download on the",
       "badge.gp": "Get it on",
@@ -1683,7 +1687,7 @@ html{scrollbar-color:#2c4468 #0a1322}
       "ph3.a": "HAZARD MARKED",
       "ph3.b": "SHARED WITH ORG",
       "ph4.live": "REPORT",
-      "ph4.t": "Trip report — Romsdalseggen",
+      "ph4.t": "Trip report · Romsdalseggen",
       "ph4.s1": "SAFETY CHECK",
       "ph4.s2": "PARTICIPANTS · 8",
       "ph4.s3": "INCIDENTS · 3",
@@ -1715,29 +1719,29 @@ html{scrollbar-color:#2c4468 #0a1322}
       "mq6": "LEGAL-GRADE PDF",
       "mq7": "GDPR COMPLIANT",
       "mq8": "19 ACTIVITY TYPES",
-      "feat.kicker": "How Daedalus protects you",
-      "feat.h": "Document every decision. Before something goes wrong.",
-      "feat.intro": "Daedalus is not a trip journal. It's a legal and operational shield — built for professionals who carry responsibility for other people's lives in the field.",
+      "feat.kicker": "How it works",
+      "feat.h": "Written down there and then, not from memory the day after.",
+      "feat.intro": "An incident is rarely a problem the same day. It becomes one six months later, when an insurer or an inspector asks what you did before you set out. Then it is there, on that trip, with a date.",
       "f1.t": "Activity-specific safety check",
-      "f1.b": "A timestamped safety check tailored to your activity — 19 trip types with their own control points, from avalanche forecast and rope/harness to ice conditions, convoy roles and dog teams. Verified, logged and visible to your organisation in real time. Auto-integrated with YR and Varsom.",
+      "f1.b": "19 trip types with their own checkpoints, from avalanche forecast and rope and harness to ice conditions, column roles and dog teams. The check is time-stamped, stored and visible to the organisation straight away. Weather from YR, avalanche forecast from Varsom.",
       "f2.t": "Structured incident logging",
-      "f2.b": "Log near-misses, injuries, route changes and equipment failures in real time — with GPS, timestamp, severity and actions taken. Immutable records ready for insurance and investigation.",
+      "f2.b": "Near misses, injuries and equipment failures are logged where you stand, with GPS, time, severity and what you did. The entry is ready for insurance and investigation.",
       "f3.t": "Hazard mapping & route planning",
-      "f3.b": "Draw planned routes, mark hazard zones, emergency exits and meeting points. Share live hazard maps with your organisation — proof that risk was assessed before departure.",
+      "f3.b": "Draw the route, mark hazard zones and escape routes, and share the map with the organisation. It is also documentation that the risk was assessed before you set off.",
       "f4.t": "Legal-grade PDF reports",
-      "f4.b": "A complete, signed trip report is generated automatically on every trip closure. Includes safety check, participant list, incident log, map and guide certifications. Built for insurance, courts and certification bodies.",
+      "f4.b": "When the trip ends, a signed PDF is produced with the safety check, participant list, incident log, map and certifications. It sits in the archive until someone asks.",
       "f5.t": "SOS emergency button",
-      "f5.b": "One confirmed press sends GPS position, trip ID and guide details to all emergency contacts via SMS — and logs the event automatically as a critical incident with full timestamp. At the same moment, a real-time alarm fires in your organisation's command centre with live position.",
+      "f5.b": "One confirmed press sends position, trip ID and who the guide is to the emergency contacts by SMS, and logs the incident as critical. The alarm goes off in the command centre at the same time, with the position on the map.",
       "f6.t": "Organisation safety oversight",
-      "f6.b": "Coordinators see every active trip with live GPS position, safety check statuses and shared hazard maps in real time — with a countdown to expected return and an alert when time runs out. Full audit trail for every guide and operation — always ready for inspection.",
-      "map.kicker": "Real time",
+      "f6.b": "Whoever is left at base sees every active trip on the map, with position, safety check and shared hazard maps. A countdown to the agreed return, which turns red when the time passes. Everything is logged, for every guide and every trip.",
+      "map.kicker": "The map at base",
       "map.h": "Your entire operation. One map.",
-      "map.intro": "Coordinators see every active trip, guide and shared hazard map in real time — from the fjord to the summit.",
+      "map.intro": "Whoever is left in the office sees who is out, where they are, and which hazard maps they have shared.",
       "map.demo": "DEMO DATA",
       "hud.a": "3 GUIDES OUT",
       "hud.as": "Live position · GPS",
-      "built.kicker": "Built for",
-      "built.h": "Professionals who carry responsibility.",
+      "built.kicker": "Who it is for",
+      "built.h": "Anyone responsible for other people outdoors.",
       "p1": "Mountain Guides",
       "p2": "Kayak Guides",
       "p3": "Climbing Instructors",
@@ -1746,9 +1750,9 @@ html{scrollbar-color:#2c4468 #0a1322}
       "p6": "Rescue Teams",
       "p7": "Dog Sledding & Snowmobile Operators",
       "p8": "Svalbard Operators",
-      "seg.kicker": "Choose your world",
-      "seg.h": "Your activity. Your control points.",
-      "seg.intro": "Daedalus knows your operation. Pick an activity — and see the actual control points the app requires before a trip can activate. No generic forms.",
+      "seg.kicker": "Choose an activity",
+      "seg.h": "The checklist follows the activity.",
+      "seg.intro": "Choose an activity and see what the app requires confirmed before the trip can be activated. They are the same points the guide gets on the phone.",
       "seg.c1": "Dog sledding",
       "seg.c2": "Snowmobile",
       "seg.c3": "Northern lights",
@@ -1756,7 +1760,7 @@ html{scrollbar-color:#2c4468 #0a1322}
       "seg.c5": "Glacier & climbing",
       "seg.c6": "Kayak & sea",
       "seg.c7": "Svalbard",
-      "seg.s1.n": "From the app’s dog sledding safety check — the trip cannot activate until everything is confirmed:",
+      "seg.s1.n": "From the app’s dog sledding safety check: the trip cannot activate until everything is confirmed:",
       "seg.s1.p1": "Dog team health checked",
       "seg.s1.p2": "Harnesses and ganglines inspected",
       "seg.s1.p3": "Sled brakes and snow hooks",
@@ -1780,55 +1784,55 @@ html{scrollbar-color:#2c4468 #0a1322}
       "seg.s3.p6": "Driver and vehicle winter-ready",
       "seg.s3.p7": "Road conditions checked",
       "seg.s4.n": "From the app’s ski touring safety check:",
-      "seg.s4.p1": "Avalanche forecast level — fetched automatically from Varsom for your trip position",
+      "seg.s4.p1": "Avalanche forecast level, fetched automatically from Varsom for your trip position",
       "seg.s4.p2": "Rope & harness inspected",
       "seg.s5.n": "From the app’s glacier, climbing and via ferrata safety check:",
       "seg.s5.p1": "Rope & harness inspected",
-      "seg.s5.p2": "Avalanche forecast level — automatic from Varsom",
+      "seg.s5.p2": "Avalanche forecast level, automatic from Varsom",
       "seg.s6.n": "From the app’s kayak and sea kayaking safety check:",
       "seg.s6.p1": "Tidal data checked",
       "seg.s6.p2": "Wave height assessed",
       "seg.s6.p3": "Flotation devices checked",
       "seg.s7.n": "Built for the new field safety regulations on Svalbard:",
-      "seg.s7.p1": "Documented guide hours per guide — automatic per trip",
+      "seg.s7.p1": "Documented guide hours per guide, automatic per trip",
       "seg.s7.p2": "Internal control export for tour operators",
-      "seg.s7.p3": "Signed PDF documentation — ready as an attachment for the Governor of Svalbard",
-      "seg.s7.p4": "Safety checks for snowmobile, dog sledding and northern lights — built in",
+      "seg.s7.p3": "Signed PDF documentation, ready as an attachment for the Governor of Svalbard",
+      "seg.s7.p4": "Safety checks for snowmobile, dog sledding and northern lights, built in",
       "seg.s7.p5": "Full audit trail for your whole organisation",
-      "seg.base": "+ Weather verified (YR) · Equipment checked · Emergency contact notified — mandatory on every trip",
+      "seg.base": "+ Weather verified (YR) · Equipment checked · Emergency contact notified. Mandatory on every trip",
       "prod.kick": "What you get",
-      "prod.title": "See the app and the command centre — real screenshots, step by step",
+      "prod.title": "Real screenshots from the app and the command centre, step by step.",
       "prod.s1.t": "Create the trip",
-      "prod.s1.b": "Choose from 19 activity types — from ski touring and glacier hikes to snowmobile and dog sledding. Date, location and weather are filled in with live MET data.",
+      "prod.s1.b": "Choose from 19 activity types, from ski touring and glacier walking to snowmobile and dog sledding. Date, place and weather are filled in from MET.",
       "prod.s2.t": "Confirm the safety check",
-      "prod.s2.b": "The checklist adapts to the activity. The trip cannot be activated until everything is confirmed — that is the whole point.",
-      "prod.s3.t": "Activate — and head out",
+      "prod.s2.b": "The checklist follows the activity. The trip cannot be activated until everything is confirmed. That is the whole point.",
+      "prod.s3.t": "Activate, and go",
       "prod.s3.b": "Live weather, coordinates and expected return sit on the trip. Your GPS position is shared with the command centre while the trip is active.",
-      "prod.s4.t": "Finish — the report writes itself",
+      "prod.s4.t": "Finish, and the report writes itself",
       "prod.s4.b": "Safety check, participants, incidents, map and certifications are compiled into a signed PDF the moment the trip ends. Ready for insurance, inspection or client.",
       "prod.cmd.kick": "The command centre",
       "prod.cmd.h": "Back home, they see everything. As it happens.",
       "prod.cmd.s1t": "Follow guides live.",
       "prod.cmd.s1b": "Every active trip appears on the map with GPS position, route and shared hazard markings.",
       "prod.cmd.s2t": "Return countdown per trip.",
-      "prod.cmd.s2b": "If expected return passes without the trip being closed, the screen alerts — red and unmistakable.",
+      "prod.cmd.s2b": "If the agreed return passes without the trip being finished, the countdown turns red.",
       "prod.cmd.s3t": "SOS lands here.",
-      "prod.cmd.s3b": "When a guide presses SOS in the field, the alarm fires with real-time position. Acknowledge when handled — everything is logged.",
+      "prod.cmd.s3b": "If a guide presses SOS, the alarm goes off here with the position. Acknowledge when it is handled. Everything is logged.",
       "prod.cmd.s4t": "Approve and document.",
-      "prod.cmd.s4b": "Approve planned trips, follow incidents and pull signed PDF reports — per trip or for the whole organisation.",
-      "prod.note": "Included in the organisation subscription. No installation — open daedalus-app.no/admin and log in.",
+      "prod.cmd.s4b": "Approve planned trips, follow incidents and fetch signed PDF reports, per trip or for the whole organisation.",
+      "prod.note": "Included in the organisation subscription. Nothing to install: open daedalus-app.no/admin and log in.",
       "prod.shotnote": "Recording from the command centre (demo data)",
       "org.kicker": "Made in Tamokdalen",
-      "org.h": "Built by someone who knows the terrain. Available across the Nordics.",
-      "org.b1": "Daedalus is developed in Tamokdalen, Northern Norway — not in an office far from the mountain. The checklists, hazard levels and emergency chain are shaped by people who have carried responsibility for others in the field, in polar night and in weather that turns.",
-      "org.b2": "The app is in Norwegian and English, integrated with YR, Varsom, MET and the Norwegian Mapping Authority, and available to guides and operators across the Nordics.",
-      "org.m1": "Norwegian company",
-      "org.m2": "Data stored in the EU",
-      "org.m3": "GDPR compliant",
-      "org.c1t": "Active trip — the Tamok valley",
+      "org.h": "Who is behind it",
+      "org.b1": "My name is Mikael Høiseth and I was born and raised in Tamokdalen, a valley known for two things: avalanches, and people who travel from all over the world to go into exactly that terrain. We have become fairly good at keeping track of both. That is roughly where Daedalus began.",
+      "org.b2": "I have guiding experience, but the most precise description is probably that I am outside an awful lot. That is where I know the problem from: the safety check is done in your head, the participant list with emergency contacts sits in a folder at the office, and the report is written from memory the day after, if it is written at all. Daedalus is the system I was missing myself. Weather from MET, avalanche forecast from Varsom, maps from Kartverket, the same sources you already use. If something breaks in the middle of the season, it is me you get hold of, not a support queue in another time zone.", "org.sign": "Mikael Høiseth, Tamokdalen",
+      "org.m1": "Høi Z ENK, org. no. 924 425 407",
+      "org.m2": "Database in Ireland (eu-west-1)",
+      "org.m3": "In Norwegian and English, across the Nordics",
+      "org.c1t": "Active trip · the Tamok valley",
       "org.c1s": "GPS shared with the command centre",
-      "price.kicker": "Pricing",
-      "price.h": "Built for professional operations.",
+      "price.kicker": "Price",
+      "price.h": "25 euro per seat per month, and only for the seats in use.",
       "price.sub": "Full access for your whole organisation, billed per active seat. Solo guides subscribe in the app.",
       "price.plan": "ORGANIZATION",
       "price.per": "per seat / mo · excl. VAT",
@@ -1847,11 +1851,11 @@ html{scrollbar-color:#2c4468 #0a1322}
       "pf10": "Guide hours & internal control export (Svalbard-ready)",
       "price.cta": "Get started",
       "price.note": "€25 per active seat / month · excl. VAT · billed monthly",
-      "cta.h": "Be protected before you need it.",
-      "cta.b": "Download Daedalus and run your first fully documented, legally protected trip in minutes.",
+      "cta.h": "Download, add your next trip, go.",
+      "cta.b": "The guide uses the app. Whoever is left in the office uses the command centre. No set-up week, no consultant hours.",
       "cta.c1t": "Expected return 17:00",
       "cta.c1s": "Alerts automatically if the time passes",
-      "foot.tag": "Safety & Operations System for Professional Outdoor Leaders.",
+      "foot.tag": "Safety and operations system for people who take others out into the terrain.",
       "foot.features": "Features",
       "foot.privacy": "Privacy",
       "foot.terms": "Terms",
@@ -2039,7 +2043,7 @@ html{scrollbar-color:#2c4468 #0a1322}
       "org.kicker": "Skapad i Tamokdalen",
       "org.h": "Byggd av någon som känner terrängen. Tillgänglig i hela Norden.",
       "org.b1": "Daedalus är utvecklad i Tamokdalen i Troms — inte i ett kontorslandskap långt från fjället. Checklistorna, farograderna och nödkedjan är formade av människor som själva har haft ansvar för andra i fält, i mörkertid och i väder som vänder.",
-      "org.b2": "Appen finns på norska och engelska, är integrerad med YR, Varsom, MET och Kartverket, och tillgänglig för guider och operatörer i hela Norden.",
+      "org.b2": "Appen finns på norska och engelska, är integrerad med YR, Varsom, MET och Kartverket, och tillgänglig för guider och operatörer i hela Norden.", "org.sign": "Mikael Høiseth, Tamokdalen",
       "org.m1": "Norskt företag",
       "org.m2": "Data lagrad i EU",
       "org.m3": "GDPR-kompatibel",
@@ -2257,7 +2261,7 @@ html{scrollbar-color:#2c4468 #0a1322}
       "org.kicker": "Skabt i Tamokdalen",
       "org.h": "Bygget af en, der kender terrænet. Tilgængelig i hele Norden.",
       "org.b1": "Daedalus er udviklet i Tamokdalen i Troms — ikke i et kontorlandskab langt fra fjeldet. Tjeklisterne, faregraderne og nødkæden er formet af folk, der selv har haft ansvar for andre i felten, i mørketid og i vejr, der vender.",
-      "org.b2": "Appen er på norsk og engelsk, integreret med YR, Varsom, MET og Kartverket, og tilgængelig for guider og operatører i hele Norden.",
+      "org.b2": "Appen er på norsk og engelsk, integreret med YR, Varsom, MET og Kartverket, og tilgængelig for guider og operatører i hele Norden.", "org.sign": "Mikael Høiseth, Tamokdalen",
       "org.m1": "Norsk selskab",
       "org.m2": "Data opbevaret i EU",
       "org.m3": "GDPR-kompatibel",
@@ -2475,7 +2479,7 @@ html{scrollbar-color:#2c4468 #0a1322}
       "org.kicker": "Tehty Tamokdalenissa",
       "org.h": "Rakentanut joku, joka tuntee maaston. Saatavilla koko Pohjolassa.",
       "org.b1": "Daedalus on kehitetty Tamokdalenissa Tromssassa — ei toimistomaisemassa kaukana tunturista. Tarkistuslistat, vaara-asteet ja hätäketjun ovat muotoilleet ihmiset, jotka ovat itse kantaneet vastuun toisista maastossa, kaamoksessa ja säässä, joka kääntyy.",
-      "org.b2": "Sovellus on norjaksi ja englanniksi, integroitu YR:ään, Varsomiin, MET:iin ja Kartverketiin, ja saatavilla oppaille ja toimijoille koko Pohjolassa.",
+      "org.b2": "Sovellus on norjaksi ja englanniksi, integroitu YR:ään, Varsomiin, MET:iin ja Kartverketiin, ja saatavilla oppaille ja toimijoille koko Pohjolassa.", "org.sign": "Mikael Høiseth, Tamokdalen",
       "org.m1": "Norjalainen yritys",
       "org.m2": "Data tallennettu EU:hun",
       "org.m3": "GDPR-yhteensopiva",
@@ -2693,7 +2697,7 @@ html{scrollbar-color:#2c4468 #0a1322}
       "org.kicker": "Búið til í Tamokdalen",
       "org.h": "Byggt af manneskju sem þekkir landslagið. Í boði á öllum Norðurlöndunum.",
       "org.b1": "Daedalus er þróað í Tamokdalen í Troms — ekki á skrifstofu langt frá fjöllunum. Gátlistarnir, hættustigin og neyðarkeðjan eru mótuð af fólki sem hefur sjálft borið ábyrgð á öðrum á vettvangi, í skammdegi og í veðri sem snýst.",
-      "org.b2": "Appið er á norsku og ensku, samþætt við YR, Varsom, MET og Kartverket, og í boði fyrir leiðsögumenn og fyrirtæki á öllum Norðurlöndunum.",
+      "org.b2": "Appið er á norsku og ensku, samþætt við YR, Varsom, MET og Kartverket, og í boði fyrir leiðsögumenn og fyrirtæki á öllum Norðurlöndunum.", "org.sign": "Mikael Høiseth, Tamokdalen",
       "org.m1": "Norskt fyrirtæki",
       "org.m2": "Gögn geymd í ESB",
       "org.m3": "GDPR-samhæft",
@@ -2731,8 +2735,8 @@ html{scrollbar-color:#2c4468 #0a1322}
     }
   };
   var TITLES = {
-    no: "Daedalus — Sikkerhet og operasjonssystem for profesjonelle ledere i naturen",
-    en: "Daedalus — Safety & Operations System for Professional Outdoor Leaders",
+    no: "Daedalus | Sikkerhets- og operasjonssystem for guider og turledere",
+    en: "Daedalus | Safety and operations system for guides and trip leaders",
     sv: "Daedalus — Säkerhets- och driftsystem för professionella ledare i naturen",
     da: "Daedalus — Sikkerheds- og driftssystem til professionelle ledere i naturen",
     fi: "Daedalus — Turvallisuus- ja toiminnanohjausjärjestelmä luonnossa työskenteleville ammattilaisille",
