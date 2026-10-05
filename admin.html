@@ -1835,21 +1835,22 @@ function tryLeaflet(){
   try{
     lmap=L.map('lmap',{zoomControl:false,attributionControl:false,scrollWheelZoom:false});
     lmap.setView([69.15,19.62],10);
-    var tl=L.tileLayer('https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:17,subdomains:'abcd'});
+    var tl=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19});
+    var kv=L.tileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png',{maxZoom:19,maxNativeZoom:18,bounds:[[57.7,3.9],[81.5,32.5]]});
     var errs=0;
     tl.on('load',function(){
       if(tilesOn)return;
       tilesOn=true;
       window.__TILESON=true;
       stageEl.classList.add('tiles-on');
-      var at=$('#mapAttr'); if(at)at.textContent='© OpenStreetMap-bidragsytere · © CARTO';
+      var at=$('#mapAttr'); if(at)at.textContent='© Kartverket · © OpenStreetMap-bidragsytere';
       setTimeout(function(){ if(lmap)lmap.invalidateSize() },420);
     });
     tl.on('tileerror',function(){
       errs++;
       if(errs>8&&!tilesOn){ try{ lmap.remove() }catch(e2){} lmap=null }
     });
-    tl.addTo(lmap);
+    tl.addTo(lmap); kv.addTo(lmap);
     window.__LMAP=lmap;
     lmap.on('mousemove',function(e){ if(coordsEl&&tilesOn)coordsEl.textContent=fmtCoord(e.latlng.lat,e.latlng.lng) });
   }catch(e){ lmap=null }
