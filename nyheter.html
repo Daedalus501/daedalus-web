@@ -74,6 +74,20 @@ color:var(--text);text-decoration:none;background:rgba(0,0,0,.25)}
 <h1 data-i18n="h1">Nyheter</h1>
 <p class="sub" data-i18n="sub">Hva som er nytt i appen og kommandosenteret. Kort, ærlig og uten fyll.</p>
 
+<article class="post" id="kartverket-2026-10">
+<div class="meta"><span class="tag web" data-i18n="pf.tag">Kommandosenter</span><time datetime="2026-10-05" data-i18n="pf.date">5. oktober 2026</time></div>
+<h2 data-i18n="pf.h">Kartverket i kommandosenteret</h2>
+<p data-i18n="pf.lead">Kartet på dashbordet har vist grå ruter merket «API key required». Leverandøren av bakgrunnskartet begynte å kreve nøkkel. Nå er kartet byttet ut.</p>
+<ul>
+<li data-i18n-html="pf.l1"><b>Hva som var galt.</b> Det operative kartet hentet bakgrunnen fra CARTO. De begynte å kreve API-nøkkel for gratiskartene sine, og rutene kom tilbake med vannmerke i stedet for terreng. Turer, posisjoner og SOS lå der hele tiden, men på grå bunn.</li>
+<li data-i18n-html="pf.l2"><b>Hva som er gjort.</b> Dashbordet bruker nå samme kart som planleggeren: Kartverkets topografiske kart over Norge og Svalbard, med OpenStreetMap som bunn utenfor. Kartverket krever ingen nøkkel.</li>
+<li data-i18n-html="pf.l3"><b>Ikke berørt.</b> Appen, planleggeren og kartet i «Ny tur» var aldri rammet. Ingen turrapporter er påvirket.</li>
+</ul>
+<div class="stores">
+<a class="store" href="/admin" data-i18n="pf.open">Åpne kommandosenteret</a>
+</div>
+</article>
+
 <article class="post" id="forside-2026-09">
 <div class="meta"><span class="tag web" data-i18n="pe.tag">Nettsted</span><time datetime="2026-09-07" data-i18n="pe.date">7. september 2026</time></div>
 <h2 data-i18n="pe.h">Ny tekst på forsiden. Appen er den samme.</h2>
@@ -234,6 +248,13 @@ var EN={
 'head.sub':'News and release notes',
 'h1':'News',
 'sub':'What is new in the app and the command centre. Short, honest, no filler.',
+'pf.tag':'Command centre','pf.date':'5 October 2026',
+'pf.h':'Kartverket in the command centre',
+'pf.lead':'The map on the dashboard has been showing grey tiles stamped “API key required”. The background map provider started demanding a key. The map has now been replaced.',
+'pf.l1':'<b>What was wrong.</b> The operational map fetched its background from CARTO. They began requiring an API key for their free maps, and the tiles came back with a watermark instead of terrain. Trips, positions and SOS were there the whole time, but on a grey background.',
+'pf.l2':'<b>What has been done.</b> The dashboard now uses the same map as the planner: the topographic map from Kartverket for Norway and Svalbard, with OpenStreetMap underneath elsewhere. Kartverket requires no key.',
+'pf.l3':'<b>Not affected.</b> The app, the planner and the map in “New trip” were never hit. No trip reports are affected.',
+'pf.open':'Open the command centre',
 'pe.tag':'Website','pe.date':'7 September 2026',
 'pe.h':'New text on the front page. The app is the same.',
 'pe.lead':'We have rewritten the text on daedalus-app.no. Less marketing language, more about what the app actually does. Nothing in the app has changed.',
