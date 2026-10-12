@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daedalus, punkt for punkt · Gjennomgang i bilder</title>
+<meta name="description" content="Daedalus i skjermbilder: ni punkter for guiden i felt og ni for kommandosenteret. Ett bilde og noen setninger per punkt.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/png" href="icon.png">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Daedalus, punkt for punkt">
+<meta property="og:description" content="Ni punkter for guiden i felt, ni for kommandosenteret. Ett skjermbilde per punkt.">
+<meta property="og:url" content="https://daedalus-app.no/gjennomgang">
+<meta property="og:image" content="https://daedalus-app.no/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..700&family=Inter:wght@400..700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg0:#0a1322; --bg1:#0e1a30; --bg2:#13233f;
+  --panel:#16273f; --panel2:#1d3050; --line:#284063; --line-soft:#1f3352;
+  --sky:#4a9fe0; --sky2:#7fc0f5; --gold:#c9a24b; --gold2:#e3c071;
+  --text:#e7ecf3; --muted:#8b98ab; --ice:#7fb1bd;
+  --green:#5fb97a; --amber:#e0a458; --red:#d9685f;
+  --serif:'Fraunces',Georgia,'Times New Roman',serif;
+  --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg0);color:var(--text);font:16px/1.65 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--sky2);text-decoration:none}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- atmosphere ---------- */
+.sky{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(1200px 600px at 15% -10%, rgba(74,159,224,.16), transparent 60%),
+    radial-gradient(900px 500px at 85% 0%, rgba(127,177,189,.13), transparent 60%),
+    radial-gradient(700px 500px at 60% 110%, rgba(201,162,75,.08), transparent 60%),
+    linear-gradient(180deg,var(--bg1) 0%,var(--bg0) 45%,var(--bg0) 100%)}
+.aurora{position:absolute;left:-10%;right:-10%;top:-120px;height:420px;filter:blur(60px);opacity:.55;
+  background:linear-gradient(100deg,transparent 0%,rgba(95,185,122,.18) 25%,rgba(74,159,224,.22) 50%,rgba(127,192,245,.12) 70%,transparent 100%);
+  transform:skewY(-4deg);animation:drift 22s var(--ease) infinite alternate}
+@keyframes drift{from{transform:skewY(-4deg) translateX(-2%)}to{transform:skewY(-3deg) translateX(3%)}}
+.topo{position:absolute;inset:0;opacity:.07;
+  background-image:repeating-radial-gradient(ellipse 60% 40% at 70% 30%, transparent 0 38px, #7fb1bd 38px 39px)}
+@media (prefers-reduced-motion:reduce){.aurora{animation:none}}
+
+/* ---------- header ---------- */
+.top{position:relative;z-index:2;display:flex;align-items:center;gap:12px;max-width:1040px;margin:0 auto;padding:22px 24px}
+.top img{width:38px;height:38px;border-radius:10px;box-shadow:0 0 0 1px var(--line),0 8px 24px rgba(0,0,0,.35)}
+.top b{font:600 14px/1 var(--sans);letter-spacing:.16em}
+.top small{color:var(--muted);font-size:12px}
+.sp{flex:1}
+.back{color:var(--muted);font-size:13px;margin-left:8px}
+
+/* ---------- layout ---------- */
+main{position:relative;z-index:1;max-width:1040px;margin:0 auto;padding:0 24px 80px}
+.kicker{display:inline-flex;align-items:center;gap:10px;color:var(--gold2);font:600 11px/1 var(--sans);letter-spacing:.22em;text-transform:uppercase}
+.kicker::before{content:"";width:22px;height:1px;background:var(--gold)}
+h1{font:300 clamp(36px,6vw,64px)/1.04 var(--serif);letter-spacing:-.015em;margin:18px 0 20px;max-width:16ch;font-variation-settings:"opsz" 144}
+h1 em{font-style:italic;color:var(--sky2)}
+.lead{font-size:clamp(17px,2vw,20px);line-height:1.6;color:#c9d3e0;max-width:58ch;margin:0 0 30px}
+.hero{padding:56px 0 24px}
+
+section{padding:34px 0}
+h2{font:400 clamp(26px,3.4vw,36px)/1.15 var(--serif);letter-spacing:-.01em;margin:0 0 8px;font-variation-settings:"opsz" 96}
+.sub{color:var(--muted);margin:0 0 22px;max-width:62ch}
+.rule{height:1px;background:linear-gradient(90deg,var(--gold),transparent 70%);opacity:.6;margin:6px 0 24px;max-width:220px}
+
+/* ---------- index ---------- */
+.toc{display:grid;grid-template-columns:1fr 1fr;gap:18px 32px;padding:22px 24px;border:1px solid var(--line-soft);border-radius:16px;background:linear-gradient(165deg,rgba(29,48,80,.6),rgba(22,39,63,.45))}
+.toc h3{margin:0 0 8px;font:600 11px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.toc ol{margin:0;padding:0;list-style:none;counter-reset:t}
+.toc li{counter-increment:t;display:flex;gap:10px;align-items:baseline;padding:4px 0;font-size:15px}
+.toc li::before{content:counter(t,decimal-leading-zero);color:var(--gold2);font:400 13px var(--serif);min-width:22px}
+.toc .b{counter-reset:t 9}
+.toc a{color:var(--text)}
+.toc a:hover{color:var(--sky2)}
+
+/* ---------- points ---------- */
+.pt{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:30px;align-items:start;padding:30px 0;border-top:1px solid var(--line-soft)}
+.pt:first-of-type{border-top:0}
+.pt .num{display:block;color:var(--gold2);font:400 13px var(--serif);letter-spacing:.1em;margin-bottom:6px}
+.pt h3{margin:0 0 10px;font:500 clamp(21px,2.4vw,26px)/1.2 var(--serif);letter-spacing:-.01em;font-variation-settings:"opsz" 72}
+.pt p{margin:0 0 10px;color:#c9d3e0;font-size:15.5px;max-width:52ch}
+.pt p:last-child{margin-bottom:0}
+.pt .mark{display:inline-block;margin-bottom:10px;padding:4px 10px;border:1px solid rgba(201,162,75,.5);border-radius:999px;color:var(--gold2);font:600 10.5px/1.2 var(--sans);letter-spacing:.16em;text-transform:uppercase}
+.shot{margin:0;position:relative}
+.shot img{display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);box-shadow:0 18px 50px rgba(0,0,0,.45);background:var(--panel)}
+.pt.app{align-items:center}
+.pt.app .shot{max-width:350px;margin:0 auto}
+.pt.app .shot img{border-radius:26px}
+.pt.web{grid-template-columns:1fr}
+.pt.web .txt{max-width:62ch}
+.pt.web .shot{order:2}
+.shot figcaption{margin-top:8px;font-size:12.5px;color:var(--muted)}
+.pt.modal{grid-template-columns:minmax(0,5fr) minmax(0,7fr);align-items:center}
+.pt.modal .shot{order:2;max-width:540px;margin:0 0 0 auto}
+.pt.modal .txt{max-width:40ch}
+.spec{align-self:center;max-width:330px;margin:0 auto;padding:22px 22px 18px;border:1px solid rgba(201,162,75,.45);border-radius:18px;background:linear-gradient(165deg,rgba(29,48,80,.7),rgba(22,39,63,.5));box-shadow:0 18px 50px rgba(0,0,0,.35)}
+.spec-k{display:block;color:var(--gold2);font:600 11px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px}
+.spec-row{display:grid;grid-template-columns:96px 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--line-soft);font-size:14px;color:#c9d3e0}
+.spec-row b{color:var(--text);font-weight:600}
+.spec-f{display:block;margin-top:12px;font-size:12.5px;color:var(--muted)}
+
+.honest{border-left:3px solid var(--gold);padding:16px 20px;background:rgba(201,162,75,.06);border-radius:0 12px 12px 0;color:#d6dde8}
+.honest b{color:var(--gold2)}
+.note{font-size:13px;color:var(--muted)}
+
+.foot{position:relative;z-index:1;max-width:1040px;margin:0 auto;padding:26px 24px 40px;border-top:1px solid var(--line-soft);display:flex;flex-wrap:wrap;gap:16px;align-items:center;color:var(--muted);font-size:13px}
+.foot a{color:var(--muted)}
+.foot .sp{flex:1}
+
+@media (max-width:760px){
+  .pt{grid-template-columns:1fr;gap:18px}
+  .pt.app .txt{order:-1}
+  .pt.modal{grid-template-columns:1fr}
+  .pt.modal .shot{max-width:100%;margin:0}
+  .pt.app .shot{max-width:300px;margin:0}
+  .toc{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  .top{padding:16px}
+  .back{display:none}
+  .kicker{letter-spacing:.14em}
+  main{padding:0 16px 60px}
+  .hero{padding:36px 0 20px}
+}
+</style>
+</head>
+<body>
+<div class="sky"><div class="aurora"></div><div class="topo"></div></div>
+
+<header class="top">
+<img src="icon.png" alt="">
+<div><b>DAEDALUS</b><br><small>Gjennomgang i bilder</small></div>
+<span class="sp"></span>
+<a class="back" href="/">&larr; daedalus-app.no</a>
+</header>
+
+<main>
+<section class="hero">
+  <span class="kicker">Gjennomgang · 12. oktober 2026</span>
+  <h1>Daedalus, <em>punkt for punkt</em></h1>
+  <p class="lead">Lista under følger spørsmålene vi fikk, i samme rekkefølge. Ni punkter for guiden i felt, ni for kommandosenteret. Ett skjermbilde per punkt og noen setninger under. Ti minutter.</p>
+
+  <div class="toc">
+    <div>
+      <h3>Del 1 · For guiden</h3>
+      <ol>
+        <li><a href="#sjekkliste">Sjekkliste</a></li>
+        <li><a href="#risiko">Risikoanalyse inkl. værverifisering</a></li>
+        <li><a href="#deltakere">Deltakerliste</a></li>
+        <li><a href="#hendelser">Hendelseslogg inkl. nestenulykke</a></li>
+        <li><a href="#bilder">Bilder på hendelser</a></li>
+        <li><a href="#distanse">Distanse og rutelengde</a></li>
+        <li><a href="#kart">Kart med rute</a></li>
+        <li><a href="#pdf">PDF-rapport</a></li>
+        <li><a href="#tilbakemelding">Tilbakemelding i app</a></li>
+      </ol>
+    </div>
+    <div>
+      <h3>Del 2 · Kommandosenter</h3>
+      <ol class="b">
+        <li><a href="#turadmin">Turadministrasjon</a></li>
+        <li><a href="#turskuff">Turskuff</a></li>
+        <li><a href="#vaer">Vær og føre</a></li>
+        <li><a href="#tilsyn">Tilsynsmappe og sesongrapport</a></li>
+        <li><a href="#statistikk">Hendelsesstatistikk</a></li>
+        <li><a href="#sertifikater">Sertifikatoversikt</a></li>
+        <li><a href="#beredskap">Beredskapsplan</a></li>
+        <li><a href="#brief">Dagens brief</a></li>
+        <li><a href="#kalender">Turkalender</a></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section id="del1">
+  <span class="kicker">Del 1</span>
+  <h2>For guiden</h2>
+  <div class="rule"></div>
+  <p class="sub">Appen på guidens telefon. Alt som registreres uten dekning legges i kø og sendes når nettet er tilbake.</p>
+
+  <article class="pt app" id="sjekkliste">
+    <figure class="shot"><img src="/gjennomgang/01-sjekkliste.webp" alt="Sikkerhetssjekk i appen med avkryssede punkter" width="720" height="1560" loading="lazy"></figure>
+    <div class="txt">
+      <span class="num">01</span>
+      <h3>Sjekkliste</h3>
+      <p>Sjekklista følger turtypen: snøscooter får sine punkter, bre og topptur får sine. Hopper guiden over noe, aktiveres turen med overstyring, og det synes i kommandosenteret.</p>
+    </div>
+  </article>
+
+  <article class="pt app" id="risiko">
+    <figure class="shot"><img src="/gjennomgang/02-vaerverifisering.webp" alt="Værverifisering i sikkerhetssjekken" width="720" height="1560" loading="lazy"></figure>
+    <div class="txt">
+      <span class="num">02</span>
+      <h3>Risikoanalyse inkl. værverifisering</h3>
+      <span class="mark">Værbekreftelse</span>
+      <p>Varselet fra MET ligger rett i sjekken, med skredvurdering på fjellturer. Guiden bekrefter at varselet er lest, og bekreftelsen lagres på turen sammen med tidspunktet for sjekken.</p>
+    </div>
+  </article>
+
+  <article class="pt app" id="deltakere">
+    <figure class="shot"><img src="/gjennomgang/03-deltakerliste.webp" alt="Deltakerliste i appen" width="720" height="1560" loading="lazy"></figure>
+    <div class="txt">
+      <span class="num">03</span>
+      <h3>Deltakerliste</h3>
+      <p>Navn, telefon og nødkontakt per deltaker legges inn når turen opprettes, av guiden eller fra kommandosenteret på forhånd. Lista er den samme som driftssjefen ser i turskuffen.</p>
+    </div>
+  </article>
+
+  <article class="pt app" id="hendelser">
+    <figure class="shot"><img src="/gjennomgang/04-hendelseslogg.webp" alt="Hendelseslogg med nestenulykke" width="720" height="389" loading="lazy"></figure>
+    <div class="txt">
+      <span class="num">04</span>
+      <h3>Hendelseslogg inkl. nestenulykke</h3>
+      <p>Nestenulykke, skade eller annen hendelse logges underveis med type, alvorlighet, beskrivelse og tiltak. Tidspunktet settes automatisk, og hendelsen vises i kommandosenteret så snart telefonen har dekning.</p>
+    </div>
+  </article>
+
+  <article class="pt app" id="bilder">
+    <div class="spec" aria-label="Slik merkes et bilde">
+      <span class="spec-k">Hvert bilde får</span>
+      <div class="spec-row"><b>Posisjon</b><span>fra GPS i det bildet tas</span></div>
+      <div class="spec-row"><b>Klokkeslett</b><span>fra samme øyeblikk, ikke fra opplastingen</span></div>
+      <div class="spec-row"><b>Kø</b><span>uten dekning ligger bildet i kø med resten og sendes når nettet er tilbake</span></div>
+      <span class="spec-f">Lagres i lukket lager med signerte lenker, ikke i kamerarullen.</span>
+    </div>
+    <div class="txt">
+      <span class="num">05</span>
+      <h3>Bilder på hendelser</h3>
+      <span class="mark">Offline-køen</span>
+      <p>Guiden tar bilde av skaden rett i hendelsen, for eksempel på kjøretøyet. Stempelet settes i det øyeblikket bildet tas, så dokumentasjonen holder også når opplastingen skjer timer senere.</p>
+    </div>
+  </article>
+
+  <article class="pt app" id="distanse">
+    <figure class="shot"><img src="/gjennomgang/06-distanse.webp" alt="Rutelengde og tilbakelagt distanse under aktiv tur" width="720" height="662" loading="lazy"></figure>
+    <div class="txt">
+      <span class="num">06</span>
+      <h3>Distanse og rutelengde</h3>
+      <p>Under aktiv tur viser appen planlagt rutelengde og tilbakelagt distanse, oppdatert fortløpende fra GPS. Posisjonen deles med kommandosenteret så lenge turen er aktiv.</p>
+    </div>
+  </article>
+
+  <article class="pt app" id="kart">
+    <figure class="shot"><img src="/gjennomgang/07-kart.webp" alt="Kart med rute i appen" width="720" height="1148" loading="lazy"></figure>
+    <div class="txt">
+      <span class="num">07</span>
+      <h3>Kart med rute</h3>
+      <p>Ruta tegnes i kommandosenteret på Kartverkets topografiske kart og sendes til guidens telefon, eller guiden legger den inn selv. Farepunkter, oppmøtested og nødutgang ligger i samme kart.</p>
+    </div>
+  </article>
+
+  <article class="pt app" id="pdf">
+    <figure class="shot"><img src="/gjennomgang/08-pdf-rapport.webp" alt="PDF-rapport etter fullført tur" width="720" height="373" loading="lazy"></figure>
+    <div class="txt">
+      <span class="num">08</span>
+      <h3>PDF-rapport</h3>
+      <p>Når turen avsluttes, lages rapporten med eget rapportnummer: sikkerhetssjekk, vær, deltakere og hendelser. Den kan deles fra telefonen eller hentes i kommandosenteret.</p>
+    </div>
+  </article>
+
+  <article class="pt app" id="tilbakemelding">
+    <figure class="shot"><img src="/gjennomgang/09-tilbakemelding.webp" alt="Tilbakemelding sendt fra appen" width="720" height="703" loading="lazy"></figure>
+    <div class="txt">
+      <span class="num">09</span>
+      <h3>Tilbakemelding i app</h3>
+      <p>Guiden sender tilbakemelding rett fra appen, uten å gå om e-post. Den går til Daedalus, og alt leses.</p>
+    </div>
+  </article>
+</section>
+
+<section id="del2">
+  <span class="kicker">Del 2</span>
+  <h2>Kommandosenter</h2>
+  <div class="rule"></div>
+  <p class="sub">Nettleseren på kontoret. Samme data som i appen, sett fra driftssjefens side.</p>
+
+  <article class="pt modal" id="turadmin">
+    <div class="txt">
+      <span class="num">10</span>
+      <h3>Turadministrasjon</h3>
+      <p>Alle turer i organisasjonen med status, dato og guide. Opprett, rediger, avlys eller godkjenn, og filtrer på aktive, utkast, fullførte og avlyste.</p>
+    </div>
+    <figure class="shot"><img src="/gjennomgang/10-turadministrasjon.webp" alt="Turadministrasjon i kommandosenteret" width="1032" height="1314" loading="lazy"></figure>
+  </article>
+
+  <article class="pt web" id="turskuff">
+    <div class="txt">
+      <span class="num">11</span>
+      <h3>Turskuff</h3>
+      <span class="mark">Turskuffen</span>
+      <p>Klikk på en tur i lista eller på kartet, og skuffen åpner: deltakere med telefon og nødkontakt, tildelt utstyr, tellinger underveis med klokkeslett og antall, og om turen ble aktivert med overstyring. Sikkerhetssjekk, hendelser og rapport ligger i samme panel.</p>
+    </div>
+    <figure class="shot"><img src="/gjennomgang/11-turskuff.webp" alt="Turskuffen med deltakere, utstyr og tellinger" width="2038" height="1096" loading="lazy"></figure>
+  </article>
+
+  <article class="pt modal" id="vaer">
+    <div class="txt">
+      <span class="num">12</span>
+      <h3>Vær og føre</h3>
+      <p>Boksen øverst viser MET-varselet for organisasjonens værpunkt, og ett klikk åpner detaljene: vind med kast, nedbør, tåke, bølger og sjøtemperatur fra havvarselet, snø fra NVE. Skredvarselet fra Varsom ligger ved siden av, med alle 23 regioner.</p>
+    </div>
+    <figure class="shot"><img src="/gjennomgang/12-vaer-og-fore.webp" alt="Vær og føre i kommandosenteret" width="1052" height="1491" loading="lazy"></figure>
+  </article>
+
+  <article class="pt web" id="tilsyn">
+    <div class="txt">
+      <span class="num">13</span>
+      <h3>Tilsynsmappe og sesongrapport</h3>
+      <p>Tilsynsmappa samler en hel periode i én PDF: turer med sikkerhetsstatus, hendelser med kvittering, turer aktivert med overstyring, sertifiseringer med utløpsdato og revisjonslogg. Sesongrapporten gir nøkkeltallene for styremøtet, fordelt per måned og aktivitetstype.</p>
+    </div>
+    <figure class="shot"><img src="/gjennomgang/13-tilsynsmappe.webp" alt="Tilsynsmappe og sesongrapport" width="1300" height="1208" loading="lazy"></figure>
+  </article>
+
+  <article class="pt modal" id="statistikk">
+    <div class="txt">
+      <span class="num">14</span>
+      <h3>Hendelsesstatistikk</h3>
+      <p>Antall hendelser mot antall turer, nestenulykker skilt ut for seg, alvorlige hendelser uten kvittering og turer aktivert med overstyring. Mønsteret vises før det blir en ulykke.</p>
+    </div>
+    <figure class="shot"><img src="/gjennomgang/14-hendelsesstatistikk.webp" alt="Hendelsesstatistikk" width="1052" height="1566" loading="lazy"></figure>
+  </article>
+
+  <article class="pt modal" id="sertifikater">
+    <div class="txt">
+      <span class="num">15</span>
+      <h3>Sertifikatoversikt</h3>
+      <p>Alle guidenes sertifiseringer med utløpsdato på ett sted. Det som utløper innen 30 dager, varsles på driftsbildet.</p>
+    </div>
+    <figure class="shot"><img src="/gjennomgang/15-sertifikatoversikt.webp" alt="Sertifikatoversikt" width="1052" height="988" loading="lazy"></figure>
+  </article>
+
+  <article class="pt modal" id="beredskap">
+    <div class="txt">
+      <span class="num">16</span>
+      <h3>Beredskapsplan</h3>
+      <p>Organisasjonens beredskapsplan, vaktleder med telefon og nødnumrene 112, 113 og 110, ett klikk unna fra hver side i kommandosenteret. Planen skrives én gang i innstillingene.</p>
+    </div>
+    <figure class="shot"><img src="/gjennomgang/16-beredskapsplan.webp" alt="Beredskapsplan" width="1052" height="780" loading="lazy"></figure>
+  </article>
+
+  <article class="pt modal" id="brief">
+    <div class="txt">
+      <span class="num">17</span>
+      <h3>Dagens brief</h3>
+      <p>Én knapp lager dagens brief: vær, skredvarsel, dagens turer og hvem som er på vakt, som tekst klar til å kopieres inn i morgenmøtet eller meldingen til teamet.</p>
+    </div>
+    <figure class="shot"><img src="/gjennomgang/17-dagens-brief.webp" alt="Dagens brief" width="1052" height="768" loading="lazy"></figure>
+  </article>
+
+  <article class="pt web" id="kalender">
+    <div class="txt">
+      <span class="num">18</span>
+      <h3>Turkalender</h3>
+      <p>Måneden i rutenett med turene per dag, fargekodet etter status. Klikk en dag for å opprette tur med datoen ferdig utfylt, klikk en tur for å åpne skuffen.</p>
+    </div>
+    <figure class="shot"><img src="/gjennomgang/18-turkalender.webp" alt="Turkalender" width="1564" height="768" loading="lazy"></figure>
+  </article>
+</section>
+
+<section id="videre">
+  <div class="honest"><b>Spørsmål underveis?</b> Svar på e-posten dere fikk lenka i, eller skriv til <a href="mailto:hello@daedalus-app.no">hello@daedalus-app.no</a>.</div>
+  <p class="note" style="margin-top:18px">Skjermbildene er tatt i en testorganisasjon, uten reelle personer. Kommandosenteret 12. oktober 2026, appen sommeren 2026.</p>
+</section>
+</main>
+
+<footer class="foot">
+<span>© 2026 Daedalus · Guide &amp; Safety</span>
+<span class="sp"></span>
+<a href="/privacy.html">Personvern</a>
+<a href="/terms.html">Vilkår</a>
+<a href="/nyheter.html">Nyheter</a>
+</footer>
+
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
