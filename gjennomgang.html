@@ -49,6 +49,18 @@ a:hover{text-decoration:underline;text-underline-offset:3px}
   background-image:repeating-radial-gradient(ellipse 60% 40% at 70% 30%, transparent 0 38px, #7fb1bd 38px 39px)}
 @media (prefers-reduced-motion:reduce){.aurora{animation:none}}
 
+/* ---------- foto ---------- */
+.hero-photo{position:absolute;left:0;right:0;top:0;height:min(96vh,940px);z-index:0;pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(10,19,34,.38) 0%,rgba(10,19,34,.18) 30%,rgba(10,19,34,.72) 72%,var(--bg0) 100%),
+    linear-gradient(90deg,rgba(10,19,34,.82) 0%,rgba(10,19,34,.5) 48%,rgba(10,19,34,.22) 100%),
+    url(/gjennomgang/bg-hero.webp) center 42%/cover no-repeat}
+.band{position:relative;z-index:1;width:100vw;margin:10px 0 10px calc(50% - 50vw);height:clamp(240px,34vw,420px);
+  background-size:cover;background-repeat:no-repeat;background-position:center}
+.band::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--bg0) 0%,rgba(10,19,34,.22) 28%,rgba(10,19,34,.22) 72%,var(--bg0) 100%)}
+.band-scooter{background-image:url(/gjennomgang/bg-scooter.webp);background-position:center 58%}
+.band-hunder{background-image:url(/gjennomgang/bg-hunder.webp);background-position:center 60%}
+
 /* ---------- header ---------- */
 .top{position:relative;z-index:2;display:flex;align-items:center;gap:12px;max-width:1040px;margin:0 auto;padding:22px 24px}
 .top img{width:38px;height:38px;border-radius:10px;box-shadow:0 0 0 1px var(--line),0 8px 24px rgba(0,0,0,.35)}
@@ -72,7 +84,7 @@ h2{font:400 clamp(26px,3.4vw,36px)/1.15 var(--serif);letter-spacing:-.01em;margi
 .rule{height:1px;background:linear-gradient(90deg,var(--gold),transparent 70%);opacity:.6;margin:6px 0 24px;max-width:220px}
 
 /* ---------- index ---------- */
-.toc{display:grid;grid-template-columns:1fr 1fr;gap:18px 32px;padding:22px 24px;border:1px solid var(--line-soft);border-radius:16px;background:linear-gradient(165deg,rgba(29,48,80,.6),rgba(22,39,63,.45))}
+.toc{display:grid;grid-template-columns:1fr 1fr;gap:18px 32px;padding:22px 24px;border:1px solid var(--line-soft);border-radius:16px;background:linear-gradient(165deg,rgba(29,48,80,.78),rgba(22,39,63,.66));backdrop-filter:blur(6px)}
 .toc h3{margin:0 0 8px;font:600 11px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
 .toc ol{margin:0;padding:0;list-style:none;counter-reset:t}
 .toc li{counter-increment:t;display:flex;gap:10px;align-items:baseline;padding:4px 0;font-size:15px}
@@ -129,11 +141,13 @@ h2{font:400 clamp(26px,3.4vw,36px)/1.15 var(--serif);letter-spacing:-.01em;margi
   .kicker{letter-spacing:.14em}
   main{padding:0 16px 60px}
   .hero{padding:36px 0 20px}
+  .hero-photo{height:min(70vh,620px)}
 }
 </style>
 </head>
 <body>
 <div class="sky"><div class="aurora"></div><div class="topo"></div></div>
+<div class="hero-photo" aria-hidden="true"></div>
 
 <header class="top">
 <img src="icon.png" alt="">
@@ -276,6 +290,8 @@ h2{font:400 clamp(26px,3.4vw,36px)/1.15 var(--serif);letter-spacing:-.01em;margi
   </article>
 </section>
 
+<div class="band band-scooter" aria-hidden="true"></div>
+
 <section id="del2">
   <span class="kicker">Del 2</span>
   <h2>Kommandosenter</h2>
@@ -364,6 +380,8 @@ h2{font:400 clamp(26px,3.4vw,36px)/1.15 var(--serif);letter-spacing:-.01em;margi
     <figure class="shot"><img src="/gjennomgang/18-turkalender.webp" alt="Turkalender" width="1564" height="768" loading="lazy"></figure>
   </article>
 </section>
+
+<div class="band band-hunder" aria-hidden="true"></div>
 
 <section id="videre">
   <div class="honest"><b>Spørsmål underveis?</b> Svar på e-posten dere fikk lenka i, eller skriv til <a href="mailto:hello@daedalus-app.no">hello@daedalus-app.no</a>.</div>
