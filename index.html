@@ -166,6 +166,11 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
 .hero-body{margin-top:18px;font-size:16.5px;color:var(--muted);max-width:54ch}
 .cta-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:32px}
 .hero-note{margin-top:16px;font-size:13px;letter-spacing:.02em;color:#6f7e94}
+.hero-walk{margin-top:10px;font-size:13px;letter-spacing:.02em}
+.hero-walk a{color:#7fc0f5;font-weight:600}
+.hero-walk a:hover{color:#a9d6fa;text-decoration:underline;text-underline-offset:3px}
+.navlink-walk{display:none}
+@media (min-width:1080px){.navlink-walk{display:inline}}
 .scroll-cue{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:7px;color:#5d6d85;font-size:9.5px;font-weight:600;letter-spacing:.3em;text-indent:.3em}
 .scroll-cue i{width:1px;height:34px;background:linear-gradient(180deg,var(--sky2),transparent);overflow:hidden;position:relative}
 .scroll-cue i::after{content:"";position:absolute;top:-12px;left:0;width:1px;height:12px;background:#fff;animation:cueDrop 2.1s var(--ease2) infinite}
@@ -466,6 +471,7 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
 @media (max-width:400px){
   .chip strong{white-space:normal}
   .hero-note{font-size:12px}
+  .hero-walk{font-size:12px}
 }
 
 /* ---------- reduced motion ---------- */
@@ -685,6 +691,7 @@ html{scrollbar-color:#2c4468 #0a1322}
       <a class="navlink" href="#pricing" data-i18n="nav.pricing">Prising</a>
       <a class="navlink" href="/nyheter.html" data-i18n="nav.news">Nyheter</a>
       <a class="navlink" href="/svalbard" data-i18n="nav.svalbard">Svalbard 2027</a>
+      <a class="navlink navlink-walk" href="/gjennomgang" data-i18n="nav.walk">Gjennomgang</a>
     </nav>
     <div class="nav-actions">
       <div class="lang" id="langToggle">
@@ -748,6 +755,7 @@ html{scrollbar-color:#2c4468 #0a1322}
           </a>
         </div>
         <p class="hero-note hi" style="--d:.8s" data-i18n="hero.note">For solo-guider · bedrift fra €25/sete eks. mva · ingen binding</p>
+        <p class="hero-walk hi" style="--d:.9s"><a href="/gjennomgang" data-i18n="hero.walk">Se Daedalus punkt for punkt, med skjermbilder →</a></p>
       </div>
 
       <div class="hero-visual hi" style="--d:.45s">
@@ -1415,6 +1423,7 @@ html{scrollbar-color:#2c4468 #0a1322}
       <a href="#features" data-i18n="foot.features">Funksjoner</a>
       <a href="/nyheter.html" data-i18n="foot.news">Nyheter</a>
       <a href="/svalbard" data-i18n="foot.svalbard">Svalbard 2027</a>
+      <a href="/gjennomgang" data-i18n="foot.walk">Gjennomgang</a>
       <a href="https://www.instagram.com/daedalus.guide/" target="_blank" rel="noopener" aria-label="Daedalus på Instagram"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="vertical-align:-2px;margin-right:6px"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.15" fill="currentColor" stroke="none"/></svg>@daedalus.guide</a>
       <a href="mailto:hello@daedalus-app.no">hello@daedalus-app.no</a>
       <a href="/privacy.html" data-i18n="foot.privacy">Personvern</a>
@@ -1438,6 +1447,9 @@ html{scrollbar-color:#2c4468 #0a1322}
       "foot.news": "Nyheter",
       "nav.svalbard": "Svalbard 2027",
       "foot.svalbard": "Svalbard 2027",
+      "nav.walk": "Gjennomgang",
+      "foot.walk": "Gjennomgang",
+      "hero.walk": "Se Daedalus punkt for punkt, med skjermbilder →",
       "news.badge": "Nytt i 1.4.3",
       "news.line": "Norske tall på skjermene · sertifiseringer på norsk · abonnementssjekk før kjøp",
       "news.cta": "Les alle nyhetene →",
@@ -1656,6 +1668,9 @@ html{scrollbar-color:#2c4468 #0a1322}
       "foot.news": "News",
       "nav.svalbard": "Svalbard 2027",
       "foot.svalbard": "Svalbard 2027",
+      "nav.walk": "Walkthrough",
+      "foot.walk": "Walkthrough",
+      "hero.walk": "See Daedalus point by point, with screenshots (in Norwegian) →",
       "news.badge": "New in 1.4.3",
       "news.line": "Norwegian numbers on the screens · certifications in Norwegian · subscription check before purchase",
       "news.cta": "Read all the news →",
@@ -1872,6 +1887,9 @@ html{scrollbar-color:#2c4468 #0a1322}
       "foot.news": "Nyheter",
       "nav.svalbard": "Svalbard 2027",
       "foot.svalbard": "Svalbard 2027",
+      "nav.walk": "Genomgång",
+      "foot.walk": "Genomgång",
+      "hero.walk": "Se Daedalus punkt för punkt, med skärmbilder (på norska) →",
       "news.badge": "Nytt i 1.4.3",
       "news.line": "Norska tal på skärmarna · certifieringar på norska · abonnemangskontroll före köp",
       "news.cta": "Läs alla nyheter →",
@@ -2090,6 +2108,9 @@ html{scrollbar-color:#2c4468 #0a1322}
       "foot.news": "Nyheder",
       "nav.svalbard": "Svalbard 2027",
       "foot.svalbard": "Svalbard 2027",
+      "nav.walk": "Gennemgang",
+      "foot.walk": "Gennemgang",
+      "hero.walk": "Se Daedalus punkt for punkt, med skærmbilleder (på norsk) →",
       "news.badge": "Nyt i 1.4.3",
       "news.line": "Norske tal på skærmene · certificeringer på norsk · abonnementstjek før køb",
       "news.cta": "Læs alle nyheder →",
@@ -2308,6 +2329,9 @@ html{scrollbar-color:#2c4468 #0a1322}
       "foot.news": "Uutiset",
       "nav.svalbard": "Svalbard 2027",
       "foot.svalbard": "Svalbard 2027",
+      "nav.walk": "Esittely",
+      "foot.walk": "Esittely",
+      "hero.walk": "Katso Daedalus kohta kohdalta, kuvakaappauksin (norjaksi) →",
       "news.badge": "Uutta 1.4.3:ssa",
       "news.line": "Norjalaiset luvut näytöillä · sertifioinnit norjaksi · tilauksen tarkistus ennen ostoa",
       "news.cta": "Lue kaikki uutiset →",
@@ -2526,6 +2550,9 @@ html{scrollbar-color:#2c4468 #0a1322}
       "foot.news": "Fréttir",
       "nav.svalbard": "Svalbard 2027",
       "foot.svalbard": "Svalbard 2027",
+      "nav.walk": "Yfirferð",
+      "foot.walk": "Yfirferð",
+      "hero.walk": "Sjáðu Daedalus lið fyrir lið, með skjámyndum (á norsku) →",
       "news.badge": "Nýtt í 1.4.3",
       "news.line": "Norskar tölur á skjánum · vottanir á norsku · áskriftarathugun fyrir kaup",
       "news.cta": "Lesa allar fréttir →",
