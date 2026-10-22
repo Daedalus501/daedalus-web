@@ -74,6 +74,29 @@ color:var(--text);text-decoration:none;background:rgba(0,0,0,.25)}
 <h1 data-i18n="h1">Nyheter</h1>
 <p class="sub" data-i18n="sub">Hva som er nytt i appen og kommandosenteret. Kort, ærlig og uten fyll.</p>
 
+<article class="post" id="v144">
+<div class="meta"><span class="tag rel" data-i18n="pg.tag">Versjon 1.4.4</span><time datetime="2026-10-22" data-i18n="pg.date">22. oktober 2026</time></div>
+<h2 data-i18n="pg.h">Daedalus 1.4.4 — SOS og registrering uten dekning</h2>
+<p data-i18n="pg.lead">Rettelser i SOS og i det som skjer når telefonen mangler dekning. Ingen nye funksjoner. Har du delt turrapporter fra før denne versjonen, les siste punkt.</p>
+<ul>
+<li class="fix" data-i18n-html="pg.f1"><b>SOS uten datanett.</b> Fra dashbordet åpnet ikke SOS SMS-en når telefonen manglet datanett, og appen lovet at varselet skulle sendes senere. Det skjedde aldri. Nå åpnes SMS-en alltid når du har satt opp mottakere. Den trenger bare mobildekning, og bare loggføringen venter på datanett.</li>
+<li class="fix" data-i18n-html="pg.f2"><b>SOS sendte turens startpunkt som posisjon.</b> Uten fersk GPS-posisjon gikk startkoordinaten ut merket som siste kjente eller live posisjon. Nå står det hva posisjonen er: live, siste kjente med alder i minutter, eller turens startpunkt når GPS mangler. SOS-hendelsen i loggen får også koordinatene.</li>
+<li class="fix" data-i18n-html="pg.f3"><b>Nødprosedyren kunne mangle etter omstart.</b> Appen leste den lagrede prosedyren feil, så SOS kunne gå uten mottakere mens dashbordet viste «Satt opp». Prosedyren hører nå til kontoen, så en annen konto på samme telefon arver den ikke.</li>
+<li class="fix" data-i18n-html="pg.f4"><b>Avbryt stoppet ikke SOS.</b> Trykket du Avbryt idet nedtellingen var ferdig, ble SMS-en likevel åpnet og SOS logget. Nå skjer ingenting etter at du har avbrutt, og to trykk sender ikke SOS to ganger.</li>
+<li class="fix" data-i18n-html="pg.f5"><b>Registreringer uten dekning kunne forsvinne.</b> Når appen kom tilbake i forgrunnen uten dekning, kunne det du hadde registrert forsvinne fra skjermen, og GPS-sporingen kunne stoppe. Køen ga også opp etter fem forsøk uten nett. Nå blir alt liggende til det er sendt, og køen sendes mens appen er åpen.</li>
+<li class="fix" data-i18n-html="pg.f6"><b>Aktivering rett etter opprettelse kunne bli borte.</b> Aktiverte du turen med en gang den var opprettet, kunne status og sikkerhetssjekk forsvinne på veien til serveren uten feilmelding. Kommandosenteret så da ikke at turen var aktiv. Nå finner appen turen først og prøver igjen.</li>
+<li class="fix" data-i18n-html="pg.f7"><b>To turer kunne være aktive samtidig.</b> GPS-sporingen flyttet seg da stille til den nyeste. Nå sier appen fra og ber deg avslutte den første. «Avslutt tur» ber også om bekreftelse.</li>
+<li class="fix" data-i18n-html="pg.f8"><b>Tidspunkt.</b> Hendelser, SOS og redigeringer gjort uten dekning fikk tidspunktet da de ble sendt, ikke da de skjedde. Nå beholder de riktig tid.</li>
+<li class="fix" data-i18n-html="pg.f9"><b>Sertifiseringer i turrapporten.</b> Rapporten viste sertifiseringene til den som var innlogget, ikke guiden på turen. Deler en administrator en annen guides rapport, står det nå ingen sertifiseringer i stedet for administratorens egne.</li>
+<li class="fix" data-i18n-html="pg.f10"><b>Småting.</b> Lenken i e-posten for nytt passord åpner riktig skjerm. Hilsenen på dashbordet brytes ikke midt i ordet. Profilbildet viser forbokstaven når bildet ikke kan lastes. «Frakoblet» dekker ikke overskriften. Opptellingen sier «1 deltaker». Tillatelsestekstene på iPhone viser æ, ø og å riktig.</li>
+<li class="fix" data-i18n-html="pg.f11"><b>Har du delt turrapporter fra før 1.4.4?</b> Sjekk tre ting: posisjonen i SOS-hendelser, som kan være turens startpunkt, tidspunktet på hendelser registrert uten dekning, som kan være sendetidspunktet, og sertifiseringsraden når rapporten gjaldt en annen guide.</li>
+</ul>
+<div class="stores">
+<a class="store" href="https://apps.apple.com/no/app/id6761403819" target="_blank" rel="noopener" data-i18n="pg.ios">Last ned på App Store</a>
+<a class="store" href="https://play.google.com/store/apps/details?id=com.hoiseth.daedalus" target="_blank" rel="noopener" data-i18n="pg.and">Last ned på Google Play</a>
+</div>
+</article>
+
 <article class="post" id="kartverket-2026-10">
 <div class="meta"><span class="tag web" data-i18n="pf.tag">Kommandosenter</span><time datetime="2026-10-05" data-i18n="pf.date">5. oktober 2026</time></div>
 <h2 data-i18n="pf.h">Kartverket i kommandosenteret</h2>
@@ -248,6 +271,21 @@ var EN={
 'head.sub':'News and release notes',
 'h1':'News',
 'sub':'What is new in the app and the command centre. Short, honest, no filler.',
+'pg.tag':'Version 1.4.4','pg.date':'22 October 2026',
+'pg.h':'Daedalus 1.4.4 — SOS and logging without coverage',
+'pg.lead':'Fixes to SOS and to what happens when the phone has no coverage. No new features. If you have shared trip reports from before this version, read the last point.',
+'pg.f1':'<b>SOS without mobile data.</b> From the dashboard, SOS did not open the text message when the phone had no data connection, and the app promised to send the alert later. It never did. The text message now always opens when you have set up recipients. It needs only mobile coverage, and only the log entry waits for data.',
+'pg.f2':'<b>SOS sent the trip start point as the position.</b> Without a fresh GPS fix, the start coordinate went out labelled as the last known or live position. The message now says what the position is: live, last known with its age in minutes, or the trip start point when there is no GPS. The SOS entry in the log also carries the coordinates.',
+'pg.f3':'<b>The emergency procedure could be missing after a restart.</b> The app read the saved procedure wrongly, so SOS could go out with no recipients while the dashboard showed ‘Set up’. The procedure now belongs to the account, so another account on the same phone does not inherit it.',
+'pg.f4':'<b>Cancel did not stop SOS.</b> If you tapped Cancel just as the countdown ended, the text message still opened and the SOS was still logged. Nothing happens after you cancel now, and two taps no longer send SOS twice.',
+'pg.f5':'<b>Entries made without coverage could disappear.</b> When the app returned to the foreground without coverage, what you had logged could vanish from the screen and GPS tracking could stop. The queue also gave up after five attempts without a network. Everything now stays until it has been sent, and the queue is sent while the app is open.',
+'pg.f6':'<b>Activating straight after creating a trip could be lost.</b> If you activated a trip as soon as it was created, its status and safety check could be lost on the way to the server without an error. The command centre then did not see the trip as active. The app now finds the trip first and tries again.',
+'pg.f7':'<b>Two trips could be active at once.</b> GPS tracking then moved silently to the newest one. The app now tells you and asks you to finish the first. ‘Complete trip’ also asks for confirmation.',
+'pg.f8':'<b>Times.</b> Events, SOS and edits made without coverage were stamped with the time they were sent, not the time they happened. They now keep the right time.',
+'pg.f9':'<b>Certifications in the trip report.</b> The report showed the certifications of whoever was signed in, not the guide on the trip. When an administrator shares another guide’s report, no certifications are shown now instead of the administrator’s own.',
+'pg.f10':'<b>Small things.</b> The link in the password reset email opens the right screen. The dashboard greeting no longer breaks mid-word. The profile picture shows your initial when the image cannot load. ‘Offline’ no longer covers the title. The headcount says ‘1 participant’. The permission texts on iPhone show æ, ø and å correctly.',
+'pg.f11':'<b>Have you shared trip reports from before 1.4.4?</b> Check three things: the position in SOS entries, which may be the trip start point; the time of events logged without coverage, which may be the time they were sent; and the certifications line when the report was for another guide.',
+'pg.ios':'Download on the App Store','pg.and':'Download on Google Play',
 'pf.tag':'Command centre','pf.date':'5 October 2026',
 'pf.h':'Kartverket in the command centre',
 'pf.lead':'The map on the dashboard has been showing grey tiles stamped “API key required”. The background map provider started demanding a key. The map has now been replaced.',
