@@ -61,6 +61,8 @@ input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,75,.15)}
 .steps li::before{content:counter(c);position:absolute;left:0;top:-1px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:linear-gradient(135deg,var(--gold),#8a6a25);color:#0a1322;font-weight:700;font-size:13px}
 .abtn{display:block;text-align:center;text-decoration:none;border-radius:12px;padding:15px 18px;font-weight:700;font-size:15px;color:#fff;background:linear-gradient(135deg,var(--sky2),var(--sky));box-shadow:0 12px 30px rgba(74,159,224,.3);transition:transform .2s}
 .abtn:hover{transform:translateY(-1px)}
+.abtn+.abtn{margin-top:10px}
+.abtn.alt{background:none;border:1px solid rgba(74,159,224,.45);box-shadow:none;color:#cfe2f5}
 .foot{position:relative;z-index:1;margin-top:34px;font-size:12px;color:#5a7093}
 .foot a{color:#8b98ab;text-decoration:none}
 .foot a:hover{color:var(--gold2)}
@@ -95,16 +97,18 @@ input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,75,.15)}
     <h1>Kontoen er klar &#10003;</h1>
     <p class="s" id="doneSub">Du er koblet til organisasjonen. Slik kommer du i gang:</p>
     <ol class="steps">
-      <li>Last ned Daedalus fra App Store</li>
+      <li>Last ned Daedalus fra App Store (iPhone) eller Google Play (Android)</li>
       <li>Logg inn med e-posten og passordet ditt</li>
     </ol>
-    <a class="abtn" href="https://apps.apple.com/no/app/id6761403819">Last ned Daedalus</a>
+    <a class="abtn" href="https://apps.apple.com/no/app/id6761403819">App Store (iPhone)</a>
+    <a class="abtn alt" href="https://play.google.com/store/apps/details?id=com.hoiseth.daedalus">Google Play (Android)</a>
   </div>
 
   <div class="card done" id="confirmCard" style="display:none">
     <h1>Nesten ferdig</h1>
-    <p class="s">Vi har sendt deg en bekreftelses-e-post. Klikk lenken i den, last deretter ned appen og logg inn.</p>
-    <a class="abtn" href="https://apps.apple.com/no/app/id6761403819">Last ned Daedalus</a>
+    <p class="s">Vi har sendt deg en bekreftelses-e-post. Klikk lenken i den, last deretter ned appen (App Store eller Google Play) og logg inn.</p>
+    <a class="abtn" href="https://apps.apple.com/no/app/id6761403819">App Store (iPhone)</a>
+    <a class="abtn alt" href="https://play.google.com/store/apps/details?id=com.hoiseth.daedalus">Google Play (Android)</a>
   </div>
 
   <div class="feats" aria-hidden="true">
@@ -114,7 +118,7 @@ input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,75,.15)}
 
 <div class="foot">Sendt av Daedalus (H&Oslash;I Z) &middot; <a href="https://daedalus-app.no">daedalus-app.no</a> &middot; <a href="/privacy">Personvern</a></div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script>
 <script>
 (function(){
   var SUPABASE_URL='https://kyqjrlpsarbdwfbyjufa.supabase.co';
