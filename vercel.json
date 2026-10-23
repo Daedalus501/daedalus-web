@@ -8,7 +8,7 @@
     },
     {
       "source": "/api/varsom/:path*",
-      "destination": "https://api01.nve.no/hydrology/forecast/avalanche/v6.0.0/api/:path*"
+      "destination": "https://api01.nve.no/hydrology/forecast/avalanche/:path*"
     }
   ]
 }

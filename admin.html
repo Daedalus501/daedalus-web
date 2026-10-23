@@ -2635,7 +2635,8 @@ window.__sevNo=function(s){ s=String(s||'').toLowerCase(); return s==='critical'
     var _reg='3010'; try{ var _c=getWxCfg(); if(_c&&_c.region) _reg=String(_c.region); }catch(e){}
     /* D20 2026-10-23: api01.nve.no sender ikke CORS-header, så kallet feilet alltid i nettleseren
        (målt 23.10: status 0, opaque) og siden sa «utenfor varslingssesong». Går nå via Vercel-rewrite. */
-    var url='/api/varsom/AvalancheWarningByRegion/Detail/'+_reg+'/1/'+t+'/'+t;
+    /* v6.0.0 er tatt ned hos NVE (404 via proxyen 23.10); gjeldende produksjonsversjon er v6.3.0 (api.nve.no/doc/snoeskredvarsel) */
+    var url='/api/varsom/v6.3.0/api/AvalancheWarningByRegion/Detail/'+_reg+'/1/'+t+'/'+t;
     return fetch(url).then(function(r){ if(!r.ok) throw new Error('http '+r.status); return r.json(); }).then(function(j){
       var d=Array.isArray(j)?j[0]:j; var lvl=parseInt(d&&d.DangerLevel,10);
       var rg=(d&&d.RegionName)||null; if(!(lvl>=1&&lvl<=5)) return {lvl:0, txt:'Utenfor varslingssesong', region:rg};
