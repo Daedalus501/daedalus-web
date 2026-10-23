@@ -5,6 +5,10 @@
     {
       "source": "/api/nve/:path*",
       "destination": "https://gts.nve.no/api/:path*"
+    },
+    {
+      "source": "/api/varsom/:path*",
+      "destination": "https://api01.nve.no/hydrology/forecast/avalanche/v6.0.0/api/:path*"
     }
   ]
 }
