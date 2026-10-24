@@ -1913,8 +1913,8 @@ function __svlSkriv(h){var el=document.getElementById('dSval');if(el)el.innerHTM
 function __svlKort(hoyre,under){return '<div class="cert"><div class="l1"><b>Svalbard-guidegodkjenning</b><span class="emg-mut" style="font-size:11.5px">'+hoyre+'</span></div>'+(under||'')+'</div>';}
 function __svlData(fraV,tilV,ok,feil){
   var n=fraV+'|'+tilV, na=Date.now();
-  if(__SVL_CACHE&&__SVL_CACHE.n===n&&(na-__SVL_CACHE.t)<300000){ok(__SVL_CACHE.trips,__SVL_CACHE.pos);return;}
-  window.__GH.hent(fraV,tilV,function(trips,pos){__SVL_CACHE={n:n,t:Date.now(),trips:trips,pos:pos};ok(trips,pos);},feil);
+  if(__SVL_CACHE&&__SVL_CACHE.n===n&&(na-__SVL_CACHE.t)<300000){ok(__SVL_CACHE.trips,__SVL_CACHE.pos,__SVL_CACHE.adm);return;}
+  window.__GH.hent(fraV,tilV,function(trips,pos,adm){__SVL_CACHE={n:n,t:Date.now(),trips:trips,pos:pos,adm:adm};ok(trips,pos,adm);},feil);
 }
 function __svlHint(g){
   var el=document.getElementById('dSval');if(!el)return;
@@ -1927,22 +1927,22 @@ function __svlHint(g){
   var gid=(g&&g.id)?String(g.id):'',gnavn=(g&&(g.name||g.email))?String(g.name||g.email).toLowerCase():'';
   function stopp(){if(min===__SVL_TOKEN)__svlSkriv('');}
   try{
-    __svlData(fraV,tilV,function(trips,pos){
+    __svlData(fraV,tilV,function(trips,pos,adm){
       if(min!==__SVL_TOKEN)return;
-      var res=GH.compute(trips,pos,fraV,tilV);
+      var res=GH.compute(trips,pos,fraV,tilV,adm);
       var mine=(res&&res.perTrip?res.perTrip:[]).filter(function(r){
         if(gid&&r.guide_id)return String(r.guide_id)===gid;
         return !!gnavn&&String(r.guide==null?'':r.guide).toLowerCase()===gnavn;
       });
-      var sum=0,dok=0,uten=0;
-      mine.forEach(function(r){if(r.timer!=null){sum+=r.timer;dok++;}else uten++;});
+      var sum=0,dok=0,uten=0,kon=0;
+      mine.forEach(function(r){if(r.timer!=null){sum+=r.timer;dok++;}else if(r.kilde==='Til kontroll')kon++;else uten++;});
       sum=Math.round(sum*10)/10;
       var pct=Math.max(0,Math.min(100,Math.round(sum/__SVL_KRAV*1000)/10));
       var farge=sum>=__SVL_KRAV?'var(--green)':(pct>=50?'var(--amber)':'var(--accent)');
       var status=sum>=__SVL_KRAV?'Kravet til dokumenterte timer er oppfylt.':'Mangler '+__svlN(__SVL_KRAV-sum)+' t for unntaket for erfarne guider.';
       var under='<div class="cert-bar"><i data-svl="'+pct+'%" style="background:'+farge+'"></i></div>'
         +'<div class="emg-mut" style="font-size:11px;margin-top:7px;line-height:1.55">'+__svlEsc(status)
-        +' Teller '+dok+' tur'+(dok===1?'':'er')+' med tidsdokumentasjon'+(uten?' · '+uten+' uten':'')+'.'
+        +' Teller '+dok+' tur'+(dok===1?'':'er')+' med tidsdokumentasjon'+(uten?' · '+uten+' uten':'')+(kon?' · '+kon+' til kontroll':'')+'.'
         +' Krav om guidegodkjenning på Svalbard gjelder fra 1.7.2027; unntaket for erfarne krever minst '+__SVL_KRAV+' dokumenterte guidetimer siste '+__SVL_MND+' mnd. Kun turer registrert i Daedalus telles.</div>';
       __svlSkriv(__svlKort(__svlN(sum)+' / '+__SVL_KRAV+' t siste '+__SVL_MND+' mnd',under));
       setTimeout(function(){var b=document.querySelector('#dSval .cert-bar i');if(b)b.style.width=b.getAttribute('data-svl');},60);
@@ -2409,7 +2409,7 @@ window.__sevNo=function(s){ s=String(s||'').toLowerCase(); return s==='critical'
   window.__vanskNo=function(d){ var m={easy:'Lett',moderate:'Moderat',challenging:'Krevende',extreme:'Ekstrem'}; var k=String(d==null?'':d).trim(); return m[k.toLowerCase()]||k; };
   window.__statusNo=function(s){ var m={draft:'Utkast',active:'Aktiv',completed:'Fullført',cancelled:'Avlyst',planned:'Planlagt'}; var k=String(s==null?'':s).trim(); return m[k.toLowerCase()]||k; };
   window.__datoNo=function(v){ if(!v) return ''; var s=String(v); var d=new Date(/^\d{4}-\d{2}-\d{2}$/.test(s)? s+'T12:00:00' : s); if(isNaN(d.getTime())) return s; var p=function(n){return (n<10?'0':'')+n;}; return p(d.getDate())+'.'+p(d.getMonth()+1)+'.'+d.getFullYear(); };
-  window.__auditNo=function(a){ var m={tur_opprettet:'Tur opprettet',tur_endret:'Tur endret',tur_godkjent:'Tur godkjent',tur_avlyst:'Tur avlyst',tur_slettet:'Tur slettet',deltaker_lagt_til:'Deltaker lagt til',deltaker_slettet:'Deltaker slettet',rapport_merknad:'Admin-merknad på turrapport',guide_endret:'Guide endret',guide_fjernet:'Guide fjernet fra organisasjonen',gjest_merket:'Merket som gjesteguide',gjest_fjernet:'Gjest-merke fjernet',invitasjon_sendt:'Guide invitert',invitasjon_resendt:'Invitasjon sendt på nytt',invitasjon_trukket:'Invitasjon trukket tilbake',org_innstillinger:'Organisasjonsinnstillinger endret',kunngjoring:'Kunngjøring sendt',vaktplan_endret:'Vakt satt opp',vaktplan_fjernet:'Vakt fjernet',vaktplan_eksportert:'Vaktplan eksportert',avvik_opprettet:'Avvik opprettet',avvik_endret:'Avvik endret',avvik_lukket:'Avvik lukket',avvik_gjenaapnet:'Avvik gjenåpnet',avvik_eksportert:'Avviksregister eksportert',hms_rapport_generert:'HMS-rapport generert',tilsynsmappe_generert:'Tilsynsmappe generert',sesongrapport_generert:'Sesongrapport generert',fakturagrunnlag_eksportert:'Fakturagrunnlag eksportert',csv_eksport:'CSV-eksport',brief_generert:'Dagens brief kopiert',mal_opprettet:'Turmal opprettet',mal_slettet:'Turmal slettet',hendelse_kvittert:'Hendelse kvittert',sos_kvittert:'SOS kvittert'}; var k=String(a||''); return m[k]||(k? (k.charAt(0).toUpperCase()+k.slice(1)).replace(/_/g,' ') : 'Handling'); };
+  window.__auditNo=function(a){ var m={tur_opprettet:'Tur opprettet',tur_endret:'Tur endret',tur_godkjent:'Tur godkjent',tur_avlyst:'Tur avlyst',tur_slettet:'Tur slettet',deltaker_lagt_til:'Deltaker lagt til',deltaker_slettet:'Deltaker slettet',rapport_merknad:'Admin-merknad på turrapport',guide_endret:'Guide endret',guide_fjernet:'Guide fjernet fra organisasjonen',gjest_merket:'Merket som gjesteguide',gjest_fjernet:'Gjest-merke fjernet',invitasjon_sendt:'Guide invitert',invitasjon_resendt:'Invitasjon sendt på nytt',invitasjon_trukket:'Invitasjon trukket tilbake',org_innstillinger:'Organisasjonsinnstillinger endret',kunngjoring:'Kunngjøring sendt',vaktplan_endret:'Vakt satt opp',vaktplan_fjernet:'Vakt fjernet',vaktplan_eksportert:'Vaktplan eksportert',avvik_opprettet:'Avvik opprettet',avvik_endret:'Avvik endret',avvik_lukket:'Avvik lukket',avvik_gjenaapnet:'Avvik gjenåpnet',avvik_eksportert:'Avviksregister eksportert',hms_rapport_generert:'HMS-rapport generert',tilsynsmappe_generert:'Tilsynsmappe generert',sesongrapport_generert:'Sesongrapport generert',fakturagrunnlag_eksportert:'Fakturagrunnlag eksportert',csv_eksport:'CSV-eksport',brief_generert:'Dagens brief kopiert',mal_opprettet:'Turmal opprettet',mal_slettet:'Turmal slettet',hendelse_kvittert:'Hendelse kvittert',sos_kvittert:'SOS kvittert',passord_byttet:'Passord byttet',tur_avsluttet_admin:'Tur avsluttet fra kommandosenteret',tur_tider_korrigert:'Start og slutt korrigert'}; var k=String(a||''); return m[k]||(k? (k.charAt(0).toUpperCase()+k.slice(1)).replace(/_/g,' ') : 'Handling'); };
   function relTime(iso){ if(!iso)return '—'; var m=Math.round((Date.now()-Date.parse(iso))/60000); if(isNaN(m))return '—'; if(m<1)return 'Nå'; if(m<60)return m+' min siden'; var h=Math.round(m/60); if(h<24)return h+' t siden'; if(h<48)return 'I går'; return new Date(iso).toLocaleDateString('nb-NO'); }
   function dstr(d){ return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2); }
   function parseGps(x){ if(!x)return null; var m=String(x).split(','); if(m.length<2)return null; var a=parseFloat(m[0]),b=parseFloat(m[1]); return (isNaN(a)||isNaN(b))?null:[a,b]; }
@@ -2908,7 +2908,8 @@ window.__ensureLeaflet(function(){
   function __ghAkt(k){try{if(window.__aktNo)return window.__aktNo(k);}catch(e){}return k||'';}
   function __ghHM(iso){if(!iso)return '—';var d=new Date(iso);function p(n){return (n<10?'0':'')+n;}return p(d.getDate())+'.'+p(d.getMonth()+1)+'.'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());}
   function __ghT(n){return n==null?'—':String(n).replace('.',',');}
-  function __ghCompute(trips,positions,fromIso,toIso){
+  function __ghVar(ms){var h=ms/36e5;return h>=48?(Math.round(h/24)+' døgn'):(Math.round(h)+' t');}
+  function __ghCompute(trips,positions,fromIso,toIso,adminSet){
     var from=new Date(fromIso+'T00:00:00'),to=new Date(toIso+'T23:59:59');
     var gp={};
     (positions||[]).forEach(function(p){
@@ -2943,14 +2944,27 @@ window.__ensureLeaflet(function(){
         if(timer<=0)timer=null;
       }
       if(timer===null&&(kilde==='Faktisk'||kilde==='GPS'||kilde==='Blandet'))kilde='Ufullstendig';
+      /* D26 2026-10-24: glemte turer. Slutt mer enn 12 t etter planlagt retur, eller start mer enn 12 t før
+         turdagen, telles ikke før tidene er satt eller kontrollert i turskuffen (admin_audit). */
+      var merknad='',kontrollTimer=null;
+      if(timer!==null){
+        if(adminSet&&t.trip_id&&adminSet[t.trip_id]){kilde='Satt av admin';}
+        else{
+          var _rd=t.return_date||t.date,_rt=t.return_time?String(t.return_time).slice(0,5):'23:59';
+          var _pr=new Date(_rd+'T'+_rt+':00').getTime(),_d0=new Date(t.date+'T00:00:00').getTime();
+          var _sen=(!isNaN(_pr)&&slutt-_pr>432e5)?(slutt-_pr):0,_tid=(!isNaN(_d0)&&_d0-start>432e5)?(_d0-start):0;
+          if(_sen||_tid){merknad=_sen?('Slutt '+__ghVar(_sen)+' etter planlagt retur'):('Start '+__ghVar(_tid)+' før turdagen');kontrollTimer=timer;timer=null;kilde='Til kontroll';}
+        }
+      }
       var gn=t.guide_name||t.guide_id||'Ukjent guide';
-      perTrip.push({guide:gn,guide_id:t.guide_id||null,dato:t.date,tur:t.name||t.trip_id||'',aktivitet:t.activity_type||'',status:t.status,
-        start:(!isNaN(start)&&timer!==null)?new Date(start).toISOString():null,
-        slutt:(!isNaN(slutt)&&timer!==null)?new Date(slutt).toISOString():null,
-        timer:timer,kilde:kilde});
-      var a=agg[gn]||(agg[gn]={guide:gn,timer:0,dokumenterte:0,udokumenterte:0,turer:0});
+      var _vis=(timer!==null||kontrollTimer!==null);
+      perTrip.push({id:t.id,guide:gn,guide_id:t.guide_id||null,dato:t.date,tur:t.name||t.trip_id||'',aktivitet:t.activity_type||'',status:t.status,
+        start:(!isNaN(start)&&_vis)?new Date(start).toISOString():null,
+        slutt:(!isNaN(slutt)&&_vis)?new Date(slutt).toISOString():null,
+        timer:timer,kilde:kilde,merknad:merknad,kontrollTimer:kontrollTimer});
+      var a=agg[gn]||(agg[gn]={guide:gn,timer:0,dokumenterte:0,udokumenterte:0,kontroll:0,turer:0});
       a.turer++;
-      if(timer!==null){a.timer=Math.round((a.timer+timer)*10)/10;a.dokumenterte++;}else a.udokumenterte++;
+      if(timer!==null){a.timer=Math.round((a.timer+timer)*10)/10;a.dokumenterte++;}else if(kilde==='Til kontroll')a.kontroll++;else a.udokumenterte++;
     });
     perTrip.sort(function(x,y){return x.guide===y.guide?(x.dato<y.dato?1:-1):(x.guide<y.guide?-1:1);});
     var perGuide=Object.keys(agg).sort().map(function(k){return agg[k];});
@@ -2958,7 +2972,7 @@ window.__ensureLeaflet(function(){
   }
   var __ghData=null;
   function __ghHent(fra,til,done,fail){
-    sb.from('trips').select('id,trip_id,name,activity_type,date,status,guide_id,guide_name,activated_at,completed_at')
+    sb.from('trips').select('id,trip_id,name,activity_type,date,status,guide_id,guide_name,activated_at,completed_at,return_date,return_time')
       .gte('date',fra).lte('date',til).in('status',['active','completed'])
       .then(function(q){
         if(q.error){fail(q.error);return;}
@@ -2971,7 +2985,10 @@ window.__ensureLeaflet(function(){
         });
         Promise.all(jobber).then(function(rs){
           var pos=[];rs.forEach(function(r){if(!r.error&&r.data)pos=pos.concat(r.data);});
-          done(trips,pos);
+          sb.from('admin_audit').select('target').in('action',['tur_avsluttet_admin','tur_tider_korrigert']).then(function(ra){
+            var adm={};((ra&&!ra.error&&ra.data)||[]).forEach(function(x){if(x.target)adm[x.target]=true;});
+            done(trips,pos,adm);
+          },function(){done(trips,pos,{});});
         }).catch(fail);
       });
   }
@@ -2989,32 +3006,34 @@ window.__ensureLeaflet(function(){
     document.getElementById('ghRun').onclick=__ghRender;
     document.getElementById('ghCsv').onclick=__ghCsv;
     document.getElementById('ghPrint').onclick=__ghPrint;
-    __ghHent(fraV,tilV,function(trips,pos){
-      var res=__ghCompute(trips,pos,fraV,tilV);
+    __ghHent(fraV,tilV,function(trips,pos,adm){
+      var res=__ghCompute(trips,pos,fraV,tilV,adm);
       __ghData={fra:fraV,til:tilV,res:res};
       var o=document.getElementById('ghOut');if(!o)return;
       if(!res.perTrip.length){o.innerHTML='<div style="opacity:.7">Ingen gjennomførte eller aktive turer i perioden.</div>';return;}
-      var h='<div style="margin-bottom:6px;font-weight:600">Timer per guide ('+__ghEsc(window.__datoNo(fraV))+' – '+__ghEsc(window.__datoNo(tilV))+')</div>';
-      h+='<table style="width:100%;border-collapse:collapse;margin-bottom:14px"><tr style="text-align:left;opacity:.7"><th style="padding:3px 6px">Guide</th><th style="padding:3px 6px">Dokumenterte timer</th><th style="padding:3px 6px">Turer m/ tid</th><th style="padding:3px 6px">Uten tidsdok.</th><th style="padding:3px 6px">Turer totalt</th></tr>';
-      res.perGuide.forEach(function(g){h+='<tr style="border-top:1px solid rgba(255,255,255,.08)"><td style="padding:3px 6px">'+__ghEsc(g.guide)+'</td><td style="padding:3px 6px;font-weight:600">'+__ghT(g.timer)+' t</td><td style="padding:3px 6px">'+g.dokumenterte+'</td><td style="padding:3px 6px">'+g.udokumenterte+'</td><td style="padding:3px 6px">'+g.turer+'</td></tr>';});
+      var _nK=res.perTrip.filter(function(x){return x.kilde==='Til kontroll';}).length;
+      var h=(_nK?('<div style="margin:0 0 10px;padding:8px 10px;border:1px solid rgba(224,164,88,.4);border-radius:8px;color:#f0c79a">'+_nK+' tur'+(_nK===1?' er':'er er')+' til kontroll og telles ikke ennå. Åpne turen og sjekk start og slutt.</div>'):'')+'<div style="margin-bottom:6px;font-weight:600">Timer per guide ('+__ghEsc(window.__datoNo(fraV))+' – '+__ghEsc(window.__datoNo(tilV))+')</div>';
+      h+='<table style="width:100%;border-collapse:collapse;margin-bottom:14px"><tr style="text-align:left;opacity:.7"><th style="padding:3px 6px">Guide</th><th style="padding:3px 6px">Dokumenterte timer</th><th style="padding:3px 6px">Turer m/ tid</th><th style="padding:3px 6px">Uten tidsdok.</th><th style="padding:3px 6px">Til kontroll</th><th style="padding:3px 6px">Turer totalt</th></tr>';
+      res.perGuide.forEach(function(g){h+='<tr style="border-top:1px solid rgba(255,255,255,.08)"><td style="padding:3px 6px">'+__ghEsc(g.guide)+'</td><td style="padding:3px 6px;font-weight:600">'+__ghT(g.timer)+' t</td><td style="padding:3px 6px">'+g.dokumenterte+'</td><td style="padding:3px 6px">'+g.udokumenterte+'</td><td style="padding:3px 6px'+(g.kontroll?';color:#e0a458;font-weight:600':'')+'">'+g.kontroll+'</td><td style="padding:3px 6px">'+g.turer+'</td></tr>';});
       h+='</table>';
       h+='<div style="margin-bottom:6px;font-weight:600">Per tur</div>';
       h+='<table style="width:100%;border-collapse:collapse"><tr style="text-align:left;opacity:.7"><th style="padding:3px 6px">Guide</th><th style="padding:3px 6px">Dato</th><th style="padding:3px 6px">Tur</th><th style="padding:3px 6px">Aktivitet</th><th style="padding:3px 6px">Start</th><th style="padding:3px 6px">Slutt</th><th style="padding:3px 6px">Timer</th><th style="padding:3px 6px">Kilde</th></tr>';
       res.perTrip.forEach(function(r){
-        var kf=r.kilde==='Faktisk'?'#7fd18c':(r.kilde==='GPS'||r.kilde==='Blandet')?'#e7c66b':'rgba(255,255,255,.55)';
-        h+='<tr style="border-top:1px solid rgba(255,255,255,.08)"><td style="padding:3px 6px">'+__ghEsc(r.guide)+'</td><td style="padding:3px 6px">'+__ghEsc(window.__datoNo(r.dato))+'</td><td style="padding:3px 6px">'+__ghEsc(r.tur)+'</td><td style="padding:3px 6px">'+__ghEsc(__ghAkt(r.aktivitet))+'</td><td style="padding:3px 6px">'+__ghHM(r.start)+'</td><td style="padding:3px 6px">'+__ghHM(r.slutt)+'</td><td style="padding:3px 6px;font-weight:600">'+__ghT(r.timer)+'</td><td style="padding:3px 6px;color:'+kf+'">'+__ghEsc(r.kilde)+'</td></tr>';
+        var kf=r.kilde==='Faktisk'?'#7fd18c':r.kilde==='Til kontroll'?'#e0a458':r.kilde==='Satt av admin'?'#9cc7ee':(r.kilde==='GPS'||r.kilde==='Blandet')?'#e7c66b':'rgba(255,255,255,.55)';
+        h+='<tr style="border-top:1px solid rgba(255,255,255,.08)"><td style="padding:3px 6px">'+__ghEsc(r.guide)+'</td><td style="padding:3px 6px">'+__ghEsc(window.__datoNo(r.dato))+'</td><td style="padding:3px 6px">'+__ghEsc(r.tur)+'</td><td style="padding:3px 6px">'+__ghEsc(__ghAkt(r.aktivitet))+'</td><td style="padding:3px 6px">'+__ghHM(r.start)+'</td><td style="padding:3px 6px">'+__ghHM(r.slutt)+'</td><td style="padding:3px 6px;font-weight:600">'+(r.kontrollTimer!=null?('<span style="opacity:.6;font-weight:400">('+__ghT(r.kontrollTimer)+')</span>'):__ghT(r.timer))+'</td><td style="padding:3px 6px;color:'+kf+'">'+__ghEsc(r.kilde)+(r.merknad?('<br><span style="font-size:11px">'+__ghEsc(r.merknad)+' · <a href="#" data-ghopen="'+__ghEsc(r.id)+'" style="color:#9cc7ee">Åpne turen</a></span>'):'')+'</td></tr>';
       });
       h+='</table>';
-      h+='<div style="margin-top:10px;font-size:11px;opacity:.6">Kilde: Faktisk = aktivering og fullføring i appen · GPS = posisjonslogg (første–siste fix) · Blandet = stempel + GPS · Planlagt/Ufullstendig = mangler tidsdokumentasjon (telles ikke). Referanse: Svalbard-guidegodkjenning, unntak for erfarne krever minst 1500 dokumenterte timer siste 36 mnd.</div>';
+      h+='<div style="margin-top:10px;font-size:11px;opacity:.6">Kilde: Faktisk = aktivering og fullføring i appen · Satt av admin = tider satt eller kontrollert i kommandosenteret · GPS = posisjonslogg (første til siste fix) · Blandet = stempel + GPS · Til kontroll = slutt mer enn 12 t etter planlagt retur eller start mer enn 12 t før turdagen (telles ikke før tidene er sjekket) · Planlagt/Ufullstendig = mangler tidsdokumentasjon (telles ikke). Referanse: Svalbard-guidegodkjenning, unntak for erfarne krever minst 1500 dokumenterte timer siste 36 mnd.</div>';
       o.innerHTML=h;
+      Array.prototype.forEach.call(o.querySelectorAll('[data-ghopen]'),function(a){ a.onclick=function(ev){ ev.preventDefault(); var id=a.getAttribute('data-ghopen'); var apne=function(){ var hc=document.getElementById('hmClose'); if(hc) hc.click(); if(window.__openTrip) window.__openTrip(id); }; if((window.__TRIPS||[]).some(function(x){ return x.id===id; })) apne(); else sb.from('trips').select('*').eq('id',id).maybeSingle().then(function(rt){ if(rt&&rt.data){ (window.__TRIPS=window.__TRIPS||[]).push(rt.data); apne(); } }); }; });
     },function(err){var o=document.getElementById('ghOut');if(o)o.innerHTML='<div style="color:#e88">Kunne ikke hente data: '+__ghEsc((err&&err.message)||err)+'</div>';});
   }
   function __ghCsv(){
     if(!__ghData){return;}
-    var r=__ghData.res,rader=[['Guide','Dato','Tur','Aktivitet','Start','Slutt','Timer','Kilde']];
-    r.perTrip.forEach(function(x){rader.push([x.guide,x.dato,x.tur,__ghAkt(x.aktivitet),x.start?__ghHM(x.start):'',x.slutt?__ghHM(x.slutt):'',x.timer==null?'':String(x.timer).replace('.',','),x.kilde]);});
-    rader.push([]);rader.push(['Guide','Dokumenterte timer','Turer m tid','Uten tidsdok','Turer totalt','Periode '+__ghData.fra+' - '+__ghData.til]);
-    r.perGuide.forEach(function(g){rader.push([g.guide,String(g.timer).replace('.',','),g.dokumenterte,g.udokumenterte,g.turer,'']);});
+    var r=__ghData.res,rader=[['Guide','Dato','Tur','Aktivitet','Start','Slutt','Timer','Kilde','Timer til kontroll','Merknad']];
+    r.perTrip.forEach(function(x){rader.push([x.guide,x.dato,x.tur,__ghAkt(x.aktivitet),x.start?__ghHM(x.start):'',x.slutt?__ghHM(x.slutt):'',x.timer==null?'':String(x.timer).replace('.',','),x.kilde,x.kontrollTimer==null?'':String(x.kontrollTimer).replace('.',','),x.merknad||'']);});
+    rader.push([]);rader.push(['Guide','Dokumenterte timer','Turer m tid','Uten tidsdok','Til kontroll','Turer totalt','Periode '+__ghData.fra+' - '+__ghData.til]);
+    r.perGuide.forEach(function(g){rader.push([g.guide,String(g.timer).replace('.',','),g.dokumenterte,g.udokumenterte,g.kontroll||0,g.turer,'']);});
     dlCsv('daedalus-guidetimer-'+__ghData.fra+'_'+__ghData.til+'.csv',rader);
   }
   function __ghPrint(){
@@ -3022,11 +3041,11 @@ window.__ensureLeaflet(function(){
     var r=__ghData.res,w=window.open('','_blank');if(!w)return;
     var h='<html><head><title>Guidetimer '+__ghEsc(__ghData.fra)+' – '+__ghEsc(__ghData.til)+'</title><meta charset="utf-8"><style>body{font:13px/1.5 system-ui,Segoe UI,sans-serif;color:#111;margin:32px}h1{font-size:19px;margin:0 0 2px}h2{font-size:14px;margin:18px 0 6px}table{width:100%;border-collapse:collapse;font-size:12px}th,td{border:1px solid #ccc;padding:4px 7px;text-align:left}th{background:#f0f3f7}.sub{color:#555;font-size:11.5px}.foot{margin-top:22px;color:#555;font-size:10.5px;border-top:1px solid #ccc;padding-top:8px}</style></head><body>';
     h+='<h1>Guidetimer — dokumentert felttid</h1><div class="sub">Periode '+__ghEsc(window.__datoNo(__ghData.fra))+' – '+__ghEsc(window.__datoNo(__ghData.til))+' · Generert '+__ghHM(new Date().toISOString())+' · Daedalus Guide Safety</div>';
-    h+='<h2>Sum per guide</h2><table><tr><th>Guide</th><th>Dokumenterte timer</th><th>Turer m/ tid</th><th>Uten tidsdok.</th><th>Turer totalt</th></tr>';
-    r.perGuide.forEach(function(g){h+='<tr><td>'+__ghEsc(g.guide)+'</td><td><b>'+__ghT(g.timer)+' t</b></td><td>'+g.dokumenterte+'</td><td>'+g.udokumenterte+'</td><td>'+g.turer+'</td></tr>';});
+    h+='<h2>Sum per guide</h2><table><tr><th>Guide</th><th>Dokumenterte timer</th><th>Turer m/ tid</th><th>Uten tidsdok.</th><th>Til kontroll</th><th>Turer totalt</th></tr>';
+    r.perGuide.forEach(function(g){h+='<tr><td>'+__ghEsc(g.guide)+'</td><td><b>'+__ghT(g.timer)+' t</b></td><td>'+g.dokumenterte+'</td><td>'+g.udokumenterte+'</td><td>'+(g.kontroll||0)+'</td><td>'+g.turer+'</td></tr>';});
     h+='</table><h2>Per tur</h2><table><tr><th>Guide</th><th>Dato</th><th>Tur</th><th>Aktivitet</th><th>Start</th><th>Slutt</th><th>Timer</th><th>Kilde</th></tr>';
-    r.perTrip.forEach(function(x){h+='<tr><td>'+__ghEsc(x.guide)+'</td><td>'+__ghEsc(window.__datoNo(x.dato))+'</td><td>'+__ghEsc(x.tur)+'</td><td>'+__ghEsc(__ghAkt(x.aktivitet))+'</td><td>'+__ghHM(x.start)+'</td><td>'+__ghHM(x.slutt)+'</td><td><b>'+__ghT(x.timer)+'</b></td><td>'+__ghEsc(x.kilde)+'</td></tr>';});
-    h+='</table><div class="foot">Kilder: Faktisk = aktiverings- og fullføringsstempel i appen. GPS = guidens posisjonslogg (første til siste fix på turen). Blandet = stempel + GPS. Planlagt/Ufullstendig = turen mangler tidsdokumentasjon og telles ikke i summen. Grunnlag for dokumentasjonskrav i forskrift om feltsikkerhet på Svalbard (guidegodkjenning; unntak for erfarne guider krever minst 1500 dokumenterte guidetimer siste 36 måneder). Rapporten er et hjelpemiddel — operatøren er ansvarlig for egen dokumentasjon.</div>';
+    r.perTrip.forEach(function(x){h+='<tr><td>'+__ghEsc(x.guide)+'</td><td>'+__ghEsc(window.__datoNo(x.dato))+'</td><td>'+__ghEsc(x.tur)+'</td><td>'+__ghEsc(__ghAkt(x.aktivitet))+'</td><td>'+__ghHM(x.start)+'</td><td>'+__ghHM(x.slutt)+'</td><td><b>'+(x.kontrollTimer!=null?('('+__ghT(x.kontrollTimer)+')'):__ghT(x.timer))+'</b></td><td>'+__ghEsc(x.kilde)+(x.merknad?('<br><small>'+__ghEsc(x.merknad)+'</small>'):'')+'</td></tr>';});
+    h+='</table><div class="foot">Kilder: Faktisk = aktiverings- og fullføringsstempel i appen. GPS = guidens posisjonslogg (første til siste fix på turen). Blandet = stempel + GPS. Satt av admin = start og slutt satt eller kontrollert i kommandosenteret, med grunn i revisjonsloggen. Til kontroll = slutt mer enn 12 timer etter planlagt retur eller start mer enn 12 timer før turdagen; timene i parentes telles ikke før tidene er sjekket. Planlagt/Ufullstendig = turen mangler tidsdokumentasjon og telles ikke i summen. Grunnlag for dokumentasjonskrav i forskrift om feltsikkerhet på Svalbard (guidegodkjenning; unntak for erfarne guider krever minst 1500 dokumenterte guidetimer siste 36 måneder). Rapporten er et hjelpemiddel — operatøren er ansvarlig for egen dokumentasjon.</div>';
     h+='</body></html>';
     w.document.write(h);w.document.close();setTimeout(function(){try{w.print();}catch(e){}},350);
   }
@@ -3722,6 +3741,139 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
     $$('#tripAdmList [data-tadm]').forEach(function(b){ b.onclick=function(){ openTripAdmin(R, me, b.getAttribute('data-tadm')); }; });
   }
 
+  /* D11 2026-10-24: passordbytte i kommandosenteret. Profilknappen åpner Konto (bytt passord, logg ut).
+     Nåværende passord sjekkes med signInWithPassword før updateUser. Det gir også en fersk økt, som
+     Supabase krever når «Secure password change» er på. Passord logges aldri. */
+  function loggUt(){ try{ sb.auth.signOut().then(function(){ location.href='/admin'; },function(){ location.href='/admin'; }); }catch(e){ location.href='/admin'; } }
+  function pwFeil(e,innlogging){
+    var k=String((e&&(e.code||e.error_code))||'').toLowerCase(), m=String((e&&e.message)||'');
+    if(innlogging&&(k==='invalid_credentials'||/invalid login credentials/i.test(m))) return 'Passordet du har nå, er feil.';
+    if(k==='same_password'||/different from the old/i.test(m)) return 'Det nye passordet må være forskjellig fra det gamle.';
+    if(k==='weak_password'||/weak|should be at least|password should/i.test(m)) return 'Passordet er for svakt. Velg et lengre passord med flere typer tegn.';
+    if(k==='reauthentication_needed'||/reauthenticat/i.test(m)) return 'Kontoen krever ny innlogging før passordbytte. Logg ut, logg inn igjen og prøv på nytt.';
+    if(k.indexOf('rate_limit')>-1||/rate limit|too many/i.test(m)) return 'For mange forsøk. Vent noen minutter og prøv igjen.';
+    return (innlogging?'Kunne ikke sjekke passordet: ':'Kunne ikke bytte passord: ')+(m||'ukjent feil');
+  }
+  function openPassord(){
+    var me0=window.__ME||{};
+    var ov=v2Modal('<h3>Bytt passord</h3><p class="s">Passordet gjelder både kommandosenteret og appen.</p>'
+      +'<form id="pwF" novalidate><input type="email" autocomplete="username" value="'+v2Esc(me0.email||'')+'" style="display:none" tabindex="-1" aria-hidden="true">'
+      +'<label for="pwNow">Passordet du har nå</label><input id="pwNow" type="password" autocomplete="current-password" maxlength="72">'
+      +'<label for="pwNy">Nytt passord (minst 8 tegn)</label><input id="pwNy" type="password" autocomplete="new-password" maxlength="72">'
+      +'<label for="pwNy2">Gjenta nytt passord</label><input id="pwNy2" type="password" autocomplete="new-password" maxlength="72">'
+      +'<div class="err" id="pwErr" role="alert"></div>'
+      +'<div class="btns"><button class="b-p" type="submit" id="pwOk">Bytt passord</button><button class="b-g" type="button" id="pwX">Avbryt</button></div></form>'
+      +'<p class="s" style="margin:12px 0 0">Husker du ikke passordet du har nå? Logg ut og bruk «Glemt passord» på forsiden.</p>');
+    ov.style.zIndex='100000';
+    var f=document.getElementById('pwF'), er=document.getElementById('pwErr'), ok=document.getElementById('pwOk');
+    document.getElementById('pwX').onclick=v2Close;
+    setTimeout(function(){ try{ document.getElementById('pwNow').focus(); }catch(e){} },30);
+    f.addEventListener('submit',function(ev){
+      ev.preventDefault(); er.textContent='';
+      var a=document.getElementById('pwNow').value, b=document.getElementById('pwNy').value, c=document.getElementById('pwNy2').value;
+      if(!a){ er.textContent='Skriv inn passordet du har nå.'; return; }
+      if(b.length<8){ er.textContent='Det nye passordet må være minst 8 tegn.'; return; }
+      if(b!==c){ er.textContent='De to nye passordene er ikke like.'; return; }
+      if(b===a){ er.textContent='Det nye passordet må være forskjellig fra det gamle.'; return; }
+      ok.disabled=true; ok.textContent='Bytter …';
+      var feil=function(x){ er.textContent=x; ok.disabled=false; ok.textContent='Bytt passord'; };
+      sb.auth.getUser().then(function(u){
+        var epost=(u&&u.data&&u.data.user&&u.data.user.email)||me0.email||'';
+        if(!epost){ feil('Fant ikke e-postadressen til kontoen. Logg ut og inn igjen.'); return; }
+        return sb.auth.signInWithPassword({email:epost,password:a}).then(function(r){
+          if(r&&r.error){ feil(pwFeil(r.error,true)); return; }
+          return sb.auth.updateUser({password:b}).then(function(r2){
+            if(r2&&r2.error){ feil(pwFeil(r2.error,false)); return; }
+            try{ logAdmin('passord_byttet','',''); }catch(eL){}
+            v2Close(); try{ toast('Passordet er byttet','Bruk det nye passordet neste gang du logger inn, også i appen.'); }catch(eT){}
+          });
+        });
+      }).catch(function(){ feil('Nettverksfeil. Prøv igjen.'); });
+    });
+  }
+  function openKonto(){
+    var me0=window.__ME||{};
+    var ov=v2Modal('<h3>Konto</h3><p class="s">'+v2Esc(me0.name||'')+(me0.email?(' · '+v2Esc(me0.email)):'')+'</p>'
+      +'<div class="btns" style="flex-direction:column"><button class="b-p" id="kPw">Bytt passord</button><button class="b-g" id="kUt">Logg ut</button><button class="b-g" id="kX">Lukk</button></div>');
+    ov.style.zIndex='100000';
+    document.getElementById('kX').onclick=v2Close;
+    document.getElementById('kUt').onclick=function(){ v2Close(); loggUt(); };
+    document.getElementById('kPw').onclick=openPassord;
+  }
+
+  /* D26 2026-10-24: glemte turer. Kommandosenteret kan avslutte en aktiv tur eller rette start og slutt
+     på en fullført tur. Appen (1.4.4) henter status fra serveren når den åpnes med dekning og stopper
+     GPS-sporingen når turen ikke lenger er aktiv (app-state.tsx, activeTripForTracking). Ingen appendring.
+     Status settes først (triggeren set_trip_status_times stempler ved overgangen), så skrives valgt start
+     og slutt, og raden leses tilbake for å bekrefte at databasen lagret tidene som ble valgt. */
+  function planRetur(t){ var d=(t&&(t.return_date||t.date))||''; if(!d) return null; var tm=(t.return_time? String(t.return_time).slice(0,5) : '23:59'); var x=new Date(d+'T'+tm+':00'); return isNaN(x.getTime())? null : x; }
+  function dtNo(d){ if(!d||isNaN(d.getTime())) return '—'; var p=function(x){return (x<10?'0':'')+x;}; return p(d.getDate())+'.'+p(d.getMonth()+1)+'.'+d.getFullYear()+' kl. '+p(d.getHours())+':'+p(d.getMinutes()); }
+  function dlVal(d){ var p=function(x){return (x<10?'0':'')+x;}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'T'+p(d.getHours())+':'+p(d.getMinutes()); }
+  function varighetNo(ms){ var h=ms/36e5; return h>=48? (Math.round(h/24)+' døgn') : (Math.round(h)+' timer'); }
+  function openTid(t, etter){
+    var aktiv=t.status==='active';
+    var akt=t.activated_at? new Date(t.activated_at) : null, sl=t.completed_at? new Date(t.completed_at) : null, pr=planRetur(t), naa=new Date();
+    var forslag= aktiv ? ((pr&&pr.getTime()<naa.getTime())? pr : naa) : (sl||pr||naa);
+    var ov=v2Modal('<h3>'+(aktiv?'Avslutt turen fra kommandosenteret':'Korriger start og slutt')+'</h3>'
+      +'<p class="s">'+v2Esc(t.name||'(uten navn)')+(t.guide_name?(' · '+v2Esc(t.guide_name)):'')+'</p>'
+      +'<div id="tdHint" style="font-size:12px">Henter siste GPS-punkt og siste hendelse …</div>'
+      +'<label for="tdStart">Start</label><input id="tdStart" type="datetime-local" value="'+(akt?dlVal(akt):'')+'">'
+      +'<label for="tdSlutt">Slutt</label><input id="tdSlutt" type="datetime-local" value="'+dlVal(forslag)+'">'
+      +'<label for="tdGrunn">Grunn (står i revisjonsloggen)</label><input id="tdGrunn" maxlength="200" placeholder="'+(aktiv?'For eksempel: guiden glemte å avslutte i appen':'For eksempel: sluttid rettet etter samtale med guiden')+'">'
+      +(aktiv? '<p class="s" style="margin:10px 0 0">Bruk dette når gruppa er tilbake. Appen slutter å sende posisjon neste gang guiden åpner den med dekning.</p>' : '')
+      +'<div class="err" id="tdErr" role="alert"></div>'
+      +'<div class="btns"><button class="b-p" id="tdOk">'+(aktiv?'Avslutt turen':'Lagre tidene')+'</button><button class="b-g" id="tdX">Avbryt</button></div>');
+    ov.style.zIndex='100000';
+    document.getElementById('tdX').onclick=v2Close;
+    var rader=[]; if(pr) rader.push(['Planlagt retur',pr]);
+    function visHint(){
+      var el=document.getElementById('tdHint'); if(!el) return;
+      el.innerHTML=rader.map(function(r,i){ return '<div class="row2"><span>'+v2Esc(r[0])+'</span><span>'+v2Esc(dtNo(r[1]))+' <button type="button" data-tdb="'+i+'" style="margin-left:6px;border:1px solid rgba(74,159,224,.35);background:rgba(74,159,224,.08);color:#cfe2f5;border-radius:6px;padding:2px 7px;font-size:10.5px;cursor:pointer">Bruk som slutt</button></span></div>'; }).join('');
+      Array.prototype.forEach.call(el.querySelectorAll('[data-tdb]'),function(b){ b.onclick=function(){ var r=rader[+b.getAttribute('data-tdb')]; if(r) document.getElementById('tdSlutt').value=dlVal(r[1]); }; });
+    }
+    Promise.all([
+      t.trip_id? sb.from('guide_positions').select('recorded_at').eq('trip_id',t.trip_id).order('recorded_at',{ascending:false}).limit(1) : Promise.resolve({data:[]}),
+      sb.from('events').select('created_at').eq('trip_id',t.id).order('created_at',{ascending:false}).limit(1)
+    ]).then(function(z){
+      var g=z[0]&&!z[0].error&&z[0].data&&z[0].data[0], e=z[1]&&!z[1].error&&z[1].data&&z[1].data[0];
+      if(g&&g.recorded_at) rader.push(['Siste GPS-punkt',new Date(g.recorded_at)]);
+      if(e&&e.created_at) rader.push(['Siste hendelse',new Date(e.created_at)]);
+      if(aktiv) rader.push(['Nå',new Date()]);
+      visHint();
+    },function(){ if(aktiv) rader.push(['Nå',new Date()]); visHint(); });
+    document.getElementById('tdOk').onclick=function(){
+      var btn=this, er=document.getElementById('tdErr'); er.textContent='';
+      var sv=document.getElementById('tdStart').value, ev=document.getElementById('tdSlutt').value, gr=document.getElementById('tdGrunn').value.trim();
+      var s=sv? new Date(sv) : null, e2=ev? new Date(ev) : null;
+      if(!s||isNaN(s.getTime())){ er.textContent='Velg starttid.'; return; }
+      if(!e2||isNaN(e2.getTime())){ er.textContent='Velg sluttid.'; return; }
+      if(e2.getTime()<=s.getTime()){ er.textContent='Slutt må være etter start.'; return; }
+      if(e2.getTime()>Date.now()+120000){ er.textContent='Sluttiden kan ikke være fram i tid.'; return; }
+      if(gr.length<3){ er.textContent='Skriv en kort grunn. Den står i revisjonsloggen.'; return; }
+      var nyStart=!akt || Math.abs(akt.getTime()-s.getTime())>=60000;
+      var label=btn.textContent; btn.disabled=true; btn.textContent='Lagrer …';
+      var feil=function(x){ er.textContent=x; btn.disabled=false; btn.textContent=label; };
+      var logg=function(lagret){ try{ logAdmin(aktiv?'tur_avsluttet_admin':'tur_tider_korrigert', t.trip_id||'', (t.name||'')+' · start '+dtNo(s)+((akt&&nyStart)?(' (var '+dtNo(akt)+')'):'')+' · slutt '+dtNo(e2)+(sl?(' (var '+dtNo(sl)+')'):(aktiv?' (turen sto som aktiv)':''))+(lagret?'':' · DATABASEN LAGRET IKKE TIDENE SOM BLE VALGT')+' · grunn: '+gr); }catch(eL){} };
+      var steg1= aktiv ? sb.from('trips').update({status:'completed'}).eq('id',t.id).eq('status','active').select('id') : Promise.resolve({data:[{id:t.id}],error:null});
+      Promise.resolve(steg1).then(function(r1){
+        if(r1&&r1.error){ feil('Kunne ikke avslutte turen: '+r1.error.message); return; }
+        if(!r1||!r1.data||!r1.data.length){ feil(aktiv?'Turen er ikke aktiv lenger. Lukk og last siden på nytt.':'Fant ikke turen.'); return; }
+        var upd={completed_at:e2.toISOString()}; if(nyStart) upd.activated_at=s.toISOString();
+        return sb.from('trips').update(upd).eq('id',t.id).select('id,status,activated_at,completed_at').then(function(r2){
+          if(r2&&r2.error){ logg(false); feil('Kunne ikke lagre tidene: '+r2.error.message+(aktiv?' Turen er avsluttet. Prøv «Korriger start og slutt».':'')); return; }
+          var row=r2&&r2.data&&r2.data[0];
+          if(!row){ logg(false); feil('Databasen avviste endringen. Ingen rader ble endret.'); return; }
+          var lE=row.completed_at? Date.parse(row.completed_at) : NaN, lS=row.activated_at? Date.parse(row.activated_at) : NaN;
+          var stemmer=!isNaN(lE)&&Math.abs(lE-e2.getTime())<60000&&(!upd.activated_at||(!isNaN(lS)&&Math.abs(lS-s.getTime())<60000));
+          logg(stemmer);
+          if(!stemmer){ feil('Databasen lagret andre tider enn du valgte (start '+dtNo(isNaN(lS)?null:new Date(lS))+', slutt '+dtNo(isNaN(lE)?null:new Date(lE))+'). Ta kontakt med hello@daedalus-app.no.'); return; }
+          v2Close(); try{ toast(aktiv?'Turen er avsluttet':'Tidene er lagret','Slutt '+dtNo(e2)+'. Endringen står i revisjonsloggen.'); }catch(eT){}
+          if(typeof etter==='function') etter();
+        });
+      }).catch(function(){ feil('Nettverksfeil. Prøv igjen.'); });
+    };
+  }
+
   function openTripAdmin(R, me, tid){
     if(document.getElementById('taOv')) return;
     var t=(window.__TRIPS||[]).filter(function(x){return x.id===tid;})[0]; if(!t) return;
@@ -3731,6 +3883,13 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
     var _sl=['draft','active','completed','cancelled']; if(t.status&&_sl.indexOf(t.status)<0) _sl.unshift(t.status);
     var sopt=_sl.map(function(s){ return '<option value="'+esc(s)+'"'+((t.status===s)?' selected':'')+'>'+esc(STATUS_NO[s]||s)+'</option>'; }).join('');
     var chk=function(v){ return v? '<b style="color:#5fb97a">✓</b>' : '<b style="color:#e8857c">—</b>'; };
+    /* D26 2026-10-24: start og slutt, med overstyring for glemte turer */
+    var _ak=t.activated_at? new Date(t.activated_at) : null, _sl=t.completed_at? new Date(t.completed_at) : null, _pr=planRetur(t), _nu=Date.now();
+    var _sen=(t.status==='active'&&_pr&&_nu-_pr.getTime()>36e5)? (_nu-_pr.getTime()) : 0;
+    var _senF=(t.status==='completed'&&_pr&&_sl&&_sl.getTime()-_pr.getTime()>432e5)? (_sl.getTime()-_pr.getTime()) : 0;
+    var tidH='<h4>Start og slutt</h4><div style="font-size:12.5px;line-height:1.9">Aktivert: <b>'+(_ak?esc(dtNo(_ak)):'ikke registrert')+'</b><br>Avsluttet: <b>'+(_sl?esc(dtNo(_sl)):(t.status==='active'?'pågår':'ikke registrert'))+'</b><br>Planlagt retur: <b>'+(_pr?esc(dtNo(_pr)):'ikke satt')+'</b>'
+      +'<div id="taTidNote" style="color:#e0a458">'+(_sen? ('Turen står fortsatt som aktiv, '+esc(varighetNo(_sen))+' etter planlagt retur.') : (_senF? ('Avsluttet '+esc(varighetNo(_senF))+' etter planlagt retur. Sjekk tidene før turen telles i Guidetimer.') : ''))+'</div></div>'
+      +((t.status==='active'||t.status==='completed')? ('<button type="button" id="taTid" style="margin-top:8px;width:100%;padding:8px;border:1px solid rgba(224,164,88,.45);border-radius:8px;background:rgba(224,164,88,.08);color:#f0c79a;font-size:12px;cursor:pointer">'+(t.status==='active'?'Avslutt turen her':'Korriger start og slutt')+'</button>') : '');
     var ov=document.createElement('div'); ov.id='taOv';
     ov.innerHTML='<style>#taOv{position:fixed;inset:0;z-index:99998;display:flex;align-items:center;justify-content:center;background:rgba(8,14,26,.86);backdrop-filter:blur(8px);font-family:Inter,system-ui,sans-serif}#taC{width:min(96vw,560px);max-height:92vh;overflow:auto;background:#16273f;border:1px solid #284063;border-radius:16px;padding:22px;color:#c8d6e8}#taC h3{margin:0 0 2px;color:#eaf2fb;font-size:17px}#taC h4{margin:16px 0 6px;color:#c9a24b;font-size:12px;letter-spacing:.08em;text-transform:uppercase}#taC label{display:block;color:#8aa0bd;font-size:11.5px;margin:8px 0 4px}#taC input,#taC select,#taC textarea{width:100%;box-sizing:border-box;padding:8px 10px;border-radius:8px;border:1px solid #284063;background:#0e1a2c;color:#eaf2fb;font-size:13px;font-family:inherit}#taC .row{display:flex;gap:10px}#taC .row>div{flex:1}#taC .btns{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}#taC .btns button{padding:10px 12px;border:none;border-radius:9px;font-size:12.5px;font-weight:600;cursor:pointer}#taErr{color:#e8857c;font-size:12px;min-height:14px;margin-top:8px}.pl-row{display:flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:6px 9px;font-size:12.5px;margin-bottom:6px}.ev-row{font-size:12px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.06)}</style>'
       +'<div id="taC"><h3>'+esc(t.name||'(uten navn)')+'</h3><span class="num" style="font-size:11px;color:#8aa0bd">'+esc(t.trip_id||'')+'</span>'
@@ -3740,6 +3899,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       +'<div class="row"><div><label>Dato</label><input id="taDate" type="date" value="'+esc(t.date||'')+'"></div><div><label>Returtid</label><input id="taRet" type="time" value="'+esc((t.return_time||'').slice(0,5))+'"></div><div><label>Returdato</label><input id="taRetD" type="date" value="'+esc(t.return_date||'')+'"></div></div>'
       +'<div class="row"><div><label>Guide</label><select id="taGuide">'+gopt+'</select></div><div><label>Status</label><select id="taStatus">'+sopt+'</select></div></div>'
       +'<label>Notater</label><textarea id="taNotes" rows="2" maxlength="500">'+esc(t.notes||'')+'</textarea>'
+      +tidH
       +'<h4>HMS / sikkerhetssjekk</h4><div style="font-size:12.5px;line-height:1.9">Grunnsjekk: '+(t.safety_completed_at? ('<b style="color:#5fb97a">✓ fullført '+new Date(t.safety_completed_at).toLocaleString('nb-NO',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})+'</b>') : '<b style="color:#8aa0bd">ikke registrert</b>')+'<br>Vær verifisert: '+chk(t.weather_verified)+' · Utstyr sjekket: '+chk(t.equipment_checked)+' · Nødkontakt varslet: '+chk(t.emergency_contact_notified)+'<br>Aktivitetssjekk: '+(t.activity_check_completed_at? ('<b style="color:#5fb97a">✓ fullført '+new Date(t.activity_check_completed_at).toLocaleString('nb-NO',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})+'</b>') : '<b style="color:#8aa0bd">—</b>')+(t.activation_override? ' · <b style="color:#e0a458">Aktivert med overstyring</b>' : '')+'<br>Skredfaregrad: <b style="color:#eaf2fb">'+esc(t.avalanche_level||'ikke satt')+'</b> · Delt kart: '+chk(t.shared_map)+'<br>Admin-godkjenning: '+(t.approved_at? '<b style="color:#5fb97a">✓ godkjent '+new Date(t.approved_at).toLocaleDateString('nb-NO')+'</b>' : '<button type="button" id="taApprove" style="border:1px solid rgba(95,185,122,.45);background:rgba(95,185,122,.1);color:#5fb97a;border-radius:7px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer">Godkjenn tur</button>')+'</div>'
       +'<h4>Deltakere</h4><div id="taParts" style="min-height:20px;font-size:12.5px">Laster …</div>'
       +'<div class="row" style="margin-top:6px"><div><input id="taPN" placeholder="Navn" maxlength="80"></div><div><input id="taPP" placeholder="Telefon" maxlength="30"></div><div><input id="taPE" placeholder="Nødkontakt" maxlength="60"></div></div>'
@@ -3761,6 +3921,13 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
     var close=function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); };
     ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
     $('#taClose').onclick=close;
+    var _tb=$('#taTid'); if(_tb) _tb.onclick=function(){ openTid(t, function(){ close(); setTimeout(function(){ location.reload(); },600); }); };
+    if(t.trip_id&&(t.status==='active'||t.status==='completed')){
+      sb.from('admin_audit').select('action,created_at').eq('target',t.trip_id).in('action',['tur_avsluttet_admin','tur_tider_korrigert']).order('created_at',{ascending:false}).limit(1).then(function(ra){
+        var x=ra&&!ra.error&&ra.data&&ra.data[0]; var el=$('#taTidNote');
+        if(x&&el){ el.style.color='#9cc7ee'; el.textContent='Tidene ble satt i kommandosenteret '+dtNo(new Date(x.created_at))+'.'; }
+      });
+    }
     if(t.status==='completed'||t.status==='cancelled'){ $('#taCancelTrip').style.display='none'; }
     if(!(t.status==='draft'||t.status==='cancelled')){ $('#taDelete').style.display='none'; }
     var evCache=[];
@@ -3883,6 +4050,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       Object.keys(ny).forEach(function(k){ var a=(ny[k]==null?'':String(ny[k])), b=(gml[k]==null?'':String(gml[k])); if(a!==b){ upd[k]=ny[k]; endret.push(FELT[k]); } });
       if(!endret.length){ close(); return; }
       if(upd.name!==undefined && !upd.name){ $('#taErr').textContent='Turnavn kan ikke være tomt.'; return; }
+      if(upd.status==='completed' && t.status==='active'){ $('#taErr').textContent='Bruk «Avslutt turen her» under Start og slutt. Der velger du sluttiden selv.'; return; }
       if(upd.guide_id!==undefined) upd.guide_name=gnm||null;
       sb.from('trips').update(upd).eq('id',t.id).then(function(r2){
         if(r2&&r2.error){ $('#taErr').textContent='Kunne ikke lagre: '+r2.error.message; return; }
@@ -5000,10 +5168,10 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       $$('.hero-cta .btn').forEach(function(btn){ if(/Dagsrapport/i.test(btn.textContent)){ btn.removeAttribute('data-toast'); btn.onclick=function(){ printDayReport(R); }; } });
       $$('.hero-cta .btn, .qa .btn, button').forEach(function(btn){ if(/^\s*Ny tur\s*$/i.test(btn.textContent)){ btn.removeAttribute('data-toast'); btn.onclick=function(ev){ if(ev){ev.preventDefault();ev.stopPropagation();} openNewTrip(R, me); }; } });
       $$('footer .lnk').forEach(function(a){ if(/Personvern/i.test(a.textContent)){ a.removeAttribute('data-toast'); a.setAttribute('href','/privacy'); a.setAttribute('target','_blank'); } });
-      var _brnd=$('.brand'); if(_brnd && !_brnd.__w){ _brnd.__w=1; _brnd.style.cursor='pointer'; _brnd.title='Oppdater siden'; _brnd.onclick=function(){ location.reload(); }; } var meBtn2=$('.me'); if(meBtn2 && !meBtn2.__wired){ meBtn2.__wired=1; meBtn2.style.cursor='pointer'; meBtn2.title='Klikk for å logge ut'; meBtn2.addEventListener('click', function(){ if(window.confirm('Logg ut av Daedalus?')){ try{ sb.auth.signOut().then(function(){ location.href='/admin'; }); }catch(e){ location.href='/admin'; } } }); }
+      var _brnd=$('.brand'); if(_brnd && !_brnd.__w){ _brnd.__w=1; _brnd.style.cursor='pointer'; _brnd.title='Oppdater siden'; _brnd.onclick=function(){ location.reload(); }; } var meBtn2=$('.me'); if(meBtn2 && !meBtn2.__wired){ meBtn2.__wired=1; meBtn2.style.cursor='pointer'; meBtn2.title='Konto: bytt passord eller logg ut'; meBtn2.addEventListener('click', function(){ openKonto(); }); }
       if(R.sos&&R.sos.length&&R.sos[0]&&R.sos[0].id){ var _sosBtn=$('#sosAck'); if(_sosBtn&&!_sosBtn.__ackw){ _sosBtn.__ackw=1; _sosBtn.addEventListener('click',function(){ var _cur=(window.__REAL&&window.__REAL.sos&&window.__REAL.sos[0])||null; var _eid=_cur&&_cur.id; if(!_eid) return; try{ sb.from('events').update({acknowledged_at:new Date().toISOString(),acknowledged_by:(me&&me.id)||null}).eq('id',_eid).select().then(function(res){ if(res&&!res.error&&(!res.data||!res.data.length)){ try{ toast('Kvitteringen ble avvist av databasen','Ingen rader endret. Ta kontakt med hello@daedalus-app.no.'); }catch(e){} return; } if(res&&res.error){ try{ toast('Kunne ikke kvittere',res.error.message); }catch(e){} return; } try{ var _trs=((window.__REAL.sosTripById||{})[_cur.trip_id])||{}; logAdmin('sos_kvittert', _trs.trip_id||'', (_cur.description||'SOS')+(_trs.name?(' · '+_trs.name):'')); }catch(e){} try{ toast('Alarm kvittert','Lagret i hendelsesloggen.'); }catch(e){} setTimeout(function(){ location.reload(); },700); }); }catch(e){} }); } }
       if(R.sos && R.sos.length){ var _se=R.sos[0]; var _st=((R.sosTripById||R.tripById||{})[_se.trip_id])||{}; var _l1b=$('.sos .sos-tx .l1 b'); if(_l1b){ _l1b.textContent=(_se.description||'SOS-alarm utløst')+(_st.name?(' — '+_st.name):''); } var _l2=$('.sos .sos-tx .l2'); if(_l2){ var _sd=_se.created_at?new Date(_se.created_at):null; var _tt=_sd?_sd.toLocaleTimeString('nb-NO',{hour:'2-digit',minute:'2-digit'}):'—'; if(_sd&&_sd.toDateString()!==new Date().toDateString()){ _tt=_sd.toLocaleDateString('nb-NO',{day:'2-digit',month:'2-digit'})+' '+_tt; } var _sp=sosPos(_se,_st); var _pos=_sp.c?(_sp.c[0].toFixed(4)+'° N, '+_sp.c[1].toFixed(4)+'° Ø'):'ukjent'; var _pk=_sp.c?(_sp.ved?' (ved alarmen)':' (turens startpunkt, alarmen hadde ingen GPS)'):''; _l2.innerHTML='Utløst kl. <b class="num">'+_tt+'</b>'+(_st.guide_name?(' · Guide: <b>'+_escR(_st.guide_name)+'</b>'):'')+' · Posisjon: <b class="num">'+_escR(_pos)+'</b>'+_escR(_pk)+(R.sos.length>1?(' · <b>'+R.sos.length+' ukvitterte SOS</b>'):''); } var _eta=$('.sos .sos-eta'); if(_eta){ _eta.style.display='none'; } }
-      if(window.ACTIONS && window.ACTIONS.length){ var _A=window.ACTIONS; _A.forEach(function(a){ if(a.l==='Ny tur'){ a.f=function(){ openNewTrip(R,me); }; } else if(/Generer dagsrapport/i.test(a.l)){ a.f=function(){ printDayReport(R); }; } else if(/Kvitter SOS/i.test(a.l)){ a.f=(R.sos&&R.sos.length)? function(){ var b=$('#sosAck'); if(b) b.click(); } : function(){ try{ toast('Ingen aktive alarmer','Ingen SOS å kvittere nå.'); }catch(e){} }; } }); var _ng=_A.filter(function(a){ return a.h!=='Guider'; }); (R.guides||[]).forEach(function(g,i){ _ng.push({l:'Guideprofil — '+(g.name||'Guide'), h:'Guider', i:'i-users', f:(function(idx){ return function(){ if(window.openGuide) window.openGuide(idx); }; })(i)}); }); _A.length=0; Array.prototype.push.apply(_A,_ng); }
+      if(window.ACTIONS && window.ACTIONS.length){ var _A=window.ACTIONS; _A.forEach(function(a){ if(a.l==='Ny tur'){ a.f=function(){ openNewTrip(R,me); }; } else if(/Generer dagsrapport/i.test(a.l)){ a.f=function(){ printDayReport(R); }; } else if(/Kvitter SOS/i.test(a.l)){ a.f=(R.sos&&R.sos.length)? function(){ var b=$('#sosAck'); if(b) b.click(); } : function(){ try{ toast('Ingen aktive alarmer','Ingen SOS å kvittere nå.'); }catch(e){} }; } }); var _ng=_A.filter(function(a){ return a.h!=='Guider'; }); (R.guides||[]).forEach(function(g,i){ _ng.push({l:'Guideprofil — '+(g.name||'Guide'), h:'Guider', i:'i-users', f:(function(idx){ return function(){ if(window.openGuide) window.openGuide(idx); }; })(i)}); }); if(!_ng.some(function(a){ return a.l==='Bytt passord'; })) _ng.push({l:'Bytt passord', h:'Konto', i:'i-shield', f:function(){ openPassord(); }}); _A.length=0; Array.prototype.push.apply(_A,_ng); }
     }catch(e){}
   }
 
