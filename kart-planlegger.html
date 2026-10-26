@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Daedalus · Kart-planlegger (tilkoblet)</title>
+<script>/* 2026-10-26: språk som kommandosenteret. ?lang=en|no, ellers lagret valg (dae_lang), ellers nettleserens språk. Norsk tekst er uendret. */
+(function(){var en=false,l='';try{l=String(new URLSearchParams(location.search).get('lang')||'').toLowerCase();}catch(e){}
+if(l==='en'||l==='no'||l==='nb'){en=(l==='en');try{localStorage.setItem('dae_lang',en?'en':'no');}catch(e){}}
+else{var s=null;try{s=localStorage.getItem('dae_lang');}catch(e){}
+if(s==='en'||s==='no'){en=(s==='en');}else{var L=[];try{L=(navigator.languages&&navigator.languages.length)?navigator.languages:[navigator.language||''];}catch(e){}
+var no=false,any=false;for(var i=0;i<L.length;i++){var x=String(L[i]||'');if(x)any=true;if(/^(nb|nn|no)\b/i.test(x)){no=true;break;}}en=any&&!no;}}
+window.__EN=en;
+if(en){document.documentElement.lang='en';document.title='Daedalus · Map planner (connected)';}})();</script>
 <link rel="icon" type="image/png" href="icon.png">
 <meta name="robots" content="noindex">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
@@ -163,18 +171,25 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>/* 2026-10-26: statisk markup på engelsk når __EN er satt. */
+(function(){if(!window.__EN)return;var D={"Daedalus · Kart-planlegger (tilkoblet)":"Daedalus · Map planner (connected)","· Kart-planlegger":"· Map planner","Logg inn med din admin-konto (samme som kommandosenteret).":"Log in with your admin account (the same as the command centre).","E-post":"Email","Passord":"Password","Logg inn":"Log in","Skriver kun til turen når du trykker «Lagre + del».":"Only writes to the trip when you press ‘Save + share’.","· Kart-planlegger (tilkoblet)":"· Map planner (connected)","Lagrer til valgt tur ved klikk":"Saves to the selected trip on click","← Kommandosenter":"← Command centre","Rute (":"Route (","Fare (":"Hazard (","Møtepunkt (":"Meeting point (","Nødutgang (":"Emergency exit (","1 · Velg tur":"1 · Choose a trip","Logger inn …":"Logging in …","+ Ny tur her":"+ New trip here","Velg en tur for å laste/tegne rute. Lagring skriver til denne turens map_data.":"Choose a trip to load/draw a route. Saving writes to this trip’s map_data.","2 · Tegn — velg modus, klikk i kartet":"2 · Draw — choose a mode, click on the map","Tegn rute":"Draw route","Fare":"Hazard","Møtepunkt":"Meeting point","Nødutgang":"Emergency exit","Angre punkt":"Undo point","Tøm":"Clear","Rute: klikk i rekkefølge. Fare: flere. Møtepunkt/Nødutgang: ett hver. Klikk en markør for å fjerne den.":"Route: click in order. Hazard: several. Meeting point/Emergency exit: one each. Click a marker to remove it.","3 · Lagre + del":"3 · Save + share","Lagre til turen + del med guide":"Save to the trip + share with the guide","Skriver":"Writes","til valgt tur. Appen leser dette. Angre = «Tøm» + lagre på nytt, eller sett tom.":"to the selected trip. The app reads this. Undo = ‘Clear’ + save again, or set it empty.","4 · Live-lag":"4 · Live layers","Guider (GPS)":"Guides (GPS)","Aktive turer":"Active trips","SOS siste døgn":"SOS last 24 hours","Prikkene er så ferske som appen sender — kun guider med aktiv tur og dekning. Grå = eldre enn 10 min («sist sett»). Oppdateres hvert 25. sekund.":"The dots are as fresh as the app sends them — only guides with an active trip and coverage. Grey = older than 10 min (‘last seen’). Updated every 25 seconds.","5 · Eksport":"5 · Export","GPX-fil":"GPX file","Løypekort (PDF)":"Route card (PDF)","GPX kan lastes rett inn i GPS/klokke. Løypekortet er en utskriftsvennlig plan med koordinatliste og distanse.":"GPX can be loaded straight into a GPS or watch. The route card is a printable plan with a coordinate list and distance.","☁ Vær i punkt — klikk i kartet":"☁ Weather at a point — click on the map","Rutebibliotek":"Route library","Vis andre lagrede ruter som referanse (grå, stiplet) mens du tegner.":"Show other saved routes as a reference (grey, dashed) while you draw.","Logg inn for å se ruter.":"Log in to see routes.","map_data (det som skrives)":"map_data (what is written)"},A={};
+function k(v){return String(v).replace(/\s+/g,' ').trim();}
+try{var w=document.createTreeWalker(document.body,4,null),n,L=[];while((n=w.nextNode()))L.push(n);
+for(var i=0;i<L.length;i++){var t=L[i],v=t.nodeValue,e=D[k(v)];if(e!=null){t.nodeValue=/^\s*/.exec(v)[0]+e+/\s*$/.exec(v)[0];}}
+var N=['title','aria-label','placeholder','alt'],Q=document.querySelectorAll('[title],[aria-label],[placeholder],[alt]');
+for(var j=0;j<Q.length;j++){for(var a=0;a<N.length;a++){var x=Q[j].getAttribute(N[a]);if(x!=null){var y=A[k(x)];if(y!=null)Q[j].setAttribute(N[a],y);}}}}catch(e){}})();</script>
 <script>
 (function(){
   var SUPABASE_URL='https://kyqjrlpsarbdwfbyjufa.supabase.co';
   var SUPABASE_KEY='sb_publishable_EZq43amTJsWJWS8QeqZz3Q_xs8qg-DP';
   if(!window.supabase||!window.supabase.createClient){
-    document.body.innerHTML='<div style="font:15px system-ui;color:#e7ecf3;background:#0b1626;min-height:100vh;display:grid;place-items:center;padding:24px;text-align:center"><div><b>Kartplanleggeren fikk ikke lastet en nødvendig komponent.</b><br>Sjekk netttilkoblingen og last siden på nytt.</div></div>';
+    document.body.innerHTML=(__EN?"<div style=\"font:15px system-ui;color:#e7ecf3;background:#0b1626;min-height:100vh;display:grid;place-items:center;padding:24px;text-align:center\"><div><b>The map planner could not load a required component.<\/b><br>Check your connection and reload the page.<\/div><\/div>":'<div style="font:15px system-ui;color:#e7ecf3;background:#0b1626;min-height:100vh;display:grid;place-items:center;padding:24px;text-align:center"><div><b>Kartplanleggeren fikk ikke lastet en nødvendig komponent.</b><br>Sjekk netttilkoblingen og last siden på nytt.</div></div>');
     throw new Error('supabase-js ikke lastet');
   }
   var sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
   var COLORS={hazard:'#FF4444',meeting:'#4488FF',emergency:'#44CC66'};
-  var LABELS={hazard:'Fare',meeting:'Møtepunkt',emergency:'Nødutgang'};
+  var LABELS={hazard:(__EN?"Hazard":'Fare'),meeting:(__EN?"Meeting point":'Møtepunkt'),emergency:(__EN?"Emergency exit":'Nødutgang')};
   var routePoints=[], markers=[], mode=null, trips=[], currentTrip=null;
 
   // ---------- kart ----------
@@ -209,7 +224,7 @@
 
   map.on('click',function(e){
     if(window.__wxClick&&window.__wxClick(e)) return;
-    if(!currentTrip){ (function(){ var h=document.getElementById('noTripHint'); if(!h){ h=document.createElement('div'); h.id='noTripHint'; h.style.cssText='position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:9999;background:#c9a24b;color:#0d1b2e;font:600 13px Inter,system-ui,sans-serif;padding:10px 16px;border-radius:9px;box-shadow:0 8px 24px rgba(0,0,0,.4);max-width:88vw;text-align:center'; document.body.appendChild(h);} h.textContent='Velg en tur f\u00f8rst \u2014 eller opprett en i kommandosenteret (\u00abNy tur\u00bb).'; clearTimeout(h.__t); h.__t=setTimeout(function(){ h.remove(); },3500); })(); return; }
+    if(!currentTrip){ (function(){ var h=document.getElementById('noTripHint'); if(!h){ h=document.createElement('div'); h.id='noTripHint'; h.style.cssText='position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:9999;background:#c9a24b;color:#0d1b2e;font:600 13px Inter,system-ui,sans-serif;padding:10px 16px;border-radius:9px;box-shadow:0 8px 24px rgba(0,0,0,.4);max-width:88vw;text-align:center'; document.body.appendChild(h);} h.textContent=(__EN?"Choose a trip first — or create one in the command centre (‘New trip’).":'Velg en tur f\u00f8rst \u2014 eller opprett en i kommandosenteret (\u00abNy tur\u00bb).'); clearTimeout(h.__t); h.__t=setTimeout(function(){ h.remove(); },3500); })(); return; }
     var c={latitude:+e.latlng.lat.toFixed(6),longitude:+e.latlng.lng.toFixed(6)};
     if(mode==='route'){ routePoints.push(c); }
     else if(mode==='hazard'){ markers.push({id:'hazard-'+Date.now(),coordinate:c,type:'hazard'}); }
@@ -222,7 +237,7 @@
   function setMode(m){ mode=m; document.querySelectorAll('.mb').forEach(function(b){ b.classList.toggle('active',b.getAttribute('data-mode')===m); }); document.getElementById('map').style.cursor=m?'crosshair':''; }
   document.querySelectorAll('.mb').forEach(function(b){ b.addEventListener('click',function(){ setMode(mode===b.getAttribute('data-mode')?null:b.getAttribute('data-mode')); }); });
   document.getElementById('undo').addEventListener('click',function(){ if(routePoints.length){ routePoints.pop(); sync(); } });
-  document.getElementById('clear').addEventListener('click',function(){ if(confirm('Tøm kartet (ikke lagret før du trykker Lagre)?')){ routePoints=[]; markers=[]; sync(); } });
+  document.getElementById('clear').addEventListener('click',function(){ if(confirm((__EN?"Clear the map (not saved until you press Save)?":'Tøm kartet (ikke lagret før du trykker Lagre)?'))){ routePoints=[]; markers=[]; sync(); } });
 
   // ---------- parse eksisterende map_data ----------
   function parseMapData(raw){ try{ var d=JSON.parse(raw); if(d&&Array.isArray(d.routePoints)&&Array.isArray(d.markers)) return d; }catch(e){} return {routePoints:[],markers:[]}; }
@@ -231,17 +246,17 @@
   document.getElementById('loginForm').addEventListener('submit',function(e){
     e.preventDefault();
     var email=document.getElementById('email').value.trim(), pw=document.getElementById('pw').value;
-    var btn=document.getElementById('loginBtn'); btn.disabled=true; btn.textContent='Logger inn …';
+    var btn=document.getElementById('loginBtn'); btn.disabled=true; btn.textContent=(__EN?"Logging in …":'Logger inn …');
     document.getElementById('loginErr').textContent='';
     sb.auth.signInWithPassword({email:email,password:pw}).then(function(res){
-      if(res.error){ document.getElementById('loginErr').textContent=res.error.message; btn.disabled=false; btn.textContent='Logg inn'; return; }
+      if(res.error){ document.getElementById('loginErr').textContent=res.error.message; btn.disabled=false; btn.textContent=(__EN?"Log in":'Logg inn'); return; }
       onLogin(res.data.user);
     });
   });
 
   function onLogin(user){
     document.getElementById('login').classList.add('hidden');
-    document.getElementById('who').innerHTML='<b>'+(user.email||'')+'</b> <span class="lo" id="logout">Logg ut</span>';
+    document.getElementById('who').innerHTML='<b>'+(user.email||'')+(__EN?"<\/b> <span class=\"lo\" id=\"logout\">Log out<\/span>":'</b> <span class="lo" id="logout">Logg ut</span>');
     document.getElementById('logout').addEventListener('click',function(){ sb.auth.signOut().then(function(){ location.reload(); }); });
     loggedIn=true;
     sb.from('users').select('id,name,email').then(function(r){ ((r&&r.data)||[]).forEach(function(u2){ nameById[u2.id]=u2.name||u2.email||'Guide'; }); renderGpsLayer(); });
@@ -259,14 +274,14 @@
     if(document.getElementById('qtOv')) return;
     var ov=document.createElement('div'); ov.id='qtOv';
     ov.innerHTML='<style>#qtOv{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(6,12,24,.88);font-family:Inter,system-ui,sans-serif}#qtC{width:min(94vw,390px);background:#122036;border:1px solid #27405f;border-radius:14px;padding:20px;color:#c8d6e8;max-height:88vh;overflow:auto}#qtC h3{margin:0 0 4px;color:#eaf2fb;font-size:15px}#qtC .sub{color:#7e94b3;font-size:11.5px;margin:0 0 8px}#qtC label{display:block;color:#8aa0bd;font-size:11px;margin:9px 0 4px;text-transform:uppercase;letter-spacing:.04em}#qtC input,#qtC select{width:100%;box-sizing:border-box;padding:8px 10px;border-radius:8px;border:1px solid #27405f;background:#0c1729;color:#eaf2fb;font-size:13px}#qtC .row{display:flex;gap:8px}#qtC .row>div{flex:1}#qtC .btns{display:flex;gap:8px;margin-top:15px}#qtC .btns button{flex:1;padding:10px;border:none;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer}#qtErr{color:#e8857c;font-size:11.5px;min-height:14px;margin-top:6px}</style>'
-      +'<form id="qtC"><h3>Ny tur</h3><p class="sub">Opprettes som utkast \u2014 tegn og lagre l\u00f8ypa rett etterp\u00e5.</p>'
-      +'<label>Turnavn *</label><input id="qtName" required maxlength="120" placeholder="F.eks. Toppen via nordryggen">'
-      +'<label>Startsted *</label><input id="qtLoc" required maxlength="120" placeholder="F.eks. Tamokdalen parkering">'
-      +'<label>Aktivitet *</label><select id="qtType"><option value="summit">Topptur</option><option value="ski_touring">Skitur</option><option value="glacier">Brevandring</option><option value="climbing">Klatring</option><option value="kayak">Kajakk</option><option value="sea_kayaking">Havkajakk</option><option value="river_guide">Elveguiding</option><option value="dog_sledding">Hundekj\u00f8ring</option><option value="snowmobile_safari">Sn\u00f8scooter</option><option value="northern_lights_bus">Nordlysbuss</option><option value="teambuilding">Teambuilding</option><option value="course">Kurs</option><option value="hiking">Fjellvandring</option><option value="ice_climbing">Isklatring</option><option value="via_ferrata">Via ferrata</option><option value="whale_safari">Hvalsafari</option><option value="snowshoeing">Truging</option><option value="other">Annet</option></select>'
-      +'<div class="row"><div><label>Dato *</label><input id="qtDate" type="date" required></div><div><label>Returtid *</label><input id="qtRet" type="time" required value="16:00"></div></div>'
-      +'<label>Guide</label><select id="qtGuide"><option value="">Laster \u2026</option></select>'
+      +(__EN?"<form id=\"qtC\"><h3>New trip<\/h3><p class=\"sub\">Created as a draft — draw and save the route straight afterwards.<\/p>":'<form id="qtC"><h3>Ny tur</h3><p class="sub">Opprettes som utkast \u2014 tegn og lagre l\u00f8ypa rett etterp\u00e5.</p>')
+      +(__EN?"<label>Trip name *<\/label><input id=\"qtName\" required maxlength=\"120\" placeholder=\"E.g. The summit via the north ridge\">":'<label>Turnavn *</label><input id="qtName" required maxlength="120" placeholder="F.eks. Toppen via nordryggen">')
+      +(__EN?"<label>Start location *<\/label><input id=\"qtLoc\" required maxlength=\"120\" placeholder=\"E.g. Tamokdalen car park\">":'<label>Startsted *</label><input id="qtLoc" required maxlength="120" placeholder="F.eks. Tamokdalen parkering">')
+      +(__EN?"<label>Activity *<\/label><select id=\"qtType\"><option value=\"summit\">Summit<\/option><option value=\"ski_touring\">Ski touring<\/option><option value=\"glacier\">Glacier<\/option><option value=\"climbing\">Climbing<\/option><option value=\"kayak\">Kayak<\/option><option value=\"sea_kayaking\">Sea kayak<\/option><option value=\"river_guide\">River guiding<\/option><option value=\"dog_sledding\">Dog sledding<\/option><option value=\"snowmobile_safari\">Snowmobile<\/option><option value=\"northern_lights_bus\">Northern lights bus<\/option><option value=\"teambuilding\">Team building<\/option><option value=\"course\">Course<\/option><option value=\"hiking\">Hiking<\/option><option value=\"ice_climbing\">Ice climbing<\/option><option value=\"via_ferrata\">Via ferrata<\/option><option value=\"whale_safari\">Whale safari<\/option><option value=\"snowshoeing\">Snowshoeing<\/option><option value=\"other\">Other<\/option><\/select>":'<label>Aktivitet *</label><select id="qtType"><option value="summit">Topptur</option><option value="ski_touring">Skitur</option><option value="glacier">Brevandring</option><option value="climbing">Klatring</option><option value="kayak">Kajakk</option><option value="sea_kayaking">Havkajakk</option><option value="river_guide">Elveguiding</option><option value="dog_sledding">Hundekj\u00f8ring</option><option value="snowmobile_safari">Sn\u00f8scooter</option><option value="northern_lights_bus">Nordlysbuss</option><option value="teambuilding">Teambuilding</option><option value="course">Kurs</option><option value="hiking">Fjellvandring</option><option value="ice_climbing">Isklatring</option><option value="via_ferrata">Via ferrata</option><option value="whale_safari">Hvalsafari</option><option value="snowshoeing">Truging</option><option value="other">Annet</option></select>')
+      +(__EN?"<div class=\"row\"><div><label>Date *<\/label><input id=\"qtDate\" type=\"date\" required><\/div><div><label>Return time *<\/label><input id=\"qtRet\" type=\"time\" required value=\"16:00\"><\/div><\/div>":'<div class="row"><div><label>Dato *</label><input id="qtDate" type="date" required></div><div><label>Returtid *</label><input id="qtRet" type="time" required value="16:00"></div></div>')
+      +(__EN?"<label>Guide<\/label><select id=\"qtGuide\"><option value=\"\">Loading …<\/option><\/select>":'<label>Guide</label><select id="qtGuide"><option value="">Laster \u2026</option></select>')
       +'<div id="qtErr"></div>'
-      +'<div class="btns"><button type="button" id="qtCancel" style="background:#20344e;color:#cfe2f5">Avbryt</button><button type="submit" id="qtSave" style="background:linear-gradient(135deg,#4a9fe0,#3b82c4);color:#fff">Opprett og velg</button></div></form>';
+      +(__EN?"<div class=\"btns\"><button type=\"button\" id=\"qtCancel\" style=\"background:#20344e;color:#cfe2f5\">Cancel<\/button><button type=\"submit\" id=\"qtSave\" style=\"background:linear-gradient(135deg,#4a9fe0,#3b82c4);color:#fff\">Create and select<\/button><\/div><\/form>":'<div class="btns"><button type="button" id="qtCancel" style="background:#20344e;color:#cfe2f5">Avbryt</button><button type="submit" id="qtSave" style="background:linear-gradient(135deg,#4a9fe0,#3b82c4);color:#fff">Opprett og velg</button></div></form>');
     document.body.appendChild(ov);
     document.getElementById('qtDate').value=new Date().toISOString().slice(0,10);
     var close=function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); };
@@ -280,7 +295,7 @@
         rows.forEach(function(x){ if(x.id===uid) meRow=x; });
         if(!meRow) meRow=rows[0]||null;
         var gsel=document.getElementById('qtGuide'); if(!gsel) return;
-        gsel.innerHTML=rows.map(function(g){ return '<option value="'+g.id+'"'+(g.id===uid?' selected':'')+'>'+String(g.name||g.email||'').replace(/</g,'&lt;')+'</option>'; }).join('')||'<option value="">(ingen guider)</option>';
+        gsel.innerHTML=rows.map(function(g){ return '<option value="'+g.id+'"'+(g.id===uid?' selected':'')+'>'+String(g.name||g.email||'').replace(/</g,'&lt;')+'</option>'; }).join('')||(__EN?"<option value=\"\">(no guides)<\/option>":'<option value="">(ingen guider)</option>');
         if(meRow&&meRow.organization_id){ sb.from('organizations').select('name').eq('id',meRow.organization_id).single().then(function(r3){ if(r3&&r3.data) orgName=r3.data.name||''; }); }
       });
     });
@@ -289,12 +304,12 @@
       var err=document.getElementById('qtErr');
       var name=document.getElementById('qtName').value.trim(), loc=document.getElementById('qtLoc').value.trim();
       var date=document.getElementById('qtDate').value, ret=document.getElementById('qtRet').value;
-      if(!name||!loc||!date||!ret){ err.textContent='Fyll ut turnavn, startsted, dato og returtid.'; return; }
-      if(!meRow||!meRow.organization_id){ err.textContent='Fant ikke organisasjonen din \u2014 logg inn p\u00e5 nytt.'; return; }
+      if(!name||!loc||!date||!ret){ err.textContent=(__EN?"Fill in the trip name, start location, date and return time.":'Fyll ut turnavn, startsted, dato og returtid.'); return; }
+      if(!meRow||!meRow.organization_id){ err.textContent=(__EN?"Could not find your organisation — log in again.":'Fant ikke organisasjonen din \u2014 logg inn p\u00e5 nytt.'); return; }
       var gsel=document.getElementById('qtGuide'); var gid=gsel.value||meRow.id; var gnm=(gsel.selectedIndex>=0&&gsel.value)?gsel.options[gsel.selectedIndex].text:(meRow.name||meRow.email||'');
-      var btn=document.getElementById('qtSave'); btn.disabled=true; btn.textContent='Oppretter \u2026';
+      var btn=document.getElementById('qtSave'); btn.disabled=true; btn.textContent=(__EN?"Creating …":'Oppretter \u2026');
       sb.from('trips').insert({ trip_id:'WEB-'+Date.now().toString(36).toUpperCase(), name:name, date:date, start_location:loc, return_time:ret, status:'draft', activity_type:document.getElementById('qtType').value, difficulty:'moderate', guide_id:gid, guide_name:gnm, organization_id:meRow.organization_id, organization_name:orgName }).select('id').single().then(function(r4){
-        if(r4&&r4.error){ err.textContent='Kunne ikke opprette: '+r4.error.message; btn.disabled=false; btn.textContent='Opprett og velg'; return; }
+        if(r4&&r4.error){ err.textContent=(__EN?"Could not create: ":'Kunne ikke opprette: ')+r4.error.message; btn.disabled=false; btn.textContent=(__EN?"Create and select":'Opprett og velg'); return; }
         var nyId=r4&&r4.data&&r4.data.id;
         close();
         loadTrips();
@@ -307,12 +322,12 @@
     });
   }
   function loadTrips(){
-    var sel=document.getElementById('tripSel'); sel.innerHTML='<option value="">Laster turer …</option>';
+    var sel=document.getElementById('tripSel'); sel.innerHTML=(__EN?"<option value=\"\">Loading trips …<\/option>":'<option value="">Laster turer …</option>');
     sb.from('trips').select('id,trip_id,name,date,map_data,gps_lat,gps_lng,guide_name,organization_id').order('date',{ascending:false}).then(function(res){
-      if(res.error){ sel.innerHTML='<option value="">Feil: '+res.error.message+'</option>'; return; }
+      if(res.error){ sel.innerHTML=(__EN?"<option value=\"\">Error: ":'<option value="">Feil: ')+res.error.message+'</option>'; return; }
       trips=res.data||[];
-      if(!trips.length){ sel.innerHTML='<option value="">Ingen turer ennå — opprett en tur i kommandosenteret («Ny tur») først</option>'; return; }
-      sel.innerHTML='<option value="">— velg tur —</option>'+trips.map(function(t){ return '<option value="'+t.id+'">'+esc((t.name||'Tur')+' · '+(t.date||''))+'</option>'; }).join('');
+      if(!trips.length){ sel.innerHTML=(__EN?"<option value=\"\">No trips yet — create a trip in the command centre (‘New trip’) first<\/option>":'<option value="">Ingen turer ennå — opprett en tur i kommandosenteret («Ny tur») først</option>'); return; }
+      sel.innerHTML=(__EN?"<option value=\"\">— choose a trip —<\/option>":'<option value="">— velg tur —</option>')+trips.map(function(t){ return '<option value="'+t.id+'">'+esc((t.name||(__EN?"Trip":'Tur'))+' · '+(t.date||''))+'</option>'; }).join('');
       buildRefList();
     });
   }
@@ -335,16 +350,16 @@
 
   document.getElementById('saveBtn').addEventListener('click',function(){
     if(!currentTrip) return;
-    if(!confirm('Lagre rute til «'+(currentTrip.name||'tur')+'» og dele med guiden?')) return;
-    var btn=this; btn.disabled=true; btn.textContent='Lagrer …';
+    if(!confirm((__EN?"Save the route to ‘":'Lagre rute til «')+(currentTrip.name||(__EN?"trip":'tur'))+(__EN?"’ and share it with the guide?":'» og dele med guiden?'))) return;
+    var btn=this; btn.disabled=true; btn.textContent=(__EN?"Saving …":'Lagrer …');
     var st=document.getElementById('saveStatus'); st.className='status'; st.textContent='';
     var payload={ map_data: JSON.stringify({routePoints:routePoints,markers:markers}), shared_map:true };
     var _allp=routePoints.concat(markers.map(function(m){return m.coordinate;}));
     if((currentTrip.gps_lat==null||currentTrip.gps_lng==null)&&_allp.length){ var _la=0,_lo=0; _allp.forEach(function(p){_la+=p.latitude;_lo+=p.longitude;}); payload.gps_lat=+(_la/_allp.length).toFixed(6); payload.gps_lng=+(_lo/_allp.length).toFixed(6); }
     sb.from('trips').update(payload).eq('id',currentTrip.id).then(function(res){
-      btn.disabled=false; btn.textContent='Lagre til turen + del med guide';
-      if(res.error){ st.className='status err'; st.textContent='Feil: '+res.error.message+(/policy|permission|rls/i.test(res.error.message)?' — kjør RLS-migrasjonen (KART-DELING-RLS) først.':''); return; }
-      st.className='status ok'; st.textContent='✓ Lagret + delt. Åpne turen i guidens app for å se ruta.';
+      btn.disabled=false; btn.textContent=(__EN?"Save to the trip + share with the guide":'Lagre til turen + del med guide');
+      if(res.error){ st.className='status err'; st.textContent=(__EN?"Error: ":'Feil: ')+res.error.message+(/policy|permission|rls/i.test(res.error.message)?(__EN?" — run the RLS migration (KART-DELING-RLS) first.":' — kjør RLS-migrasjonen (KART-DELING-RLS) først.'):''); return; }
+      st.className='status ok'; st.textContent=(__EN?"✓ Saved + shared. Open the trip in the guide’s app to see the route.":'✓ Lagret + delt. Åpne turen i guidens app for å se ruta.');
       currentTrip.map_data=payload.map_data; if(payload.gps_lat!=null){ currentTrip.gps_lat=payload.gps_lat; currentTrip.gps_lng=payload.gps_lng; }
     });
   });
@@ -354,9 +369,9 @@
   /* ================= V2 2026-08-21: live-lag ================= */
   var gpsLayer=L.layerGroup().addTo(map), opsLayer=L.layerGroup().addTo(map), sosLayer=L.layerGroup().addTo(map), refLayer=L.layerGroup().addTo(map);
   var nameById={}, gpsFix={}, loggedIn=false;
-  function hm(iso){ try{ return new Date(iso).toLocaleTimeString('nb-NO',{hour:'2-digit',minute:'2-digit'}); }catch(e){ return '--:--'; } }
+  function hm(iso){ try{ return new Date(iso).toLocaleTimeString((__EN?"en-GB":'nb-NO'),{hour:'2-digit',minute:'2-digit'}); }catch(e){ return '--:--'; } }
   function gpsIcon(name,stale,iso){
-    var lab=esc(name)+(stale?(' · sist sett '+hm(iso)):'');
+    var lab=esc(name)+(stale?((__EN?" · last seen ":' · sist sett ')+hm(iso)):'');
     return L.divIcon({className:'', html:'<div style="display:flex;align-items:center;gap:6px"><span style="width:12px;height:12px;border-radius:50%;background:'+(stale?'#5a6b82':'#7fb1bd')+';border:2px solid #eaf6fa;flex:none"></span><span class="gpslab'+(stale?' stale':'')+'">'+lab+'</span></div>', iconSize:[16,16], iconAnchor:[8,8]});
   }
   function renderGpsLayer(){
@@ -396,7 +411,7 @@
         }
         if(t.gps_lat==null||t.gps_lng==null) return;
         var cm=L.circleMarker([+t.gps_lat,+t.gps_lng],{radius:8,color:'#0c1626',weight:2,fillColor:'#c9a24b',fillOpacity:.95}).addTo(opsLayer);
-        cm.bindTooltip('Aktiv: '+esc(t.name||'Tur')+' · '+esc(t.guide_name||''),{direction:'top',className:'mk-label'});
+        cm.bindTooltip((__EN?"Active: ":'Aktiv: ')+esc(t.name||(__EN?"Trip":'Tur'))+' · '+esc(t.guide_name||''),{direction:'top',className:'mk-label'});
         n++;
       });
       var c=document.getElementById('cOps'); if(c) c.textContent=n;
@@ -415,7 +430,7 @@
           if(la==null||lo==null) return;
           var sos=String(ev.type||'').toLowerCase()==='sos';
           var cm=L.circleMarker([la,lo],{radius:sos?9:6,color:'#0c1626',weight:2,fillColor:sos?'#e8857c':'#e0a458',fillOpacity:.95}).addTo(sosLayer);
-          cm.bindTooltip((sos?'SOS':'Hendelse')+' · '+esc(t.name||'')+' · '+hm(ev.created_at)+(ev.acknowledged_at?' · kvittert':''),{direction:'top',className:'mk-label'});
+          cm.bindTooltip((sos?'SOS':(__EN?"Event":'Hendelse'))+' · '+esc(t.name||'')+' · '+hm(ev.created_at)+(ev.acknowledged_at?(__EN?" · acknowledged":' · kvittert'):''),{direction:'top',className:'mk-label'});
           m++;
         });
         var c2=document.getElementById('cSos'); if(c2) c2.textContent=m;
@@ -437,13 +452,13 @@
   function routeKm(){ var d=0; for(var i=1;i<routePoints.length;i++) d+=havKm(routePoints[i-1],routePoints[i]); return d; }
   function updDist(){
     var el=document.getElementById('distLine'); if(!el) return;
-    el.textContent=routePoints.length>1? ('Rutelengde (luftlinje punkt-til-punkt): '+routeKm().toFixed(1).replace('.',',')+' km') : '';
+    el.textContent=routePoints.length>1? ((__EN?"Route length (straight line point to point): ":'Rutelengde (luftlinje punkt-til-punkt): ')+routeKm().toFixed(1).replace('.',__EN?'.':',')+' km') : '';
   }
 
   /* ================= GPX ================= */
   function gpxEsc(x){ return String(x==null?'':x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function buildGpx(){
-    var nm=(currentTrip&&currentTrip.name)||'Daedalus-rute';
+    var nm=(currentTrip&&currentTrip.name)||(__EN?"Daedalus route":'Daedalus-rute');
     var g='<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="Daedalus kart-planlegger" xmlns="http://www.topografix.com/GPX/1/1">\n';
     markers.forEach(function(m){
       g+='  <wpt lat="'+m.coordinate.latitude+'" lon="'+m.coordinate.longitude+'"><name>'+gpxEsc(LABELS[m.type]||m.type)+'</name></wpt>\n';
@@ -456,41 +471,41 @@
     return g+'</gpx>\n';
   }
   document.getElementById('gpxBtn').addEventListener('click',function(){
-    if(!routePoints.length&&!markers.length){ alert('Ingenting å eksportere — tegn en rute først.'); return; }
+    if(!routePoints.length&&!markers.length){ alert((__EN?"Nothing to export — draw a route first.":'Ingenting å eksportere — tegn en rute først.')); return; }
     var bl=new Blob([buildGpx()],{type:'application/gpx+xml'});
     var a=document.createElement('a'); a.href=URL.createObjectURL(bl);
-    a.download='daedalus-'+String((currentTrip&&currentTrip.name)||'rute').toLowerCase().replace(/[^a-z0-9æøå]+/gi,'-').slice(0,40)+'.gpx';
+    a.download='daedalus-'+String((currentTrip&&currentTrip.name)||(__EN?"route":'rute')).toLowerCase().replace(/[^a-z0-9æøå]+/gi,'-').slice(0,40)+'.gpx';
     a.click();
   });
 
   /* ================= løypekort ================= */
   document.getElementById('lkBtn').addEventListener('click',function(){
-    if(!currentTrip){ alert('Velg en tur først.'); return; }
+    if(!currentTrip){ alert((__EN?"Choose a trip first.":'Velg en tur først.')); return; }
     var d=new Date(); var p2=function(n){return (n<10?'0':'')+n;};
     var no='LK-'+d.getFullYear()+p2(d.getMonth()+1)+p2(d.getDate())+'-'+p2(d.getHours())+p2(d.getMinutes());
     var rows=routePoints.map(function(pt,i){ return '<tr><td>'+(i+1)+'</td><td>'+pt.latitude.toFixed(5)+'</td><td>'+pt.longitude.toFixed(5)+'</td></tr>'; }).join('');
     var mrows=markers.map(function(m){ return '<tr><td>'+gpxEsc(LABELS[m.type]||m.type)+'</td><td>'+m.coordinate.latitude.toFixed(5)+'</td><td>'+m.coordinate.longitude.toFixed(5)+'</td></tr>'; }).join('');
     var w=window.open('','_blank');
-    if(!w){ alert('Nettleseren blokkerte utskriftsvinduet.'); return; }
-    w.document.write('<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>'+gpxEsc(no)+'</title><style>'
+    if(!w){ alert((__EN?"The browser blocked the print window.":'Nettleseren blokkerte utskriftsvinduet.')); return; }
+    w.document.write((__EN?"<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>":'<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>')+gpxEsc(no)+'</title><style>'
       +'body{font-family:Georgia,serif;color:#111;max-width:720px;margin:28px auto;padding:0 18px;font-size:13px;line-height:1.55}'
       +'h1{font-size:21px;margin:0} .no{color:#666;font-family:monospace;font-size:12px}'
       +'h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid #999;padding-bottom:4px;margin:22px 0 8px}'
       +'table{border-collapse:collapse;width:100%} td,th{border:1px solid #bbb;padding:4px 8px;text-align:left;font-size:12px} th{background:#f0f0f0}'
       +'.meta td{border:none;padding:2px 8px 2px 0} .foot{margin-top:26px;font-size:10.5px;color:#555;border-top:1px solid #999;padding-top:8px}'
       +'</style></head><body>'
-      +'<h1>DAEDALUS · LØYPEKORT</h1><div class="no">'+gpxEsc(no)+'</div>'
-      +'<h2>Tur</h2><table class="meta">'
-      +'<tr><td><b>Navn:</b></td><td>'+gpxEsc(currentTrip.name||'')+'</td></tr>'
-      +'<tr><td><b>Dato:</b></td><td>'+gpxEsc(currentTrip.date||'')+'</td></tr>'
+      +(__EN?"<h1>DAEDALUS · ROUTE CARD<\/h1><div class=\"no\">":'<h1>DAEDALUS · LØYPEKORT</h1><div class="no">')+gpxEsc(no)+'</div>'
+      +(__EN?"<h2>Trip<\/h2><table class=\"meta\">":'<h2>Tur</h2><table class="meta">')
+      +(__EN?"<tr><td><b>Name:<\/b><\/td><td>":'<tr><td><b>Navn:</b></td><td>')+gpxEsc(currentTrip.name||'')+'</td></tr>'
+      +(__EN?"<tr><td><b>Date:<\/b><\/td><td>":'<tr><td><b>Dato:</b></td><td>')+gpxEsc(currentTrip.date||'')+'</td></tr>'
       +'<tr><td><b>Guide:</b></td><td>'+gpxEsc(currentTrip.guide_name||'')+'</td></tr>'
-      +'<tr><td><b>Rutelengde:</b></td><td>'+(routePoints.length>1?(routeKm().toFixed(1).replace('.',',')+' km (luftlinje punkt-til-punkt)'):'—')+'</td></tr>'
+      +(__EN?"<tr><td><b>Route length:<\/b><\/td><td>":'<tr><td><b>Rutelengde:</b></td><td>')+(routePoints.length>1?(routeKm().toFixed(1).replace('.',__EN?'.':',')+(__EN?" km (straight line point to point)":' km (luftlinje punkt-til-punkt)')):'—')+'</td></tr>'
       +'</table>'
-      +'<h2>Rutepunkter ('+routePoints.length+')</h2>'
-      +(rows?('<table><tr><th>#</th><th>Breddegrad</th><th>Lengdegrad</th></tr>'+rows+'</table>'):'<p>Ingen rute tegnet.</p>')
-      +'<h2>Markører</h2>'
-      +(mrows?('<table><tr><th>Type</th><th>Breddegrad</th><th>Lengdegrad</th></tr>'+mrows+'</table>'):'<p>Ingen markører.</p>')
-      +'<div class="foot">Koordinater i desimalgrader (WGS84). Rutelengde er summen av luftlinje mellom punktene og tilsvarer ikke faktisk marsjlengde. Løypekortet er et planleggingshjelpemiddel — ikke en erstatning for kart, kompass og egen vurdering i felt. Kartgrunnlag i planleggeren: © OpenStreetMap-bidragsytere, © Kartverket. Generert '+d.toLocaleString('nb-NO')+' · Daedalus · Guide &amp; Safety</div>'
+      +(__EN?"<h2>Route points (":'<h2>Rutepunkter (')+routePoints.length+')</h2>'
+      +(rows?((__EN?"<table><tr><th>#<\/th><th>Latitude<\/th><th>Longitude<\/th><\/tr>":'<table><tr><th>#</th><th>Breddegrad</th><th>Lengdegrad</th></tr>')+rows+'</table>'):(__EN?"<p>No route drawn.<\/p>":'<p>Ingen rute tegnet.</p>'))
+      +(__EN?"<h2>Markers<\/h2>":'<h2>Markører</h2>')
+      +(mrows?((__EN?"<table><tr><th>Type<\/th><th>Latitude<\/th><th>Longitude<\/th><\/tr>":'<table><tr><th>Type</th><th>Breddegrad</th><th>Lengdegrad</th></tr>')+mrows+'</table>'):(__EN?"<p>No markers.<\/p>":'<p>Ingen markører.</p>'))
+      +(__EN?"<div class=\"foot\">Coordinates in decimal degrees (WGS84). The route length is the sum of straight-line distances between the points and does not match the actual distance travelled. The route card is a planning aid — not a substitute for map, compass and your own judgement in the field. Map data in the planner: © OpenStreetMap contributors, © Kartverket. Generated ":'<div class="foot">Koordinater i desimalgrader (WGS84). Rutelengde er summen av luftlinje mellom punktene og tilsvarer ikke faktisk marsjlengde. Løypekortet er et planleggingshjelpemiddel — ikke en erstatning for kart, kompass og egen vurdering i felt. Kartgrunnlag i planleggeren: © OpenStreetMap-bidragsytere, © Kartverket. Generert ')+d.toLocaleString((__EN?"en-GB":'nb-NO'))+' · Daedalus · Guide &amp; Safety</div>'
       +'<script>window.print();<\/script></body></html>');
     w.document.close();
     try{ sb.auth.getUser().then(function(u){ var uid=(u&&u.data&&u.data.user&&u.data.user.id)||null; if(!uid||!currentTrip) return; sb.from('users').select('organization_id').eq('id',uid).single().then(function(r2){ var org=(r2&&r2.data&&r2.data.organization_id)||null; sb.from('admin_audit').insert({organization_id:org,actor_id:uid,action:'loypekort_generert',target:currentTrip.trip_id||currentTrip.id,details:no+' · '+String(currentTrip.name||'').slice(0,80)}).then(function(){},function(){}); }); }); }catch(e){}
@@ -502,7 +517,7 @@
   document.getElementById('wxBtn').addEventListener('click',function(){
     wxMode=!wxMode;
     this.style.borderColor=wxMode?'#4a9fe0':'';
-    this.textContent=wxMode?'☁ Klikk i kartet … (trykk for å avbryte)':'☁ Vær i punkt — klikk i kartet';
+    this.textContent=wxMode?(__EN?"☁ Click on the map … (tap to cancel)":'☁ Klikk i kartet … (trykk for å avbryte)'):(__EN?"☁ Weather at a point — click on the map":'☁ Vær i punkt — klikk i kartet');
     document.getElementById('map').style.cursor=wxMode?'help':'';
     if(wxMode) setMode(null);
   });
@@ -520,7 +535,7 @@
     var pop=document.createElement('div'); pop.id='wxPop';
     var pt=map.latLngToContainerPoint(latlng);
     pop.style.left=Math.min(pt.x+12, map.getSize().x-250)+'px'; pop.style.top=Math.max(8,pt.y-10)+'px';
-    pop.innerHTML='<span class="x" id="wxX">✕</span><b>'+latlng.lat.toFixed(4)+'° N, '+latlng.lng.toFixed(4)+'° Ø</b><div id="wxB" style="margin-top:6px;color:#8aa0bd">Henter vær …</div>';
+    pop.innerHTML='<span class="x" id="wxX">✕</span><b>'+latlng.lat.toFixed(4)+'° N, '+latlng.lng.toFixed(4)+(__EN?"° Ø<\/b><div id=\"wxB\" style=\"margin-top:6px;color:#8aa0bd\">Fetching weather …<\/div>":'° Ø</b><div id="wxB" style="margin-top:6px;color:#8aa0bd">Henter vær …</div>');
     document.querySelector('.mapwrap').appendChild(pop);
     document.getElementById('wxX').addEventListener('click',function(){ pop.remove(); });
     var url='https://api.met.no/weatherapi/locationforecast/2.0/compact?lat='+latlng.lat.toFixed(4)+'&lon='+latlng.lng.toFixed(4);
@@ -528,19 +543,19 @@
       var t0=j&&j.properties&&j.properties.timeseries&&j.properties.timeseries[0];
       var det=t0&&t0.data&&t0.data.instant&&t0.data.instant.details;
       var b=document.getElementById('wxB'); if(!b) return;
-      if(!det){ b.textContent='Ingen værdata for punktet.'; return; }
+      if(!det){ b.textContent=(__EN?"No weather data for the point.":'Ingen værdata for punktet.'); return; }
       var neste=t0.data.next_6_hours&&t0.data.next_6_hours.details;
-      b.innerHTML='Temp: <b>'+det.air_temperature+' °C</b> · Fukt: '+Math.round(det.relative_humidity)+' %<br>'
-        +'Vind: <b>'+det.wind_speed+' m/s</b>'+(det.wind_speed_of_gust?(' ('+det.wind_speed_of_gust+')'):'')+'<br>'
-        +(neste&&neste.precipitation_amount!=null?('Nedbør/6t: '+neste.precipitation_amount+' mm<br>'):'')
-        +'<span style="color:#8aa0bd">Kilde: MET · sjekk yr.no/varsom.no</span>';
+      b.innerHTML='Temp: <b>'+det.air_temperature+(__EN?" °C<\/b> · Humidity: ":' °C</b> · Fukt: ')+Math.round(det.relative_humidity)+' %<br>'
+        +(__EN?"Wind: <b>":'Vind: <b>')+det.wind_speed+' m/s</b>'+(det.wind_speed_of_gust?(' ('+det.wind_speed_of_gust+')'):'')+'<br>'
+        +(neste&&neste.precipitation_amount!=null?((__EN?"Precipitation/6h: ":'Nedbør/6t: ')+neste.precipitation_amount+' mm<br>'):'')
+        +(__EN?"<span style=\"color:#8aa0bd\">Source: MET · check yr.no/varsom.no<\/span>":'<span style="color:#8aa0bd">Kilde: MET · sjekk yr.no/varsom.no</span>');
       var u=utm33(latlng.lat,latlng.lng);
       var dd=new Date(); var iso=dd.toISOString().slice(0,10);
       fetch('/api/nve/GridTimeSeries/'+u[0]+'/'+u[1]+'/'+iso+'/'+iso+'/sd.json').then(function(r2){ return r2.json(); }).then(function(sn){
         var v=sn&&sn.Data&&sn.Data[0];
-        if(v!=null&&v<60000){ b.innerHTML+='<br>Snødybde (seNorge): <b>'+Math.round(v)+' cm</b>'; }
+        if(v!=null&&v<60000){ b.innerHTML+=(__EN?"<br>Snow depth (seNorge): <b>":'<br>Snødybde (seNorge): <b>')+Math.round(v)+' cm</b>'; }
       }).catch(function(){});
-    }).catch(function(){ var b=document.getElementById('wxB'); if(b) b.textContent='Fikk ikke hentet vær nå.'; });
+    }).catch(function(){ var b=document.getElementById('wxB'); if(b) b.textContent=(__EN?"Could not fetch the weather right now.":'Fikk ikke hentet vær nå.'); });
   }
 
   /* ================= rutebibliotek ================= */
@@ -558,8 +573,8 @@
   function buildRefList(){
     var el=document.getElementById('refList'); if(!el) return;
     var med=trips.filter(function(t){ var d=parseMapData(t.map_data); return d.routePoints.length>1||d.markers.length; });
-    if(!med.length){ el.textContent='Ingen lagrede ruter ennå.'; return; }
-    el.innerHTML=med.map(function(t){ return '<label class="lay"><input type="checkbox" data-ref="'+t.id+'"'+(refOn[t.id]?' checked':'')+'> '+esc((t.name||'Tur')+' · '+(t.date||''))+'</label>'; }).join('');
+    if(!med.length){ el.textContent=(__EN?"No saved routes yet.":'Ingen lagrede ruter ennå.'); return; }
+    el.innerHTML=med.map(function(t){ return '<label class="lay"><input type="checkbox" data-ref="'+t.id+'"'+(refOn[t.id]?' checked':'')+'> '+esc((t.name||(__EN?"Trip":'Tur'))+' · '+(t.date||''))+'</label>'; }).join('');
     el.querySelectorAll('[data-ref]').forEach(function(cb){
       cb.addEventListener('change',function(){ refOn[cb.getAttribute('data-ref')]=cb.checked; renderRefRoutes(); });
     });
