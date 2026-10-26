@@ -67,60 +67,114 @@ input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,75,.15)}
 .foot a{color:#8b98ab;text-decoration:none}
 .foot a:hover{color:var(--gold2)}
 @media (max-width:520px){.card{padding:26px 20px 22px}body{padding-top:40px}}
+.lng{position:fixed;top:14px;right:14px;z-index:3;background:rgba(16,30,54,.85);border:1px solid rgba(74,159,224,.45);color:#cfe2f5;border-radius:9px;padding:6px 11px;font:600 12px Inter,system-ui,sans-serif;cursor:pointer}
+.lng:hover{border-color:rgba(201,162,75,.6)}
 </style>
 </head>
 <body>
 <div class="aurora" aria-hidden="true"><i></i><i></i></div>
 <div class="ridge" aria-hidden="true"></div>
 
+<button class="lng" type="button" id="lngBtn" aria-label="Switch language">EN</button>
 <div class="wrap">
   <img class="logo" src="icon.png" alt="Daedalus">
-  <p class="kicker">Daedalus &middot; Invitasjon</p>
-  <h1>Du er invitert <em>inn i laget.</em></h1>
-  <p class="sub">Organisasjonen din bruker Daedalus til sikkerhetssjekk, live GPS-sporing og turrapporter. Fullf&oslash;r under &mdash; det tar under ett minutt.</p>
+  <p class="kicker" data-i18n="kicker">Daedalus &middot; Invitasjon</p>
+  <h1 data-i18n-html="h1">Du er invitert <em>inn i laget.</em></h1>
+  <p class="sub" data-i18n="sub">Organisasjonen din bruker Daedalus til sikkerhetssjekk, live GPS-sporing og turrapporter. Fullf&oslash;r under &mdash; det tar under ett minutt.</p>
 
   <div class="card" id="formCard">
     <form id="f" novalidate>
-      <label for="email">E-post (samme som invitasjonen ble sendt til)</label>
+      <label for="email" data-i18n="lEmail">E-post (samme som invitasjonen ble sendt til)</label>
       <input id="email" type="email" required autocomplete="email" inputmode="email">
-      <label for="pw1">Velg passord (minst 8 tegn)</label>
+      <label for="pw1" data-i18n="lPw1">Velg passord (minst 8 tegn)</label>
       <input id="pw1" type="password" required minlength="8" maxlength="72" autocomplete="new-password">
-      <label for="pw2">Gjenta passord</label>
+      <label for="pw2" data-i18n="lPw2">Gjenta passord</label>
       <input id="pw2" type="password" required minlength="8" maxlength="72" autocomplete="new-password">
       <div id="err"></div>
       <button class="cta" id="go" type="submit">Opprett konto</button>
     </form>
-    <div class="hint">Viktig: bruk n&oslash;yaktig samme e-postadresse som invitasjonen ble sendt til &mdash; ellers kobles du ikke til organisasjonen.<br><br><b>Har du Daedalus fra f&oslash;r?</b> Skriv ditt eksisterende passord i begge feltene &mdash; vi logger deg inn og kobler kontoen til organisasjonen.</div>
+    <div class="hint" data-i18n-html="hint">Viktig: bruk n&oslash;yaktig samme e-postadresse som invitasjonen ble sendt til &mdash; ellers kobles du ikke til organisasjonen.<br><br><b>Har du Daedalus fra f&oslash;r?</b> Skriv ditt eksisterende passord i begge feltene &mdash; vi logger deg inn og kobler kontoen til organisasjonen.</div>
   </div>
 
   <div class="card done" id="doneCard" style="display:none">
-    <h1>Kontoen er klar &#10003;</h1>
-    <p class="s" id="doneSub">Du er koblet til organisasjonen. Slik kommer du i gang:</p>
+    <h1 data-i18n="doneH">Kontoen er klar &#10003;</h1>
+    <p class="s" id="doneSub" data-i18n="doneSub">Du er koblet til organisasjonen. Slik kommer du i gang:</p>
     <ol class="steps">
-      <li>Last ned Daedalus fra App Store (iPhone) eller Google Play (Android)</li>
-      <li>Logg inn med e-posten og passordet ditt</li>
+      <li data-i18n="step1">Last ned Daedalus fra App Store (iPhone) eller Google Play (Android)</li>
+      <li data-i18n="step2">Logg inn med e-posten og passordet ditt</li>
     </ol>
     <a class="abtn" href="https://apps.apple.com/no/app/id6761403819">App Store (iPhone)</a>
     <a class="abtn alt" href="https://play.google.com/store/apps/details?id=com.hoiseth.daedalus">Google Play (Android)</a>
   </div>
 
   <div class="card done" id="confirmCard" style="display:none">
-    <h1>Nesten ferdig</h1>
-    <p class="s">Vi har sendt deg en bekreftelses-e-post. Klikk lenken i den, last deretter ned appen (App Store eller Google Play) og logg inn.</p>
+    <h1 data-i18n="confH">Nesten ferdig</h1>
+    <p class="s" data-i18n="confP">Vi har sendt deg en bekreftelses-e-post. Klikk lenken i den, last deretter ned appen (App Store eller Google Play) og logg inn.</p>
     <a class="abtn" href="https://apps.apple.com/no/app/id6761403819">App Store (iPhone)</a>
     <a class="abtn alt" href="https://play.google.com/store/apps/details?id=com.hoiseth.daedalus">Google Play (Android)</a>
   </div>
 
   <div class="feats" aria-hidden="true">
-    <span>Sikkerhetssjekk</span><span>Live GPS</span><span>SOS-varsling</span><span>PDF-rapporter</span>
+    <span data-i18n="f1">Sikkerhetssjekk</span><span>Live GPS</span><span data-i18n="f3">SOS-varsling</span><span data-i18n="f4">PDF-rapporter</span>
   </div>
 </div>
 
-<div class="foot">Sendt av Daedalus (H&Oslash;I Z) &middot; <a href="https://daedalus-app.no">daedalus-app.no</a> &middot; <a href="/privacy">Personvern</a></div>
+<div class="foot">Sendt av Daedalus (H&Oslash;I Z) &middot; <a href="https://daedalus-app.no">daedalus-app.no</a> &middot; <a href="/privacy" data-i18n="priv">Personvern</a></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script>
 <script>
 (function(){
+  /* 2026-10-26: engelsk for engelskspråklige guider. ?lang=en|no, ellers nettleserens språk. Norsk tekst uendret. */
+  var EN={kicker:'Daedalus · Invitation',
+    h1:'You are invited <em>to join the team.</em>',
+    sub:'Your organisation uses Daedalus for safety checks, live GPS tracking and trip reports. Finish below. It takes less than a minute.',
+    lEmail:'Email (the same address the invitation was sent to)',
+    lPw1:'Choose a password (at least 8 characters)',
+    lPw2:'Repeat the password',
+    hint:'Important: use exactly the email address the invitation was sent to, or you will not be linked to the organisation.<br><br><b>Already using Daedalus?</b> Enter your current password in both fields. We will log you in and link your account to the organisation.',
+    doneH:'Your account is ready ✓',
+    doneSub:'You are linked to the organisation. To get started:',
+    step1:'Download Daedalus from the App Store (iPhone) or Google Play (Android)',
+    step2:'Log in with your email and password',
+    confH:'Almost done',
+    confP:'We have sent you a confirmation email. Click the link in it, then download the app (App Store or Google Play) and log in.',
+    f1:'Safety check', f3:'SOS alerts', f4:'PDF reports', priv:'Privacy'};
+  var MSG={
+    epost:['Oppgi en gyldig e-postadresse.','Enter a valid email address.'],
+    kort:['Passordet må være minst 8 tegn.','The password must be at least 8 characters.'],
+    ulike:['Passordene er ikke like.','The passwords do not match.'],
+    tjeneste:['Kunne ikke laste innloggingstjenesten — prøv å laste siden på nytt.','Could not load the sign-in service. Try reloading the page.'],
+    oppretter:['Oppretter…','Creating…'],
+    opprett:['Opprett konto','Create account'],
+    kobler:['Kobler til organisasjonen…','Linking to the organisation…'],
+    koblingFeil:['Kontoen er i orden, men koblingen til organisasjonen feilet. Ta kontakt med hello@daedalus-app.no.','Your account is fine, but linking it to the organisation failed. Contact hello@daedalus-app.no.'],
+    ingenInv:['Fant ingen aktiv invitasjon på denne e-posten. Be organisasjonen sende invitasjonen på nytt.','No active invitation was found for this email. Ask the organisation to send the invitation again.'],
+    ikkeKoble:['Kunne ikke koble kontoen til organisasjonen. Ta kontakt med hello@daedalus-app.no.','Could not link the account to the organisation. Contact hello@daedalus-app.no.'],
+    nettKobling:['Nettverksfeil under kobling — prøv igjen.','Network error while linking. Try again.'],
+    loggerInn:['Logger inn…','Logging in…'],
+    harKonto:['Du har allerede en Daedalus-konto. Skriv ditt eksisterende passord i begge feltene — eller bruk «Glemt passord» på daedalus-app.no.','You already have a Daedalus account. Enter your current password in both fields, or use ‘Forgot password’ on daedalus-app.no.'],
+    nett:['Nettverksfeil — prøv igjen.','Network error. Try again.'],
+    ikkeOpprett:['Kunne ikke opprette konto: ','Could not create the account: ']
+  };
+  var NO={}, cur='no';
+  var noder=document.querySelectorAll('[data-i18n],[data-i18n-html]');
+  Array.prototype.forEach.call(noder,function(el){ var k=el.getAttribute('data-i18n')||el.getAttribute('data-i18n-html'); NO[k]=el.hasAttribute('data-i18n-html')? el.innerHTML : el.textContent; });
+  function T(k){ var m=MSG[k]; return m? (cur==='en'? m[1] : m[0]) : ''; }
+  function settSpraak(l){
+    cur=(l==='en')?'en':'no';
+    Array.prototype.forEach.call(noder,function(el){ var k=el.getAttribute('data-i18n')||el.getAttribute('data-i18n-html'); var v=(cur==='en')? EN[k] : NO[k]; if(v==null) return; if(el.hasAttribute('data-i18n-html')) el.innerHTML=v; else el.textContent=v; });
+    document.documentElement.setAttribute('lang', cur==='en'?'en':'nb');
+    document.title=(cur==='en')? 'Join — Daedalus' : 'Bli med — Daedalus';
+    var b=document.getElementById('lngBtn'); if(b) b.textContent=(cur==='en')?'NO':'EN';
+    var g=document.getElementById('go'); if(g && !g.disabled) g.textContent=T('opprett');
+  }
+  (function(){
+    var q=''; try{ q=String(new URLSearchParams(location.search).get('lang')||'').toLowerCase(); }catch(e){}
+    if(q==='en'||q==='no'||q==='nb'){ settSpraak(q==='en'?'en':'no'); return; }
+    var nl=(navigator.languages&&navigator.languages[0])||navigator.language||'';
+    settSpraak(/^(nb|nn|no)\b/i.test(nl)? 'no' : 'en');
+  })();
+  var lb=document.getElementById('lngBtn'); if(lb) lb.addEventListener('click',function(){ settSpraak(cur==='en'?'no':'en'); });
   var SUPABASE_URL='https://kyqjrlpsarbdwfbyjufa.supabase.co';
   var SUPABASE_KEY='sb_publishable_EZq43amTJsWJWS8QeqZz3Q_xs8qg-DP';
   var sb=null;
@@ -137,13 +191,13 @@ input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,75,.15)}
     var err=document.getElementById('err'); err.textContent='';
     var email=String(document.getElementById('email').value||'').trim().toLowerCase();
     var p1=document.getElementById('pw1').value, p2=document.getElementById('pw2').value;
-    if(!email||email.indexOf('@')<1){ err.textContent='Oppgi en gyldig e-postadresse.'; return; }
-    if(p1.length<8){ err.textContent='Passordet må være minst 8 tegn.'; return; }
-    if(p1!==p2){ err.textContent='Passordene er ikke like.'; return; }
-    if(!sb){ err.textContent='Kunne ikke laste innloggingstjenesten — prøv å laste siden på nytt.'; return; }
-    var btn=document.getElementById('go'); btn.disabled=true; btn.textContent='Oppretter…';
+    if(!email||email.indexOf('@')<1){ err.textContent=T('epost'); return; }
+    if(p1.length<8){ err.textContent=T('kort'); return; }
+    if(p1!==p2){ err.textContent=T('ulike'); return; }
+    if(!sb){ err.textContent=T('tjeneste'); return; }
+    var btn=document.getElementById('go'); btn.disabled=true; btn.textContent=T('oppretter');
 
-    function reset(){ btn.disabled=false; btn.textContent='Opprett konto'; }
+    function reset(){ btn.disabled=false; btn.textContent=T('opprett'); }
     function ferdig(){
       document.getElementById('formCard').style.display='none';
       document.getElementById('doneCard').style.display='';
@@ -152,37 +206,37 @@ input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,75,.15)}
     // Kobler innlogget bruker til organisasjonen via pending invitasjon.
     // Ny bruker er allerede koblet av databasetriggeren -> svarer 'already_in_org' (ok).
     function koble(){
-      btn.textContent='Kobler til organisasjonen…';
+      btn.textContent=T('kobler');
       return sb.rpc('accept_invite').then(function(r){
         if(r && r.error){
-          err.textContent='Kontoen er i orden, men koblingen til organisasjonen feilet. Ta kontakt med hello@daedalus-app.no.';
+          err.textContent=T('koblingFeil');
           reset(); return false;
         }
         var d = r && r.data;
         if(d && (d.ok===true || d.error==='already_in_org')) return true;
         if(d && d.error==='no_pending_invite'){
-          err.textContent='Fant ingen aktiv invitasjon på denne e-posten. Be organisasjonen sende invitasjonen på nytt.';
+          err.textContent=T('ingenInv');
           reset(); return false;
         }
-        err.textContent='Kunne ikke koble kontoen til organisasjonen. Ta kontakt med hello@daedalus-app.no.';
+        err.textContent=T('ikkeKoble');
         reset(); return false;
       },function(){
-        err.textContent='Nettverksfeil under kobling — prøv igjen.';
+        err.textContent=T('nettKobling');
         reset(); return false;
       });
     }
 
     // Eksisterende konto: logg inn med oppgitt passord, koble deretter.
     function loggInnOgKoble(){
-      btn.textContent='Logger inn…';
+      btn.textContent=T('loggerInn');
       return sb.auth.signInWithPassword({ email:email, password:p1 }).then(function(r2){
         if(r2.error){
-          err.textContent='Du har allerede en Daedalus-konto. Skriv ditt eksisterende passord i begge feltene — eller bruk «Glemt passord» på daedalus-app.no.';
+          err.textContent=T('harKonto');
           reset(); return;
         }
         return koble().then(function(ok){ if(ok) ferdig(); });
       },function(){
-        err.textContent='Nettverksfeil — prøv igjen.';
+        err.textContent=T('nett');
         reset();
       });
     }
@@ -191,7 +245,7 @@ input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,75,.15)}
       if(res.error){
         var m=String(res.error.message||'');
         if(/already|registered/i.test(m)){ loggInnOgKoble(); return; }
-        err.textContent='Kunne ikke opprette konto: '+m;
+        err.textContent=T('ikkeOpprett')+m;
         reset(); return;
       }
       var u=res.data&&res.data.user;
@@ -205,7 +259,7 @@ input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,75,.15)}
         document.getElementById('confirmCard').style.display='';
       }
     },function(){
-      err.textContent='Nettverksfeil — prøv igjen.';
+      err.textContent=T('nett');
       reset();
     });
   });
