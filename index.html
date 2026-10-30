@@ -410,6 +410,41 @@ body.ready .lt{animation:ltIn 1s var(--ease) forwards;animation-delay:var(--d,0s
 .price-feats li:last-child{border-bottom:0}
 .price-feats svg{width:17px;height:17px;flex:none;color:var(--green)}
 .price-note{text-align:center;font-size:12.5px;color:#6f7e94;margin-top:14px}
+/* 2026-10-30: Solo eller organisasjon */
+.cmp{width:min(780px,100%);margin-top:64px}
+.cmp-h{font-family:var(--serif);font-optical-sizing:auto;font-weight:480;font-size:clamp(26px,3.2vw,34px);line-height:1.15;color:#eef3fa;text-align:center}
+.cmp-sub{max-width:560px;margin:12px auto 0;color:var(--muted);font-size:15.5px;line-height:1.55;text-align:center}
+.cmp-wrap{margin-top:28px;border-radius:20px;border:1px solid #2c4569;background:linear-gradient(175deg,#16283f,#0f1c33);box-shadow:0 24px 60px rgba(2,7,16,.45);overflow:hidden}
+.cmp-t{width:100%;border-collapse:collapse;table-layout:fixed;text-align:left;font-size:14px;color:#c4d2e4}
+.cmp-t th,.cmp-t td{padding:11px 16px;border-bottom:1px solid rgba(40,64,99,.4);vertical-align:middle;overflow-wrap:anywhere}
+.cmp-t tbody tr:last-child th,.cmp-t tbody tr:last-child td{border-bottom:0}
+.cmp-t thead th{padding:20px 12px 16px;vertical-align:bottom;text-align:center;background:rgba(13,24,42,.55);border-bottom:1px solid #2c4569}
+.cmp-t thead th:first-child{width:46%}
+.cmp-t thead th b{display:block;font-size:11.5px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+.cmp-p{display:block;margin-top:8px;font-family:var(--serif);font-weight:500;font-size:22px;line-height:1.15;color:#eef3fa}
+.cmp-t thead small{display:block;margin-top:5px;font-size:12px;line-height:1.35;color:var(--muted)}
+.cmp-t tbody th{font-weight:500;color:#d7e2f0}
+.cmp-t tbody td{text-align:center}
+.cmp-who td{font-size:13px;line-height:1.4}
+.cmp-g th{padding:16px 16px 8px;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#9cc4ea;background:rgba(13,24,42,.35)}
+.cmp-t td.y svg{width:19px;height:19px;color:var(--green);vertical-align:middle}
+.cmp-t td.n i{display:inline-block;width:14px;height:2px;border-radius:2px;background:#3a4c66;vertical-align:middle}
+.cmp .sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.cmp-note{margin-top:16px;text-align:center;font-size:13.5px;line-height:1.55;color:var(--muted)}
+.cmp-note a{color:#9cc4ea;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
+@media (max-width:560px){
+  .cmp{margin-top:48px}
+  .cmp-t{font-size:13px}
+  .cmp-t th,.cmp-t td{padding:10px 7px}
+  .cmp-t tbody th{padding-left:12px}
+  .cmp-t thead th{padding:16px 5px 12px}
+  .cmp-t thead th:first-child{width:38%}
+  .cmp-t thead th b{font-size:10px;letter-spacing:.06em}
+  .cmp-p{font-size:16px}
+  .cmp-t thead small{font-size:11px}
+  .cmp-who td{font-size:12px}
+  .cmp-g th{padding:14px 12px 7px;letter-spacing:.14em}
+}
 
 /* ---------- final cta ---------- */
 .sec-cta{padding:112px 0 124px;overflow:hidden;background:radial-gradient(55% 60% at 50% 0%,rgba(74,159,224,.13),transparent 70%)}
@@ -1336,6 +1371,41 @@ html{scrollbar-color:#2c4468 #0a1322}
           <p class="price-note" data-i18n="price.note">€25 per aktive sete / mnd · eks. mva · faktureres månedlig</p>
         </div>
       </div>
+      <div class="cmp reveal" id="solo-org" style="--d:.1s">
+        <h3 class="cmp-h" data-i18n="cmp.h">Solo eller organisasjon?</h3>
+        <p class="cmp-sub" data-i18n="cmp.sub">Appen er den samme for guiden i begge abonnementene. Organisasjonen får i tillegg kommandosenteret på nett, med oversikt over alle guidene.</p>
+        <div class="cmp-wrap">
+          <table class="cmp-t">
+            <thead>
+              <tr>
+                <th scope="col"><span class="sr" data-i18n="cmp.feat">Funksjon</span></th>
+                <th scope="col"><b data-i18n="cmp.solo">Solo</b><span class="cmp-p" data-i18n="cmp.solo.p">kr 229 / mnd</span><small data-i18n="cmp.solo.p2">inkl. mva · kjøpes i appen</small></th>
+                <th scope="col"><b data-i18n="cmp.org">Organisasjon</b><span class="cmp-p" data-i18n="cmp.org.p">€25 / sete / mnd</span><small data-i18n="cmp.org.p2">eks. mva · faktureres månedlig</small></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="cmp-who"><th scope="row" data-i18n="cmp.who">Passer for</th><td data-i18n="cmp.who.s">Én guide, også frilansere</td><td data-i18n="cmp.who.o">Selskap med flere guider</td></tr>
+              <tr class="cmp-g"><th scope="rowgroup" colspan="3" data-i18n="cmp.g1">I appen</th></tr>
+              <tr><th scope="row" data-i18n="cmp.r1">Sikkerhetssjekk før hver tur, tilpasset aktiviteten</th><td class="y"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="sr" data-i18n="cmp.yes">Inkludert</span></td><td class="y"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="sr" data-i18n="cmp.yes">Inkludert</span></td></tr>
+              <tr><th scope="row" data-i18n="cmp.r2">Turlogg med GPS, hendelser og nestenulykker</th><td class="y"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="sr" data-i18n="cmp.yes">Inkludert</span></td><td class="y"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="sr" data-i18n="cmp.yes">Inkludert</span></td></tr>
+              <tr><th scope="row" data-i18n="cmp.r3">SOS-melding til nødkontaktene dine</th><td class="y"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="sr" data-i18n="cmp.yes">Inkludert</span></td><td class="y"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="sr" data-i18n="cmp.yes">Inkludert</span></td></tr>
+              <tr><th scope="row" data-i18n="cmp.r4">PDF-turrapport etter turen</th><td class="y"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="sr" data-i18n="cmp.yes">Inkludert</span></td><td class="y"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="sr" data-i18n="cmp.yes">Inkludert</span></td></tr>
+              <tr><th scope="row" data-i18n="cmp.r5">Vær fra MET på turen</th><td class="y"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="sr" data-i18n="cmp.yes">Inkludert</span></td><td class="y"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="sr" data-i18n="cmp.yes">Inkludert</span></td></tr>
+              <tr><th scope="row" data-i18n="cmp.r6">Registrerer uten dekning og sender senere</th><td class="y"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="sr" data-i18n="cmp.yes">Inkludert</span></td><td class="y"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="sr" data-i18n="cmp.yes">Inkludert</span></td></tr>
+              <tr><th scope="row" data-i18n="cmp.r7">Sertifiseringer med utløpsdato</th><td class="y"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="sr" data-i18n="cmp.yes">Inkludert</span></td><td class="y"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="sr" data-i18n="cmp.yes">Inkludert</span></td></tr>
+              <tr class="cmp-g"><th scope="rowgroup" colspan="3" data-i18n="cmp.g2">Kommandosenteret på nett</th></tr>
+              <tr><th scope="row" data-i18n="cmp.r8">Live kart over guider og turer</th><td class="n"><i aria-hidden="true"></i><span class="sr" data-i18n="cmp.no">Ikke inkludert</span></td><td class="y"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="sr" data-i18n="cmp.yes">Inkludert</span></td></tr>
+              <tr><th scope="row" data-i18n="cmp.r9">SOS-varsel i sanntid på kontoret</th><td class="n"><i aria-hidden="true"></i><span class="sr" data-i18n="cmp.no">Ikke inkludert</span></td><td class="y"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="sr" data-i18n="cmp.yes">Inkludert</span></td></tr>
+              <tr><th scope="row" data-i18n="cmp.r10">Inviter guider, appen er inkludert for dem</th><td class="n"><i aria-hidden="true"></i><span class="sr" data-i18n="cmp.no">Ikke inkludert</span></td><td class="y"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="sr" data-i18n="cmp.yes">Inkludert</span></td></tr>
+              <tr><th scope="row" data-i18n="cmp.r11">Planlegg ruter og send dem til guidens app</th><td class="n"><i aria-hidden="true"></i><span class="sr" data-i18n="cmp.no">Ikke inkludert</span></td><td class="y"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="sr" data-i18n="cmp.yes">Inkludert</span></td></tr>
+              <tr><th scope="row" data-i18n="cmp.r12">Avviksregister og revisjonslogg</th><td class="n"><i aria-hidden="true"></i><span class="sr" data-i18n="cmp.no">Ikke inkludert</span></td><td class="y"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="sr" data-i18n="cmp.yes">Inkludert</span></td></tr>
+              <tr><th scope="row" data-i18n="cmp.r13">Tilsynsmappe og guidetimer (Svalbard-klar)</th><td class="n"><i aria-hidden="true"></i><span class="sr" data-i18n="cmp.no">Ikke inkludert</span></td><td class="y"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="sr" data-i18n="cmp.yes">Inkludert</span></td></tr>
+              <tr><th scope="row" data-i18n="cmp.r14">Gjesteguider med eget Solo-abonnement, uten ekstra sete</th><td class="n"><i aria-hidden="true"></i><span class="sr" data-i18n="cmp.no">Ikke inkludert</span></td><td class="y"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="sr" data-i18n="cmp.yes">Inkludert</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="cmp-note"><span data-i18n="cmp.note">Frilanser med Solo? En organisasjon kan legge deg til som gjesteguide uten at du tar et sete.</span> <a href="#download" data-i18n="cmp.dl">Last ned appen</a></p>
+      </div>
     </div>
   </section>
 
@@ -1662,6 +1732,38 @@ html{scrollbar-color:#2c4468 #0a1322}
       "pf10": "Guidetimer og internkontroll-eksport (Svalbard-klar)",
       "price.cta": "Kom i gang",
       "price.note": "€25 per aktive sete / mnd · eks. mva · faktureres månedlig",
+      "cmp.h": "Solo eller organisasjon?",
+      "cmp.sub": "Appen er den samme for guiden i begge abonnementene. Organisasjonen får i tillegg kommandosenteret på nett, med oversikt over alle guidene.",
+      "cmp.feat": "Funksjon",
+      "cmp.solo": "Solo",
+      "cmp.solo.p": "kr 229 / mnd",
+      "cmp.solo.p2": "inkl. mva · kjøpes i appen",
+      "cmp.org": "Organisasjon",
+      "cmp.org.p": "€25 / sete / mnd",
+      "cmp.org.p2": "eks. mva · faktureres månedlig",
+      "cmp.who": "Passer for",
+      "cmp.who.s": "Én guide, også frilansere",
+      "cmp.who.o": "Selskap med flere guider",
+      "cmp.g1": "I appen",
+      "cmp.r1": "Sikkerhetssjekk før hver tur, tilpasset aktiviteten",
+      "cmp.r2": "Turlogg med GPS, hendelser og nestenulykker",
+      "cmp.r3": "SOS-melding til nødkontaktene dine",
+      "cmp.r4": "PDF-turrapport etter turen",
+      "cmp.r5": "Vær fra MET på turen",
+      "cmp.r6": "Registrerer uten dekning og sender senere",
+      "cmp.r7": "Sertifiseringer med utløpsdato",
+      "cmp.g2": "Kommandosenteret på nett",
+      "cmp.r8": "Live kart over guider og turer",
+      "cmp.r9": "SOS-varsel i sanntid på kontoret",
+      "cmp.r10": "Inviter guider, appen er inkludert for dem",
+      "cmp.r11": "Planlegg ruter og send dem til guidens app",
+      "cmp.r12": "Avviksregister og revisjonslogg",
+      "cmp.r13": "Tilsynsmappe og guidetimer (Svalbard-klar)",
+      "cmp.r14": "Gjesteguider med eget Solo-abonnement, uten ekstra sete",
+      "cmp.note": "Frilanser med Solo? En organisasjon kan legge deg til som gjesteguide uten at du tar et sete.",
+      "cmp.dl": "Last ned appen",
+      "cmp.yes": "Inkludert",
+      "cmp.no": "Ikke inkludert",
       "cta.h": "Last ned, legg inn neste tur, kjør.",
       "cta.b": "Guiden bruker appen. Den som er igjen på kontoret bruker kommandosenteret. Ingen oppsettsuke, ingen konsulenttimer.",
       "cta.c1t": "Forventet retur 17:00",
@@ -1866,7 +1968,7 @@ html{scrollbar-color:#2c4468 #0a1322}
       "price.kicker": "Price",
       "price.h": "25 euro per seat per month, and only for the seats in use.",
       "price.sub": "Full access for your whole organisation, billed per active seat. Solo guides subscribe in the app.",
-      "price.plan": "ORGANIZATION",
+      "price.plan": "ORGANISATION",
       "price.per": "per seat / mo · excl. VAT",
       "seats.l": "YOUR TEAM",
       "seats.u": "seats",
@@ -1883,6 +1985,38 @@ html{scrollbar-color:#2c4468 #0a1322}
       "pf10": "Guide hours & internal control export (Svalbard-ready)",
       "price.cta": "Get started",
       "price.note": "€25 per active seat / month · excl. VAT · billed monthly",
+      "cmp.h": "Solo or organisation?",
+      "cmp.sub": "The app is the same for the guide on both plans. The organisation also gets the command centre on the web, with an overview of all its guides.",
+      "cmp.feat": "Feature",
+      "cmp.solo": "Solo",
+      "cmp.solo.p": "€19.99 / month",
+      "cmp.solo.p2": "incl. VAT · local price in the app",
+      "cmp.org": "Organisation",
+      "cmp.org.p": "€25 / seat / month",
+      "cmp.org.p2": "excl. VAT · billed monthly",
+      "cmp.who": "Best for",
+      "cmp.who.s": "One guide, freelancers too",
+      "cmp.who.o": "Companies with several guides",
+      "cmp.g1": "In the app",
+      "cmp.r1": "Safety check before every trip, adapted to the activity",
+      "cmp.r2": "Trip log with GPS, incidents and near misses",
+      "cmp.r3": "SOS message to your emergency contacts",
+      "cmp.r4": "PDF trip report after the trip",
+      "cmp.r5": "Weather from MET Norway on the trip",
+      "cmp.r6": "Records without coverage and sends later",
+      "cmp.r7": "Certifications with expiry dates",
+      "cmp.g2": "The command centre on the web",
+      "cmp.r8": "Live map of guides and trips",
+      "cmp.r9": "Real-time SOS alerts at the office",
+      "cmp.r10": "Invite guides, the app is included for them",
+      "cmp.r11": "Plan routes and send them to the guide’s app",
+      "cmp.r12": "Deviation register and audit log",
+      "cmp.r13": "Inspection file and guide hours (Svalbard-ready)",
+      "cmp.r14": "Guest guides on their own Solo plan, no extra seat",
+      "cmp.note": "Freelancer on Solo? An organisation can add you as a guest guide without you taking a seat.",
+      "cmp.dl": "Download the app",
+      "cmp.yes": "Included",
+      "cmp.no": "Not included",
       "cta.h": "Download, add your next trip, go.",
       "cta.b": "The guide uses the app. Whoever is left in the office uses the command centre. No set-up week, no consultant hours.",
       "cta.c1t": "Expected return 17:00",
@@ -2104,6 +2238,38 @@ html{scrollbar-color:#2c4468 #0a1322}
       "pf10": "Guidetimmar och internkontrollexport (Svalbard-redo)",
       "price.cta": "Kom igång",
       "price.note": "€25 per aktiv plats / mån · exkl. moms · faktureras månadsvis",
+      "cmp.h": "Solo eller organisation?",
+      "cmp.sub": "Appen är densamma för guiden i båda abonnemangen. Organisationen får dessutom ledningscentralen på webben, med överblick över alla guider.",
+      "cmp.feat": "Funktion",
+      "cmp.solo": "Solo",
+      "cmp.solo.p": "€19,99 / mån",
+      "cmp.solo.p2": "inkl. moms · lokalt pris i appen",
+      "cmp.org": "Organisation",
+      "cmp.org.p": "€25 / plats / mån",
+      "cmp.org.p2": "exkl. moms · faktureras månadsvis",
+      "cmp.who": "Passar för",
+      "cmp.who.s": "En guide, även frilansare",
+      "cmp.who.o": "Företag med flera guider",
+      "cmp.g1": "I appen",
+      "cmp.r1": "Säkerhetskontroll före varje tur, anpassad efter aktiviteten",
+      "cmp.r2": "Turlogg med GPS, händelser och tillbud",
+      "cmp.r3": "SOS-meddelande till dina nödkontakter",
+      "cmp.r4": "PDF-turrapport efter turen",
+      "cmp.r5": "Väder från MET under turen",
+      "cmp.r6": "Registrerar utan täckning och skickar senare",
+      "cmp.r7": "Certifieringar med utgångsdatum",
+      "cmp.g2": "Ledningscentralen på webben",
+      "cmp.r8": "Livekarta över guider och turer",
+      "cmp.r9": "SOS-larm i realtid på kontoret",
+      "cmp.r10": "Bjud in guider, appen ingår för dem",
+      "cmp.r11": "Planera rutter och skicka dem till guidens app",
+      "cmp.r12": "Avvikelseregister och revisionslogg",
+      "cmp.r13": "Tillsynspärm och guidetimmar (Svalbard-redo)",
+      "cmp.r14": "Gästguider med eget Solo-abonnemang, utan extra plats",
+      "cmp.note": "Frilansare med Solo? En organisation kan lägga till dig som gästguide utan att du tar en plats.",
+      "cmp.dl": "Ladda ner appen",
+      "cmp.yes": "Ingår",
+      "cmp.no": "Ingår inte",
       "cta.h": "Var skyddad innan du behöver det.",
       "cta.b": "Ladda ner Daedalus och genomför din första fullt dokumenterade, juridiskt skyddade tur på några minuter.",
       "cta.c1t": "Förväntad återkomst 17:00",
@@ -2325,6 +2491,38 @@ html{scrollbar-color:#2c4468 #0a1322}
       "pf10": "Guidetimer og internkontrol-eksport (Svalbard-klar)",
       "price.cta": "Kom i gang",
       "price.note": "€25 pr. aktiv plads / md. · ekskl. moms · faktureres månedligt",
+      "cmp.h": "Solo eller organisation?",
+      "cmp.sub": "Appen er den samme for guiden i begge abonnementer. Organisationen får desuden kommandocentralen på nettet, med overblik over alle guider.",
+      "cmp.feat": "Funktion",
+      "cmp.solo": "Solo",
+      "cmp.solo.p": "€19,99 / md.",
+      "cmp.solo.p2": "inkl. moms · lokal pris i appen",
+      "cmp.org": "Organisation",
+      "cmp.org.p": "€25 / plads / md.",
+      "cmp.org.p2": "ekskl. moms · faktureres månedligt",
+      "cmp.who": "Passer til",
+      "cmp.who.s": "Én guide, også freelancere",
+      "cmp.who.o": "Virksomheder med flere guider",
+      "cmp.g1": "I appen",
+      "cmp.r1": "Sikkerhedstjek før hver tur, tilpasset aktiviteten",
+      "cmp.r2": "Turlog med GPS, hændelser og nærved-ulykker",
+      "cmp.r3": "SOS-besked til dine nødkontakter",
+      "cmp.r4": "PDF-turrapport efter turen",
+      "cmp.r5": "Vejr fra MET på turen",
+      "cmp.r6": "Registrerer uden dækning og sender senere",
+      "cmp.r7": "Certificeringer med udløbsdato",
+      "cmp.g2": "Kommandocentralen på nettet",
+      "cmp.r8": "Livekort over guider og ture",
+      "cmp.r9": "SOS-alarm i realtid på kontoret",
+      "cmp.r10": "Invitér guider, appen er inkluderet for dem",
+      "cmp.r11": "Planlæg ruter og send dem til guidens app",
+      "cmp.r12": "Afvigelsesregister og revisionslog",
+      "cmp.r13": "Tilsynsmappe og guidetimer (Svalbard-klar)",
+      "cmp.r14": "Gæsteguider med eget Solo-abonnement, uden ekstra plads",
+      "cmp.note": "Freelancer med Solo? En organisation kan tilføje dig som gæsteguide, uden at du optager en plads.",
+      "cmp.dl": "Hent appen",
+      "cmp.yes": "Inkluderet",
+      "cmp.no": "Ikke inkluderet",
       "cta.h": "Vær beskyttet, før du får brug for det.",
       "cta.b": "Hent Daedalus og gennemfør din første fuldt dokumenterede, juridisk beskyttede tur på få minutter.",
       "cta.c1t": "Forventet retur 17:00",
@@ -2546,6 +2744,38 @@ html{scrollbar-color:#2c4468 #0a1322}
       "pf10": "Opastunnit ja sisäisen valvonnan vienti (Huippuvuoret-valmis)",
       "price.cta": "Aloita",
       "price.note": "25 € per aktiivinen paikka / kk · + alv · laskutetaan kuukausittain",
+      "cmp.h": "Solo vai organisaatio?",
+      "cmp.sub": "Sovellus on oppaalle sama molemmissa tilauksissa. Organisaatio saa lisäksi komentokeskuksen verkossa ja näkee kaikki oppaansa.",
+      "cmp.feat": "Ominaisuus",
+      "cmp.solo": "Solo",
+      "cmp.solo.p": "19,99 € / kk",
+      "cmp.solo.p2": "sis. alv · paikallinen hinta sovelluksessa",
+      "cmp.org": "Organisaatio",
+      "cmp.org.p": "25 € / paikka / kk",
+      "cmp.org.p2": "+ alv · laskutetaan kuukausittain",
+      "cmp.who": "Sopii",
+      "cmp.who.s": "Yhdelle oppaalle, myös freelancerille",
+      "cmp.who.o": "Yrityksille, joilla on useita oppaita",
+      "cmp.g1": "Sovelluksessa",
+      "cmp.r1": "Turvallisuustarkistus ennen jokaista retkeä, aktiviteetin mukaan",
+      "cmp.r2": "Retkiloki GPS:llä, tapahtumat ja läheltä piti -tilanteet",
+      "cmp.r3": "SOS-viesti hätäyhteyshenkilöillesi",
+      "cmp.r4": "PDF-retkiraportti retken jälkeen",
+      "cmp.r5": "Sää MET:ltä retken aikana",
+      "cmp.r6": "Kirjaa ilman kenttää ja lähettää myöhemmin",
+      "cmp.r7": "Sertifikaatit ja niiden voimassaoloajat",
+      "cmp.g2": "Komentokeskus verkossa",
+      "cmp.r8": "Reaaliaikainen kartta oppaista ja retkistä",
+      "cmp.r9": "SOS-hälytys reaaliajassa toimistolle",
+      "cmp.r10": "Kutsu oppaita, sovellus sisältyy heille",
+      "cmp.r11": "Suunnittele reitit ja lähetä ne oppaan sovellukseen",
+      "cmp.r12": "Poikkeamarekisteri ja auditointiloki",
+      "cmp.r13": "Valvontakansio ja opastunnit (Huippuvuoret-valmis)",
+      "cmp.r14": "Vierasoppaat omalla Solo-tilauksella, ilman lisäpaikkaa",
+      "cmp.note": "Freelancer, jolla on Solo? Organisaatio voi lisätä sinut vierasoppaaksi ilman, että viet paikan.",
+      "cmp.dl": "Lataa sovellus",
+      "cmp.yes": "Sisältyy",
+      "cmp.no": "Ei sisälly",
       "cta.h": "Ole suojattu ennen kuin tarvitset sitä.",
       "cta.b": "Lataa Daedalus ja tee ensimmäinen täysin dokumentoitu, juridisesti suojattu retkesi minuuteissa.",
       "cta.c1t": "Odotettu paluu 17:00",
@@ -2767,6 +2997,38 @@ html{scrollbar-color:#2c4468 #0a1322}
       "pf10": "Leiðsögutímar og útflutningur innra eftirlits (tilbúið fyrir Svalbarða)",
       "price.cta": "Byrjaðu",
       "price.note": "€25 á virkt sæti / mán. · án vsk. · innheimt mánaðarlega",
+      "cmp.h": "Solo eða fyrirtæki?",
+      "cmp.sub": "Appið er það sama fyrir leiðsögumanninn í báðum áskriftum. Fyrirtækið fær að auki stjórnstöðina á vefnum, með yfirsýn yfir alla leiðsögumenn sína.",
+      "cmp.feat": "Eiginleiki",
+      "cmp.solo": "Solo",
+      "cmp.solo.p": "€19,99 / mán.",
+      "cmp.solo.p2": "með vsk. · staðbundið verð í appinu",
+      "cmp.org": "Fyrirtæki",
+      "cmp.org.p": "€25 / sæti / mán.",
+      "cmp.org.p2": "án vsk. · innheimt mánaðarlega",
+      "cmp.who": "Hentar",
+      "cmp.who.s": "Einum leiðsögumanni, líka verktökum",
+      "cmp.who.o": "Fyrirtækjum með marga leiðsögumenn",
+      "cmp.g1": "Í appinu",
+      "cmp.r1": "Öryggisathugun fyrir hverja ferð, aðlöguð að starfseminni",
+      "cmp.r2": "Ferðaskrá með GPS, atvikum og næstum-slysum",
+      "cmp.r3": "SOS-skilaboð til neyðartengiliða þinna",
+      "cmp.r4": "PDF-ferðaskýrsla eftir ferðina",
+      "cmp.r5": "Veður frá MET í ferðinni",
+      "cmp.r6": "Skráir án sambands og sendir síðar",
+      "cmp.r7": "Vottanir með gildistíma",
+      "cmp.g2": "Stjórnstöðin á vefnum",
+      "cmp.r8": "Lifandi kort af leiðsögumönnum og ferðum",
+      "cmp.r9": "SOS-viðvörun í rauntíma á skrifstofunni",
+      "cmp.r10": "Bjóddu leiðsögumönnum, appið fylgir með fyrir þá",
+      "cmp.r11": "Skipuleggðu leiðir og sendu þær í app leiðsögumannsins",
+      "cmp.r12": "Fráviksskrá og endurskoðunarskrá",
+      "cmp.r13": "Eftirlitsmappa og leiðsögutímar (tilbúið fyrir Svalbarða)",
+      "cmp.r14": "Gestaleiðsögumenn með eigin Solo-áskrift, án aukasætis",
+      "cmp.note": "Verktaki með Solo? Fyrirtæki getur bætt þér við sem gestaleiðsögumanni án þess að þú takir sæti.",
+      "cmp.dl": "Sækja appið",
+      "cmp.yes": "Innifalið",
+      "cmp.no": "Ekki innifalið",
       "cta.h": "Vertu varinn áður en þú þarft á því að halda.",
       "cta.b": "Sæktu Daedalus og farðu þína fyrstu fullskjalfestu, lögvernduðu ferð á nokkrum mínútum.",
       "cta.c1t": "Áætluð heimkoma 17:00",
