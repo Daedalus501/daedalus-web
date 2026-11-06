@@ -74,6 +74,20 @@ color:var(--text);text-decoration:none;background:rgba(0,0,0,.25)}
 <h1 data-i18n="h1">Nyheter</h1>
 <p class="sub" data-i18n="sub">Hva som er nytt i appen og kommandosenteret. Kort, ærlig og uten fyll.</p>
 
+<article class="post" id="v150">
+<div class="meta"><span class="tag rel" data-i18n="pk.tag">Versjon 1.5.0</span><time datetime="2026-11-05" data-i18n="pk.date">5. november 2026</time></div>
+<h2 data-i18n="pk.h">Daedalus 1.5.0: avlyste turer, sikkerhetssjekk og utlogging</h2>
+<p data-i18n="pk.lead">Tre rettelser på iPhone. 1.5.0 er ikke ute på Android ennå. Gjesteerklæringen er bygget inn i appen, men er ikke åpnet for kundene. Vi skriver her når den kan tas i bruk.</p>
+<ul>
+<li class="fix" data-i18n-html="pk.f1"><b>Avlyste turer kunne aktiveres.</b> En tur som var avlyst i kommandosenteret, sto som avlyst i turlista, men kunne fortsatt aktiveres fra sikkerhetssjekken. Nå kan den ikke aktiveres, og sikkerhetssjekken og deltakerlista er låst. Appen ser avlysningen først når telefonen har hatt dekning etterpå.</li>
+<li class="fix" data-i18n-html="pk.f2"><b>Avkryssinger i sikkerhetssjekken kunne forsvinne.</b> Ble turen oppdatert i bakgrunnen mens du gikk gjennom sikkerhetssjekken, kunne avkryssinger som ikke var lagret, nullstilles. Nå blir de stående.</li>
+<li class="fix" data-i18n-html="pk.f3"><b>Utlogging uten varsel.</b> Logger du ut før alt er sendt, kan endringer gå tapt, og appen sa ikke fra. Nå varsler den først når du logger ut fra profilen, så du kan vente til alt er sendt.</li>
+</ul>
+<div class="stores">
+<a class="store" href="https://apps.apple.com/no/app/id6761403819" target="_blank" rel="noopener" data-i18n="pk.ios">Last ned på App Store</a>
+</div>
+</article>
+
 <article class="post" id="engelsk-2026-10">
 <div class="meta"><span class="tag web" data-i18n="pj.tag">Kommandosenter</span><time datetime="2026-10-26" data-i18n="pj.date">26. oktober 2026</time></div>
 <h2 data-i18n="pj.h">Kommandosenteret på engelsk</h2>
@@ -324,6 +338,13 @@ var EN={
 'head.sub':'News and release notes',
 'h1':'News',
 'sub':'What is new in the app and the command centre. Short, honest, no filler.',
+'pk.tag':'Version 1.5.0','pk.date':'5 November 2026',
+'pk.h':'Daedalus 1.5.0: cancelled trips, the safety check and signing out',
+'pk.lead':'Three fixes on iPhone. 1.5.0 is not out on Android yet. Guest declarations are built into the app but are not open to customers. We will post here when they can be used.',
+'pk.f1':'<b>Cancelled trips could be activated.</b> A trip cancelled in the command centre showed as cancelled in the trip list but could still be activated from the safety check. Now it cannot be activated, and the safety check and the participant list are locked. The app only sees the cancellation once the phone has had coverage afterwards.',
+'pk.f2':'<b>Ticks in the safety check could disappear.</b> If the trip was updated in the background while you were going through the safety check, ticks that had not been saved yet could be cleared. Now they stay.',
+'pk.f3':'<b>Signing out without a warning.</b> If you sign out before everything has been sent, changes may be lost, and the app did not tell you. Now it warns you first when you sign out from your profile, so you can wait until everything has been sent.',
+'pk.ios':'Download on the App Store',
 'pj.tag':'Command centre','pj.date':'26 October 2026',
 'pj.h':'The command centre in English',
 'pj.lead':'The command centre and the map planner are now available in English. Norwegian is unchanged.',
