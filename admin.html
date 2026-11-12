@@ -2456,7 +2456,7 @@ window.__sevNo=function(s){ s=String(s||'').toLowerCase(); return s==='critical'
   window.__evNo=function(e){ if(e&&typeof e==='object'&&window.__isSos(e)) return 'SOS'; var t=(e&&typeof e==='object')? e.type : e; var m={'sos':'SOS','near-accident':(__EN?"Near miss":'Nestenulykke'),'nestenulykke':(__EN?"Near miss":'Nestenulykke'),'equipment':(__EN?"Equipment":'Utstyr'),'equipment failure':(__EN?"Equipment":'Utstyr'),'injury':(__EN?"Injury":'Skade'),'hazard':(__EN?"Hazard":'Fare'),'weather':(__EN?"Weather":'Vær'),'weather change':(__EN?"Weather":'Vær'),'route change':(__EN?"Route change":'Ruteendring'),'checkpoint':(__EN?"Checkpoint":'Sjekkpunkt'),'report':(__EN?"Report":'Rapport'),'comment':(__EN?"Comment":'Kommentar')}; var k=String(t||'').toLowerCase(); return m[k]||(k? k.charAt(0).toUpperCase()+k.slice(1) : (__EN?"Event":'Hendelse')); };
   window.__aktNo=function(a){ var m={summit:(__EN?"Summit":'Topptur'),ski_touring:(__EN?"Ski touring":'Skitur'),glacier:(__EN?"Glacier":'Brevandring'),climbing:(__EN?"Climbing":'Klatring'),kayak:(__EN?"Kayak":'Kajakk'),sea_kayaking:(__EN?"Sea kayak":'Havkajakk'),river_guide:(__EN?"River guiding":'Elveguiding'),dog_sledding:(__EN?"Dog sledding":'Hundekjøring'),snowmobile_safari:(__EN?"Snowmobile":'Snøscooter'),northern_lights_bus:(__EN?"Northern lights bus":'Nordlysbuss'),teambuilding:(__EN?"Team building":'Teambuilding'),course:(__EN?"Course":'Kurs'),rescue_operation:(__EN?"Rescue mission":'Redningsoppdrag'),hiking:(__EN?"Hiking":'Fjellvandring'),ice_climbing:(__EN?"Ice climbing":'Isklatring'),via_ferrata:'Via ferrata',whale_safari:(__EN?"Whale safari":'Hvalsafari'),snowshoeing:(__EN?"Snowshoeing":'Truging'),other:(__EN?"Other":'Annet')}; var k=String(a==null?'':a).trim(); return m[k]||m[k.toLowerCase()]||k; };
   window.__vanskNo=function(d){ var m={easy:(__EN?"Easy":'Lett'),moderate:(__EN?"Moderate":'Moderat'),challenging:(__EN?"Challenging":'Krevende'),extreme:(__EN?"Extreme":'Ekstrem')}; var k=String(d==null?'':d).trim(); return m[k.toLowerCase()]||k; };
-  window.__statusNo=function(s){ var m={draft:(__EN?"Draft":'Utkast'),active:(__EN?"Active":'Aktiv'),completed:(__EN?"Completed":'Fullført'),cancelled:(__EN?"Cancelled":'Avlyst'),planned:(__EN?"Planned":'Planlagt')}; var k=String(s==null?'':s).trim(); return m[k.toLowerCase()]||k; };
+  window.__statusNo=function(s){ var m={draft:(__EN?"Draft":'Utkast'),ready:(__EN?"Ready":'Klar'),active:(__EN?"Active":'Aktiv'),completed:(__EN?"Completed":'Fullført'),cancelled:(__EN?"Cancelled":'Avlyst'),planned:(__EN?"Planned":'Planlagt')}; var k=String(s==null?'':s).trim(); return m[k.toLowerCase()]||k; };
   window.__datoNo=function(v){ if(!v) return ''; var s=String(v); var d=new Date(/^\d{4}-\d{2}-\d{2}$/.test(s)? s+'T12:00:00' : s); if(isNaN(d.getTime())) return s; var p=function(n){return (n<10?'0':'')+n;}; return p(d.getDate())+'.'+p(d.getMonth()+1)+'.'+d.getFullYear(); };
   window.__auditNo=function(a){ var m={tur_opprettet:(__EN?"Trip created":'Tur opprettet'),tur_endret:(__EN?"Trip edited":'Tur endret'),tur_godkjent:(__EN?"Trip approved":'Tur godkjent'),tur_avlyst:(__EN?"Trip cancelled":'Tur avlyst'),tur_slettet:(__EN?"Trip deleted":'Tur slettet'),deltaker_lagt_til:(__EN?"Participant added":'Deltaker lagt til'),deltaker_slettet:(__EN?"Participant deleted":'Deltaker slettet'),rapport_merknad:(__EN?"Admin note on trip report":'Admin-merknad på turrapport'),guide_endret:(__EN?"Guide edited":'Guide endret'),guide_fjernet:(__EN?"Guide removed from the organisation":'Guide fjernet fra organisasjonen'),gjest_merket:(__EN?"Marked as guest guide":'Merket som gjesteguide'),gjest_fjernet:(__EN?"Guest flag removed":'Gjest-merke fjernet'),invitasjon_sendt:(__EN?"Guide invited":'Guide invitert'),invitasjon_resendt:(__EN?"Invitation sent again":'Invitasjon sendt på nytt'),invitasjon_trukket:(__EN?"Invitation withdrawn":'Invitasjon trukket tilbake'),org_innstillinger:(__EN?"Organisation settings changed":'Organisasjonsinnstillinger endret'),kunngjoring:(__EN?"Announcement sent":'Kunngjøring sendt'),vaktplan_endret:(__EN?"Shift scheduled":'Vakt satt opp'),vaktplan_fjernet:(__EN?"Shift removed":'Vakt fjernet'),vaktplan_eksportert:(__EN?"Duty roster exported":'Vaktplan eksportert'),avvik_opprettet:(__EN?"Deviation created":'Avvik opprettet'),avvik_endret:(__EN?"Deviation edited":'Avvik endret'),avvik_lukket:(__EN?"Deviation closed":'Avvik lukket'),avvik_gjenaapnet:(__EN?"Deviation reopened":'Avvik gjenåpnet'),avvik_eksportert:(__EN?"Deviation register exported":'Avviksregister eksportert'),hms_rapport_generert:(__EN?"HSE report generated":'HMS-rapport generert'),tilsynsmappe_generert:(__EN?"Inspection file generated":'Tilsynsmappe generert'),sesongrapport_generert:(__EN?"Season report generated":'Sesongrapport generert'),fakturagrunnlag_eksportert:(__EN?"Invoicing basis exported":'Fakturagrunnlag eksportert'),csv_eksport:(__EN?"CSV export":'CSV-eksport'),brief_generert:(__EN?"Today’s brief copied":'Dagens brief kopiert'),mal_opprettet:(__EN?"Trip template created":'Turmal opprettet'),mal_slettet:(__EN?"Trip template deleted":'Turmal slettet'),hendelse_kvittert:(__EN?"Event acknowledged":'Hendelse kvittert'),sos_kvittert:(__EN?"SOS acknowledged":'SOS kvittert'),passord_byttet:(__EN?"Password changed":'Passord byttet'),tur_avsluttet_admin:(__EN?"Trip closed from the command centre":'Tur avsluttet fra kommandosenteret'),tur_tider_korrigert:(__EN?"Start and end corrected":'Start og slutt korrigert')}; var k=String(a||''); return m[k]||(k? (k.charAt(0).toUpperCase()+k.slice(1)).replace(/_/g,' ') : (__EN?"Action":'Handling')); };
   function relTime(iso){ if(!iso)return '—'; var m=Math.round((Date.now()-Date.parse(iso))/60000); if(isNaN(m))return '—'; if(m<1)return (__EN?"Now":'Nå'); if(m<60)return m+(__EN?" min ago":' min siden'); var h=Math.round(m/60); if(h<24)return h+(__EN?" h ago":' t siden'); if(h<48)return (__EN?"Yesterday":'I går'); return new Date(iso).toLocaleDateString((__EN?"en-GB":'nb-NO')); }
@@ -2491,6 +2491,10 @@ window.__sevNo=function(s){ s=String(s||'').toLowerCase(); return s==='critical'
     '#admGate .gorg i{display:block;width:54px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,162,75,.6),transparent);margin:14px auto 0;font-style:normal}'+
     '#admGate button.lng{position:absolute;top:16px;right:16px;width:auto;margin:0;padding:7px 12px;background:rgba(16,30,54,.85);border:1px solid rgba(74,159,224,.45);border-radius:9px;color:#cfe2f5;font-size:12px;font-weight:600}'+
     '#admGate button.lng:hover{border-color:rgba(201,162,75,.6)}'+
+    '#admGate .alt{margin-top:8px;text-align:center}'+
+    '#admGate .alt a{display:inline-block;padding:7px 10px;color:#8aa0bd;font-size:12.5px;text-decoration:underline;text-underline-offset:3px}'+
+    '#admGate .alt a:hover{color:#cfe2f5}'+
+    '#admGate .err.ok{color:#8fd3a4}'+
     '</style>'+
     ((function(){ try{ var n=localStorage.getItem('dae_last_org'); if(n){ var e=function(x){return String(x).replace(/[&<>"]/g,function(c){return c==='&'?'&amp;':c==='<'?'&lt;':c==='>'?'&gt;':'&quot;';});}; return (__EN?"<div class=\"gorg\"><small>Command centre for<\/small><b>":'<div class="gorg"><small>Kommandosenter for</small><b>')+e(n)+'</b><i></i></div>'; } }catch(e){} return ''; })())+
     '<button type="button" class="lng" id="admLng">'+(__EN?'Norsk':'English')+'</button>'+
@@ -2500,6 +2504,7 @@ window.__sevNo=function(s){ s=String(s||'').toLowerCase(); return s==='critical'
       (__EN?"<label>Email<\/label><input id=\"admEmail\" type=\"email\" autocomplete=\"username\" required>":'<label>E-post</label><input id="admEmail" type="email" autocomplete="username" required>')+
       (__EN?"<label>Password<\/label><input id=\"admPass\" type=\"password\" autocomplete=\"current-password\" required>":'<label>Passord</label><input id="admPass" type="password" autocomplete="current-password" required>')+
       (__EN?"<button type=\"submit\" id=\"admBtn\">Log in<\/button>":'<button type="submit" id="admBtn">Logg inn</button>')+
+      (__EN?"<div class=\"alt\"><a href=\"#\" id=\"admForgot\">Forgot your password?<\/a><\/div>":'<div class="alt"><a href="#" id="admForgot">Glemt passord?</a></div>')+
       '<div class="err" id="admErr"></div>'+
     '</form>';
   document.body.appendChild(ov);
@@ -2508,7 +2513,10 @@ window.__sevNo=function(s){ s=String(s||'').toLowerCase(); return s==='critical'
   try{ if(localStorage.getItem('sb-kyqjrlpsarbdwfbyjufa-auth-token')){ var _fEl=$('#admForm'); if(_fEl){ _fEl.style.display='none'; } _ldEl=document.createElement('div'); _ldEl.style.cssText='color:#8aa0bd;font-size:14px;text-align:center;padding:34px 12px;font-family:Inter,system-ui,sans-serif'; _ldEl.textContent=(__EN?"Loading session …":'Laster økt \u2026'); ov.appendChild(_ldEl); } }catch(e){}
   function showLoginForm(){ var f=$('#admForm'); if(f) f.style.display=''; if(_ldEl&&_ldEl.parentNode){ _ldEl.parentNode.removeChild(_ldEl); _ldEl=null; } }
   function hideGate(){ ov.style.display='none'; }
-  function showErr(m){ var e=$('#admErr'); if(e)e.textContent=m||''; }
+  function showErr(m){ var e=$('#admErr'); if(e){ e.classList.remove('ok'); e.textContent=m||''; } }
+  function showOk(m){ var e=$('#admErr'); if(e){ e.classList.add('ok'); e.textContent=m||''; } }
+  function __nettFeil(e){ return !!(e&&(e.name==='AuthRetryableFetchError'||e.status===0||e.status>=500||/fetch|network|timeout/i.test(String(e.message||'')))); }
+  var __NETT_TX=(__EN?"No contact with the sign-in service. Check the connection and try again.":'Ingen kontakt med innloggingstjenesten. Sjekk nettet og prøv igjen.');
   function showSubGate(st){
     ov.style.display='flex';
     var f=$('#admForm');
@@ -2533,10 +2541,30 @@ window.__sevNo=function(s){ s=String(s||'').toLowerCase(); return s==='critical'
     var btn=$('#admBtn'); btn.disabled=true; showErr('');
     var email=($('#admEmail').value||'').trim(), pass=$('#admPass').value;
     sb.auth.signInWithPassword({email:email,password:pass}).then(function(res){
-      if(res.error){ showErr((__EN?"Wrong email or password.":'Feil e-post eller passord.')); btn.disabled=false; return; }
+      if(res.error){
+        /* D33 2026-11-12: alle feil ga «Feil e-post eller passord.» Nå skilles nettfeil, for mange forsøk og ubekreftet e-post ut. */
+        var _e=res.error, _m=String(_e.message||''), _c=String(_e.code||'');
+        showErr(__nettFeil(_e)? __NETT_TX
+          : ((_e.status===429||/rate limit|too many/i.test(_m))? (__EN?"Too many attempts. Wait a few minutes and try again.":'For mange forsøk. Vent noen minutter og prøv igjen.')
+          : ((_c==='email_not_confirmed'||/not confirmed/i.test(_m))? (__EN?"The email address has not been confirmed. Open the email from Daedalus and confirm it first.":'E-postadressen er ikke bekreftet. Åpne e-posten fra Daedalus og bekreft den først.')
+          : (__EN?"Wrong email or password.":'Feil e-post eller passord.'))));
+        btn.disabled=false; return;
+      }
       load().catch(function(e){ showErr((e&&e.message)||(__EN?"Loading failed.":'Innlasting feilet.')); btn.disabled=false; });
-    });
+    }, function(){ showErr(__NETT_TX); btn.disabled=false; });
   });
+
+  /* D33 2026-11-12: innloggingen manglet «Glemt passord». Samme kall og samme svar som på forsiden: lenken sendes
+     hvis e-posten finnes, og svaret røper ikke om den gjør det. Nytt passord settes via lenken, på forsiden. */
+  try{ var _fg=$('#admForgot'); if(_fg) _fg.addEventListener('click', function(ev){
+    ev.preventDefault();
+    var em=($('#admEmail').value||'').trim();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){ showErr(__EN?"Enter your email address in the field above, then choose ‘Forgot your password?’ again.":'Skriv e-postadressen din i feltet over, og velg «Glemt passord?» igjen.'); try{ $('#admEmail').focus(); }catch(e0){} return; }
+    if(_fg.getAttribute('data-busy')) return; _fg.setAttribute('data-busy','1'); showErr('');
+    var sendt=function(){ _fg.removeAttribute('data-busy'); showOk(__EN?"If the email exists, we have sent a link to reset your password.":'Hvis e-posten finnes, har vi sendt en lenke for å tilbakestille passordet.'); };
+    var nett=function(){ _fg.removeAttribute('data-busy'); showErr(__NETT_TX); };
+    try{ sb.auth.resetPasswordForEmail(em, { redirectTo:'https://daedalus-app.no' }).then(function(r){ if(r&&r.error&&__nettFeil(r.error)) nett(); else sendt(); }, nett); }catch(e1){ nett(); }
+  }); }catch(e2){}
 
   // gjenoppta sesjon
   sb.auth.getSession().then(function(r){
@@ -3745,7 +3773,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
          Ingen pin flyttes — de slås sammen til én, med antall og en liste ved klikk. */
       function pinCl(n,label,akt){ return L.divIcon({className:'lf-wrap', html:'<div class="mk trip'+(akt?' akt':'')+' lf" style="--d:.1s"><span class="mk-pin"><svg class="ic"><use href="#i-mtn"/></svg></span><span class="mk-cnt">'+n+'</span><span class="mk-lab">'+label+'</span></div>', iconSize:[30,30], iconAnchor:[15,30]}); }
       function stDot(x){ return x==='active'?'#5fb97a':(x==='completed'?'#8aa0bd':(x==='cancelled'?'#e8857c':'#4a9fe0')); }
-      function stTx(x){ return x==='active'?(__EN?"Active":'Aktiv'):(x==='completed'?(__EN?"Completed":'Fullført'):(x==='cancelled'?(__EN?"Cancelled":'Avlyst'):(__EN?"Planned":'Planlagt'))); }
+      function stTx(x){ return x==='active'?(__EN?"Active":'Aktiv'):(x==='ready'?(__EN?"Ready":'Klar'):x==='completed'?(__EN?"Completed":'Fullført'):(x==='cancelled'?(__EN?"Cancelled":'Avlyst'):(__EN?"Planned":'Planlagt'))); }
       function clHtml(g){ return '<div class="cl-h">'+g.length+(__EN?" trips at this point<\/div>":' turer på dette punktet</div>')+g.map(function(x){ return '<button type="button" class="cl-r" data-tid="'+x.t.id+'"><i style="background:'+stDot(x.t.status)+'"></i><span class="cl-n">'+esc(x.t.name||(__EN?"(no name)":'(uten navn)'))+'</span><span class="cl-s">'+esc(stTx(x.t.status))+(x.t.guide_name?(' &middot; '+esc(x.t.guide_name)):'')+'</span></button>'; }).join(''); }
       function sosPin(label){ return L.divIcon({className:'lf-wrap', html:'<div class="mk-sos lf"><i class="ring"></i><i class="ring"></i><i class="ring"></i><i class="core"></i><span class="lab">'+label+'</span></div>', iconSize:[46,46], iconAnchor:[23,23]}); }
       function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return c==='&'?'&amp;':(c==='<'?'&lt;':(c==='>'?'&gt;':'&quot;')); }); }
@@ -3845,8 +3873,10 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
     }catch(e){}
   }
 
-  var STATUS_NO={draft:(__EN?"Draft":'Utkast'),active:(__EN?"Active":'Aktiv'),completed:(__EN?"Completed":'Fullført'),cancelled:(__EN?"Cancelled":'Avlyst')};
-  function stBadge(s){ var c={draft:'#8aa0bd',active:'#5fb97a',completed:'#4a9fe0',cancelled:'#e8857c'}[s]||'#8aa0bd'; return '<span style="font-size:10.5px;font-weight:700;letter-spacing:.06em;color:'+c+';border:1px solid '+c+'55;border-radius:6px;padding:2px 7px;white-space:nowrap">'+(STATUS_NO[s]||s||'—')+'</span>'; }
+  /* D33 2026-11-12: appen setter status «ready» når sikkerhetssjekken er fullført og turen ikke er startet.
+     Kommandosenteret viste den som rå «ready» og hadde ikke filter for den. Den heter nå «Klar». */
+  var STATUS_NO={draft:(__EN?"Draft":'Utkast'),ready:(__EN?"Ready":'Klar'),active:(__EN?"Active":'Aktiv'),completed:(__EN?"Completed":'Fullført'),cancelled:(__EN?"Cancelled":'Avlyst')};
+  function stBadge(s){ var c={draft:'#8aa0bd',ready:'#c9a24b',active:'#5fb97a',completed:'#4a9fe0',cancelled:'#e8857c'}[s]||'#8aa0bd'; return '<span style="font-size:10.5px;font-weight:700;letter-spacing:.06em;color:'+c+';border:1px solid '+c+'55;border-radius:6px;padding:2px 7px;white-space:nowrap">'+(STATUS_NO[s]||s||'—')+'</span>'; }
 
   function renderTripAdmin(R, me){
     var el=$('#tripAdmList'); if(!el) return;
@@ -3854,7 +3884,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
     var h=$('#tadmHint'); if(h){ h.textContent=trips.length+(window.__TRIPS_CAPPED?'+':'')+(__EN?(trips.length===1?' trip':' trips'):' turer'); h.title=(__EN?"Everything active or ready, today’s trips, 31 days back and ahead, and the 100 most recently created trips.":'Alt som er aktivt eller klart, dagens turer, 31 dager tilbake og fram, og de 100 sist opprettede turene.'); }
     if(!trips.length){ el.innerHTML=(__EN?"<span style=\"font-size:12.5px\">No trips yet — use ‘New trip’.<\/span>":'<span style="font-size:12.5px">Ingen turer ennå — bruk «Ny tur».</span>'); return; }
     var F=window.__TADM_F||'alle';
-    var fdef=[['alle',(__EN?"All":'Alle')],['active',(__EN?"Active":'Aktive')],['draft',(__EN?"Draft":'Utkast')],['completed',(__EN?"Completed":'Fullført')],['cancelled',(__EN?"Cancelled":'Avlyst')]];
+    var fdef=[['alle',(__EN?"All":'Alle')],['active',(__EN?"Active":'Aktive')],['ready',(__EN?"Ready":'Klare')],['draft',(__EN?"Draft":'Utkast')],['completed',(__EN?"Completed":'Fullført')],['cancelled',(__EN?"Cancelled":'Avlyst')]];
     var fbar='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px">'+fdef.map(function(f){ var on=(F===f[0]); return '<button type="button" data-tf="'+f[0]+'" style="border:1px solid '+(on?'#4a9fe0':'rgba(255,255,255,.14)')+';background:'+(on?'rgba(74,159,224,.12)':'none')+';color:'+(on?'#cfe2f5':'#8aa0bd')+';border-radius:7px;padding:3px 9px;font-size:11px;cursor:pointer">'+f[1]+'</button>'; }).join('')+'</div>';
     var show=(F==='alle')? trips : trips.filter(function(t){ return t.status===F; });
     el.innerHTML=fbar+(show.length? show.map(function(t){
@@ -4612,7 +4642,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
           var jn=function(v){ return v? (__EN?"<span class=\"ja\">Yes<\/span>":'<span class="ja">Ja</span>'):(__EN?"<span class=\"nei\">No<\/span>":'<span class="nei">Nei</span>'); };
           var kropp=(__EN?"<h2>Contents<\/h2><p class=\"mut\">A. Trips and safety status · B. Events and acknowledgement · C. Activated with override · D. Certifications · E. Audit log<\/p>":'<h2>Innhold</h2><p class="mut">A. Turer og sikkerhetsstatus · B. Hendelser og kvittering · C. Aktivert med overstyring · D. Sertifiseringer · E. Revisjonslogg</p>');
           kropp+=(__EN?"<h2>A. Trips and safety status (":'<h2>A. Turer og sikkerhetsstatus (')+D.trips.length+(__EN?")<\/h2><table><tr><th>Date<\/th><th>Trip<\/th><th>Guide<\/th><th>Status<\/th><th>Base check<\/th><th>Activity check<\/th><th>Admin approved<\/th><\/tr>":')</h2><table><tr><th>Dato</th><th>Tur</th><th>Guide</th><th>Status</th><th>Grunnsjekk</th><th>Aktivitetssjekk</th><th>Adm.godkjent</th></tr>')
-            +D.trips.map(function(x){ return '<tr><td>'+E(v2Dato(x.date))+'</td><td>'+E(x.name||'')+'</td><td>'+E(gname(x))+'</td><td>'+E(({draft:(__EN?"Draft":'Utkast'),active:(__EN?"Active":'Aktiv'),completed:(__EN?"Completed":'Fullført'),cancelled:(__EN?"Cancelled":'Avlyst')})[x.status]||x.status||'')+'</td><td>'+jn(!!x.safety_completed_at||(x.weather_verified&&x.equipment_checked&&x.emergency_contact_notified))+'</td><td>'+(x.activity_check_completed_at?(__EN?"<span class=\"ja\">Yes<\/span>":'<span class="ja">Ja</span>'):(x.activation_override?(__EN?"<span class=\"nei\">Overridden<\/span>":'<span class="nei">Overstyrt</span>'):'<span class="mut">—</span>'))+'</td><td>'+jn(!!x.approved_at)+'</td></tr>'; }).join('')+'</table>';
+            +D.trips.map(function(x){ return '<tr><td>'+E(v2Dato(x.date))+'</td><td>'+E(x.name||'')+'</td><td>'+E(gname(x))+'</td><td>'+E(({draft:(__EN?"Draft":'Utkast'),ready:(__EN?"Ready":'Klar'),active:(__EN?"Active":'Aktiv'),completed:(__EN?"Completed":'Fullført'),cancelled:(__EN?"Cancelled":'Avlyst')})[x.status]||x.status||'')+'</td><td>'+jn(!!x.safety_completed_at||(x.weather_verified&&x.equipment_checked&&x.emergency_contact_notified))+'</td><td>'+(x.activity_check_completed_at?(__EN?"<span class=\"ja\">Yes<\/span>":'<span class="ja">Ja</span>'):(x.activation_override?(__EN?"<span class=\"nei\">Overridden<\/span>":'<span class="nei">Overstyrt</span>'):'<span class="mut">—</span>'))+'</td><td>'+jn(!!x.approved_at)+'</td></tr>'; }).join('')+'</table>';
           kropp+=(__EN?"<h2>B. Events (":'<h2>B. Hendelser (')+D.events.length+')</h2>'+(D.events.length? (__EN?"<table><tr><th>Time<\/th><th>Type<\/th><th>Severity<\/th><th>Description<\/th><th>Acknowledged<\/th><\/tr>":'<table><tr><th>Tid</th><th>Type</th><th>Alvor</th><th>Beskrivelse</th><th>Kvittert</th></tr>')
             +D.events.map(function(e){ return '<tr><td>'+E(new Date(e.created_at).toLocaleString((__EN?"en-GB":'nb-NO')))+'</td><td>'+E(window.__evNo(e))+'</td><td>'+E(window.__sevNo? window.__sevNo(e.severity):String(e.severity||''))+'</td><td>'+E(String(e.description||'').slice(0,160))+'</td><td>'+(e.acknowledged_at?(__EN?"<span class=\"ja\">Yes<\/span>":'<span class="ja">Ja</span>'):'<span class="mut">—</span>')+'</td></tr>'; }).join('')+'</table>' : (__EN?"<p class=\"mut\">No events in the period.<\/p>":'<p class="mut">Ingen hendelser i perioden.</p>'));
           var ov=D.trips.filter(function(x){ return x.activation_override===true; });
