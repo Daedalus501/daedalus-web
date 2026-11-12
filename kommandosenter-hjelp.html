@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Daedalus · Hjelp til kommandosenteret</title>
+<meta name="description" content="Steg for steg: slik bruker du Daedalus kommandosenter.">
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Hjelpesiden til kommandosenteret (2026-11-11). Ingen måling, ingen innlogging, ingen data hentes.
+     ALT INNHOLD ligger i GUIDE nederst: én oppføring per kategori, norsk og engelsk side om side.
+     Knappenavn skrives i [[doble klammer]]. Da kan sjekk-hjelp.mjs kontrollere at hvert navn fortsatt
+     finnes i admin.html. Endres et navn eller en flyt i kommandosenteret: endre teksten i GUIDE og sett ny dato.
+     Stegene beskriver hva man gjør og hva knappen heter, aldri hvor den står eller hvilken farge den har. -->
+<style>
+:root{--bg:#0b1626;--card:#13233a;--line:#25405f;--tx:#eaf2fb;--mut:#a9bdd6;--gold:#e0bb6a;--blue:#7fbdf0;--ui-bg:#0e1a2c;--ui-line:#3a5a80}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.6 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-text-size-adjust:100%}
+a{color:var(--blue)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:6px}
+.skip{position:absolute;left:-9999px;top:0;background:var(--gold);color:#111;padding:8px 12px;border-radius:0 0 8px 0;font-weight:600}
+.skip:focus{left:0;z-index:10}
+.top{position:sticky;top:0;z-index:5;background:rgba(11,22,38,.96);border-bottom:1px solid var(--line)}
+.top-in{max-width:1080px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;color:var(--tx);text-decoration:none;font-weight:600;letter-spacing:.02em;margin-right:auto}
+.brand img{width:32px;height:32px;border-radius:8px}
+.brand small{display:block;color:var(--gold);font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600}
+.btn{font:inherit;font-size:14px;font-weight:600;color:var(--tx);background:var(--card);border:1px solid var(--line);border-radius:9px;padding:8px 14px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn:hover{border-color:var(--blue)}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 20px 80px;display:grid;grid-template-columns:250px minmax(0,1fr);gap:36px}
+h1{font:400 34px/1.15 Fraunces,Georgia,serif;margin:6px 0 10px}
+.kicker{color:var(--gold);font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:600}
+.lead{color:var(--mut);max-width:62ch;margin:0 0 6px}
+.stamp{color:var(--mut);font-size:13px;margin:0}
+.intro{grid-column:1 / -1}
+nav.toc{position:sticky;top:76px;align-self:start;max-height:calc(100vh - 96px);overflow:auto;padding-right:6px}
+nav.toc h2{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);margin:0 0 10px;font-weight:600}
+nav.toc ol{list-style:none;margin:0;padding:0;counter-reset:t}
+nav.toc li{counter-increment:t;margin:0 0 2px}
+nav.toc a{display:block;padding:6px 10px;border-radius:8px;color:var(--tx);text-decoration:none;font-size:14.5px}
+nav.toc a::before{content:counter(t) ". ";color:var(--gold);font-variant-numeric:tabular-nums}
+nav.toc a:hover{background:var(--card)}
+section.cat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px;margin:0 0 22px;scroll-margin-top:84px}
+section.cat>h2{font:500 24px/1.2 Fraunces,Georgia,serif;margin:0 0 6px}
+section.cat>h2 .no{color:var(--gold);font-style:italic;margin-right:10px}
+section.cat>p.what{color:var(--mut);margin:0 0 14px;max-width:70ch}
+.task{border-top:1px solid var(--line);padding:14px 0 2px}
+.task h3{font-size:16.5px;margin:0 0 6px;font-weight:600}
+.task ol{margin:0 0 10px;padding-left:24px}
+.task li{margin:0 0 5px;padding-left:4px;max-width:74ch}
+.task li::marker{color:var(--gold);font-weight:600}
+.note{color:var(--mut);font-size:14.5px;margin:0 0 10px;padding-left:12px;border-left:3px solid var(--line);max-width:74ch}
+.ui{font-weight:600;background:var(--ui-bg);border:1px solid var(--ui-line);border-radius:6px;padding:1px 7px;white-space:nowrap;font-size:.94em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.foot{color:var(--mut);font-size:13.5px;margin-top:26px}
+noscript p{background:#3a2a12;border:1px solid #7a5a22;padding:12px 16px;border-radius:10px}
+@media (max-width:860px){.top{position:static}section.cat{scroll-margin-top:12px}.wrap{grid-template-columns:1fr;gap:18px;padding-top:18px}nav.toc{position:static;max-height:none;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}h1{font-size:28px}section.cat{padding:18px 16px}.ui{white-space:normal}}
+@media print{
+  :root{--bg:#fff;--card:#fff;--line:#bbb;--tx:#000;--mut:#333;--gold:#000;--blue:#000;--ui-bg:#fff;--ui-line:#777}
+  .top,.skip,nav.toc{display:none}
+  .wrap{display:block;padding:0;max-width:none}
+  body{font-size:11.5pt;line-height:1.45}
+  section.cat{border:0;border-top:2px solid #000;border-radius:0;padding:10pt 0 0;margin:0 0 14pt;break-inside:auto}
+  .task{break-inside:avoid}
+  a{color:#000;text-decoration:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#innhold" id="skip">Hopp til innhold</a>
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="/admin" id="brand"><img src="icon.png" alt="" width="32" height="32"><span>DAEDALUS<small id="brandSub">Hjelp · Kommandosenter</small></span></a>
+    <button class="btn" type="button" id="langBtn">English</button>
+    <button class="btn" type="button" id="printBtn">Skriv ut</button>
+    <a class="btn" href="/admin" id="backBtn">Til kommandosenteret</a>
+  </div>
+</header>
+<div class="wrap">
+  <div class="intro">
+    <div class="kicker" id="kicker">Hjelp</div>
+    <h1 id="h1">Slik bruker du kommandosenteret</h1>
+    <p class="lead" id="lead"></p>
+    <p class="stamp" id="stamp"></p>
+    <noscript><p>Denne siden trenger JavaScript for å vise stegene. This page needs JavaScript to show the steps.</p></noscript>
+  </div>
+  <nav class="toc" aria-labelledby="tocH"><h2 id="tocH">Innhold</h2><ol id="toc"></ol></nav>
+  <main id="innhold"></main>
+</div>
+<script>
+/* ===== INNHOLD. Endre her når kommandosenteret endres. ===== */
+var GUIDE = {
+  updated: "2026-11-11",
+  ui: {
+    no: { title: "Daedalus · Hjelp til kommandosenteret", kicker: "Hjelp", h1: "Slik bruker du kommandosenteret", lead: "Enkle steg for hver del av kommandosenteret. Knappenavn står i rammer, slik de heter på skjermen. Finner du ikke en knapp der du venter den, let etter navnet: plasseringen kan endre seg, navnet er det samme.", stamp: "Sist oppdatert ", toc: "Innhold", lang: "English", print: "Skriv ut", back: "Til kommandosenteret", sub: "Hjelp · Kommandosenter", skip: "Hopp til innhold", foot: "Daedalus er et hjelpemiddel for dokumentasjon og oversikt. Det erstatter ikke guidens vurdering, og det varsler ikke nødetatene. Spørsmål: hello@daedalus-app.no" },
+    en: { title: "Daedalus · Command centre help", kicker: "Help", h1: "How to use the command centre", lead: "Simple steps for each part of the command centre. Button names are shown in frames, exactly as they appear on screen. If a button is not where you expect it, look for its name: the position may change, the name stays the same.", stamp: "Last updated ", toc: "Contents", lang: "Norsk", print: "Print", back: "To the command centre", sub: "Help · Command centre", skip: "Skip to content", foot: "Daedalus is an aid for documentation and overview. It does not replace the guide’s judgement, and it does not alert the emergency services. Questions: hello@daedalus-app.no" }
+  },
+  sections: [
+    { id: "start", t: { no: "Kom i gang", en: "Getting started" },
+      what: { no: "Innlogging, språk og kontoen din.", en: "Logging in, language and your account." },
+      tasks: [
+        { t: { no: "Logg inn", en: "Log in" },
+          no: ["Åpne daedalus-app.no/admin i nettleseren.", "Skriv e-post og passord, og velg [[Logg inn]].", "Bare administratorer i en organisasjon kommer inn her. Guidene bruker appen på telefonen.", "Har du glemt passordet? Gå til forsiden daedalus-app.no og bruk «Glemt passord» der."],
+          en: ["Open daedalus-app.no/admin in your browser.", "Enter your email and password, and choose [[Log in]].", "Only administrators of an organisation can log in here. Guides use the app on their phone.", "Forgotten your password? Go to the front page daedalus-app.no and use the forgotten password link there."] },
+        { t: { no: "Bytt språk", en: "Change language" },
+          no: ["Trykk på navnet ditt øverst på siden.", "Velg [[English]] for engelsk. På engelsk heter knappen [[Norsk]].", "Valget huskes i denne nettleseren."],
+          en: ["Select your name at the top of the page.", "Choose [[Norsk]] for Norwegian. In Norwegian the button is called [[English]].", "The choice is remembered in this browser."] },
+        { t: { no: "Bytt passord eller logg ut", en: "Change password or log out" },
+          no: ["Trykk på navnet ditt øverst på siden.", "Velg [[Bytt passord]]. Skriv passordet du har nå, og det nye passordet to ganger. Det nye må ha minst 8 tegn.", "Passordet gjelder både kommandosenteret og appen.", "Velg [[Logg ut]] når du er ferdig på en maskin du deler med andre."],
+          en: ["Select your name at the top of the page.", "Choose [[Change password]]. Enter your current password, and the new password twice. The new one needs at least 8 characters.", "The password applies to both the command centre and the app.", "Choose [[Log out]] when you have finished on a computer you share with others."] },
+        { t: { no: "Hent ferske tall", en: "Get fresh figures" },
+          no: ["Tall for turer og guider hentes på nytt hvert 2. minutt. En SOS kommer med en gang.", "Vil du ha alt oppdatert nå, trykk på Daedalus-merket øverst. Da lastes siden på nytt."],
+          en: ["Figures for trips and guides are fetched again every 2 minutes. An SOS arrives at once.", "To update everything now, select the Daedalus emblem at the top. The page then reloads."] }
+      ] },
+    { id: "oversikt", t: { no: "Driftsbildet", en: "Operations overview" },
+      what: { no: "Det du ser først: hva som skjer akkurat nå.", en: "What you see first: what is happening right now." },
+      tasks: [
+        { t: { no: "Les driftsbildet", en: "Read the overview" },
+          no: ["Overskriften øverst sier hvor mange turer som er aktive nå.", "Under [[Driftsbilde]] står fire tall: [[Aktive turer]], [[Gjester på tur]], [[Guider på vakt]] og [[Rapporter i dag]].", "[[Aktivitet siste 7 dager]] viser gjester og turer per dag den siste uka.", "[[Sikkerhetsetterlevelse]] viser hvor mange turer som har fullført sikkerhetssjekken, og hvilke guider som har sertifikater som snart går ut."],
+          en: ["The heading at the top says how many trips are active now.", "Under [[Operations overview]] there are four figures: [[Active trips]], [[Guests on trips]], [[Guides on duty]] and [[Reports today]].", "[[Activity in the last 7 days]] shows guests and trips per day over the last week.", "[[Safety compliance]] shows how many trips have a completed safety check, and which guides have certificates that expire soon."] },
+        { t: { no: "Søk og hurtigvalg", en: "Search and shortcuts" },
+          no: ["Velg [[Søk eller kommando…]] øverst, eller trykk Ctrl og K samtidig (⌘K på Mac).", "Skriv navnet på en guide eller det du vil gjøre, for eksempel ny tur.", "Velg treffet i lista."],
+          en: ["Choose [[Search or command…]] at the top, or press Ctrl and K together (⌘K on a Mac).", "Type the name of a guide or what you want to do, for example new trip.", "Choose the result in the list."] },
+        { t: { no: "Se siste varsler", en: "See the latest alerts" },
+          no: ["Trykk på bjella øverst.", "Lista viser de siste hendelsene med tid, type og tur."],
+          en: ["Select the bell at the top.", "The list shows the latest events with time, type and trip."] }
+      ] },
+    { id: "sos", t: { no: "SOS og alarmer", en: "SOS and alarms" },
+      what: { no: "Når en guide utløser SOS i appen, vises alarmen øverst i kommandosenteret med en gang.", en: "When a guide triggers SOS in the app, the alarm is shown at the top of the command centre at once." },
+      tasks: [
+        { t: { no: "Når en SOS kommer", en: "When an SOS arrives" },
+          no: ["Alarmfeltet viser hvilken tur det gjelder, når alarmen gikk, hvem som er guide, og posisjonen da alarmen gikk.", "Ring guiden: finn guiden under [[Guider i felt]], trykk på navnet og velg [[Ring]].", "Følg beredskapsplanen. Velg [[Beredskapsplan]] for å se planen og telefonen til vaktleder.", "Når noen har tatt ansvar for alarmen, velg [[Kvitter alarm]]. Kvitteringen lagres med navnet ditt og klokkeslettet.", "Alarmfeltet forsvinner når alarmen er kvittert. Alarmen står fortsatt på turen og i statistikken."],
+          en: ["The alarm field shows which trip it concerns, when the alarm was raised, who the guide is, and the position when the alarm was raised.", "Call the guide: find the guide under [[Guides in the field]], select the name and choose [[Call]].", "Follow the emergency plan. Choose [[Emergency plan]] to see the plan and the duty manager’s phone number.", "When someone has taken responsibility for the alarm, choose [[Acknowledge alarm]]. The acknowledgement is saved with your name and the time.", "The alarm field disappears once the alarm is acknowledged. The alarm remains on the trip and in the statistics."],
+          note: { no: "Kommandosenteret varsler ikke nødetatene. Ring nødnummeret selv når det trengs. Alarmfeltet viser SOS fra det siste døgnet som ikke er kvittert.", en: "The command centre does not alert the emergency services. Call the emergency number yourself when needed. The alarm field shows SOS alarms from the last 24 hours that have not been acknowledged." } },
+        { t: { no: "Kvitter en hendelse på en tur", en: "Acknowledge an event on a trip" },
+          no: ["Åpne turen under [[Turadministrasjon]].", "Finn hendelsen nederst i turen og velg [[Kvitter]].", "Hendelser som ikke er kvittert, telles i [[Hendelsesstatistikk]] og i tilsynsmappa."],
+          en: ["Open the trip under [[Trip administration]].", "Find the event at the bottom of the trip and choose [[Acknowledge]].", "Events that are not acknowledged are counted in [[Event statistics]] and in the inspection file."] }
+      ] },
+    { id: "guider", t: { no: "Guider", en: "Guides" },
+      what: { no: "Inviter guider, se hvem som er på tur, og endre opplysninger.", en: "Invite guides, see who is on a trip, and change details." },
+      tasks: [
+        { t: { no: "Inviter en guide", en: "Invite a guide" },
+          no: ["Under [[Guider i felt]] velger du [[Inviter guide]].", "Skriv e-postadressen til guiden. Navn er valgfritt.", "Kryss av for [[Gjesteguide]] bare når guiden er innleid eller frilanser med eget abonnement. En gjest ser bare egne turer og teller ikke som sete.", "Velg [[Send invitasjon]]. Guiden får en e-post med lenke for å lage passord.", "Vil du sende beskjeden selv, velg [[Kopier invitasjonstekst]] og lim den inn i en melding.", "Guiden står som [[Invitert]] i lista til passordet er laget. Deretter laster guiden ned appen og logger inn med samme e-post."],
+          en: ["Under [[Guides in the field]], choose [[Invite guide]].", "Enter the guide’s email address. The name is optional.", "Tick [[Guest guide]] only when the guide is a contractor or freelancer with their own subscription. A guest sees only their own trips and does not count as a seat.", "Choose [[Send invitation]]. The guide receives an email with a link to set a password.", "To send the message yourself, choose [[Copy invitation text]] and paste it into a message.", "The guide is shown as [[Invited]] in the list until the password has been set. The guide then downloads the app and logs in with the same email."] },
+        { t: { no: "Send invitasjonen på nytt, eller trekk den tilbake", en: "Send the invitation again, or withdraw it" },
+          no: ["Trykk på den inviterte i lista under [[Guider i felt]].", "Velg [[Administrer invitasjon]].", "Velg [[Send på nytt]] for ny e-post, eller [[Trekk tilbake]] for å stoppe invitasjonen."],
+          en: ["Select the invited person in the list under [[Guides in the field]].", "Choose [[Manage invitation]].", "Choose [[Send again]] for a new email, or [[Withdraw]] to stop the invitation."] },
+        { t: { no: "Se en guide og ta kontakt", en: "See a guide and get in touch" },
+          no: ["Trykk på guiden i lista. Statusen er [[På tur]] eller [[Ledig]].", "Profilen viser sertifiseringer og turene til guiden.", "[[Ring]] åpner telefonen. [[Melding]] sender en melding til guidens app. Har guiden ikke varsler på, åpnes e-post i stedet."],
+          en: ["Select the guide in the list. The status is [[On a trip]] or [[Available]].", "The profile shows certifications and the guide’s trips.", "[[Call]] opens the phone. [[Message]] sends a message to the guide’s app. If the guide does not have notifications on, email opens instead."] },
+        { t: { no: "Endre en guide, eller fjern tilgangen", en: "Change a guide, or remove access" },
+          no: ["Trykk på guiden og velg [[Administrer guide]].", "Endre [[Visningsnavn]] eller [[Telefon]], og velg [[Lagre]].", "[[Merk som gjest]] gjør guiden til gjesteguide.", "[[Fjern fra organisasjonen]] tar bort tilgangen til organisasjonen. Du må bekrefte."],
+          en: ["Select the guide and choose [[Manage guide]].", "Change [[Display name]] or [[Phone]], and choose [[Save]].", "[[Mark as guest]] turns the guide into a guest guide.", "[[Remove from the organisation]] removes access to the organisation. You must confirm."] },
+        { t: { no: "Seter", en: "Seats" },
+          no: ["Har abonnementet et fast antall seter, står antallet i bruk øverst i [[Guider i felt]].", "Er alle seter i bruk, kan du invitere som gjesteguide, eller velge [[Oppgrader seter]]."],
+          en: ["If the subscription has a fixed number of seats, the number in use is shown at the top of [[Guides in the field]].", "If all seats are in use, you can invite as a guest guide, or choose [[Upgrade seats]]."] }
+      ] },
+    { id: "turer", t: { no: "Turer", en: "Trips" },
+      what: { no: "Opprett turer, legg til deltakere, følg turen og avslutt den.", en: "Create trips, add participants, follow the trip and close it." },
+      tasks: [
+        { t: { no: "Opprett en tur", en: "Create a trip" },
+          no: ["Velg [[Ny tur]].", "Fyll ut [[Turnavn]], [[Startsted]], [[Dato]] og [[Returtid]]. Disse fire må være med.", "Velg [[Aktivitet]], [[Vanskelighet]] og [[Guide]].", "Valgfritt: velg [[Velg startpunkt i kart]] og klikk der turen starter. Skriv utstyr og notater. Utstyret vises for guiden i appen.", "Går turen samme ukedag flere uker på rad, velg antall uker under [[Gjenta]].", "Velg [[Opprett tur]]. Turen lagres som utkast og blir synlig i appen til guiden du valgte.", "Åpne turen under [[Turadministrasjon]] for å legge til deltakere."],
+          en: ["Choose [[New trip]].", "Fill in [[Trip name]], [[Start location]], [[Date]] and [[Return time]]. These four are required.", "Choose [[Activity]], [[Difficulty]] and [[Guide]].", "Optional: choose [[Choose the start point on the map]] and click where the trip starts. Add equipment and notes. The equipment is shown to the guide in the app.", "If the trip runs on the same weekday for several weeks, choose the number of weeks under [[Repeat]].", "Choose [[Create trip]]. The trip is saved as a draft and becomes visible in the app of the guide you chose.", "Open the trip under [[Trip administration]] to add participants."] },
+        { t: { no: "Finn og åpne en tur", en: "Find and open a trip" },
+          no: ["Gå til [[Turadministrasjon]] under [[Planlegging og ressurser]].", "Bruk filtrene [[Alle]], [[Aktive]], [[Utkast]], [[Fullført]] og [[Avlyst]].", "Trykk på turen for å åpne den.", "Du kan også åpne [[Turkalender]] og trykke på turen der."],
+          en: ["Go to [[Trip administration]] under [[Planning and resources]].", "Use the filters [[All]], [[Active]], [[Draft]], [[Completed]] and [[Cancelled]].", "Select the trip to open it.", "You can also open [[Trip calendar]] and select the trip there."] },
+        { t: { no: "Legg til eller fjern deltakere", en: "Add or remove participants" },
+          no: ["Åpne turen.", "Under [[Deltakere]] skriver du navn, telefon og nødkontakt.", "Velg [[+ Legg til deltaker]].", "[[Slett]] ved siden av et navn fjerner deltakeren."],
+          en: ["Open the trip.", "Under [[Participants]], enter name, phone and emergency contact.", "Choose [[+ Add participant]].", "[[Delete]] next to a name removes the participant."] },
+        { t: { no: "Endre en tur", en: "Change a trip" },
+          no: ["Åpne turen.", "Endre navn, startsted, dato, returtid, guide eller notater.", "Velg [[Lagre endringer]]. Bare det du endret, lagres."],
+          en: ["Open the trip.", "Change the name, start location, date, return time, guide or notes.", "Choose [[Save changes]]. Only what you changed is saved."] },
+        { t: { no: "Følg en aktiv tur", en: "Follow an active trip" },
+          no: ["En tur er aktiv fra guiden starter den i appen.", "I lista står tiden som er igjen til planlagt retur. Går turen over tiden, merkes den som overskredet.", "Åpne turen. [[Start og slutt]] viser når turen ble startet og planlagt retur.", "[[Tellinger underveis]] viser tellingene guiden har gjort. [[Tildelt utstyr]] viser kjøretøy og hundespann på turen.", "[[HMS / sikkerhetssjekk]] viser om sikkerhetssjekken er fullført før start."],
+          en: ["A trip is active from the moment the guide starts it in the app.", "The list shows the time left until the planned return. If the trip runs over, it is marked as overdue.", "Open the trip. [[Start and end]] shows when the trip was started and the planned return.", "[[Headcounts along the way]] shows the headcounts the guide has done. [[Assigned equipment]] shows vehicles and dog teams on the trip.", "[[HSE / safety check]] shows whether the safety check was completed before the start."] },
+        { t: { no: "Avslutt en tur guiden glemte å avslutte", en: "Close a trip the guide forgot to close" },
+          no: ["Åpne den aktive turen.", "Velg [[Avslutt turen her]].", "Kontroller tidspunktene for start og slutt, og skriv en grunn. Grunnen står i revisjonsloggen.", "Bekreft. Turen blir fullført med tiden du valgte."],
+          en: ["Open the active trip.", "Choose [[Close the trip here]].", "Check the start and end times, and enter a reason. The reason is recorded in the audit log.", "Confirm. The trip is completed with the time you chose."] },
+        { t: { no: "Godkjenn, avlys eller slett", en: "Approve, cancel or delete" },
+          no: ["[[Godkjenn tur]] stempler turen som gjennomgått av administrator.", "[[Avlys tur]] setter turen til avlyst. Du må bekrefte. Turen blir stående i lista.", "[[Slett]] nederst i turen finnes bare for utkast og avlyste turer. Sletting kan ikke angres."],
+          en: ["[[Approve trip]] stamps the trip as reviewed by an administrator.", "[[Cancel trip]] sets the trip to cancelled. You must confirm. The trip stays in the list.", "[[Delete]] at the bottom of the trip is only available for drafts and cancelled trips. Deletion cannot be undone."] },
+        { t: { no: "Skriv ut turrapporten", en: "Print the trip report" },
+          no: ["Åpne turen og velg [[Skriv ut rapport]]. Rapporten åpnes i et nytt vindu.", "Velg utskrift i nettleseren, eller lagre som PDF.", "[[Admin-merknad]] legger til en egen merknad fra deg. Guidens rapport endres aldri."],
+          en: ["Open the trip and choose [[Print report]]. The report opens in a new window.", "Choose print in the browser, or save as PDF.", "[[Admin note]] adds a separate note from you. The guide’s report is never changed."] }
+      ] },
+    { id: "kart", t: { no: "Kart og løyper", en: "Map and routes" },
+      what: { no: "Se hvor turene og guidene er, og planlegg løyper.", en: "See where the trips and guides are, and plan routes." },
+      tasks: [
+        { t: { no: "Bruk det operative kartet", en: "Use the operational map" },
+          no: ["Velg [[Åpne kart]], eller rull til [[Operativt kart]].", "Slå lag av og på med knappene over kartet: [[Turer]], [[Oppmøte]], [[Observasjon]], [[SOS]] og [[Guider]].", "Guider på aktiv tur vises med siste posisjon og klokkeslett. Gjesteguider deles ikke i kartet.", "Trykk på et punkt for å se hva det er."],
+          en: ["Choose [[Open map]], or scroll to [[Operational map]].", "Turn layers on and off with the buttons above the map: [[Trips]], [[Meeting point]], [[Observation]], [[SOS]] and [[Guides]].", "Guides on an active trip are shown with their latest position and time. Guest guides are not shared on the map.", "Select a point to see what it is."] },
+        { t: { no: "Planlegg en løype", en: "Plan a route" },
+          no: ["Velg [[Planlegg løype]] eller [[Åpne planlegger]].", "Planleggeren åpnes som egen side. Der tegner du ruter og punkter og deler dem på en tur."],
+          en: ["Choose [[Plan route]] or [[Open planner]].", "The planner opens as its own page. There you draw routes and points and share them on a trip."] }
+      ] },
+    { id: "vaer", t: { no: "Vær og skred", en: "Weather and avalanche" },
+      what: { no: "Vær fra MET og skredvarsel fra Varsom for stedet du velger.", en: "Weather from MET and the avalanche warning from Varsom for the place you choose." },
+      tasks: [
+        { t: { no: "Velg værsted og skredregion", en: "Choose weather location and avalanche region" },
+          no: ["Trykk på et av værfeltene øverst: temperatur, vind eller sol.", "Klikk i kartet der været skal hentes for, og skriv et [[Stedsnavn]].", "Velg [[Skredregion (Varsom)]].", "Velg [[Lagre]]. Valget gjelder denne organisasjonen på denne maskinen.", "[[Nullstill]] går tilbake til posisjonen til siste tur."],
+          en: ["Select one of the weather fields at the top: temperature, wind or sun.", "Click on the map where the weather should be fetched for, and enter a [[Place name]].", "Choose [[Avalanche region (Varsom)]].", "Choose [[Save]]. The choice applies to this organisation on this computer.", "[[Reset]] goes back to the position of the latest trip."] },
+        { t: { no: "Les skredvarselet", en: "Read the avalanche warning" },
+          no: ["[[Skredvarsel]] viser faregraden fra 1 til 5 for regionen du har valgt.", "Under står skredproblemet og hvor lenge varselet gjelder.", "Varsom publiserer daglig varsel omtrent fra 1. desember til 31. mai."],
+          en: ["[[Avalanche warning]] shows the danger level from 1 to 5 for the region you have chosen.", "Below it are the avalanche problem and how long the warning is valid.", "Varsom publishes a daily warning roughly from 1 December to 31 May."],
+          note: { no: "Vær og skredvarsel kan være forsinket eller unøyaktig. Kontroller alltid mot kilden før en beslutning.", en: "Weather and avalanche data may be delayed or inaccurate. Always check against the source before a decision." } }
+      ] },
+    { id: "hendelser", t: { no: "Hendelser og daglige rapporter", en: "Events and daily reports" },
+      what: { no: "Det guidene logger i felt, og rapportene du tar ut samme dag.", en: "What the guides log in the field, and the reports you take out the same day." },
+      tasks: [
+        { t: { no: "Følg hendelsene", en: "Follow the events" },
+          no: ["[[Hendelsesstrøm]] viser de siste hendelsene guidene har logget, med type, tur og tid.", "Trykk på Daedalus-merket øverst for å hente de nyeste.", "[[Siste rapporter]] viser turrapporter fra fullførte turer. Trykk på en rapport for å åpne den."],
+          en: ["[[Event feed]] shows the latest events the guides have logged, with type, trip and time.", "Select the Daedalus emblem at the top to fetch the newest.", "[[Latest reports]] shows trip reports from completed trips. Select a report to open it."] },
+        { t: { no: "Ta ut dagsrapporten", en: "Take out the daily report" },
+          no: ["Velg [[Dagsrapport]].", "Et nytt vindu åpnes med dagens tall, skredvarsel, guider og siste hendelser.", "Velg utskrift i nettleseren, eller lagre som PDF.", "Åpnes ikke vinduet, blokkerer nettleseren sprettoppvinduer. Tillat dem for daedalus-app.no."],
+          en: ["Choose [[Daily report]].", "A new window opens with today’s figures, the avalanche warning, guides and latest events.", "Choose print in the browser, or save as PDF.", "If the window does not open, the browser is blocking pop-ups. Allow them for daedalus-app.no."] },
+        { t: { no: "Del dagens brief", en: "Share today’s brief" },
+          no: ["Velg [[Dagens brief]].", "Velg [[Kopier til utklippstavle]].", "Lim teksten inn der teamet leser beskjeder."],
+          en: ["Choose [[Today’s brief]].", "Choose [[Copy to clipboard]].", "Paste the text where the team reads messages."] }
+      ] },
+    { id: "hms", t: { no: "HMS-verktøy", en: "HSE tools" },
+      what: { no: "Rapporter og oversikter for internkontroll og tilsyn. Alle ligger under [[HMS-verktøy]].", en: "Reports and overviews for internal control and inspections. All are found under [[HSE tools]]." },
+      tasks: [
+        { t: { no: "Skriv en egen HMS-rapport", en: "Write your own HSE report" },
+          no: ["Velg [[Ny HMS-rapport (PDF)]].", "Skriv tittel, beskrivelse og tiltak. Du kan knytte rapporten til en tur.", "Velg [[Generer PDF]]. Rapporten får eget nummer og åpnes i nytt vindu."],
+          en: ["Choose [[New HSE report (PDF)]].", "Enter a title, description and action taken. You can link the report to a trip.", "Choose [[Generate PDF]]. The report gets its own number and opens in a new window."] },
+        { t: { no: "Tilsynsmappe, sesongrapport og statistikk", en: "Inspection file, season report and statistics" },
+          no: ["Velg [[Tilsynsmappe (PDF)]], [[Sesongrapport (PDF)]] eller [[Hendelsesstatistikk]].", "Velg perioden med [[Fra]] og [[Til]].", "Velg [[Generer PDF]] eller [[Vis]].", "Tilsynsmappa samler turer og sikkerhetsstatus, hendelser og kvittering, sertifiseringer, avvik og revisjonslogg."],
+          en: ["Choose [[Inspection file (PDF)]], [[Season report (PDF)]] or [[Event statistics]].", "Choose the period with [[From]] and [[To]].", "Choose [[Generate PDF]] or [[Show]].", "The inspection file gathers trips and safety status, events and acknowledgement, certifications, deviations and the audit log."] },
+        { t: { no: "Fakturagrunnlag for innleide guider", en: "Invoicing basis for contracted guides" },
+          no: ["Velg [[Fakturagrunnlag]] og perioden.", "Velg [[Vis]]. Lista viser turer og gjester per guide. Avlyste turer er holdt utenfor.", "Last ned som CSV, eller skriv ut."],
+          en: ["Choose [[Invoicing basis]] and the period.", "Choose [[Show]]. The list shows trips and guests per guide. Cancelled trips are left out.", "Download as CSV, or print."] },
+        { t: { no: "Sertifikater, beredskapsplan og logg", en: "Certificates, emergency plan and log" },
+          no: ["[[Sertifikatoversikt]] viser alle sertifiseringer med utløpsdato. Rødt betyr at den går ut innen 30 dager.", "[[Beredskapsplan]] viser gjeldende plan og telefonen til vaktleder.", "[[Revisjonslogg]] viser hva som er gjort i kommandosenteret, når og av hvem.", "[[Rapportarkiv]] viser hvilke dokumenter som er laget, med nummer og tid. Selve PDF-ene lagres ikke, så lagre dem selv."],
+          en: ["[[Certificate overview]] shows all certifications with expiry date. Red means it expires within 30 days.", "[[Emergency plan]] shows the current plan and the duty manager’s phone number.", "[[Audit log]] shows what has been done in the command centre, when and by whom.", "[[Report archive]] shows which documents have been generated, with number and time. The PDFs themselves are not stored, so save them yourself."] },
+        { t: { no: "HMS-senteret", en: "The HSE centre" },
+          no: ["Velg [[Åpne HMS-senter]].", "Bytt mellom [[Etterlevelse]], [[Team (30 d)]] og [[Guidetimer]].", "[[Eksporter turer (CSV)]] og [[Eksporter hendelser (CSV)]] laster ned lister du kan åpne i et regneark.", "[[Internkontroll (PDF)]] samler organisasjon, beredskapsplan, sikkerhetssjekker og avvik i én rapport."],
+          en: ["Choose [[Open HSE centre]].", "Switch between [[Compliance]], [[Team (30 d)]] and [[Guide hours]].", "[[Export trips (CSV)]] and [[Export events (CSV)]] download lists you can open in a spreadsheet.", "[[Internal control (PDF)]] gathers the organisation, emergency plan, safety checks and deviations in one report."] }
+      ] },
+    { id: "vaktplan", t: { no: "Vaktplan", en: "Duty roster" },
+      what: { no: "Hvem som har vakt, dag for dag. Guidene ser planen. Bare administrator endrer den.", en: "Who is on duty, day by day. The guides see the plan. Only an administrator changes it." },
+      tasks: [
+        { t: { no: "Sett opp vakter", en: "Set up duties" },
+          no: ["Velg [[Vaktplan]] under [[HMS-verktøy]].", "Bla mellom ukene med pilene. [[I dag]] går til denne uka.", "For hver dag velger du guide og rolle: [[Vakt]], [[Vaktleder]] eller [[Beredskap]]. Trykk på plusstegnet for å legge til.", "Krysset ved siden av en vakt fjerner den.", "[[Last ned CSV]] eller [[Skriv ut uka]] når planen er klar."],
+          en: ["Choose [[Duty roster]] under [[HSE tools]].", "Move between weeks with the arrows. [[Today]] goes to this week.", "For each day, choose the guide and role: [[On duty]], [[Duty manager]] or [[On call]]. Select the plus sign to add.", "The cross next to a duty removes it.", "[[Download CSV]] or [[Print the week]] when the plan is ready."] }
+      ] },
+    { id: "avvik", t: { no: "Avviksregister", en: "Deviation register" },
+      what: { no: "Avvik med ansvarlig, frist og lukking.", en: "Deviations with a person responsible, deadline and closing." },
+      tasks: [
+        { t: { no: "Registrer og lukk avvik", en: "Register and close deviations" },
+          no: ["Velg [[Avviksregister]] under [[HMS-verktøy]].", "Velg [[Nytt avvik]]. Skriv tittel og beskrivelse, velg alvorlighetsgrad, ansvarlig og frist.", "Velg [[Opprett avvik]].", "Hendelser med høy eller kritisk alvorlighetsgrad foreslås som avvik. Velg [[Opprett avvik]] på forslaget.", "[[Endre]] oppdaterer et avvik. [[Lukk avvik]] lukker det. Skriv hva som ble gjort.", "Bruk [[Åpne]], [[Lukkede]] og [[Alle]] for å filtrere. [[Last ned CSV]] gir hele lista."],
+          en: ["Choose [[Deviation register]] under [[HSE tools]].", "Choose [[New deviation]]. Enter a title and description, choose severity, the person responsible and a deadline.", "Choose [[Create deviation]].", "Events with high or critical severity are suggested as deviations. Choose [[Create deviation]] on the suggestion.", "[[Edit]] updates a deviation. [[Close deviation]] closes it. Enter what was done.", "Use [[Open]], [[Closed]] and [[All]] to filter. [[Download CSV]] gives the whole list."] }
+      ] },
+    { id: "planlegging", t: { no: "Planlegging og ressurser", en: "Planning and resources" },
+      what: { no: "Maler, kjøretøy, kalender og beskjeder til teamet.", en: "Templates, vehicles, calendar and messages to the team." },
+      tasks: [
+        { t: { no: "Lag en turmal", en: "Create a trip template" },
+          no: ["Under [[Turmaler]] velger du [[Ny mal]].", "Skriv navn. Velg startsted, aktivitet, vanskelighet og hvem som eier malen. Legg til utstyr og notater.", "Velg [[Lagre mal]]. Malen blir synlig i appen når guiden lager en ny tur.", "[[Slett]] ved siden av en mal fjerner den."],
+          en: ["Under [[Trip templates]], choose [[New template]].", "Enter a name. Choose start location, activity, difficulty and who owns the template. Add equipment and notes.", "Choose [[Save template]]. The template becomes visible in the app when the guide creates a new trip.", "[[Delete]] next to a template removes it."] },
+        { t: { no: "Kjøretøy og hundespann", en: "Vehicles and dog teams" },
+          no: ["[[Kjøretøy]] og [[Hundespann]] viser det organisasjonen har registrert.", "De legges inn i appen, ikke her."],
+          en: ["[[Vehicles]] and [[Dog teams]] show what the organisation has registered.", "They are added in the app, not here."] },
+        { t: { no: "Bruk turkalenderen", en: "Use the trip calendar" },
+          no: ["Velg [[Turkalender]].", "Bla mellom månedene med pilene.", "Trykk på en tur for å åpne den. Trykk på en dag for å opprette en tur den dagen."],
+          en: ["Choose [[Trip calendar]].", "Move between months with the arrows.", "Select a trip to open it. Select a day to create a trip on that day."] },
+        { t: { no: "Send en kunngjøring til teamet", en: "Send an announcement to the team" },
+          no: ["Velg [[Kunngjøring til teamet]].", "Skriv beskjeden.", "Velg [[Send kunngjøring]]. Guidene får et varsel i appen.", "Du ser hvor mange som fikk varselet, og kan sende e-post til resten."],
+          en: ["Choose [[Announcement to the team]].", "Write the message.", "Choose [[Send announcement]]. The guides get a notification in the app.", "You see how many received the notification, and can send an email to the rest."] }
+      ] },
+    { id: "organisasjon", t: { no: "Organisasjon og abonnement", en: "Organisation and subscription" },
+      what: { no: "Navn, vaktleder, beredskapsplan og betaling.", en: "Name, duty manager, emergency plan and payment." },
+      tasks: [
+        { t: { no: "Sett opp organisasjonen", en: "Set up the organisation" },
+          no: ["Under [[Organisasjon]] velger du [[Innstillinger]].", "Fyll ut [[Organisasjonsnavn]] og [[Vaktleder-telefon]].", "Skriv beredskapsplanen: hvem som varsles, i hvilken rekkefølge, og hvor dere møtes.", "Velg [[Lagre]]. Planen og telefonen vises under [[Beredskapsplan]]."],
+          en: ["Under [[Organisation]], choose [[Settings]].", "Fill in [[Organisation name]] and [[Duty manager phone]].", "Write the emergency plan: who is alerted, in which order, and where you meet.", "Choose [[Save]]. The plan and the phone number are shown under [[Emergency plan]]."] },
+        { t: { no: "Abonnement og seter", en: "Subscription and seats" },
+          no: ["Velg [[Abonnement]] øverst. Betalingssiden åpnes i en ny fane.", "Der endrer du antall seter og betalingskort, eller sier opp."],
+          en: ["Choose [[Subscription]] at the top. The payment page opens in a new tab.", "There you change the number of seats and the payment card, or cancel."] }
+      ] },
+    { id: "hjelp", t: { no: "Feil og spørsmål", en: "Problems and questions" },
+      what: { no: "Si fra når noe ikke virker.", en: "Tell us when something does not work." },
+      tasks: [
+        { t: { no: "Meld en feil eller et ønske", en: "Report a problem or a wish" },
+          no: ["Velg [[Tilbakemelding]] øverst.", "Skriv hva du gjorde, hva som skjedde, og hva du ventet.", "Velg [[Send]]. Du kan også skrive til hello@daedalus-app.no, gjerne med skjermbilde."],
+          en: ["Choose [[Feedback]] at the top.", "Write what you did, what happened, and what you expected.", "Choose [[Send]]. You can also write to hello@daedalus-app.no, preferably with a screenshot."] },
+        { t: { no: "Vanlige spørsmål", en: "Common questions" },
+          no: ["Jeg ser ikke en ny tur eller hendelse: trykk på Daedalus-merket øverst, så lastes siden på nytt.", "En rapport åpnes ikke: nettleseren blokkerer sprettoppvinduer. Tillat dem for daedalus-app.no.", "Guiden har ikke fått invitasjonen: be guiden se i søppelpost, og bruk [[Send på nytt]].", "Guiden ser ikke turen i appen: kontroller at riktig guide er valgt på turen, og be guiden oppdatere appen."],
+          en: ["I cannot see a new trip or event: select the Daedalus emblem at the top, and the page reloads.", "A report does not open: the browser is blocking pop-ups. Allow them for daedalus-app.no.", "The guide has not received the invitation: ask the guide to check the junk folder, and use [[Send again]].", "The guide cannot see the trip in the app: check that the right guide is chosen on the trip, and ask the guide to refresh the app."] }
+      ] }
+  ]
+};
+
+/* ===== VISNING. Trenger normalt ikke endres. ===== */
+(function () {
+  var en = false, l = "";
+  try { l = String(new URLSearchParams(location.search).get("lang") || "").toLowerCase(); } catch (e) {}
+  if (l === "en" || l === "no" || l === "nb") { en = (l === "en"); try { localStorage.setItem("dae_lang", en ? "en" : "no"); } catch (e) {} }
+  else {
+    var s = null; try { s = localStorage.getItem("dae_lang"); } catch (e) {}
+    if (s === "en" || s === "no") en = (s === "en");
+    else { var L = []; try { L = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || ""]; } catch (e) {}
+      var no = false, any = false; for (var i = 0; i < L.length; i++) { var x = String(L[i] || ""); if (x) any = true; if (/^(nb|nn|no)\b/i.test(x)) { no = true; break; } } en = any && !no; }
+  }
+  function esc(t) { return String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  function fmt(t) { return esc(t).replace(/\[\[(.+?)\]\]/g, '<span class="ui">$1</span>'); }
+  function date(iso) { try { return new Date(iso + "T12:00:00").toLocaleDateString(en ? "en-GB" : "nb-NO", { day: "numeric", month: "long", year: "numeric" }); } catch (e) { return iso; } }
+  function $(id) { return document.getElementById(id); }
+  function render() {
+    var k = en ? "en" : "no", U = GUIDE.ui[k];
+    document.documentElement.lang = en ? "en" : "no"; document.title = U.title;
+    $("kicker").textContent = U.kicker; $("h1").textContent = U.h1; $("lead").textContent = U.lead; $("stamp").textContent = U.stamp + date(GUIDE.updated) + ".";
+    $("tocH").textContent = U.toc; $("langBtn").textContent = U.lang; $("printBtn").textContent = U.print; $("backBtn").textContent = U.back; $("brandSub").textContent = U.sub; $("skip").textContent = U.skip;
+    var toc = "", html = "";
+    GUIDE.sections.forEach(function (sec, i) {
+      toc += '<li><a href="#' + sec.id + '">' + esc(sec.t[k]) + "</a></li>";
+      html += '<section class="cat" id="' + sec.id + '"><h2><span class="no">' + (i + 1) + "</span>" + esc(sec.t[k]) + '</h2><p class="what">' + fmt(sec.what[k]) + "</p>";
+      sec.tasks.forEach(function (task) {
+        html += '<div class="task"><h3>' + esc(task.t[k]) + "</h3><ol>" + task[k].map(function (st) { return "<li>" + fmt(st) + "</li>"; }).join("") + "</ol>" + (task.note ? '<p class="note">' + fmt(task.note[k]) + "</p>" : "") + "</div>";
+      });
+      html += "</section>";
+    });
+    html += '<p class="foot">' + esc(U.foot) + "</p>";
+    $("toc").innerHTML = toc; $("innhold").innerHTML = html;
+  }
+  // Hopper rett til kategorien i adressen (uten glidende rulling), også etter språkbytte og når skriftene er lastet.
+  function jump() {
+    var h = location.hash, t = h ? document.getElementById(h.slice(1)) : null; if (!t) return;
+    var root = document.documentElement, old = root.style.scrollBehavior;
+    root.style.scrollBehavior = "auto"; t.scrollIntoView(); root.style.scrollBehavior = old;
+  }
+  render();
+  $("langBtn").onclick = function () { en = !en; try { localStorage.setItem("dae_lang", en ? "en" : "no"); } catch (e) {} render(); jump(); };
+  $("printBtn").onclick = function () { window.print(); };
+  jump();
+  var moved = false;
+  ["wheel", "touchstart", "keydown", "mousedown"].forEach(function (ev) { window.addEventListener(ev, function () { moved = true; }, { passive: true }); });
+  function again() { if (!moved) jump(); }
+  window.addEventListener("load", again);
+  try { if (document.fonts && document.fonts.ready) document.fonts.ready.then(again); } catch (e) {}
+})();
+</script>
+</body>
+</html>
