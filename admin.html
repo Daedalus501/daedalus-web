@@ -263,6 +263,7 @@ a{color:var(--accent-soft)}
 .st-ok{color:var(--green); background:rgba(95,185,122,.1); border:1px solid rgba(95,185,122,.4); animation:breathG 3.2s ease-in-out infinite}
 @keyframes breathG{0%,100%{box-shadow:0 0 0 0 rgba(95,185,122,.32), 0 0 18px rgba(95,185,122,.12)}50%{box-shadow:0 0 0 7px rgba(95,185,122,0), 0 0 30px rgba(95,185,122,.26)}}
 .st-sos{color:#f0a9a2; background:rgba(217,104,95,.13); border:1px solid rgba(217,104,95,.55); animation:breathR 1.6s ease-in-out infinite}
+.st-stale{color:#f0d48f; background:rgba(201,162,75,.14); border:1px solid rgba(201,162,75,.6); animation:none}
 @keyframes breathR{0%,100%{box-shadow:0 0 0 0 rgba(217,104,95,.4), 0 0 18px rgba(217,104,95,.18)}50%{box-shadow:0 0 0 8px rgba(217,104,95,0), 0 0 34px rgba(217,104,95,.4)}}
 .clockwrap{position:relative; display:flex; align-items:center; gap:16px; margin-top:15px}
 .bezel{position:relative; width:92px; height:92px; flex:none}
@@ -2551,21 +2552,87 @@ window.__sevNo=function(s){ s=String(s||'').toLowerCase(); return s==='critical'
      riktig fremover. */
   function deriveOK(t){ if(t.safety_completed_at) return true; if(t.activity_check_completed_at) return true; if(t.weather_verified==null&&t.equipment_checked==null&&t.emergency_contact_notified==null) return t.status==='completed'; return !!(t.weather_verified&&t.equipment_checked&&t.emergency_contact_notified); }
 
+  /* D30 2026-11-12: feil ved henting så ut som ro. Feilet spørringen etter turer eller guider, sto det
+     «ingen aktive turer nå» og «Normal drift», og utløp økta ble gamle tall stående uten beskjed.
+     Nå stopper lastingen på feil. Forrige bilde blir stående med et tydelig varsel, og ved utløpt økt
+     vises innloggingen igjen. «Data lastet» oppdateres ved hver vellykket henting. */
+  function __synk(a,b){ var p=String(a||''), q=String(b||''); return p<q?-1:(p>q?1:0); }
+  function __hm(d){ return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2); }
+  function __dataFeil(){ var e=new Error(__EN?"Could not fetch data from the database. Check the connection and try again.":'Kunne ikke hente data fra databasen. Sjekk nettet og prøv igjen.'); e.__net=true; return e; }
+  /* Turene det haster mest med først: aktive og klare, så dagens og tidligere (nyeste først), så framtidige. */
+  function __relevante(rows,idag,maks){
+    var kl=function(t){ if(t.status==='active'||t.status==='ready') return 0; return String(t.date||'')<=idag?1:2; };
+    return rows.slice().sort(function(x,y){ var a=kl(x), b=kl(y); if(a!==b) return a-b; return a===2? __synk(x.date,y.date) : __synk(y.date,x.date); }).slice(0,maks).map(function(t){ return t.id; });
+  }
+  /* Spør i bolker og fletter svaret, nyeste først. Brukes der id-lista kan bli lang. */
+  function __iBolker(ids,n,bygg,maks){
+    var jobber=[]; for(var i=0;i<ids.length;i+=n) jobber.push(bygg(ids.slice(i,i+n)));
+    return Promise.all(jobber).then(function(rs){ var alle=[], feil=null; rs.forEach(function(r){ if(r&&r.error) feil=feil||r.error; alle=alle.concat((r&&r.data)||[]); }); alle.sort(function(x,y){ return __synk(y.created_at,x.created_at); }); return { data: alle.slice(0,maks), error: (alle.length? null : feil) }; });
+  }
+  function __loadOk(){
+    window.__LAST_OK=new Date(); window.__STALE=null;
+    try{ var fb=document.getElementById('fBeat'); if(fb) fb.textContent=(__EN?"Data loaded ":'Data lastet ')+__hm(window.__LAST_OK); }catch(e){}
+    try{ var c=$('#opChip'); if(c) c.classList.remove('st-stale'); var b=document.getElementById('staleBar'); if(b&&b.parentNode) b.parentNode.removeChild(b); }catch(e2){}
+  }
+  function __loadFeil(e){
+    if(e&&e.__auth){
+      /* Økta er borte: vis innloggingen igjen i stedet for et bilde som ikke lenger oppdateres. */
+      try{ ov.style.display='flex'; showLoginForm(); var f=$('#admForm'); if(f) f.style.display=''; var bt=$('#admBtn'); if(bt) bt.disabled=false; var pw=$('#admPass'); if(pw) pw.value=''; showErr(__EN?"The session has expired. Log in again.":'Økta er utløpt. Logg inn på nytt.'); }catch(e1){}
+      return;
+    }
+    if(!window.__STALE) window.__STALE={ since:new Date() };
+    try{
+      var chip=$('#opChip'), chipTx=$('#opChipTx');
+      if(chip && !chip.classList.contains('st-sos')){ chip.classList.remove('st-ok'); chip.classList.add('st-stale'); if(chipTx) chipTx.textContent=(__EN?"No contact. Status unknown":'Ingen kontakt. Status ukjent'); }
+      var bar=document.getElementById('staleBar');
+      if(!bar){ bar=document.createElement('div'); bar.id='staleBar'; bar.setAttribute('role','alert'); bar.style.cssText='position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:9500;width:max-content;max-width:min(94vw,760px);display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:12px 16px;border-radius:12px;background:#2a2110;border:1px solid #c9a24b;color:#f3e6c4;font:600 13px/1.45 Inter,system-ui,sans-serif;box-shadow:0 10px 40px rgba(0,0,0,.55)'; document.body.appendChild(bar); }
+      var sist=window.__LAST_OK? __hm(window.__LAST_OK) : null;
+      bar.innerHTML='<span style="flex:1;min-width:200px">'+(__EN?"No contact with the database since ":'Ingen kontakt med databasen siden ')+__hm(window.__STALE.since)+'. '+(sist?((__EN?"The figures were last updated ":'Tallene ble sist oppdatert ')+sist+'. '):'')+(__EN?"Retrying every 2 minutes.":'Prøver igjen hvert 2. minutt.')+'</span><button type="button" id="staleRetry" style="border:1px solid #c9a24b;background:rgba(201,162,75,.16);color:#f3e6c4;border-radius:9px;padding:8px 13px;font:600 12.5px Inter,system-ui,sans-serif;cursor:pointer;white-space:nowrap">'+(__EN?"Try now":'Prøv nå')+'</button>';
+      var rb=document.getElementById('staleRetry'); if(rb) rb.onclick=function(){ rb.disabled=true; __refresh(); };
+    }catch(e2){}
+  }
+  function __refresh(){ try{ return load().then(function(){}, __loadFeil); }catch(e){ __loadFeil(e); } }
+
   function load(){
     return sb.auth.getUser().then(function(u){
-      var user=u.data.user; if(!user) throw new Error((__EN?"No active session.":'Ingen aktiv sesjon.'));
+      var user=u&&u.data&&u.data.user;
+      if(!user){
+        var _ue=(u&&u.error)||null;
+        var _nett=!!(_ue&&(_ue.name==='AuthRetryableFetchError'||_ue.status===0||_ue.status>=500||/fetch|network|timeout/i.test(String(_ue.message||''))));
+        var _se=new Error(_nett?(__EN?"No contact with the sign-in service. Check the connection.":'Ingen kontakt med innloggingstjenesten. Sjekk nettet.'):(__EN?"No active session.":'Ingen aktiv sesjon.'));
+        if(_nett) _se.__net=true; else _se.__auth=true;
+        throw _se;
+      }
       return sb.from('users').select('*').eq('id',user.id).maybeSingle().then(function(meR){
+        if(meR&&meR.error) throw __dataFeil();
         var me=meR.data; if(!me) throw new Error((__EN?"No user profile was found for the account.":'Fant ingen brukerprofil for kontoen.'));
         var role=String(me.role||'').toLowerCase();
         if(!(role.indexOf('admin')>-1 || role.indexOf('org')>-1)){ sb.auth.signOut(); throw new Error((__EN?"The account does not have org admin access.":'Kontoen har ikke org-admin-tilgang.')); }
         var orgId=me.organization_id||null;
         var gq=sb.from('users').select('*'); gq = orgId? gq.eq('organization_id',orgId): gq.eq('id',user.id);
-        var tq=sb.from('trips').select('*, participants(count)').order('created_at',{ascending:false}).limit(100);
-        if(orgId) tq=tq.eq('organization_id',orgId);
+        /* D29 2026-11-12: driftsbildet bygde på de 100 sist opprettede turene. Lå det mer enn 100 nyere
+           opprettede turer (planlagt fram i tid), falt dagens og de aktive turene ut, og siden sa
+           «ingen aktive turer nå». Nå hentes fire sett som flettes på id: de 100 sist opprettede (som før),
+           alt som er aktivt eller klart, alt med dagens dato, og 31 dager tilbake og fram (inntil 1000). */
+        var _nu=new Date(), _idag=dstr(_nu), _fra=dstr(new Date(_nu.getTime()-31*864e5)), _til=dstr(new Date(_nu.getTime()+31*864e5));
+        var _tq=function(){ var q=sb.from('trips').select('*, participants(count)'); return orgId? q.eq('organization_id',orgId) : q; };
+        var tq=Promise.all([
+          _tq().order('created_at',{ascending:false}).limit(100),
+          _tq().in('status',['active','ready']).order('created_at',{ascending:false}).limit(300),
+          _tq().eq('date',_idag).order('created_at',{ascending:false}).limit(300),
+          _tq().gte('date',_fra).lte('date',_til).order('date',{ascending:false}).limit(1000)
+        ]).then(function(a){
+          var feil=null, sett={}, ut=[];
+          a.forEach(function(r){ if(r&&r.error){ feil=feil||r.error; return; } ((r&&r.data)||[]).forEach(function(t){ if(t&&t.id&&!sett[t.id]){ sett[t.id]=1; ut.push(t); } }); });
+          ut.sort(function(x,y){ return __synk(y.created_at,x.created_at); });
+          return { data: feil? null : ut, error: feil, capped: !!(a[3]&&a[3].data&&a[3].data.length>=1000) };
+        });
         var iq = orgId? sb.from('invitations').select('*').eq('organization_id',orgId).eq('status','pending').order('created_at',{ascending:false}) : Promise.resolve({data:[]});
         var sq = sb.from('subscriptions').select('seats,status,updated_at').eq('user_id',user.id).order('updated_at',{ascending:false}).limit(1);
         return Promise.all([gq, tq, iq, sq]).then(function(rr){
+          if((rr[0]&&rr[0].error)||(rr[1]&&rr[1].error)) throw __dataFeil();
           var guideRows=(rr[0]&&rr[0].data)||[]; var tripRows=(rr[1]&&rr[1].data)||[];
+          window.__TRIPS_CAPPED=!!(rr[1]&&rr[1].capped);
           var invRows=(rr[2]&&rr[2].data)||[]; var subRow=((rr[3]&&rr[3].data)||[])[0]||null;
           /* TRULLE-GATE: utlopt/kansellert abonnement stenger kommandosenteret.
              subRow===null slippes gjennom (fakturakunder uten Stripe-rad). */
@@ -2579,7 +2646,10 @@ window.__sevNo=function(s){ s=String(s||'').toLowerCase(); return s==='critical'
             orgId? sb.from('dog_teams').select('*').eq('organization_id',orgId).order('created_at',{ascending:false}) : Promise.resolve({data:[]})
           ]);
           var tripIds=tripRows.map(function(t){return t.id;});
-          var evP = tripIds.length? sb.from('events').select('*').in('trip_id',tripIds).order('created_at',{ascending:false}).limit(25) : Promise.resolve({data:[]});
+          /* D29: id-lista kan nå være lang. De 25 nyeste hendelsene ligger på aktive, klare og nylige turer:
+             inntil 240 turer, spurt i bolker på 80 så adressen ikke blir for lang. */
+          var _evIds=__relevante(tripRows,_idag,240);
+          var evP = _evIds.length? __iBolker(_evIds,80,function(ch){ return sb.from('events').select('*').in('trip_id',ch).order('created_at',{ascending:false}).limit(25); },25) : Promise.resolve({data:[]});
           /* D15 2026-10-23: SOS-banneret ble bygd fra de 25 nyeste hendelsene på de 100 sist opprettede
              turene. 25 nyere hendelser innen et døgn, og en ukvittert SOS forsvant. Ukvitterte SOS fra
              siste døgn hentes nå for seg, uten den grensen. */
@@ -2677,7 +2747,7 @@ window.__sevNo=function(s){ s=String(s||'').toLowerCase(); return s==='critical'
     return Promise.all([pAva.catch(function(){}),pOrg.catch(function(){})]).then(function(){
       try{ updateStatic(window.__REAL, me); }catch(e){}
       hideGate();
-      if(window.__BOOT) window.__BOOT(); if(!window.__KPI_TICK){ window.__KPI_TICK=setInterval(function(){ if(document.hidden) return; try{ load().catch(function(){}); }catch(e){} }, 120000); }
+      if(window.__BOOT) window.__BOOT(); __loadOk(); if(!window.__KPI_TICK){ window.__KPI_TICK=setInterval(function(){ if(document.hidden) return; __refresh(); }, 120000); document.addEventListener('visibilitychange',function(){ if(!document.hidden && window.__LAST_OK && (Date.now()-window.__LAST_OK.getTime())>120000) __refresh(); }); }
       startRealtime(orgId);
     });
   }
@@ -3449,7 +3519,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
     function hentEv(cb){
       if(evAll){ cb(evAll); return; }
       if(!tripIds.length){ evAll=[]; cb(evAll); return; }
-      sb.from('events').select('trip_id,type,severity,description,action_taken,created_at').in('trip_id',tripIds).order('created_at',{ascending:false}).limit(400).then(function(r){ evAll=(r&&r.data)||[]; cb(evAll); });
+      __iBolker(tripIds,80,function(ch){ return sb.from('events').select('trip_id,type,severity,description,action_taken,created_at').in('trip_id',ch).order('created_at',{ascending:false}).limit(400); },400).then(function(r){ evAll=(r&&r.data)||[]; cb(evAll); });
     }
     function vis(f){
       $$('#hmC .tabs button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-hf')===f); });
@@ -3683,10 +3753,16 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       var firstFit=true;
       function loadOps(){
         var since=new Date(Date.now()-30*864e5).toISOString().slice(0,10);
-        sb.from('trips').select('id,name,date,status,gps_lat,gps_lng,guide_name,map_data').gte('date',since).order('date',{ascending:false}).limit(60).then(function(tr){
+        /* D29 2026-11-12: kartet tok de 60 nyeste datoene, så dagens turer falt ut når det lå mange planlagte
+           fram i tid. Nå: alt som er aktivt eller klart, og turer fra 30 dager tilbake til i overmorgen. */
+        var _kol='id,name,date,status,gps_lat,gps_lng,guide_name,map_data', _idagK=dstr(new Date()), _tilK=dstr(new Date(Date.now()+2*864e5));
+        Promise.all([
+          sb.from('trips').select(_kol).in('status',['active','ready']).limit(100),
+          sb.from('trips').select(_kol).gte('date',since).lte('date',_tilK).order('date',{ascending:false}).limit(200)
+        ]).then(function(mm){ var sett={}, ut=[]; mm.forEach(function(r){ ((r&&r.data)||[]).forEach(function(t){ if(t&&t.id&&!sett[t.id]){ sett[t.id]=1; ut.push(t); } }); }); return {data:ut}; }).then(function(tr){
           var trips=(tr&&tr.data)||[];
-          var ids=trips.map(function(t){ return t.id; });
-          var evP= ids.length? sb.from('events').select('id,trip_id,type,severity,created_at,acknowledged_at,action_taken,gps_lat,gps_lng').in('trip_id',ids).order('created_at',{ascending:false}).limit(200) : Promise.resolve({data:[]});
+          var ids=__relevante(trips,_idagK,160);
+          var evP= ids.length? __iBolker(ids,80,function(ch){ return sb.from('events').select('id,trip_id,type,severity,created_at,acknowledged_at,action_taken,gps_lat,gps_lng').in('trip_id',ch).order('created_at',{ascending:false}).limit(200); },200) : Promise.resolve({data:[]});
           evP.then(function(er){
             var evs=(er&&er.data)||[];
             var evByTrip={}; var sosByTrip={};
@@ -3775,7 +3851,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
   function renderTripAdmin(R, me){
     var el=$('#tripAdmList'); if(!el) return;
     var trips=(window.__TRIPS||[]).slice().sort(function(a,b){ return Date.parse(b.date||b.created_at||0)-Date.parse(a.date||a.created_at||0); });
-    var h=$('#tadmHint'); if(h) h.textContent=trips.length+(__EN?(trips.length===1?' trip':' trips'):' turer');
+    var h=$('#tadmHint'); if(h){ h.textContent=trips.length+(window.__TRIPS_CAPPED?'+':'')+(__EN?(trips.length===1?' trip':' trips'):' turer'); h.title=(__EN?"Everything active or ready, today’s trips, 31 days back and ahead, and the 100 most recently created trips.":'Alt som er aktivt eller klart, dagens turer, 31 dager tilbake og fram, og de 100 sist opprettede turene.'); }
     if(!trips.length){ el.innerHTML=(__EN?"<span style=\"font-size:12.5px\">No trips yet — use ‘New trip’.<\/span>":'<span style="font-size:12.5px">Ingen turer ennå — bruk «Ny tur».</span>'); return; }
     var F=window.__TADM_F||'alle';
     var fdef=[['alle',(__EN?"All":'Alle')],['active',(__EN?"Active":'Aktive')],['draft',(__EN?"Draft":'Utkast')],['completed',(__EN?"Completed":'Fullført')],['cancelled',(__EN?"Cancelled":'Avlyst')]];
@@ -4354,7 +4430,8 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
     var TYPES=[['summit',(__EN?"Summit":'Topptur')],['ski_touring',(__EN?"Ski touring":'Skitur')],['glacier',(__EN?"Glacier":'Brevandring')],['climbing',(__EN?"Climbing":'Klatring')],['kayak',(__EN?"Kayak":'Kajakk')],['sea_kayaking',(__EN?"Sea kayak":'Havkajakk')],['river_guide',(__EN?"River guiding":'Elveguiding')],['dog_sledding',(__EN?"Dog sledding":'Hundekjøring')],['snowmobile_safari',(__EN?"Snowmobile":'Snøscooter')],['northern_lights_bus',(__EN?"Northern lights bus":'Nordlysbuss')],['teambuilding',(__EN?"Team building":'Teambuilding')],['course',(__EN?"Course":'Kurs')],['rescue_operation',(__EN?"Rescue mission":'Redningsoppdrag')],['hiking',(__EN?"Hiking":'Fjellvandring')],['ice_climbing',(__EN?"Ice climbing":'Isklatring')],['via_ferrata','Via ferrata'],['whale_safari',(__EN?"Whale safari":'Hvalsafari')],['snowshoeing',(__EN?"Snowshoeing":'Truging')],['other',(__EN?"Other":'Annet')]];
     var DIFFS=[['easy',(__EN?"Easy":'Lett')],['moderate',(__EN?"Moderate":'Moderat')],['challenging',(__EN?"Challenging":'Krevende')],['extreme',(__EN?"Extreme":'Ekstrem')]];
     var opt=function(arr,sel){ return arr.map(function(p){ return '<option value="'+p[0]+'"'+(p[0]===sel?' selected':'')+'>'+p[1]+'</option>'; }).join(''); };
-    var gopt=(R.guidesRaw||[]).map(function(g){ return '<option value="'+g.id+'"'+((me&&g.id===me.id)?' selected':'')+'>'+_escR(g.name)+'</option>'; }).join('');
+    /* D31 2026-11-12: inviterte uten konto kunne velges som guide. De vises nå grå, og kan ikke velges. */
+    var gopt=(R.guidesRaw||[]).map(function(g){ if(String(g.id).indexOf('inv-')===0) return '<option value="" disabled>'+_escR(g.name)+(__EN?" (invited, not active yet)":' (invitert, ikke aktiv ennå)')+'</option>'; return '<option value="'+g.id+'"'+((me&&g.id===me.id)?' selected':'')+'>'+_escR(g.name)+'</option>'; }).join('');
     var ov=document.createElement('div'); ov.id='ntOv';
     ov.innerHTML='<style>#ntOv{position:fixed;inset:0;z-index:99998;display:flex;align-items:center;justify-content:center;background:rgba(8,14,26,.86);backdrop-filter:blur(8px);font-family:Inter,system-ui,sans-serif}#ntC{width:min(94vw,440px);max-height:92vh;overflow:auto;background:#16273f;border:1px solid #284063;border-radius:16px;padding:22px}#ntC h3{margin:0 0 4px;color:#eaf2fb;font-size:17px}#ntC p.s{margin:0 0 14px;color:#8aa0bd;font-size:12.5px}#ntC label{display:block;color:#8aa0bd;font-size:11.5px;margin:10px 0 4px}#ntC input,#ntC select,#ntC textarea{width:100%;box-sizing:border-box;padding:9px 11px;border-radius:9px;border:1px solid #284063;background:#0e1a2c;color:#eaf2fb;font-size:13.5px;font-family:inherit}#ntC .row{display:flex;gap:10px}#ntC .row>div{flex:1}#ntC .btns{display:flex;gap:10px;margin-top:16px}#ntC button{flex:1;padding:11px;border:none;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer}#ntSave{background:linear-gradient(135deg,#4a9fe0,#3b82c4);color:#fff}#ntSave:disabled{opacity:.6}#ntCancel{background:#22364f;color:#cfe2f5}#ntErr{color:#e8857c;font-size:12px;margin-top:10px;min-height:14px}</style>'+
       (__EN?"<form id=\"ntC\"><h3>New trip<\/h3><p class=\"s\">Creates a trip in ":'<form id="ntC"><h3>Ny tur</h3><p class="s">Oppretter en tur i ')+_escR(R.orgName||(__EN?"your organisation":'organisasjonen din'))+(__EN?". Saved as a draft.<\/p>":'. Lagres som utkast.</p>')+
@@ -4428,7 +4505,9 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
         var nid=res&&res.data&&res.data[0]&&res.data[0].id;
         try{ logAdmin('tur_opprettet', (rows[0]&&rows[0].trip_id)||'', name+(reps>1?(' · '+reps+(__EN?" trips weekly":' turer ukentlig')):'')); }catch(eL){}
         close(); try{ toast((__EN?"Trip created":'Tur opprettet'),(reps>1?(reps+(__EN?" trips (weekly) saved. ":' turer (ukentlig) lagret. ')):'')+(__EN?"Opening the trip — add participants there.":'Åpner turen — legg til deltakere der.')); }catch(e){}
-        setTimeout(function(){ location.href='/admin'+(nid?('#tur='+nid):''); }, 700);
+        /* D28 2026-11-12: fra /admin endret dette bare #tur= i adressen. Siden ble ikke lastet, og turskuffen
+           åpnet først ved neste oppfrisking. Står vi alt på /admin, lastes siden på nytt med turen i adressen. */
+        setTimeout(function(){ if(location.pathname==='/admin'){ if(nid) location.hash='tur='+nid; location.reload(); } else { location.href='/admin'+(nid?('#tur='+nid):''); } }, 700);
       }, function(){ err.textContent=(__EN?"Network error — try again.":'Nettverksfeil — prøv igjen.'); save.disabled=false; save.textContent=(__EN?"Create trip":'Opprett tur'); });
     });
   }
@@ -4689,7 +4768,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
             }
             var rows=(r&&r.data)||[];
             var navnAv={}; ((R&&R.guidesRaw)||[]).forEach(function(g){ navnAv[g.id]=g.name; });
-            var gValg=((R&&R.guidesRaw)||[]).map(function(g){ return '<option value="'+g.id+'">'+v2Esc(g.name)+'</option>'; }).join('');
+            var gValg=((R&&R.guidesRaw)||[]).map(function(g){ if(String(g.id).indexOf('inv-')===0) return '<option value="" disabled>'+v2Esc(g.name)+(__EN?" (invited, not active yet)":' (invitert, ikke aktiv ennå)')+'</option>'; return '<option value="'+g.id+'">'+v2Esc(g.name)+'</option>'; }).join('');
             var rValg=vkRoller.map(function(x){ return '<option value="'+x+'">'+vkRolleNo[x]+'</option>'; }).join('');
             var idagIso=vkIso(new Date());
             vkUt={man:new Date(man), son:new Date(sonU), rows:rows, navn:navnAv};
@@ -4784,7 +4863,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       var avSkjemaVis=function(forh){
         var sk=byId('avSkjema'); if(!sk) return;
         var red=!!(forh&&forh.id);
-        var gValg=(__EN?"<option value=\"\">No one responsible<\/option>":'<option value="">Ingen ansvarlig</option>')+((R&&R.guidesRaw)||[]).map(function(g){ return '<option value="'+g.id+'"'+((forh&&forh.assigned_to===g.id)?' selected':'')+'>'+v2Esc(g.name)+'</option>'; }).join('');
+        var gValg=(__EN?"<option value=\"\">No one responsible<\/option>":'<option value="">Ingen ansvarlig</option>')+((R&&R.guidesRaw)||[]).map(function(g){ if(String(g.id).indexOf('inv-')===0) return '<option value="" disabled>'+v2Esc(g.name)+(__EN?" (invited, not active yet)":' (invitert, ikke aktiv ennå)')+'</option>'; return '<option value="'+g.id+'"'+((forh&&forh.assigned_to===g.id)?' selected':'')+'>'+v2Esc(g.name)+'</option>'; }).join('');
         var sValg=['low','medium','high','critical'].map(function(x){ return '<option value="'+x+'"'+((forh&&forh.severity===x)?' selected':'')+'>'+avSevNo[x]+'</option>'; }).join('');
         var inp='padding:6px 8px;border-radius:8px;border:1px solid #284063;background:#0e1a2c;color:#eaf2fb;font-size:12px;width:100%';
         sk.style.display='block';

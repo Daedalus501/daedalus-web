@@ -74,6 +74,21 @@ color:var(--text);text-decoration:none;background:rgba(0,0,0,.25)}
 <h1 data-i18n="h1">Nyheter</h1>
 <p class="sub" data-i18n="sub">Hva som er nytt i appen og kommandosenteret. Kort, ærlig og uten fyll.</p>
 
+<article class="post" id="kommandosenter-2026-11">
+<div class="meta"><span class="tag web" data-i18n="pm.tag">Kommandosenter</span><time datetime="2026-11-12" data-i18n="pm.date">12. november 2026</time></div>
+<h2 data-i18n="pm.h">Kommandosenteret: fire rettelser</h2>
+<p data-i18n="pm.lead">Fire feil er rettet etter en gjennomgang av kommandosenteret. To av dem kunne gi et galt driftsbilde.</p>
+<ul>
+<li class="fix" data-i18n-html="pm.f1"><b>Driftsbildet bygde på de 100 sist opprettede turene.</b> Var det planlagt mer enn 100 turer fram i tid, kunne dagens og de aktive turene falle ut, og siden sa «ingen aktive turer nå». Nå er alt som er aktivt eller klart, og alle dagens turer, alltid med. Lister, rapporter og eksport viste også bare de 100. Nå dekker de 31 dager tilbake og fram, og fortsatt de 100 sist opprettede. Har du eksportert turer fra en organisasjon med mer enn 100 turer, lag eksporten på nytt. SOS-varselet var ikke berørt.</li>
+<li class="fix" data-i18n-html="pm.f2"><b>Feil ved henting så ut som ro.</b> Mistet kommandosenteret kontakten med databasen, kunne det stå «Normal drift» og «ingen aktive turer nå», eller gamle tall ble stående uten beskjed. Nå står det «Ingen kontakt. Status ukjent», du får et varsel med klokkeslett, og du kan prøve på nytt. Er økta utløpt, kommer innloggingen tilbake.</li>
+<li class="fix" data-i18n-html="pm.f3"><b>«Ny tur» åpnet ikke turen.</b> Turen ble lagret, men åpnet seg først etter opptil to minutter. Det var lett å opprette den en gang til. Nå åpner turen av seg selv. Sjekk gjerne om du har to like turer fra før.</li>
+<li class="fix" data-i18n-html="pm.f4"><b>Inviterte guider kunne velges før de var aktive.</b> En guide som var invitert, men ikke hadde laget passord, kunne velges på tur, i vaktplanen og i avvik. Nå står navnet grått til guiden er aktiv.</li>
+</ul>
+<div class="stores">
+<a class="store" href="/admin" data-i18n="pm.open">Åpne kommandosenteret</a>
+</div>
+</article>
+
 <article class="post" id="hjelp-2026-11">
 <div class="meta"><span class="tag web" data-i18n="pl.tag">Kommandosenter</span><time datetime="2026-11-12" data-i18n="pl.date">12. november 2026</time></div>
 <h2 data-i18n="pl.h">Hjelp i kommandosenteret</h2>
@@ -352,6 +367,14 @@ var EN={
 'head.sub':'News and release notes',
 'h1':'News',
 'sub':'What is new in the app and the command centre. Short, honest, no filler.',
+'pm.tag':'Command centre','pm.date':'12 November 2026',
+'pm.h':'The command centre: four fixes',
+'pm.lead':'Four faults have been fixed after a review of the command centre. Two of them could give a wrong operations picture.',
+'pm.f1':'<b>The operations picture was built on the 100 most recently created trips.</b> If more than 100 trips had been planned ahead, today’s trips and the active ones could drop out, and the page said “no active trips now”. Now everything that is active or ready, and all of today’s trips, are always included. Lists, reports and exports also showed only those 100. They now cover 31 days back and ahead, and still the 100 most recently created. If you have exported trips from an organisation with more than 100 trips, create the export again. The SOS alert was not affected.',
+'pm.f2':'<b>A failed fetch looked like calm.</b> If the command centre lost contact with the database, it could say “Normal operations” and “no active trips now”, or old figures stayed on screen without notice. Now it says “No contact. Status unknown”, you get a warning with the time, and you can try again. If the session has expired, the login comes back.',
+'pm.f3':'<b>“New trip” did not open the trip.</b> The trip was saved, but opened only after up to two minutes. It was easy to create it a second time. Now the trip opens by itself. Please check whether you have two identical trips from before.',
+'pm.f4':'<b>Invited guides could be chosen before they were active.</b> A guide who had been invited but had not set a password could be chosen for a trip, in the duty roster and in a deviation. Now the name is greyed out until the guide is active.',
+'pm.open':'Open the command centre',
 'pl.tag':'Command centre','pl.date':'12 November 2026',
 'pl.h':'Help in the command centre',
 'pl.lead':'The command centre now has a help page with numbered steps for each part. It opens in a new tab, so you do not lose what you are working on.',
