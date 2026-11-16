@@ -74,6 +74,24 @@ color:var(--text);text-decoration:none;background:rgba(0,0,0,.25)}
 <h1 data-i18n="h1">Nyheter</h1>
 <p class="sub" data-i18n="sub">Hva som er nytt i appen og kommandosenteret. Kort, ærlig og uten fyll.</p>
 
+<article class="post" id="v151">
+<div class="meta"><span class="tag rel" data-i18n="po.tag">Versjon 1.5.1</span><time datetime="2026-11-16" data-i18n="po.date">16. november 2026</time></div>
+<h2 data-i18n="po.h">Daedalus 1.5.1: full turrapport og rettet aktivering</h2>
+<p data-i18n="po.lead">Ny PDF-rapport og fem rettelser, på iPhone og Android. Har du delt turrapporter eller tilsynsmappen, les punktet om Opprett tur. På Android er dette første oppdatering siden 1.4.4, så rettelsene fra 1.4.5 og 1.5.0 er også med. Gjesteerklæringen er nå i appen på begge plattformer, men er ikke åpnet for kundene ennå. Den får egen post.</p>
+<ul>
+<li data-i18n-html="po.l1"><b>Full turrapport i PDF.</b> Rapporten har nå det turen registrerte: turdetaljer, sikkerhetssjekk, vær- og skredvarsel, utstyr, hendelser med bilder og hvor de ble logget, guidens spor og plass til å skrive for hånd.</li>
+<li class="fix" data-i18n-html="po.f1"><b>«Aktiver tur» i Opprett tur ble alltid lagret som overstyring.</b> Turer aktivert derfra før 1.5.1 står med «Aktiver likevel: Ja» i tilsynsmappen og turrapporten, også når sikkerhetssjekken var komplett. For disse turene sier merket ingenting om sjekken. Har du delt slike rapporter, gi mottakeren beskjed. Nå spør appen først når punkter mangler, og lagrer overstyring bare når du velger det.</li>
+<li class="fix" data-i18n-html="po.f2"><b>Posisjonsloggingen kunne stoppe.</b> Gjelder organisasjoner. Ble turen aktivert før den var kommet fram til serveren, kunne loggingen av guidens posisjon stoppe resten av turen, og kommandosenteret fikk ingen nye posisjoner. Rettet.</li>
+<li class="fix" data-i18n-html="po.f3"><b>Appen frøs ved fanebytte.</b> Med mange turer kunne appen fryse når du byttet fane. Rettet.</li>
+<li class="fix" data-i18n-html="po.f4"><b>Rapporten ventet på vær- og skredtjenesten.</b> Svarte ikke tjenesten, ventet rapporten. Nå gir appen opp etter 15 sekunder.</li>
+<li class="fix" data-i18n-html="po.f5"><b>Android: ingen sporing uten Googles posisjonsnøyaktighet.</b> Var Googles posisjonsnøyaktighet slått av, og guiden takket nei da appen ba om den, ble turen ikke sporet. Nå spores den med GPS alene.</li>
+</ul>
+<div class="stores">
+<a class="store" href="https://apps.apple.com/no/app/id6761403819" target="_blank" rel="noopener" data-i18n="po.ios">Last ned på App Store</a>
+<a class="store" href="https://play.google.com/store/apps/details?id=com.hoiseth.daedalus" target="_blank" rel="noopener" data-i18n="po.and">Last ned på Google Play</a>
+</div>
+</article>
+
 <article class="post" id="klar-2026-11">
 <div class="meta"><span class="tag web" data-i18n="pn.tag">Kommandosenter</span><time datetime="2026-11-12" data-i18n="pn.date">12. november 2026</time></div>
 <h2 data-i18n="pn.h">Klare turer og glemt passord</h2>
@@ -380,6 +398,16 @@ var EN={
 'head.sub':'News and release notes',
 'h1':'News',
 'sub':'What is new in the app and the command centre. Short, honest, no filler.',
+'po.tag':'Version 1.5.1','po.date':'16 November 2026',
+'po.h':'Daedalus 1.5.1: a full trip report and corrected activation',
+'po.lead':'A new PDF report and five fixes, on iPhone and Android. If you have shared trip reports or the inspection file, read the point about Create trip. On Android this is the first update since 1.4.4, so it also brings the fixes from 1.4.5 and 1.5.0. Guest declarations are now in the app on both platforms but are not open to customers yet. They will get their own post.',
+'po.l1':'<b>A full trip report in PDF.</b> The report now holds what the trip recorded: trip details, the safety check, weather and avalanche forecasts, equipment, events with photos and where they were logged, the guide’s track and room to write by hand.',
+'po.f1':'<b>“Activate trip” on Create trip was always stored as an override.</b> Trips activated there before 1.5.1 are marked as activated anyway in the inspection file and the trip report, even when the safety check was complete. For these trips the mark says nothing about the check. If you have shared such reports, let the recipient know. The app now asks first when points are missing, and stores an override only when you choose it.',
+'po.f2':'<b>Position logging could stop.</b> For organisations. If a trip was activated before it had reached the server, logging of the guide’s position could stop for the rest of the trip, and the command centre received no new positions. Fixed.',
+'po.f3':'<b>The app froze when switching tabs.</b> With many trips, the app could freeze when you switched tabs. Fixed.',
+'po.f4':'<b>Reports waited for the weather and avalanche services.</b> If a service did not answer, the report waited. The app now gives up after 15 seconds.',
+'po.f5':'<b>Android: no tracking without Google’s Location Accuracy.</b> If Google’s Location Accuracy was off and the guide said no when the app asked for it, the trip was not tracked. It is now tracked by GPS alone.',
+'po.ios':'Download on the App Store','po.and':'Download on Google Play',
 'pn.tag':'Command centre','pn.date':'12 November 2026',
 'pn.h':'Ready trips and forgotten passwords',
 'pn.lead':'Two small fixes in the command centre.',
