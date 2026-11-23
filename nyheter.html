@@ -75,15 +75,33 @@ color:var(--text);text-decoration:none;background:rgba(0,0,0,.25)}
 <p class="sub" data-i18n="sub">Hva som er nytt i appen og kommandosenteret. Kort, ærlig og uten fyll.</p>
 
 <article class="post" id="gjesteerklaering-2026-11">
-<div class="meta"><span class="tag rel" data-i18n="pp.tag">Kommer</span><time datetime="2026-11-16" data-i18n="pp.date">16. november 2026</time></div>
+<div class="meta"><span class="tag rel" data-i18n="pp.tag">Tilgjengelig</span><time datetime="2026-11-23" data-i18n="pp.date">23. november 2026</time></div>
 <h2 data-i18n="pp.h">Gjesteerklæringen: digital signatur fra gjestene</h2>
-<p data-i18n="pp.lead">Med gjesteerklæringen signerer gjestene digitalt, på egen telefon eller på guidens. Den ligger allerede i appen, men er ikke åpnet for kundene ennå. Vi sier fra her når den kan tas i bruk.</p>
+<p data-i18n="pp.lead">Med gjesteerklæringen signerer gjestene digitalt, på egen telefon eller på guidens. Nå slår organisasjonen den på selv i kommandosenteret, med knappen «Åpne gjesteerklæringen».</p>
 <ul>
-<li data-i18n-html="pp.l1"><b>Organisasjonens egen tekst.</b> Når erklæringen åpnes, slår organisasjonen den på og skriver sin egen tekst i kommandosenteret.</li>
+<li data-i18n-html="pp.l1"><b>Organisasjonens egen tekst.</b> Organisasjonen skriver sin egen tekst i kommandosenteret, på norsk, engelsk eller begge. Hver endring blir en ny versjon, og gjester som har signert, beholder versjonen de signerte.</li>
 <li data-i18n-html="pp.l2"><b>På gjestens eller guidens telefon.</b> Gjesten skanner en QR-kode og signerer på egen telefon, eller signerer i appen på guidens telefon. I appen virker det uten dekning. Signaturen sendes når telefonen får nett.</li>
 <li data-i18n-html="pp.l3"><b>En del av sikkerhetssjekken.</b> Aktiveringen viser «Erklæringer signert: n av N». Mangler noen, kan guiden aktivere likevel, og det blir lagret. En manglende signatur stopper aldri turen, fordi aktiveringen starter sporing og SOS.</li>
 <li data-i18n-html="pp.l4"><b>I turrapporten.</b> Erklæringene står på egen side i PDF-rapporten, med svar, fødselsdato og signatur.</li>
+<li data-i18n-html="pp.l5"><b>QR-koder og tilsyn.</b> Skriv ut organisasjonens QR-kode til bussen og garderoben, eller turens egen kode. Tilsynsmappa viser hver signatur og teksten den ble gitt på.</li>
 </ul>
+</article>
+
+<article class="post" id="flere-invitasjoner-2026-11">
+<div class="meta"><span class="tag web" data-i18n="pq.tag">Kommandosenter</span><time datetime="2026-11-20" data-i18n="pq.date">20. november 2026</time></div>
+<h2 data-i18n="pq.h">Flere invitasjoner på én gang, og mer fra appen</h2>
+<p data-i18n="pq.lead">Rettelser etter gjennomgangen av kommandosenteret. Én av dem kan ha gitt turer laget på web feil aktivitet.</p>
+<ul>
+<li class="fix" data-i18n-html="pq.f1"><b>Inviter flere guider på rad.</b> Etter hver invitasjon kan du velge «Inviter en til». Før ble siden lastet på nytt etter hver guide. Lista oppdateres når du lukker.</li>
+<li class="fix" data-i18n-html="pq.f2"><b>«Ny tur» foreslår ikke lenger Topptur.</b> Aktiviteten du valgte sist, står ferdig valgt. Før sto Topptur valgt hver gang. Har dere laget turer på web uten å endre aktivitet, kan de stå som Topptur, også i turrapporten. Sjekk aktiviteten på turene deres.</li>
+<li class="fix" data-i18n-html="pq.f3"><b>Riktigere sikkerhetsetterlevelse.</b> Måleren teller nå bare turer som er startet. Før talte utkast og avlyste turer som brudd, så prosenten ble for lav. Utløpte sertifikater og sertifikater som går ut innen 30 dager, står nå hver for seg, med alle navn.</li>
+<li class="fix" data-i18n-html="pq.f4"><b>Mer fra appen.</b> Turen viser hentested og språk på deltakerne, bilder på hendelser, og hendelser som er endret i appen, med tidspunkt og opprinnelig tekst. Turrapporten tar med hentested, språk og endringene.</li>
+<li class="fix" data-i18n-html="pq.f5"><b>Mindre ting.</b> Et trykk på værfeltet åpner nå én dialog, ikke to. Skredvarselet er på engelsk i engelsk visning. «Siste turer» på en guide viser ikke planlagte turer. Knappene i vaktplanen og kalenderen er større på mobil. Svalbard-timer og vedlegget til Sysselmesteren vises bare for organisasjoner med turer på Svalbard.</li>
+<li class="fix" data-i18n-html="pq.f6"><b>Hele perioden kommer med.</b> Tilsynsmappa, sesongrapporten, hendelsesstatistikken, fakturagrunnlaget, internkontrollpakken og guidetimene stoppet ved 1000 turer. Noen stoppet også ved 1000 hendelser, 500 avvik eller 500 linjer i revisjonsloggen. Nå kommer alt med.</li>
+</ul>
+<div class="stores">
+<a class="store" href="/admin" data-i18n="pq.open">Åpne kommandosenteret</a>
+</div>
 </article>
 
 <article class="post" id="v151">
@@ -410,13 +428,24 @@ var EN={
 'head.sub':'News and release notes',
 'h1':'News',
 'sub':'What is new in the app and the command centre. Short, honest, no filler.',
-'pp.tag':'Coming soon','pp.date':'16 November 2026',
+'pp.tag':'Available','pp.date':'23 November 2026',
 'pp.h':'Guest declarations: digital signatures from your guests',
-'pp.lead':'With guest declarations, your guests sign digitally, on their own phone or on the guide’s. They are already in the app but not open to customers yet. We will post here when they can be used.',
-'pp.l1':'<b>Your organisation’s own text.</b> When declarations open, the organisation switches them on and writes its own text in the command centre.',
+'pp.lead':'With guest declarations, your guests sign digitally, on their own phone or on the guide’s. Your organisation now switches them on itself in the command centre, with the ‘Open the guest declaration’ button.',
+'pp.l1':'<b>Your organisation’s own text.</b> The organisation writes its own text in the command centre, in Norwegian, English or both. Every change becomes a new version, and guests who have signed keep the version they signed.',
 'pp.l2':'<b>On the guest’s phone or the guide’s.</b> The guest scans a QR code and signs on their own phone, or signs in the app on the guide’s phone. In the app this works without coverage. The signature is sent when the phone is back online.',
 'pp.l3':'<b>Part of the safety check.</b> Activation shows how many declarations are signed. If any are missing, the guide can activate anyway, and this is recorded. A missing signature never stops the trip, because activation starts tracking and SOS.',
 'pp.l4':'<b>In the trip report.</b> The declarations are on a page of their own in the PDF report, with answers, date of birth and signature.',
+'pp.l5':'<b>QR codes and inspections.</b> Print the organisation’s QR code for the bus and changing room, or the trip’s own code. The inspection file shows each signature and the text it was given on.',
+'pq.tag':'Command centre','pq.date':'20 November 2026',
+'pq.h':'Several invitations at once, and more from the app',
+'pq.lead':'Fixes after the review of the command centre. One of them may have given trips made on the web the wrong activity.',
+'pq.f1':'<b>Invite several guides in a row.</b> After each invitation you can choose “Invite another”. Before, the page was reloaded after every guide. The list is updated when you close.',
+'pq.f2':'<b>“New trip” no longer suggests Summit.</b> The activity you chose last time is already selected. Before, Summit was selected every time. If you made trips on the web without changing the activity, they may be recorded as Summit, also in the trip report. Check the activity on your trips.',
+'pq.f3':'<b>More accurate safety compliance.</b> The gauge now counts only trips that have started. Before, drafts and cancelled trips counted as breaches, so the percentage was too low. Expired certificates and certificates that expire within 30 days are now listed separately, with every name.',
+'pq.f4':'<b>More from the app.</b> The trip shows the participants’ pickup point and language, photos on events, and events changed in the app, with the time and the original text. The trip report includes the pickup point, language and the changes.',
+'pq.f5':'<b>Smaller things.</b> Selecting the weather field now opens one dialog, not two. The avalanche warning is in English in the English view. “Recent trips” on a guide no longer shows planned trips. The buttons in the duty roster and the calendar are larger on mobile. Svalbard guide hours and the attachment for the Governor of Svalbard are shown only for organisations with trips on Svalbard.',
+'pq.f6':'<b>The whole period is included.</b> The inspection file, the season report, the event statistics, the invoicing basis, the internal control package and the guide hours stopped at 1,000 trips. Some also stopped at 1,000 events, 500 deviations or 500 lines in the audit log. Everything is now included.',
+'pq.open':'Open the command centre',
 'po.tag':'Version 1.5.1','po.date':'16 November 2026',
 'po.h':'Daedalus 1.5.1: a full trip report and corrected activation',
 'po.lead':'A new PDF report and five fixes, on iPhone and Android. If you have shared trip reports or the inspection file, read the point about Create trip. On Android this is the first update since 1.4.4, so it also brings the fixes from 1.4.5 and 1.5.0. Guest declarations are now in the app on both platforms but are not open to customers yet. They will get their own post.',
