@@ -4177,6 +4177,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       +(__EN?"<label>Start location<\/label><input id=\"taLoc\" maxlength=\"120\" value=\"":'<label>Startsted</label><input id="taLoc" maxlength="120" value="')+esc(t.start_location||'')+'">'
       +(__EN?"<div class=\"row\"><div><label>Date<\/label><input id=\"taDate\" type=\"date\" value=\"":'<div class="row"><div><label>Dato</label><input id="taDate" type="date" value="')+esc(t.date||'')+(__EN?"\"><\/div><div><label>Return time<\/label><input id=\"taRet\" type=\"time\" value=\"":'"></div><div><label>Returtid</label><input id="taRet" type="time" value="')+esc((t.return_time||'').slice(0,5))+(__EN?"\"><\/div><div><label>Return date<\/label><input id=\"taRetD\" type=\"date\" value=\"":'"></div><div><label>Returdato</label><input id="taRetD" type="date" value="')+esc(t.return_date||'')+'"></div></div>'
       +'<div class="row"><div><label>Guide</label><select id="taGuide">'+gopt+'</select></div><div><label>Status</label><select id="taStatus">'+sopt+'</select></div></div>'
+      +(bkHar(t)? ('<div id="taBkW" style="display:none">'+(__EN?"<label>Number booked<\/label>":'<label>Antall booket</label>')+'<input id="taBooked" type="number" min="1" max="500" step="1" inputmode="numeric" value="'+esc(bkB(t)==null?'':String(bkB(t)))+'" placeholder="'+(__EN?"From the booking system":'Fra bookingsystemet')+'"><div style="font-size:11.5px;color:#8aa0bd;margin-top:4px">'+bkHint(false)+'</div></div>') : '')
       +(__EN?"<label>Notes<\/label><textarea id=\"taNotes\" rows=\"2\" maxlength=\"500\">":'<label>Notater</label><textarea id="taNotes" rows="2" maxlength="500">')+esc(t.notes||'')+'</textarea>'
       +tidH
       +(__EN?"<h4>HSE / safety check<\/h4><div style=\"font-size:12.5px;line-height:1.9\">Base check: ":'<h4>HMS / sikkerhetssjekk</h4><div style="font-size:12.5px;line-height:1.9">Grunnsjekk: ')+(t.safety_completed_at? ((__EN?"<b style=\"color:#5fb97a\">✓ completed ":'<b style="color:#5fb97a">✓ fullført ')+new Date(t.safety_completed_at).toLocaleString((__EN?"en-GB":'nb-NO'),{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})+'</b>') : (__EN?"<b style=\"color:#8aa0bd\">not recorded<\/b>":'<b style="color:#8aa0bd">ikke registrert</b>'))+(__EN?"<br>Weather verified: ":'<br>Vær verifisert: ')+chk(t.weather_verified)+(__EN?" · Equipment checked: ":' · Utstyr sjekket: ')+chk(t.equipment_checked)+(__EN?" · Emergency contact notified: ":' · Nødkontakt varslet: ')+chk(t.emergency_contact_notified)+(__EN?"<br>Activity check: ":'<br>Aktivitetssjekk: ')+(t.activity_check_completed_at? ((__EN?"<b style=\"color:#5fb97a\">✓ completed ":'<b style="color:#5fb97a">✓ fullført ')+new Date(t.activity_check_completed_at).toLocaleString((__EN?"en-GB":'nb-NO'),{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})+'</b>') : '<b style="color:#8aa0bd">—</b>')+(t.activation_override? (__EN?" · <b style=\"color:#e0a458\">Activated with override<\/b>":' · <b style="color:#e0a458">Aktivert med overstyring</b>') : '')+(__EN?"<br>Avalanche danger level: <b style=\"color:#eaf2fb\">":'<br>Skredfaregrad: <b style="color:#eaf2fb">')+esc(t.avalanche_level||(__EN?"not set":'ikke satt'))+(__EN?"<\/b> · Shared map: ":'</b> · Delt kart: ')+chk(t.shared_map)+(__EN?"<br>Admin approval: ":'<br>Admin-godkjenning: ')+(t.approved_at? (__EN?"<b style=\"color:#5fb97a\">✓ approved ":'<b style="color:#5fb97a">✓ godkjent ')+new Date(t.approved_at).toLocaleDateString((__EN?"en-GB":'nb-NO'))+'</b>' : (__EN?"<button type=\"button\" id=\"taApprove\" style=\"border:1px solid rgba(95,185,122,.45);background:rgba(95,185,122,.1);color:#5fb97a;border-radius:7px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer\">Approve trip<\/button>":'<button type="button" id="taApprove" style="border:1px solid rgba(95,185,122,.45);background:rgba(95,185,122,.1);color:#5fb97a;border-radius:7px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer">Godkjenn tur</button>'))+'</div>'
@@ -4361,6 +4362,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
         try{ toast((__EN?"Trip approved":'Tur godkjent'),(__EN?"Stamped in the HSE documentation.":'Stemplet i HMS-dokumentasjonen.')); }catch(e){} close(); setTimeout(function(){ location.reload(); },500);
       });
     }; }
+    (function(){ var w=document.getElementById('taBkW'); if(!w) return; if(bkB(t)!=null){ w.style.display=''; return; } bkErklPaa().then(function(ja){ if(ja && w.isConnected) w.style.display=''; }); })();
     $('#taSave').onclick=function(){
       /* 2026-10-23: bare felt admin faktisk endret sendes. Før ble status, navn og guide skrevet på
          nytt ved hver lagring, så en tur guiden aktiverte mens skuffen var åpen ble satt tilbake. */
@@ -4368,6 +4370,12 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       var ny={ name:$('#taName').value.trim(), start_location:$('#taLoc').value.trim()||null, date:$('#taDate').value||null, return_time:$('#taRet').value||null, return_date:$('#taRetD').value||null, guide_id:gid||null, status:$('#taStatus').value||null, notes:$('#taNotes').value.trim()||null };
       var gml={ name:String(t.name||'').trim(), start_location:t.start_location||null, date:t.date||null, return_time:(t.return_time? String(t.return_time).slice(0,5) : null), return_date:t.return_date||null, guide_id:t.guide_id||null, status:t.status||null, notes:t.notes||null };
       var FELT={name:(__EN?"name":'navn'), start_location:(__EN?"start location":'startsted'), date:(__EN?"date":'dato'), return_time:(__EN?"return time":'returtid'), return_date:(__EN?"return date":'returdato'), guide_id:'guide', status:'status', notes:(__EN?"notes":'notater')};
+      var _bkW=document.getElementById('taBkW');
+      if(bkHar(t) && _bkW && _bkW.style.display!=='none'){
+        var _bkI=$('#taBooked'), _bkS=_bkI? String(_bkI.value||'').trim() : '';
+        if((_bkI&&_bkI.validity&&_bkI.validity.badInput) || (_bkS!=='' && bkTall(_bkS)==null)){ $('#taErr').textContent=(__EN?"The number booked must be a whole number from 1 to 500.":'Antall booket må være et helt tall fra 1 til 500.'); return; }
+        ny.booked_count=(_bkS===''? null : bkTall(_bkS)); gml.booked_count=(t.booked_count==null? null : t.booked_count); FELT.booked_count=(__EN?"number booked":'antall booket');
+      }
       var upd={}, endret=[];
       Object.keys(ny).forEach(function(k){ var a=(ny[k]==null?'':String(ny[k])), b=(gml[k]==null?'':String(gml[k])); if(a!==b){ upd[k]=ny[k]; endret.push(FELT[k]); } });
       if(!endret.length){ close(); return; }
@@ -4670,6 +4678,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       '<label>Guide</label><select id="ntGuide">'+(gopt||(__EN?"<option value=\"\">(none registered)<\/option>":'<option value="">(ingen registrert)</option>'))+'</select>'+
       (__EN?"<label>Equipment (shared with the guide in the app)<\/label><textarea id=\"ntEquip\" rows=\"2\" maxlength=\"500\" placeholder=\"E.g. helmet, harness, crampons, ice axe …\"><\/textarea>":'<label>Utstyr (deles med guiden i appen)</label><textarea id="ntEquip" rows="2" maxlength="500" placeholder="F.eks. hjelm, sele, stegjern, isøks …"></textarea>')+
       (__EN?"<label>Notes<\/label><textarea id=\"ntNotes\" rows=\"2\" maxlength=\"500\"><\/textarea>":'<label>Notater</label><textarea id="ntNotes" rows="2" maxlength="500"></textarea>')+
+      '<div id="ntBkW" style="display:none">'+(__EN?"<label>Number booked (optional)<\/label><input id=\"ntBooked\" type=\"number\" min=\"1\" max=\"500\" step=\"1\" inputmode=\"numeric\" placeholder=\"From the booking system\"><div id=\"ntBkHint\" style=\"font-size:11.5px;color:#8aa0bd;margin-top:4px\">":'<label>Antall booket (valgfritt)</label><input id="ntBooked" type="number" min="1" max="500" step="1" inputmode="numeric" placeholder="Fra bookingsystemet"><div id="ntBkHint" style="font-size:11.5px;color:#8aa0bd;margin-top:4px">')+bkHint(false)+'</div></div>'+
       (__EN?"<label>Repeat<\/label><select id=\"ntRepeat\"><option value=\"1\">No repeat<\/option><option value=\"2\">Weekly — 2 weeks<\/option><option value=\"3\">Weekly — 3 weeks<\/option><option value=\"4\">Weekly — 4 weeks<\/option><option value=\"6\">Weekly — 6 weeks<\/option><option value=\"8\">Weekly — 8 weeks<\/option><option value=\"12\">Weekly — 12 weeks<\/option><\/select>":'<label>Gjenta</label><select id="ntRepeat"><option value="1">Ingen gjentakelse</option><option value="2">Ukentlig — 2 uker</option><option value="3">Ukentlig — 3 uker</option><option value="4">Ukentlig — 4 uker</option><option value="6">Ukentlig — 6 uker</option><option value="8">Ukentlig — 8 uker</option><option value="12">Ukentlig — 12 uker</option></select>')+
       '<div id="ntErr"></div>'+
       (__EN?"<div class=\"btns\"><button type=\"button\" id=\"ntCancel\">Cancel<\/button><button type=\"submit\" id=\"ntSave\">Create trip<\/button><\/div><\/form>":'<div class="btns"><button type="button" id="ntCancel">Avbryt</button><button type="submit" id="ntSave">Opprett tur</button></div></form>');
@@ -4677,6 +4686,12 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
     var close=function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); };
     ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
     document.getElementById('ntCancel').addEventListener('click',close);
+    (function(){
+      var w=document.getElementById('ntBkW'), i=document.getElementById('ntBooked'), h=document.getElementById('ntBkHint'), rp=document.getElementById('ntRepeat');
+      if(!w) return;
+      Promise.all([bkSjekk(), bkErklPaa()]).then(function(z){ if(z[0] && z[1] && w.isConnected) w.style.display=''; });
+      if(rp&&i) rp.addEventListener('change',function(){ var fl=rp.value!=='1'; i.disabled=fl; if(fl) i.value=''; if(h) h.textContent=bkHint(fl); });
+    })();
     (function(){
       var ntMapObj=null, ntMk=null;
       var pickBtn=document.getElementById('ntPickMap');
@@ -4713,11 +4728,18 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       var name=gv('ntName').trim(), loc=gv('ntLoc').trim(), date=gv('ntDate'), ret=gv('ntRet'); var err=document.getElementById('ntErr');
       if(!name||!loc||!date||!ret){ err.textContent=(__EN?"Fill in the trip name, start location, date and return time.":'Fyll ut turnavn, startsted, dato og returtid.'); return; }
       if(!gv('ntType')){ err.textContent=(__EN?"Choose an activity.":'Velg aktivitet.'); return; }
+      var _bkW=document.getElementById('ntBkW'), _bkI=document.getElementById('ntBooked'), _bk=null;
+      if(_bkW && _bkW.style.display!=='none' && _bkI && !_bkI.disabled){
+        var _bkS=String(_bkI.value||'').trim();
+        if((_bkI.validity&&_bkI.validity.badInput) || (_bkS!=='' && bkTall(_bkS)==null)){ err.textContent=(__EN?"The number booked must be a whole number from 1 to 500.":'Antall booket må være et helt tall fra 1 til 500.'); return; }
+        _bk=(_bkS===''? null : bkTall(_bkS));
+      }
       var guideId=gv('ntGuide'), guideName=''; (R.guidesRaw||[]).forEach(function(g){ if(g.id===guideId) guideName=g.name; });
       var save=document.getElementById('ntSave'); save.disabled=true; save.textContent=(__EN?"Saving…":'Lagrer…');
       var _glat=parseFloat(gv('ntLat')), _glng=parseFloat(gv('ntLng'));
       var reps=Math.max(1,parseInt(gv('ntRepeat'),10)||1);
       var basePayload={ name:name, start_location:loc, return_time:ret, activity_type:gv('ntType'), difficulty:gv('ntDiff'), status:'draft', guide_id:guideId||(me&&me.id)||null, guide_name:guideName||(me&&(me.name||me.email))||'', organization_id:(me&&me.organization_id)||null, organization_name:R.orgName||'', notes:gv('ntNotes').trim()||null, equipment:gv('ntEquip').trim()||null, gps_lat:isNaN(_glat)?null:_glat, gps_lng:isNaN(_glng)?null:_glng };
+      if(_bk!=null && reps===1) basePayload.booked_count=_bk;
       var rows=[]; var d0=new Date(date+'T12:00:00'); var rd0=gv('ntRetDate')?new Date(gv('ntRetDate')+'T12:00:00'):null;
       for(var k=0;k<reps;k++){
         var row={}; for(var kk in basePayload){ row[kk]=basePayload[kk]; }
@@ -4795,7 +4817,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
        20 000 (kappetT, kappetE, kappetA). Nettfeil avviser som før, så v2Periode viser «Nettverksfeil».
        2026-11-17: feilP = deltakerne kunne ikke hentes (gjestetallene i sesongrapporten og fakturagrunnlaget). */
     function v2HentPeriode(fra, til){
-      var tQ=v2Alle(function(){ return sb.from('trips').select('id,trip_id,name,date,return_date,status,guide_id,guide_name,activity_type,start_location,safety_completed_at,activity_check_completed_at,activation_override,weather_verified,equipment_checked,emergency_contact_notified,approved_at',{count:'exact'}).gte('date',fra).lte('date',til).order('date',{ascending:true}).order('id',{ascending:true}); }, 20000);
+      var tQ=v2Alle(function(){ return sb.from('trips').select('id,trip_id,name,date,return_date,status,guide_id,guide_name,activity_type,start_location,safety_completed_at,activity_check_completed_at,activation_override,weather_verified,equipment_checked,emergency_contact_notified,approved_at'+(bkKolonne()?',booked_count':''),{count:'exact'}).gte('date',fra).lte('date',til).order('date',{ascending:true}).order('id',{ascending:true}); }, 20000);
       var eQ=v2Alle(function(){ return sb.from('events').select('id,trip_id,type,severity,description,action_taken,created_at,acknowledged_at',{count:'exact'}).gte('created_at',fra+'T00:00:00Z').lte('created_at',til+'T23:59:59Z').order('created_at',{ascending:true}).order('id',{ascending:true}); }, 20000);
       var aQ=v2Alle(function(){ return sb.from('admin_audit').select('id,action,target,details,created_at,actor_id',{count:'exact'}).gte('created_at',fra+'T00:00:00Z').lte('created_at',til+'T23:59:59Z').order('created_at',{ascending:true}).order('id',{ascending:true}); }, 20000);
       return Promise.all([tQ,eQ,aQ]).then(function(z){
@@ -5434,6 +5456,59 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
   var DECL_URL='https://daedalus-app.no/erklaering';
   var DECL_TOK=/^[A-Za-z0-9_-]{24}$/;
   var DECL_TF='id,organization_id,version,title,title_en,body_no,body_en,hash_no,hash_en,questions,requires_birth_date,created_by,created_at';
+  /* 2026-11-23: antall booket på turen (trips.booked_count, SQL-BOOKET-2026-11-23). Feltene vises bare når kolonnen finnes:
+     turradene fra select('*') har da nøkkelen, også når verdien er tom. Uten turer i lista spør «Ny tur» basen én gang.
+     n er det samme som i «Erklæringer signert: n av N» (deltakere med minst én signatur). Rødt når turen er aktiv eller
+     fullført og færre har signert enn booket, gult før turen. Guiden får push fra Edge-funksjonen booked-push. */
+  function bkHar(t){ return !!t && typeof t==='object' && Object.prototype.hasOwnProperty.call(t,'booked_count'); }
+  function bkTall(v){ if(v==null) return null; var s0=String(v).trim(); if(!/^\d{1,3}$/.test(s0)) return null; var n=parseInt(s0,10); return (n>=1&&n<=500)? n : null; }
+  function bkB(t){ return bkHar(t)? bkTall(t.booked_count) : null; }
+  function bkKolonne(){ return (window.__TRIPS||[]).some(bkHar); }
+  function bkSjekk(){
+    if(bkKolonne()) return Promise.resolve(true);
+    if((window.__TRIPS||[]).length) return Promise.resolve(false);
+    /* Bare sikre svar huskes: finnes kolonnen ikke (42703), er svaret nei. Nettfeil spørres på nytt neste gang. */
+    if(!window.__BKP) window.__BKP=Promise.resolve(sb.from('trips').select('booked_count').limit(1)).then(function(r){
+      if(!(r&&r.error)) return true;
+      if(!(String(r.error.code||'')==='42703'||/booked_count/.test(String(r.error.message||'')))) window.__BKP=null;
+      return false;
+    }, function(){ window.__BKP=null; return false; });
+    return window.__BKP;
+  }
+  /* Feltene for antall booket vises bare når gjesteerklæringen er slått på for organisasjonen. */
+  function bkErklPaa(){
+    var me=DECL.me||window.__ME||{};
+    if(!me.organization_id) return Promise.resolve(false);
+    return Promise.resolve(DECL.p||declHent(me.organization_id)).then(function(){ return !!(DECL.org&&DECL.org.declarations_enabled); }, function(){ return false; });
+  }
+  function bkEtter(t){ return !!t && (t.status==='active'||t.status==='completed'); }
+  function bkHint(gjentas){ return gjentas? (__EN?"For repeated trips, enter the number booked on each trip in the trip drawer.":'Gjentas turen, fyller du inn antall booket per tur i turskuffen.') : (__EN?"Checked against the signed declarations. If fewer have signed when the trip is activated, the guide gets a notification.":'Sjekkes mot erklæringene som er signert. Har færre signert når turen aktiveres, får guiden et varsel.'); }
+  function bkHtml(t, n){
+    var B=bkB(t); if(B==null) return '';
+    var txt, farge;
+    if(n<B){ txt=(__EN?"Only ":'Bare ')+n+(__EN?" of ":' av ')+B+(__EN?(" booked "+(n===1?"has":"have")+" signed."):' booket har signert.'); farge=bkEtter(t)?'#e8857c':'#e0a458'; }
+    else if(n===B){ txt=B+(__EN?" of ":' av ')+B+(__EN?(" booked "+(B===1?"has":"have")+" signed."):' booket har signert.'); farge='#5fb97a'; }
+    else { txt=n+(__EN?" have signed, but only ":' har signert, men bare ')+B+(__EN?((B===1?" is":" are")+" booked. Check whether someone is registered twice or on the wrong departure."):' er booket. Sjekk om noen er registrert to ganger eller på feil avgang.'); farge='#e0a458'; }
+    return '<br><b id="taDeclBooket" style="color:'+farge+'">'+txt+'</b><span id="taDeclVarsel"></span>';
+  }
+  function bkVarsel(t, box, gyldig){
+    if(bkB(t)==null || !bkEtter(t)) return;
+    Promise.resolve(sb.from('booked_push_log').select('status,signed,booked,sent_at,created_at,detail').eq('trip_id',t.id).limit(1)).then(function(r){
+      if(!gyldig()) return;
+      var el=box.querySelector('#taDeclVarsel'), x=(r&&!r.error&&r.data&&r.data[0])||null; if(!el||!x) return;
+      var kl=function(v){ var d=new Date(v); return isNaN(d.getTime())? '' : d.toLocaleTimeString(__EN?'en-GB':'nb-NO',{hour:'2-digit',minute:'2-digit'}); };
+      var tx=null, f='#8aa0bd';
+      if(x.status==='sent') tx=(__EN?"Notification sent to the guide at ":'Varsel sendt til guiden kl. ')+esc(kl(x.sent_at||x.created_at))+(__EN?", when ":', da ')+esc(String(x.signed))+(__EN?" of ":' av ')+esc(String(x.booked))+(__EN?" had signed.":' hadde signert.');
+      else if(x.status==='no_token'&&x.detail==='Turen har ingen guide'){ tx=(__EN?"No one was notified: the trip has no guide.":'Ingen fikk varsel: turen har ingen guide.'); f='#e0a458'; }
+      else if(x.status==='no_token'&&x.detail==='Fant ikke guiden'){ tx=(__EN?"The guide was not notified: the guide could not be found.":'Guiden fikk ikke varsel: fant ikke guiden.'); f='#e0a458'; }
+      else if(x.status==='no_token'){ tx=(__EN?"The guide was not notified: notifications are not turned on in the app.":'Guiden fikk ikke varsel: varsler er ikke slått på i appen.'); f='#e0a458'; }
+      else if(x.status==='skipped'&&x.detail==='Guiden hører ikke til turens organisasjon'){ tx=(__EN?"The guide was not notified: the guide is not in the organisation.":'Guiden fikk ikke varsel: guiden hører ikke til organisasjonen.'); f='#e0a458'; }
+      else if(x.status==='failed'){ tx=(__EN?"The notification to the guide could not be sent.":'Varselet til guiden kunne ikke sendes.'); f='#e8857c'; }
+      else if(x.status==='unknown'){ tx=(__EN?"It is not certain that the notification to the guide was sent.":'Usikkert om varselet til guiden ble sendt.'); f='#e0a458'; }
+      else if(x.status==='queued'||x.status==='sending') tx=(__EN?"A notification to the guide is on its way.":'Varsel til guiden er på vei.');
+      if(tx) el.innerHTML='<br><span id="taDeclVarselT" style="color:'+f+'">'+tx+'</span>';
+    }, function(){});
+  }
   function declAdmin(me){ return String((me&&me.role)||'')==='org_admin'; }
   function declErTekst(x){ return x!=null && String(x).trim()!==''; }
   function declTid(iso, sek){ if(!iso) return '-'; var d=new Date(iso); if(isNaN(d.getTime())) return '-'; var p=function(x){return (x<10?'0':'')+x;}; return p(d.getDate())+'.'+p(d.getMonth()+1)+'.'+d.getFullYear()+(__EN?" at ":' kl. ')+p(d.getHours())+':'+p(d.getMinutes())+(sek?(':'+p(d.getSeconds())):''); }
@@ -5808,6 +5883,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
         var likevel=t.activation_override===true && !!(t.activated_at||t.status==='active'||t.status==='completed');
         var h=hode+'<div style="font-size:12.5px;line-height:1.75">'
           +'<b id="taDeclN" style="color:'+(d.N>0&&d.n===d.N?'#5fb97a':(d.n<d.N?'#e0a458':'#eaf2fb'))+'">'+(__EN?"Declarations signed: ":'Erklæringer signert: ')+d.n+(__EN?" of ":' av ')+d.N+'</b>'
+          +bkHtml(t, d.n)
           +(d.feil? ('<br><span style="color:#e8857c">'+(__EN?"Could not fetch the signatures: ":'Kunne ikke hente signaturene: ')+esc(d.feil)+'</span>') : '')
           +(d.N===0? ('<br><span style="color:#8aa0bd">'+(__EN?"No participants on the trip yet.":'Ingen deltakere på turen ennå.')+'</span>')
             : (mangler.length? ('<br>'+(__EN?"Not signed: ":'Ikke signert: ')+'<span id="taDeclMangler">'+esc(mangler.slice(0,12).join(', '))+(mangler.length>12?((__EN?" and ":' og ')+(mangler.length-12)+(__EN?" more":' til')):'')+'</span>') : ('<br><span style="color:#5fb97a">'+(__EN?"Everyone on the trip has signed.":'Alle på turen har signert.')+'</span>')))
@@ -5818,7 +5894,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
             : (!aapen? ('<br><span style="color:#8aa0bd">'+(__EN?"The trip is completed or cancelled and does not take more signatures.":'Turen er fullført eller avlyst og tar ikke imot flere signaturer.')+'</span>') : ''))
           +'</div>'
           +((d.sigs.length||qrKnapp)? ('<div class="dcl-row">'+(d.sigs.length?('<button type="button" class="dcl-btn" id="taDeclVis">'+(__EN?"Show the signatures":'Vis signaturene')+'</button>'):'')+qrKnapp+'</div>') : '');
-        box.innerHTML=h; box.hidden=false; koble();
+        box.innerHTML=h; box.hidden=false; koble(); bkVarsel(t, box, gyldig);
         var vb=box.querySelector('#taDeclVis'); if(vb) vb.onclick=function(){ declSignaturer(t, list); };
       }, function(){ var b2=gyldig()? box : null; if(b2){ b2.innerHTML=hode+'<div style="font-size:12.5px;color:#e8857c">'+(__EN?"Could not fetch the declarations. Check the connection.":'Kunne ikke hente erklæringene. Sjekk nettet.')+'</div>'; b2.hidden=false; } });
     });
@@ -5841,7 +5917,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       d.parts.forEach(function(p){ deltar[p.id]=p; });
       var h='<h3>'+(__EN?"Signatures · ":'Signaturer · ')+esc(t.name||'')+'</h3>'
         +'<p class="s">'+esc(declDato(t.date))+(t.trip_id?(' · '+esc(t.trip_id)):'')+(t.guide_name?(' · '+(__EN?"guide ":'guide ')+esc(t.guide_name)):'')+'<br>'
-        +(__EN?"Declarations signed: ":'Erklæringer signert: ')+d.n+(__EN?" of ":' av ')+d.N+' · '+d.sigs.length+(d.sigs.length===1?(__EN?" signature":' signatur'):(__EN?" signatures":' signaturer'))+'</p>';
+        +(__EN?"Declarations signed: ":'Erklæringer signert: ')+d.n+(__EN?" of ":' av ')+d.N+(bkB(t)!=null? ((__EN?" · booked ":' · booket ')+bkB(t)) : '')+' · '+d.sigs.length+(d.sigs.length===1?(__EN?" signature":' signatur'):(__EN?" signatures":' signaturer'))+'</p>';
       if(d.feil) h+='<div class="err">'+(__EN?"Could not fetch the signatures: ":'Kunne ikke hente signaturene: ')+esc(d.feil)+'</div>';
       if(!d.sigs.length&&!d.feil) h+='<p class="dcl-sm">'+(__EN?"Nobody has signed yet.":'Ingen har signert ennå.')+'</p>';
       h+=d.sigs.map(function(s,i){
@@ -6012,7 +6088,7 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       var tids=liste.filter(function(g){ return g.tripId; }).map(function(g){ return g.tripId; });
       return Promise.all([
         v2IBolk(declBiter(tids,80).map(function(del){ return function(){ return declSider(function(a,b){ return sb.from('participants').select('id,name,trip_id').in('trip_id',del).order('id',{ascending:true}).range(a,b); }); }; }), 4),
-        v2IBolk(declBiter(utenfor,80).map(function(del){ return function(){ return sb.from('trips').select('id,trip_id,name,date,guide_name,status,activation_override').in('id',del).limit(1000); }; }), 4),
+        v2IBolk(declBiter(utenfor,80).map(function(del){ return function(){ return sb.from('trips').select('id,trip_id,name,date,guide_name,status,activation_override'+(bkKolonne()?',booked_count':'')).in('id',del).limit(1000); }; }), 4),
         v2IBolk(declBiter(utenfor,80).map(function(del){ return function(){ return sigQ(function(x){ return x.in('trip_id',del); }); }; }), 4)
       ]).then(function(y){
         var delt={}; (y[0]||[]).forEach(function(r){ rader(r).forEach(function(p){ (delt[p.trip_id]=delt[p.trip_id]||[]).push(p); }); });
@@ -6058,7 +6134,11 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
             var kode=tt.trip_id||s0.trip_code||'', guide=tt.guide_name||s0.guide_name||'';
             H+='<h3 style="font-size:12.5px;margin:14px 0 3px">'+esc(declDato(g.dato))+' · '+esc(g.navn)+(kode?(' · '+esc(kode)):'')+(guide?(' · '+(__EN?"guide ":'guide ')+esc(guide)):'')+'</h3>';
             var lj=[];
-            if(g.tripId) lj.push((__EN?"Declarations signed: ":'Erklæringer signert: ')+g.n+(__EN?" of ":' av ')+g.N);
+            if(g.tripId){
+              lj.push((__EN?"Declarations signed: ":'Erklæringer signert: ')+g.n+(__EN?" of ":' av ')+g.N);
+              var _B=g.t? bkB(g.t) : null;
+              if(_B!=null) lj.push((__EN?"Booked: ":'Booket: ')+_B+(g.n<_B? (' <b class="nei">'+(__EN?"(only ":'(bare ')+g.n+(__EN?" signed)":' signert)')+'</b>') : ''));
+            }
             else lj.push(__EN?"The trip has been deleted. The signatures remain.":'Turen er slettet. Signaturene står igjen.');
             if(g.likevel) lj.push('<b class="nei">'+(__EN?"Activated with ‘Activate anyway’":'Aktivert med «Aktiver likevel»')+'</b>');
             H+='<p style="margin:0 0 3px">'+lj.join(' · ')+'</p>';
@@ -6145,9 +6225,15 @@ function __ikStat(s){try{if(typeof STATUS_NO!=='undefined'&&STATUS_NO[s])return 
       var id=el.getAttribute('data-declm'), x=M.data[id], t=byId[id];
       if(!x||!t){ el.hidden=true; return; }
       var N=x.parts.length, n=x.parts.filter(function(pid){ return x.sig[pid]; }).length;
-      if(!(paa||n>0)||!(N>0||n>0)){ el.hidden=true; return; }
-      el.textContent=(__EN?"Declarations ":'Erklæringer ')+n+(__EN?" of ":' av ')+N;
-      el.style.color=(N>0&&n>=N)?'#5fb97a':'#e0a458';
+      var B=bkB(t);
+      if(!(paa||n>0)||!(N>0||n>0||B!=null)){ el.hidden=true; return; }
+      if(B!=null){
+        el.textContent=(__EN?"Declarations ":'Erklæringer ')+n+(__EN?" of ":' av ')+B+(__EN?" booked":' booket');
+        el.style.color=(n===B)?'#5fb97a':(n>B?'#e0a458':(bkEtter(t)?'#e8857c':'#e0a458'));
+      } else {
+        el.textContent=(__EN?"Declarations ":'Erklæringer ')+n+(__EN?" of ":' av ')+N;
+        el.style.color=(N>0&&n>=N)?'#5fb97a':'#e0a458';
+      }
       el.hidden=false;
     });
   }
